@@ -51,4 +51,4 @@ if (YII_ENV_DEV) {
     $config['modules']['gii'] = 'yii\gii\Module';
 }
 
-return $config;
+return yii\helpers\ArrayHelper::merge($config, require(__DIR__ . '/local-web.php'));
