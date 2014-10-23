@@ -1,11 +1,7 @@
 <?php
 /**
- * Application configuration for acceptance tests
+ * Application configuration shared by all applications acceptance tests
  */
-return yii\helpers\ArrayHelper::merge(
-    require(__DIR__ . '/../../../config/web.php'),
-    require(__DIR__ . '/config.php'),
-    [
+return [
 
-    ]
-);
+];
