@@ -1,7 +1,7 @@
-Tabbie2 - tab the new way
+Tabbie2 - Source code
 ================================
 
-Tabbie2 is based on a Yii2 basic template.
+Based on a Yii2 basic template.
 
 
 DIRECTORY STRUCTURE
