@@ -5,7 +5,7 @@ $params = array_merge(
 );
 
 $frontendConfig = require(__DIR__ . '/../../frontend/config/main.php');
-$baseUrl = str_replace('/backend/web', '/admin', (new \yii\web\Request)->getBaseUrl());
+$baseUrl = str_replace('/backend/web', '/master', (new \yii\web\Request)->getBaseUrl());
 
 return [
     'id' => 'app-backend',

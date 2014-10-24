@@ -3,10 +3,10 @@ Options -Indexes
 <IfModule mod_rewrite.c>
   RewriteEngine on
 
-  RewriteCond %{REQUEST_URI} ^/admin
-  RewriteRule ^admin(.*)$ backend/web/$1 [L]
+  RewriteCond %{REQUEST_URI} ^/master
+  RewriteRule ^master(.*)$ backend/web/$1 [L]
 
-  RewriteCond %{REQUEST_URI} !^/admin
+  RewriteCond %{REQUEST_URI} !^/master
   RewriteRule ^(.*)$ frontend/web/$1 [L]
 </IfModule>
 
