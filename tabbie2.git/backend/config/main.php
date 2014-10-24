@@ -11,8 +11,13 @@ return [
     'id' => 'app-backend',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
-    'bootstrap' => ['log'],
-    'modules' => [],
+    'bootstrap' => ['gii', 'log'],
+    'modules' => [
+        'gii' => [
+            'class' => 'yii\gii\Module',
+            'allowedIPs' => ['127.0.0.1', '::1', '192.168.1.*',] // adjust this to your needs
+        ],
+    ],
     'components' => [
         'request' => [
             'baseUrl' => $baseUrl,
@@ -23,12 +28,11 @@ return [
         ],
         'urlManager' => [
             'baseUrl' => "/admin",
-            'enablePrettyUrl' => true,
+            'enablePrettyUrl' => false,
             'showScriptName' => false,
             'suffix' => '.html',
             'rules' => [
                 '' => 'site/index',
-            //'<action>' => 'site/<action>',
             ],
         ],
         'urlManagerFrontend' => array_merge($frontendConfig["components"]["urlManager"], [

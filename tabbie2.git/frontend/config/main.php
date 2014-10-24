@@ -24,8 +24,8 @@ return [
             'showScriptName' => false,
             'suffix' => '.html',
             'rules' => [
-            //'' => 'site/index',
-            //'<action>' => 'site/<action>',
+//'' => 'site/index',
+//'<action>' => 'site/<action>',
             ],
         ],
         'log' => [
