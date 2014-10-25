@@ -13,8 +13,9 @@ $this->title = Yii::$app->params["slogan"];
         <p class="lead">Get access to the new Tabbie2 Tab System:</p>
 
         <p>
-            <?= Html::a("Register here!", ['site/signup'], ["class" => "btn btn-lg btn-success"]) ?>
-            <?= Html::a("Sign in!", ['site/login'], ["class" => "btn btn-lg btn-primary"]) ?>
+            <?= Html::a(Yii::t("app", "View existing Tournament"), ['tournament/index'], ["class" => "btn btn-lg btn-success"]) ?><br>
+            or<br>
+            <?= Html::a(Yii::t("app", "Create new Tournament"), ['tournament/create'], ["class" => "btn btn-lg btn-primary"]) ?>
         </p>
     </div>
 

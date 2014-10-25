@@ -40,7 +40,8 @@ class User extends ActiveRecord implements IdentityInterface {
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
     const ROLE_USER = 10;
-    const ROLE_ADMIN = 11;
+    const ROLE_TABMASTER = 11;
+    const ROLE_ADMIN = 12;
 
     /**
      * @inheritdoc
@@ -213,6 +214,14 @@ class User extends ActiveRecord implements IdentityInterface {
      */
     public function removePasswordResetToken() {
         $this->password_reset_token = null;
+    }
+
+    /**
+     * Returns the full name of the User
+     * @return string
+     */
+    public function getName() {
+        return $this->givenname . " " . $this->surename;
     }
 
     /**
