@@ -89,3 +89,23 @@ a.desc:after {
     padding: 10px 20px;
     margin: 0 0 15px 0;
 }
+
+.flashes {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 1040;
+}
+
+.flashes .alert {
+    width: 100%;
+    padding: 10px;
+    border-radius: 0px;
+    text-align: center;
+}
+
+.flashes div.alert:last-of-type {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}

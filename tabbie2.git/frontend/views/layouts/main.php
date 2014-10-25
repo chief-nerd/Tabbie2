@@ -24,6 +24,9 @@ AppAsset::register($this);
     </head>
     <body>
         <?php $this->beginBody() ?>
+        <div class="flashes">
+            <?= Alert::widget() ?>
+        </div>
         <div class="wrap">
             <?php
             NavBar::begin([
@@ -61,7 +64,6 @@ AppAsset::register($this);
                     'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
                 ])
                 ?>
-                <?= Alert::widget() ?>
                 <?= $content ?>
             </div>
         </div>
