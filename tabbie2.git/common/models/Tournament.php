@@ -8,6 +8,7 @@ use Yii;
  * This is the model class for table "tournament".
  *
  * @property integer $id
+ * @property string $url_slug
  * @property integer $convenor_user_id
  * @property integer $tabmaster_user_id
  * @property string $name
@@ -42,7 +43,7 @@ class Tournament extends \yii\db\ActiveRecord {
         return [
             [['convenor_user_id', 'tabmaster_user_id', 'name', 'start_date', 'end_date'], 'required'],
             [['convenor_user_id', 'tabmaster_user_id'], 'integer'],
-            [['start_date', 'end_date', 'time'], 'safe'],
+            [['start_date', 'end_date', 'time', 'url_slug'], 'safe'],
             [['logo'], 'file'],
             [['name'], 'string', 'max' => 100]
         ];
@@ -61,11 +62,54 @@ class Tournament extends \yii\db\ActiveRecord {
             'end_date' => Yii::t('app', 'End Date'),
             'logo' => Yii::t('app', 'Logo'),
             'time' => Yii::t('app', 'Time'),
+            'url_slug' => Yii::t('app', 'URL Slug'),
         ];
     }
 
+    public static function findByUrlSlug($slug) {
+        return Tournament::findOne(["url_slug" => $slug]);
+    }
+
+    public static function findByPk($id) {
+        return Tournament::findOne(["id" => $id]);
+    }
+
+    /**
+     * Generate a unique URL SLUG ... never fails  ;)
+     */
+    public function generateUrlSlug() {
+        $potential_slug = str_replace(" ", "-", $this->fullname);
+
+        if (Tournament::findByUrlSlug($potential_slug) !== null) {
+            $i = 1;
+            $iterate_slug = $potential_slug . "-" . $i;
+            while (Tournament::findByUrlSlug($try_slug) !== null) {
+                $i++;
+                $iterate_slug = $potential_slug . "-" . $i;
+            }
+            $potential_slug = $iterate_slug;
+        }
+        $this->url_slug = $potential_slug;
+        return true;
+    }
+
+    /**
+     * Call before model save
+     * @param type $insert
+     * @return boolean
+     */
+    public function beforeSave($insert) {
+        if (parent::beforeSave($insert)) {
+            if ($insert === true) //Do only on new Records
+                $this->generateUrlSlug();
+            return true;
+        }
+
+        return false;
+    }
+
     public function getFullname() {
-        return $this->name . " " . substr($this->start_date, 0, 4);
+        return $this->name . " " . substr($this->end_date, 0, 4);
     }
 
     /**

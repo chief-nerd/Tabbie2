@@ -24,8 +24,11 @@ return [
             'showScriptName' => false,
             'suffix' => '.html',
             'rules' => [
-//'' => 'site/index',
-//'<action>' => 'site/<action>',
+                '' => 'site/index',
+                [
+                    'class' => 'common\components\TournamentUrlRule',
+                    'connectionID' => 'db'
+                ],
             ],
         ],
         'log' => [

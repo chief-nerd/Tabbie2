@@ -12,7 +12,7 @@ use yii\helpers\Url;
         <h4><?= Html::encode($model->start_date) ?> - <?= Html::encode($model->end_date) ?></h4>
     </div>
     <div class="col-sm-4 form-group">
-        <?= Html::a(Yii::t('app', 'View Team Tab'), ['tab/team'], ['class' => 'btn btn-lg btn-default']) ?>
-        <?= Html::a(Yii::t('app', 'View Speaker Tab'), ['tab/speaker'], ['class' => 'btn btn-lg btn-default']) ?>
+        <?= Html::a(Yii::t('app', 'View Team Tab'), ['draw/team', 'tournament_id' => $model->id], ['class' => 'btn btn-lg btn-default']) ?>
+        <?= Html::a(Yii::t('app', 'View Speaker Tab'), ['draw/speaker', 'tournament_id' => $model->id], ['class' => 'btn btn-lg btn-default']) ?>
     </div>
 </a>

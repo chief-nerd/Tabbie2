@@ -15,40 +15,8 @@ use common\components\filter\TournamentContextFilter;
  */
 class TournamentController extends BaseController {
 
-    /**
-     * Current Tournament Scope
-     * Does not exist in index and create
-     * @var Tournament
-     */
-    protected $_tournament;
-
-    /**
-     * Sets the Tournament Context
-     * @param integer $id
-     * @return boolean
-     */
-    public function setTournament($id) {
-        $this->_tournament = $this->findModel($id);
-        if ($this->_tournament instanceof Tournament)
-            return true;
-        else
-            return false;
-    }
-
-    /**
-     * Returns the current context
-     * @return Tournament
-     */
-    public function getTournament() {
-        return $this->_tournament;
-    }
-
     public function behaviors() {
         return [
-            'tournamentFilter' => [
-                'class' => TournamentContextFilter::className(),
-                'except' => ['index', 'create']
-            ],
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
@@ -85,9 +53,9 @@ class TournamentController extends BaseController {
      * Displays a current Tournament model.
      * @return mixed
      */
-    public function actionView() {
+    public function actionView($id) {
         return $this->render('view', [
-                    'model' => $this->findModel($this->_tournament->id),
+                    'model' => $this->findModel($id),
         ]);
     }
 
@@ -102,8 +70,8 @@ class TournamentController extends BaseController {
         if (Yii::$app->request->isPost) {
             $file = \yii\web\UploadedFile::getInstance($model, 'logo');
             $model->load(Yii::$app->request->post());
-            $path = "/uploads/Tournament_" . str_replace(" ", "_", $model->fullname) . "." . $file->extension;
-            if ($file->saveAs(Yii::getAlias("@frontend/web") . $path))
+            $path = "/uploads/TournamentLogo-" . $model->url_slug . ".jpg";
+            if ($file && $file->saveAs(Yii::getAlias("@frontend/web") . $path))
                 $model->logo = $path;
             else
                 $model->logo = null;
@@ -125,8 +93,8 @@ class TournamentController extends BaseController {
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate() {
-        $model = $this->findModel($this->_tournament->id);
+    public function actionUpdate($id) {
+        $model = $this->findModel($id);
 
         if (Yii::$app->request->isPost) {
 
@@ -137,7 +105,7 @@ class TournamentController extends BaseController {
             $oldFile = $model->logo;
             //Load new values
             $model->load(Yii::$app->request->post());
-            $path = "/uploads/Tournament_" . str_replace(" ", "_", $model->fullname) . ".jpg";
+            $path = "/uploads/TournamentLogo-" . $model->url_slug . ".jpg";
 
             if ($file !== NULL) {
                 //Save new File
@@ -162,8 +130,8 @@ class TournamentController extends BaseController {
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete() {
-        $this->findModel($this->_tournament->id)->delete();
+    public function actionDelete($id) {
+        $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
     }
@@ -176,7 +144,7 @@ class TournamentController extends BaseController {
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id) {
-        if (($model = Tournament::findOne($id)) !== null) {
+        if (($model = Tournament::findOne(["id" => $id])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

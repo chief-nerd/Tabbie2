@@ -10,11 +10,10 @@ class TournamentContextFilter extends ActionFilter {
     public function beforeAction($action) {
         $tournament = null;
         $tournamnet_id = null;
-        if (isset($_REQUEST['id'])) {
-
-            $tournamnet_id = (int) $_REQUEST['id'];
-            if ($action->controller->hasMethod('setTournament') && $action->controller->hasMethod('getTournament')) {
-                $action->controller->setTournament($tournamnet_id);
+        if (isset($_GET["tournament_id"])) {
+            $tournamnet_identifier = (int) Yii::$app->getRequest()->getQueryParam("tournament_id", null);
+            if ($action->controller->hasMethod('_setContext') && $action->controller->hasMethod('_getContext')) {
+                $action->controller->_setContext($tournamnet_identifier);
                 return true;
             } else
                 throw new \yii\web\HttpException(500, 'This filter was not properly setup');

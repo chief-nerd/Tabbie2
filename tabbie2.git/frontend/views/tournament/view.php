@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="row">
         <div class="col-sm-9">
-            <div class="col-sm-2"><img class="img-rounded img-responsive" src="<?= $model["logo"] ?>" alt="<?= $model["fullname"] ?> Logo" height="150"></div>
+            <div class="col-sm-2"><img class="img-rounded img-responsive" src="<?= $model["logo"] ?>" alt="<?= $model["fullname"] ?> Logo"></div>
             <div class="col-sm-10"><h1><?= Html::encode($this->title) ?></h1></div>
         </div>
         <div class="col-sm-3 text-right">
@@ -29,6 +29,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ])
             ?>
         </div>
+    </div>
+    <div>
+        <?= Html::a("Show Venues", ["venue/index", "tournament_id" => $model->id], ["class" => "btn btn-default"]); ?>
     </div>
     <div class="row">
         <?=
