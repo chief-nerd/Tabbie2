@@ -14,11 +14,12 @@ use Yii;
  * @property string $name
  * @property string $start_date
  * @property string $end_date
- * @property resource $logo
+ * @property string $logo
  * @property string $time
  *
  * @property Adjudicator[] $adjudicators
  * @property DrawAfterRound[] $drawAfterRounds
+ * @property Panel[] $panels
  * @property Round[] $rounds
  * @property Team[] $teams
  * @property User $convenorUser
@@ -41,11 +42,12 @@ class Tournament extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['convenor_user_id', 'tabmaster_user_id', 'name', 'start_date', 'end_date'], 'required'],
+            [['url_slug', 'convenor_user_id', 'tabmaster_user_id', 'name', 'start_date', 'end_date'], 'required'],
             [['convenor_user_id', 'tabmaster_user_id'], 'integer'],
-            [['start_date', 'end_date', 'time', 'url_slug'], 'safe'],
-            [['logo'], 'file'],
-            [['name'], 'string', 'max' => 100]
+            [['start_date', 'end_date', 'time'], 'safe'],
+            [['url_slug', 'name'], 'string', 'max' => 100],
+            [['logo'], 'string', 'max' => 255],
+            [['url_slug'], 'unique']
         ];
     }
 
@@ -181,6 +183,14 @@ class Tournament extends \yii\db\ActiveRecord {
      */
     public function getVenues() {
         return $this->hasMany(Venue::className(), ['tournament_id' => 'id']);
+    }
+
+    /**
+     * Get the panels in that tournament
+     * @return type
+     */
+    public function getPanels() {
+        return $this->hasMany(Panel::className(), ['tournament_id' => 'id']);
     }
 
 }

@@ -31,20 +31,27 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
     <div class="row">
-        <?=
-        DetailView::widget([
-            'model' => $model,
-            'attributes' => [
-                'id',
-                'convenorUser.name:text:Convenor',
-                'tabmasterUser.name:text:Tabmaster',
-                'fullname',
-                'start_date',
-                'end_date',
-                'time',
-            ],
-        ])
-        ?>
+        <div class="col-md-8">
+            <?
+            foreach ($model->getRounds() as $round) {
+                
+            }
+            ?>
+        </div>
+        <div class="col-md-4">
+            <?=
+            DetailView::widget([
+                'model' => $model,
+                'attributes' => [
+                    'id',
+                    'convenorUser.name:text:Convenor',
+                    'tabmasterUser.name:text:Tabmaster',
+                    'start_date',
+                    'end_date',
+                ],
+            ])
+            ?>
+        </div>
     </div>
 
 </div>

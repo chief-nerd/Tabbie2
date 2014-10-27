@@ -61,7 +61,7 @@ AppAsset::register($this);
             <?
             /* @var $tournament common\models\Tournament */
             $tournament = $this->context->_getContext();
-            if ($tournament && $tournament->convenor_user_id = Yii::$app->user->id) {
+            if ($tournament && $tournament->convenor_user_id == Yii::$app->user->id) {
                 $addclass = "movedown";
 
                 NavBar::begin([
