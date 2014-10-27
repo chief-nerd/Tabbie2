@@ -3,6 +3,10 @@ body {
     height: 100%;
 }
 
+.navbar.tabmaster {
+    top: 50px;
+}
+
 .wrap {
     min-height: 100%;
     height: auto;
@@ -13,6 +17,12 @@ body {
 .wrap > .container {
     padding: 70px 15px 20px;
 }
+
+.container.movedown {
+    padding: 120px 15px 20px;
+}
+
+
 
 .footer {
     height: 60px;

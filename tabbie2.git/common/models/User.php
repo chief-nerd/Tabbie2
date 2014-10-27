@@ -22,8 +22,7 @@ use yii\web\IdentityInterface;
  * @property string $email
  * @property integer $role
  * @property integer $status
- * @property integer $created_at
- * @property integer $updated_at
+ * @property integer $last_change
  * @property string $givenname
  * @property string $surename
  * @property resource $picture
@@ -55,7 +54,11 @@ class User extends ActiveRecord implements IdentityInterface {
      */
     public function behaviors() {
         return [
-            TimestampBehavior::className(),
+            "timestamp" => [
+                "class" => TimestampBehavior::className(),
+                'updatedAtAttribute' => "last_change",
+                'createdAtAttribute' => "time"
+            ]
         ];
     }
 
@@ -68,10 +71,10 @@ class User extends ActiveRecord implements IdentityInterface {
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
             ['role', 'default', 'value' => self::ROLE_USER],
             ['role', 'in', 'range' => [self::ROLE_USER]],
-            [['username', 'auth_key', 'password_hash', 'email', 'created_at', 'updated_at'], 'required'],
-            [['role', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['username', 'auth_key', 'password_hash', 'email'], 'required'],
+            [['role', 'status'], 'integer'],
             [['picture'], 'string'],
-            [['time', 'auth_key'], 'safe'],
+            [['time', 'auth_key', 'last_change'], 'safe'],
             [['username', 'password_hash', 'password_reset_token', 'email', 'givenname', 'surename'], 'string', 'max' => 255],
         ];
     }
@@ -89,8 +92,7 @@ class User extends ActiveRecord implements IdentityInterface {
             'email' => Yii::t('app', 'Email'),
             'role' => Yii::t('app', 'Role'),
             'status' => Yii::t('app', 'Status'),
-            'created_at' => Yii::t('app', 'Created At'),
-            'updated_at' => Yii::t('app', 'Updated At'),
+            'last_change' => Yii::t('app', 'Last Change'),
             'givenname' => Yii::t('app', 'Givenname'),
             'surename' => Yii::t('app', 'Surename'),
             'picture' => Yii::t('app', 'Picture'),

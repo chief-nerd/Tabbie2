@@ -30,9 +30,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ?>
         </div>
     </div>
-    <div>
-        <?= Html::a("Show Venues", ["venue/index", "tournament_id" => $model->id], ["class" => "btn btn-default"]); ?>
-    </div>
     <div class="row">
         <?=
         DetailView::widget([

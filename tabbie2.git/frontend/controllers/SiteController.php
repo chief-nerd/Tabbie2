@@ -112,11 +112,14 @@ class SiteController extends BaseController {
     public function actionSignup() {
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post())) {
-            if ($user = $model->signup()) {
+            $user = $model->signup();
+            if ($user !== null) {
                 if (Yii::$app->getUser()->login($user)) {
+                    Yii::$app->session->addFlash("success", Yii::t("app", "User registered! Welcome"));
                     return $this->goHome();
                 }
-            }
+            } else
+                Yii::$app->session->addFlash("error", print_r($model->getErrors(), true));
         }
 
         return $this->render('signup', [

@@ -15,6 +15,9 @@ return [
         'request' => [
             'baseUrl' => $baseUrl,
         ],
+        'assetManager' => [
+            'linkAssets' => true,
+        ],
         'user' => [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,
@@ -27,7 +30,6 @@ return [
                 '' => 'site/index',
                 [
                     'class' => 'common\components\TournamentUrlRule',
-                    'connectionID' => 'db'
                 ],
             ],
         ],

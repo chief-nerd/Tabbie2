@@ -8,8 +8,6 @@ use common\models\Tournament;
 
 class TournamentUrlRule extends UrlRule {
 
-    public $connectionID = 'db';
-
     public function init() {
         if ($this->name === null) {
             $this->name = __CLASS__;
@@ -47,9 +45,11 @@ class TournamentUrlRule extends UrlRule {
                         $parts[] = $params['id'];
                 }
             } else {
-                //index Case
-                //don't unset end / needed
-                $parts[1] = null;
+                if ($parts[1] == "index") {
+                    //index Case
+                    //don't unset, end / needed
+                    $parts[1] = null;
+                }
             }
             $ret = $tournament->url_slug . "/" . implode("/", $parts);
             Yii::trace("Returning Sub: " . $ret, __METHOD__);

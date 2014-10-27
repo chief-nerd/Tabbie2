@@ -26,6 +26,9 @@ class TournamentController extends BaseController {
                     ],
                 ],
             ],
+            'tournamentFilter' => [
+                'class' => TournamentContextFilter::className(),
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

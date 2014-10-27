@@ -39,6 +39,7 @@ AppAsset::register($this);
             $menuItems = [
                 ['label' => 'Home', 'url' => ['/site/index']],
                 ['label' => 'About', 'url' => ['/site/about']],
+                ['label' => 'Tournaments', 'url' => ['tournament/index']],
                 ['label' => 'Contact', 'url' => ['/site/contact']],
             ];
             if (Yii::$app->user->isGuest) {
@@ -52,13 +53,42 @@ AppAsset::register($this);
                 ];
             }
             echo Nav::widget([
-                'options' => ['class' => 'navbar-nav navbar-right'],
+                'options' => ['class' => 'navbar-nav menu navbar-right'],
                 'items' => $menuItems,
             ]);
             NavBar::end();
             ?>
+            <?
+            /* @var $tournament common\models\Tournament */
+            $tournament = $this->context->_getContext();
+            if ($tournament && $tournament->convenor_user_id = Yii::$app->user->id) {
+                $addclass = "movedown";
 
-            <div class="container">
+                NavBar::begin([
+                    'brandLabel' => $tournament->name . " Tabmaster",
+                    'brandUrl' => Yii::$app->urlManager->createUrl(["tournament/view", "id" => $tournament->id]),
+                    'options' => [
+                        'class' => 'navbar navbar-default navbar-fixed-top tabmaster',
+                    ],
+                ]);
+
+                $menuItems = [
+                    ['label' => 'Venues', 'url' => ["venue/index", "tournament_id" => $tournament->id]],
+                    ['label' => 'Teams', 'url' => ["team/index", "tournament_id" => $tournament->id]],
+                    ['label' => 'Adjudicators', 'url' => ['adjudicator/index', "tournament_id" => $tournament->id]],
+                    ['label' => 'Rounds', 'url' => ['round/index', "tournament_id" => $tournament->id]],
+                    ['label' => 'Draws', 'url' => ['draw/index', "tournament_id" => $tournament->id]],
+                    ['label' => 'Feedback', 'url' => ['feedback/index', "tournament_id" => $tournament->id]],
+                ];
+
+                echo Nav::widget([
+                    'options' => ['class' => 'navbar-nav navbar-right'],
+                    'items' => $menuItems,
+                ]);
+                NavBar::end();
+            }
+            ?>
+            <div class="container <?= isset($addclass) ? $addclass : "" ?>">
                 <?=
                 Breadcrumbs::widget([
                     'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
