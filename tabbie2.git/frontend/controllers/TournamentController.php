@@ -8,14 +8,47 @@ use common\models\search\TournamentSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use common\components\filter\TournamentContextFilter;
 
 /**
  * TournamentController implements the CRUD actions for Tournament model.
  */
 class TournamentController extends BaseController {
 
+    /**
+     * Current Tournament Scope
+     * Does not exist in index and create
+     * @var Tournament
+     */
+    protected $_tournament;
+
+    /**
+     * Sets the Tournament Context
+     * @param integer $id
+     * @return boolean
+     */
+    public function setTournament($id) {
+        $this->_tournament = $this->findModel($id);
+        if ($this->_tournament instanceof Tournament)
+            return true;
+        else
+            return false;
+    }
+
+    /**
+     * Returns the current context
+     * @return Tournament
+     */
+    public function getTournament() {
+        return $this->_tournament;
+    }
+
     public function behaviors() {
         return [
+            'tournamentFilter' => [
+                'class' => TournamentContextFilter::className(),
+                'except' => ['index', 'create']
+            ],
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
@@ -49,13 +82,12 @@ class TournamentController extends BaseController {
     }
 
     /**
-     * Displays a single Tournament model.
-     * @param integer $id
+     * Displays a current Tournament model.
      * @return mixed
      */
-    public function actionView($id) {
+    public function actionView() {
         return $this->render('view', [
-                    'model' => $this->findModel($id),
+                    'model' => $this->findModel($this->_tournament->id),
         ]);
     }
 
@@ -93,8 +125,8 @@ class TournamentController extends BaseController {
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id) {
-        $model = $this->findModel($id);
+    public function actionUpdate() {
+        $model = $this->findModel($this->_tournament->id);
 
         if (Yii::$app->request->isPost) {
 
@@ -130,8 +162,8 @@ class TournamentController extends BaseController {
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id) {
-        $this->findModel($id)->delete();
+    public function actionDelete() {
+        $this->findModel($this->_tournament->id)->delete();
 
         return $this->redirect(['index']);
     }

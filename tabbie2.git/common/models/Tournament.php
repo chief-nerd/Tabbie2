@@ -56,7 +56,7 @@ class Tournament extends \yii\db\ActiveRecord {
             'id' => Yii::t('app', 'Tournament ID'),
             'convenor_user_id' => Yii::t('app', 'Convenor'),
             'tabmaster_user_id' => Yii::t('app', 'Tabmaster'),
-            'name' => Yii::t('app', 'Name'),
+            'name' => Yii::t('app', 'Tournament Name'),
             'start_date' => Yii::t('app', 'Start Date'),
             'end_date' => Yii::t('app', 'End Date'),
             'logo' => Yii::t('app', 'Logo'),
