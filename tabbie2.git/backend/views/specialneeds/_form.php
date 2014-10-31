@@ -4,21 +4,15 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Round */
+/* @var $model backend\models\SpecialNeeds */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="round-form">
+<div class="special-needs-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'id')->textInput(["value" => 1, "readonly" => "readonly"]); ?>
-
-    <?= Html::activeHiddenInput($model, 'tournament_id') ?>
-
-    <?= $form->field($model, 'motion')->textarea(['rows' => 2]) ?>
-
-    <?= $form->field($model, 'infoslide')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

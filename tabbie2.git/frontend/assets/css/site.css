@@ -82,6 +82,10 @@ a.desc:after {
     content: "\e156";
 }
 
+.form-group.required .control-label:after {
+    content:" *";color:#C00;
+}
+
 .grid-view th {
     white-space: nowrap;
 }

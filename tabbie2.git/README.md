@@ -1,10 +1,14 @@
 Tabbie2 - Source Code
 ===================================
 
-Yii 2 Advanced Application Template is a skeleton Yii 2 application best for
-developing complex Web applications with multiple tiers.
-
-The template includes three tiers: front end, back end, and console, each of which
+This is a Yii 2 application best for developing complex Web applications with multiple tiers.
+The structure includes three tiers:
+```
+* front end, What the user sees and uses
+* back end,  What the tabbie admin uses and makes analysis and entering variables
+* console,   What the webserver uses to execute cronjobs
+```
+each of which
 is a separate Yii application.
 
 The template is designed to work in a team development environment. It supports
