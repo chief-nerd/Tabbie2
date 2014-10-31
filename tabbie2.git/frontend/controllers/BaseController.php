@@ -24,6 +24,7 @@ class BaseController extends Controller {
      */
     public function _setContext($id) {
         $this->_tournament = Tournament::findByPk($id);
+        \Yii::trace("Set Context with " . $this->_tournament->id, __METHOD__);
         if ($this->_tournament instanceof Tournament)
             return true;
         else

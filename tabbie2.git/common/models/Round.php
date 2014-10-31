@@ -10,7 +10,9 @@ use Yii;
  * @property integer $id
  * @property integer $tournament_id
  * @property string $motion
+ * @property string $infoslide
  * @property string $time
+ * @property bool $published
  *
  * @property DrawAfterRound[] $drawAfterRounds
  * @property Tournament $tournament
@@ -30,8 +32,8 @@ class Round extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['id', 'tournament_id', 'motion'], 'required'],
-            [['id', 'tournament_id'], 'integer'],
-            [['motion'], 'string'],
+            [['id', 'tournament_id', 'published'], 'integer'],
+            [['motion', 'infoslide'], 'string'],
             [['time'], 'safe']
         ];
     }
@@ -41,10 +43,12 @@ class Round extends \yii\db\ActiveRecord {
      */
     public function attributeLabels() {
         return [
-            'id' => Yii::t('app', 'ID'),
+            'id' => Yii::t('app', 'Round Number'),
             'tournament_id' => Yii::t('app', 'Tournament ID'),
             'motion' => Yii::t('app', 'Motion'),
+            'infoslide' => Yii::t('app', 'Info Slide'),
             'time' => Yii::t('app', 'Time'),
+            'published' => Yii::t('app', 'Published'),
         ];
     }
 

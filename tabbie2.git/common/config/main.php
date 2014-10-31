@@ -1,11 +1,16 @@
 <?php
 
+use common\components\UserIdentity;
+
 return [
     'language' => 'en-UK',
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',
+        ],
+        'user' => [
+            'class' => UserIdentity::className(),
         ],
         'i18n' => [
             'translations' => [

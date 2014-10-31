@@ -32,11 +32,21 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <div class="row">
         <div class="col-md-8">
-            <?
-            foreach ($model->getRounds() as $round) {
-                
-            }
-            ?>
+
+        </div>
+
+        <div class="col-md-8">
+            <? foreach ($model->getRounds()->where(["published" => 1])->all() as $round): ?>
+                <div class="col-md-3">
+                    Motion Round <?= $round->id ?>:
+                </div>
+                <div class="col-md-9">
+                    <?= $round->motion ?>
+                </div>
+                <div class="hidden">
+                    <?= $round->infoslide ?>
+                </div>
+            <? endforeach; ?>
         </div>
         <div class="col-md-4">
             <?=
