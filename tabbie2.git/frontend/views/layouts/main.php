@@ -85,12 +85,44 @@ AppAsset::register($this);
                     ]);
 
                     $menuItems = [
-                        ['label' => 'Venues', 'url' => ["venue/index", "tournament_id" => $tournament->id]],
-                        ['label' => 'Teams', 'url' => ["team/index", "tournament_id" => $tournament->id]],
-                        ['label' => 'Adjudicators', 'url' => ['adjudicator/index', "tournament_id" => $tournament->id]],
-                        ['label' => 'Rounds', 'url' => ['round/index', "tournament_id" => $tournament->id]],
+                        ['label' => 'Venues', 'url' => '#',
+                            "items" => [
+                                ['label' => 'List Venues', 'url' => ['venue/index', "tournament_id" => $tournament->id]],
+                                ['label' => 'Create Venue', 'url' => ['venue/create', "tournament_id" => $tournament->id]],
+                            ]
+                        ],
+                        ['label' => 'Teams', 'url' => '#',
+                            "items" => [
+                                ['label' => 'List Teams', 'url' => ['team/index', "tournament_id" => $tournament->id]],
+                                ['label' => 'Create Team', 'url' => ['team/create', "tournament_id" => $tournament->id]],
+                            ]
+                        ],
+                        ['label' => 'Adjudicators', 'url' => '#',
+                            "items" => [
+                                ['label' => 'List Adjudicators', 'url' => ['adjudicator/index', "tournament_id" => $tournament->id]],
+                                ['label' => 'Create Adjudicator', 'url' => ['adjudicator/create', "tournament_id" => $tournament->id]],
+                                '<li class="divider"></li>',
+                                ['label' => 'Preset Adj. Panels', 'url' => ["panel/create", "tournament_id" => $tournament->id]],
+                            ]
+                        ],
+                        ['label' => 'Rounds', 'url' => '#',
+                            "items" => [
+                                ['label' => 'List Rounds', 'url' => ['round/index', "tournament_id" => $tournament->id]],
+                                ['label' => 'Create Round', 'url' => ['round/create', "tournament_id" => $tournament->id]],
+                            ]
+                        ],
                         ['label' => 'Draws', 'url' => ['draw/index', "tournament_id" => $tournament->id]],
-                        ['label' => 'Feedback', 'url' => ['feedback/index', "tournament_id" => $tournament->id]],
+                        ['label' => 'Feedback', 'url' => '#',
+                            "items" => [
+                                ['label' => 'Every Feedback', 'url' => ['feedback/index', "tournament_id" => $tournament->id]],
+                                '<li class="divider"></li>',
+                                ['label' => 'Adjudicator Feedback', 'url' => ['feedback/adjudicator', "tournament_id" => $tournament->id]],
+                                ['label' => 'Team to Chair Feedback', 'url' => ['feedback/team', "tournament_id" => $tournament->id]],
+                                '<li class="divider"></li>',
+                                ['label' => 'Tournament Feedback', 'url' => ['feedback/tournament', "tournament_id" => $tournament->id]],
+                                ['label' => Yii::$app->params["appName"] . ' Feedback', 'url' => ['feedback/tabbie', "tournament_id" => $tournament->id]],
+                            ]
+                        ],
                     ];
 
                     echo Nav::widget([
