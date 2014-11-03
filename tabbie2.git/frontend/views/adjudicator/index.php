@@ -1,7 +1,9 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ListView;
+use kartik\grid\GridView;
+use yii\helpers\ArrayHelper;
+use common\models\Adjudicator;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\search\AdjudicatorSearch */
@@ -22,16 +24,48 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]), ['create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
         ?>
     </p>
-    <?php echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?
+    $gridColumns = [
+        [
+            'class' => '\kartik\grid\SerialColumn',
+        ],
+        [
+            'class' => '\kartik\grid\DataColumn',
+            'attribute' => 'user.name',
+        ],
+        [
+            'class' => '\kartik\grid\DataColumn',
+            'attribute' => 'strength',
+        ],
+        [
+            'class' => 'kartik\grid\ActionColumn',
+            'template' => '{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}',
+            'dropdown' => false,
+            'vAlign' => 'middle',
+            'urlCreator' => function($action, $model, $key, $index) {
+                return \yii\helpers\Url::to(["adjudicator/" . $action, "id" => $model->id, "tournament_id" => $model->tournament->id]);
+            },
+                    'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", "View Venue"), 'data-toggle' => 'tooltip'],
+                    'updateOptions' => ['title' => Yii::t("app", "Update team"), 'data-toggle' => 'tooltip'],
+                    'deleteOptions' => ['title' => Yii::t("app", "Delete team"), 'data-toggle' => 'tooltip'],
+                ],
+            ];
 
-    <?=
-    ListView::widget([
-        'dataProvider' => $dataProvider,
-        'itemOptions' => ['class' => 'item'],
-        'itemView' => function ($model, $key, $index, $widget) {
-    return Html::a(Html::encode($model->id), ['view', 'id' => $model->id, 'tournament_id' => $model->tournament->id]);
-},
-    ])
-    ?>
+            echo GridView::widget([
+                'dataProvider' => $dataProvider,
+                'filterModel' => $searchModel,
+                'columns' => $gridColumns,
+                'showPageSummary' => false,
+                'responsive' => true,
+                'hover' => true,
+                'floatHeader' => false,
+                'floatHeaderOptions' => ['scrollingTop' => '150'],
+                'toolbar' => [
+                    ['content' =>
+                        Html::a('<i class="glyphicon glyphicon-plus"></i> ' . Yii::t('app', 'Add Adjudicator'), ["adjudicator/create", "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
+                    ]
+                ]
+            ])
+            ?>
 
 </div>

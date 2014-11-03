@@ -70,7 +70,7 @@ class Team extends \yii\db\ActiveRecord {
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAdjudicators() {
+    public function getStrikedAdjudicators() {
         return $this->hasMany(Adjudicator::className(), ['id' => 'adjudicator_id'])->viaTable('strikes', ['team_id' => 'id']);
     }
 

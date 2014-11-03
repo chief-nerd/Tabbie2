@@ -82,7 +82,7 @@ class TeamController extends BaseController {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id, 'tournament_id' => $model->tournament_id]);
+            return $this->redirect(['index', 'tournament_id' => $model->tournament_id]);
         } else {
             return $this->render('update', [
                         'model' => $model,

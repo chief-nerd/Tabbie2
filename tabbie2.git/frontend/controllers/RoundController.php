@@ -8,15 +8,18 @@ use yii\data\ActiveDataProvider;
 use frontend\controllers\BaseController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use common\components\filter\TournamentContextFilter;
 
 /**
  * RoundController implements the CRUD actions for Round model.
  */
-class RoundController extends BaseController
-{
-    public function behaviors()
-    {
+class RoundController extends BaseController {
+
+    public function behaviors() {
         return [
+            'tournamentFilter' => [
+                'class' => TournamentContextFilter::className(),
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -30,14 +33,13 @@ class RoundController extends BaseController
      * Lists all Round models.
      * @return mixed
      */
-    public function actionIndex()
-    {
+    public function actionIndex() {
         $dataProvider = new ActiveDataProvider([
-            'query' => Round::find(),
+            'query' => Round::find()->where(["tournament_id" => $this->_tournament->id]),
         ]);
 
         return $this->render('index', [
-            'dataProvider' => $dataProvider,
+                    'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -46,10 +48,9 @@ class RoundController extends BaseController
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
-    {
+    public function actionView($id) {
         return $this->render('view', [
-            'model' => $this->findModel($id),
+                    'model' => $this->findModel($id),
         ]);
     }
 
@@ -58,17 +59,21 @@ class RoundController extends BaseController
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
+    public function actionCreate() {
         $model = new Round();
+        $model->tournament_id = $this->_tournament->id;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
+            } else {
+                Yii::$app->session->addFlash("error", print_r($model->getErrors(), true));
+            }
         }
+
+        return $this->render('create', [
+                    'model' => $model,
+        ]);
     }
 
     /**
@@ -77,15 +82,14 @@ class RoundController extends BaseController
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
-    {
+    public function actionUpdate($id) {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
         } else {
             return $this->render('update', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
@@ -96,8 +100,7 @@ class RoundController extends BaseController
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
-    {
+    public function actionDelete($id) {
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
@@ -110,12 +113,12 @@ class RoundController extends BaseController
      * @return Round the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
-    {
+    protected function findModel($id) {
         if (($model = Round::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
 }

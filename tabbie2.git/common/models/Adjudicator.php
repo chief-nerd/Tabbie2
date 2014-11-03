@@ -19,32 +19,30 @@ use Yii;
  * @property Strikes[] $strikes
  * @property Team[] $teams
  */
-class Adjudicator extends \yii\db\ActiveRecord
-{
+class Adjudicator extends \yii\db\ActiveRecord {
+
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'adjudicator';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['tournament_id', 'user_id'], 'required'],
-            [['tournament_id', 'user_id', 'strength'], 'integer']
+            [['tournament_id', 'user_id'], 'integer'],
+            ['strength', 'double']
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
             'tournament_id' => Yii::t('app', 'Tournament ID'),
@@ -56,48 +54,43 @@ class Adjudicator extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTournament()
-    {
+    public function getTournament() {
         return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUser()
-    {
+    public function getUser() {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAdjudicatorInPanels()
-    {
+    public function getAdjudicatorInPanels() {
         return $this->hasMany(AdjudicatorInPanel::className(), ['adjudicator_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPanels()
-    {
+    public function getPanels() {
         return $this->hasMany(Panel::className(), ['id' => 'panel_id'])->viaTable('adjudicator_in_panel', ['adjudicator_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getStrikes()
-    {
+    public function getStrikes() {
         return $this->hasMany(Strikes::className(), ['adjudicator_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTeams()
-    {
+    public function getStrikedTeams() {
         return $this->hasMany(Team::className(), ['id' => 'team_id'])->viaTable('strikes', ['adjudicator_id' => 'id']);
     }
+
 }

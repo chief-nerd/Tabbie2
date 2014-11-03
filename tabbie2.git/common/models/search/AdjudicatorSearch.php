@@ -20,7 +20,8 @@ class AdjudicatorSearch extends Adjudicator {
      */
     public function rules() {
         return [
-            [['id', 'strength'], 'integer'],
+            ['id', 'integer'],
+            ['strength', 'safe'],
             ['judge_name', 'string', 'max' => 255]
         ];
     }

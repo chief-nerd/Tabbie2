@@ -50,22 +50,20 @@ SCRIPT;
     <?=
     $form->field($model, 'strength')->widget(StarRating::className(), [
         "pluginOptions" => [
-            "stars" => 5,
+            "stars" => 8,
             "min" => 0,
-            "max" => 5,
-            "step" => 0.5,
+            "max" => 9,
+            "step" => 1,
             "size" => "md",
             "starCaptions" => [
-                "0.5" => 'Very Poor Judge',
                 "1" => 'Bad Judge',
-                "1.5" => 'Can Judge',
-                "2" => 'Decent Judge',
-                "2.5" => 'Average Judge',
-                "3" => 'High Potential',
-                "3.5" => 'Chair',
-                "4" => 'Good Chair',
-                "4.5" => 'EUDC Break',
-                "5" => 'EUDC Final Chair'
+                "2" => 'Can Judge',
+                "3" => 'Decent Judge',
+                "4" => 'Average Judge',
+                "5" => 'High Potential',
+                "6" => 'Chair',
+                "7" => 'Good Chair',
+                "8" => 'EUDC Break',
             ]
         ],
     ])

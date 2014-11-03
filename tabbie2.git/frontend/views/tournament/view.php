@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-md-8">
             <? foreach ($model->getRounds()->where(["published" => 1])->all() as $round): ?>
                 <div class="col-md-3">
-                    Motion Round <?= $round->id ?>:
+                    <?= Html::a("Motion Round #" . $round->id, ["round/view", "id" => $round->id, "tournament_id" => $model->id]); ?>
                 </div>
                 <div class="col-md-9">
                     <?= $round->motion ?>
