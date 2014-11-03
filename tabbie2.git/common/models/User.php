@@ -25,7 +25,7 @@ use yii\web\IdentityInterface;
  * @property integer $last_change
  * @property string $givenname
  * @property string $surename
- * @property resource $picture
+ * @property string $picture
  * @property string $time
  *
  * @property Adjudicator[] $adjudicators
@@ -54,11 +54,16 @@ class User extends ActiveRecord implements IdentityInterface {
      */
     public function behaviors() {
         return [
-            "timestamp" => [
-                "class" => TimestampBehavior::className(),
-                'updatedAtAttribute' => "last_change",
-                'createdAtAttribute' => "time"
-            ]
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => 'time',
+                    ActiveRecord::EVENT_BEFORE_UPDATE => 'last_change',
+                ],
+                'value' => function() {
+            return date('Y-m-d H:i:s');
+        }, // unix timestamp
+            ],
         ];
     }
 
@@ -69,14 +74,22 @@ class User extends ActiveRecord implements IdentityInterface {
         return [
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+            ['username', 'validateIsUrlAllowed'],
             ['role', 'default', 'value' => self::ROLE_USER],
-            ['role', 'in', 'range' => [self::ROLE_USER]],
+            ['role', 'in', 'range' => [self::ROLE_USER, self::ROLE_TABMASTER, self::ROLE_ADMIN]],
             [['username', 'auth_key', 'password_hash', 'email'], 'required'],
             [['role', 'status'], 'integer'],
             [['picture'], 'string'],
-            [['time', 'auth_key', 'last_change'], 'safe'],
+            [['auth_key', 'time', 'last_change'], 'safe'],
             [['username', 'password_hash', 'password_reset_token', 'email', 'givenname', 'surename'], 'string', 'max' => 255],
         ];
+    }
+
+    public function validateIsUrlAllowed($attribute, $params) {
+        $actions = ["create", "update", "view", "delete", "list"];
+        if (in_array($this->$attribute, $actions)) {
+            $this->addError($attribute, 'This Username is not allowed');
+        }
     }
 
     /**
@@ -90,8 +103,8 @@ class User extends ActiveRecord implements IdentityInterface {
             'password_hash' => Yii::t('app', 'Password Hash'),
             'password_reset_token' => Yii::t('app', 'Password Reset Token'),
             'email' => Yii::t('app', 'Email'),
-            'role' => Yii::t('app', 'Role'),
-            'status' => Yii::t('app', 'Status'),
+            'role' => Yii::t('app', 'Account Role'),
+            'status' => Yii::t('app', 'Account Status'),
             'last_change' => Yii::t('app', 'Last Change'),
             'givenname' => Yii::t('app', 'Givenname'),
             'surename' => Yii::t('app', 'Surename'),
@@ -264,6 +277,45 @@ class User extends ActiveRecord implements IdentityInterface {
      */
     public function getSpecialNeeds() {
         return $this->hasMany(SpecialNeeds::className(), ['id' => 'special_needs_id'])->viaTable('username_has_special_needs', ['username_id' => 'id']);
+    }
+
+    public static function getRoleOptions($none = false) {
+        $options = [
+            self::ROLE_USER => self::getRoleLabel(User::ROLE_USER),
+            self::ROLE_TABMASTER => self::getRoleLabel(User::ROLE_TABMASTER),
+            self::ROLE_ADMIN => self::getRoleLabel(User::ROLE_ADMIN),
+        ];
+        if ($none) {
+            $options = array_merge(["" => ''], $options);
+        }
+        return $options;
+    }
+
+    public static function getRoleLabel($id) {
+        switch ($id) {
+            case self::ROLE_USER:
+                return Yii::t("app", "User");
+            case self::ROLE_TABMASTER:
+                return Yii::t("app", "Tabmaster");
+            case self::ROLE_ADMIN:
+                return Yii::t("app", "Admin");
+        }
+    }
+
+    public static function getStatusOptions() {
+        return [
+            self::STATUS_ACTIVE => self::getStatusLabel(User::STATUS_ACTIVE),
+            self::STATUS_DELETED => self::getStatusLabel(User::STATUS_DELETED),
+        ];
+    }
+
+    public static function getStatusLabel($id) {
+        switch ($id) {
+            case self::STATUS_ACTIVE:
+                return Yii::t("app", "Active");
+            case self::STATUS_DELETED:
+                return Yii::t("app", "Deleted");
+        }
     }
 
 }

@@ -29,13 +29,21 @@ class UserIdentity extends \yii\web\User {
      * @return boolean
      */
     public function isAdmin() {
-        $user = User::findOne($this->id);
+        $user = $this->getModel();
         \Yii::trace("User has Role: " . $user->role, __METHOD__);
         if ($user->role == User::ROLE_ADMIN) {
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Get the full User Model
+     * @return \common\models\User
+     */
+    public function getModel() {
+        return $user = User::findOne($this->id);
     }
 
 }

@@ -20,7 +20,7 @@ class TournamentContextFilter extends ActionFilter {
                 $action->controller->_setContext($tournamnet_identifier);
                 return true;
             } else {
-                \Yii::error("Controller " . $action->controller->id . "/" . $action . " failed with tournamnet_identifier=" . $tournamnet_identifier . "\n GET:" . print_r($_GET, true));
+                \Yii::error("Controller " . $action->controller->id . "/" . $action->id . " failed with tournamnet_identifier=" . $tournamnet_identifier . "\n GET:" . print_r($_GET, true));
                 throw new \yii\web\HttpException(500, 'This filter was not properly setup');
             }
         }

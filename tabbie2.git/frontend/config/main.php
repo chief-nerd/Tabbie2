@@ -27,9 +27,8 @@ return [
             'showScriptName' => false,
             'rules' => [
                 '' => 'site/index',
-                [
-                    'class' => 'common\components\TournamentUrlRule',
-                ],
+                ['class' => 'common\components\UserUrlRule'],
+                ['class' => 'common\components\TournamentUrlRule'],
             ],
         ],
         'log' => [

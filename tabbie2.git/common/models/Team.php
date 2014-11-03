@@ -20,21 +20,19 @@ use Yii;
  * @property User $speakerA
  * @property User $speakerB
  */
-class Team extends \yii\db\ActiveRecord
-{
+class Team extends \yii\db\ActiveRecord {
+
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'team';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['tournament_id', 'speakerA_id', 'speakerB_id'], 'required'],
             [['tournament_id', 'speakerA_id', 'speakerB_id'], 'integer'],
@@ -45,62 +43,56 @@ class Team extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
-            'name' => Yii::t('app', 'Name'),
+            'name' => Yii::t('app', 'Team Name'),
             'tournament_id' => Yii::t('app', 'Tournament ID'),
-            'speakerA_id' => Yii::t('app', 'Speaker A ID'),
-            'speakerB_id' => Yii::t('app', 'Speaker B ID'),
+            'speakerA_id' => Yii::t('app', 'Speaker A'),
+            'speakerB_id' => Yii::t('app', 'Speaker B'),
         ];
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getDrawPositions()
-    {
+    public function getDrawPositions() {
         return $this->hasMany(DrawPosition::className(), ['team_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getStrikes()
-    {
+    public function getStrikes() {
         return $this->hasMany(Strikes::className(), ['team_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAdjudicators()
-    {
+    public function getAdjudicators() {
         return $this->hasMany(Adjudicator::className(), ['id' => 'adjudicator_id'])->viaTable('strikes', ['team_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTournament()
-    {
+    public function getTournament() {
         return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSpeakerA()
-    {
-        return $this->hasOne(User::className(), ['id' => 'speakerA_id']);
+    public function getSpeakerA() {
+        return $this->hasOne(User::className(), ['id' => 'speakerA_id'])->from('user uA');
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSpeakerB()
-    {
-        return $this->hasOne(User::className(), ['id' => 'speakerB_id']);
+    public function getSpeakerB() {
+        return $this->hasOne(User::className(), ['id' => 'speakerB_id'])->from('user uB');
     }
+
 }

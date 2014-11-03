@@ -4,24 +4,26 @@ use yii\helpers\Html;
 use yii\widgets\ListView;
 
 /* @var $this yii\web\View */
+/* @var $searchModel common\models\search\TeamSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Venues');
+$this->title = Yii::t('app', 'Teams');
 $tournament = $this->context->_getContext();
 $this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="venue-index">
+<div class="team-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
         <?=
         Html::a(Yii::t('app', 'Create {modelClass}', [
-                    'modelClass' => 'Venue',
-                ]), ['create', 'tournament_id' => $tournament->id], ['class' => 'btn btn-success'])
+                    'modelClass' => 'Team',
+                ]), ['create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
         ?>
     </p>
+
+    <?php echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?=
     ListView::widget([

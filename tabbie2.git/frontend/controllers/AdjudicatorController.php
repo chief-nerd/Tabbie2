@@ -3,19 +3,17 @@
 namespace frontend\controllers;
 
 use Yii;
-use common\models\Venue;
-use common\models\Tournament;
-use yii\data\ActiveDataProvider;
+use common\models\Adjudicator;
+use common\models\search\AdjudicatorSearch;
 use frontend\controllers\BaseController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use common\components\filter\TournamentContextFilter;
 
 /**
- * VenueController implements the CRUD actions for Venue model.
- * @property Tournament $_tournament
+ * AdjudicatorController implements the CRUD actions for Adjudicator model.
  */
-class VenueController extends BaseController {
+class AdjudicatorController extends BaseController {
 
     public function behaviors() {
         return [
@@ -32,21 +30,21 @@ class VenueController extends BaseController {
     }
 
     /**
-     * Lists all Venue models.
+     * Lists all Adjudicator models.
      * @return mixed
      */
     public function actionIndex() {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Venue::find()->where(["tournament_id" => $this->_tournament->id]),
-        ]);
+        $searchModel = new AdjudicatorSearch(["tournament_id" => $this->_tournament->id]);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
+                    'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
         ]);
     }
 
     /**
-     * Displays a single Venue model.
+     * Displays a single Adjudicator model.
      * @param integer $id
      * @return mixed
      */
@@ -57,18 +55,16 @@ class VenueController extends BaseController {
     }
 
     /**
-     * Creates a new Venue model.
+     * Creates a new Adjudicator model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate() {
-        $model = new Venue();
+        $model = new Adjudicator();
         $model->tournament_id = $this->_tournament->id;
-        $model->active = true;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id, 'tournament_id' => $model->tournament_id
-            ]);
+            return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
         } else {
             return $this->render('create', [
                         'model' => $model,
@@ -77,7 +73,7 @@ class VenueController extends BaseController {
     }
 
     /**
-     * Updates an existing Venue model.
+     * Updates an existing Adjudicator model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -86,7 +82,7 @@ class VenueController extends BaseController {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id, 'tournament_id' => $model->tournament_id]);
+            return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
         } else {
             return $this->render('update', [
                         'model' => $model,
@@ -95,7 +91,7 @@ class VenueController extends BaseController {
     }
 
     /**
-     * Deletes an existing Venue model.
+     * Deletes an existing Adjudicator model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -103,18 +99,18 @@ class VenueController extends BaseController {
     public function actionDelete($id) {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['tournament/view', 'id' => $this->_tournament->id]);
+        return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Venue model based on its primary key value.
+     * Finds the Adjudicator model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Venue the loaded model
+     * @return Adjudicator the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id) {
-        if (($model = Venue::findOne($id)) !== null) {
+        if (($model = Adjudicator::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
