@@ -56,6 +56,20 @@ $this->params['breadcrumbs'][] = $this->title;
                             },
                                 ],
                                 [
+                                    'class' => '\kartik\grid\DataColumn',
+                                    'format' => 'raw',
+                                    'attribute' => 'Society',
+                                    'value' => function ($model, $key, $index, $widget) {
+                                        $inSocieties = $model->getInSocieties()->all();
+                                        $societies = "";
+                                        foreach ($inSocieties as $in) {
+                                            $societies .= Html::a($in->society->fullname, '#') . "\n";
+                                        }
+
+                                        return $societies;
+                                    },
+                                ],
+                                [
                                     'class' => 'kartik\grid\ActionColumn',
                                     'template' => '{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}',
                                     'dropdown' => false,

@@ -33,6 +33,11 @@ SCRIPT;
 
     echo $form->field($model, 'user_id')->widget(Select2::classname(), [
         'options' => ['placeholder' => 'Search for a user ...'],
+        'addon' => [
+            "prepend" => [
+                "content" => '<i class="glyphicon glyphicon-user"></i>'
+            ],
+        ],
         'pluginOptions' => [
             'allowClear' => true,
             'minimumInputLength' => 3,

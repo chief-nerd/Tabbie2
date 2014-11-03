@@ -42,6 +42,8 @@ class User extends ActiveRecord implements IdentityInterface {
     const ROLE_TABMASTER = 11;
     const ROLE_ADMIN = 12;
 
+    public $societies_id;
+
     /**
      * @inheritdoc
      */
@@ -77,7 +79,7 @@ class User extends ActiveRecord implements IdentityInterface {
             ['username', 'validateIsUrlAllowed'],
             ['role', 'default', 'value' => self::ROLE_USER],
             ['role', 'in', 'range' => [self::ROLE_USER, self::ROLE_TABMASTER, self::ROLE_ADMIN]],
-            [['username', 'auth_key', 'password_hash', 'email'], 'required'],
+            [['username', 'auth_key', 'password_hash', 'email', 'societies_id'], 'required'],
             [['role', 'status'], 'integer'],
             [['picture'], 'string'],
             [['auth_key', 'time', 'last_change'], 'safe'],
@@ -86,9 +88,14 @@ class User extends ActiveRecord implements IdentityInterface {
     }
 
     public function validateIsUrlAllowed($attribute, $params) {
-        $actions = ["create", "update", "view", "delete", "list"];
+        foreach (get_class_methods(\frontend\controllers\UserController::className()) as $key => $value) {
+            if (substr($value, 0, 6) == "action" && $value != "actions") {
+                $actions[] = strtolower(substr($value, 6));
+            }
+        }
+
         if (in_array($this->$attribute, $actions)) {
-            $this->addError($attribute, 'This Username is not allowed');
+            $this->addError($attribute, 'This Username is not allowed.');
         }
     }
 
@@ -260,7 +267,7 @@ class User extends ActiveRecord implements IdentityInterface {
      * @return \yii\db\ActiveQuery
      */
     public function getInSocieties() {
-        return $this->hasMany(InSociety::className(), ['username_id' => 'id']);
+        return $this->hasMany(InSociety::className(), ['user_id' => 'id']);
     }
 
     /**
@@ -268,7 +275,7 @@ class User extends ActiveRecord implements IdentityInterface {
      * @return \yii\db\ActiveQuery
      */
     public function getSocieties() {
-        return $this->hasMany(Society::className(), ['id' => 'society_id'])->viaTable('in_society', ['username_id' => 'id']);
+        return $this->hasMany(Society::className(), ['id' => 'society_id'])->viaTable('in_society', ['user_id' => 'id']);
     }
 
     /**

@@ -14,6 +14,7 @@ use Yii;
  *
  * @property Tournament $tournament
  * @property User $user
+ * @property InSociety $inSocieties
  * @property AdjudicatorInPanel[] $adjudicatorInPanels
  * @property Panel[] $panels
  * @property Strikes[] $strikes
@@ -33,9 +34,8 @@ class Adjudicator extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['tournament_id', 'user_id'], 'required'],
-            [['tournament_id', 'user_id'], 'integer'],
-            ['strength', 'double']
+            [['tournament_id', 'user_id', 'society_id'], 'required'],
+            [['tournament_id', 'user_id', 'strength'], 'integer'],
         ];
     }
 
@@ -77,6 +77,13 @@ class Adjudicator extends \yii\db\ActiveRecord {
      */
     public function getPanels() {
         return $this->hasMany(Panel::className(), ['id' => 'panel_id'])->viaTable('adjudicator_in_panel', ['adjudicator_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInSocieties() {
+        return $this->hasMany(InSociety::className(), ['id' => 'user_id']);
     }
 
     /**

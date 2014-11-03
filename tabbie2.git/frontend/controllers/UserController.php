@@ -7,6 +7,8 @@ use common\models\User;
 use common\models\search\UserSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use common\models\InSociety;
+use common\models\Society;
 
 /**
  * UserController implements the CRUD actions for User model.
@@ -44,8 +46,12 @@ class UserController extends \yii\web\Controller {
      * @return mixed
      */
     public function actionView($id) {
+        $model = $this->findModel($id);
+        if ($society = $model->getInSocieties()->where(["ending" => null])->one())
+            $model->societies_id = $society->society->fullname;
+
         return $this->render('view', [
-                    'model' => $this->findModel($id),
+                    'model' => $model,
         ]);
     }
 
@@ -61,13 +67,28 @@ class UserController extends \yii\web\Controller {
             $model->setPassword($model->email);
             $model->generateAuthKey();
             if ($model->save()) {
+                if ($model->societies_id > 0) {
+                    $inSociety = new InSociety();
+                    $inSociety->user_id = $model->id;
+                    $inSociety->society_id = $model->societies_id;
+                    $inSociety->starting = date("Y-m-d");
+                    if (!$inSociety->save()) {
+                        Yii::warning("inSociety not saved! Errors: " . print_r($inSociety->getErrors(), true), __METHOD__);
+                        Yii::$app->session->addFlash("warning", Yii::t("app", "Society connection not saved"));
+                    } else {
+                        Yii::$app->session->addFlash("success", Yii::t("app", "User successfully saved!"));
+                    }
+                }
                 return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                Yii::warning("User Model not saved! Errors: " . print_r($inSociety->getErrors(), true), __METHOD__);
+                Yii::$app->session->addFlash("error", Yii::t("app", "User not saved!"));
             }
-        } else {
-            return $this->render('create', [
-                        'model' => $model,
-            ]);
         }
+
+        return $this->render('create', [
+                    'model' => $model,
+        ]);
     }
 
     /**
@@ -78,11 +99,34 @@ class UserController extends \yii\web\Controller {
      */
     public function actionUpdate($id) {
         $model = $this->findModel($id);
+        if ($society = $model->getInSocieties()->where(["ending" => null])->one())
+            $model->societies_id = $society->society->id;
 
         if ($model->load(Yii::$app->request->post())) {
-            if ($model->save())
+            if ($model->save()) {
+                if ($model->societies_id > 0) {
+                    $found = false;
+                    $InSociety = $model->getInSocieties()->all();
+                    /* @var $in InSociety */
+                    foreach ($InSociety as $in) {
+                        if ($in->society_id == $model->societies_id) {
+                            $found = true;
+                        } else {
+                            $in->ending = date("Y-m-d");
+                            $in->save();
+                        }
+                    }
+                    if (!$found) {
+                        $InSociety = new InSociety();
+                        $InSociety->user_id = $model->id;
+                        $InSociety->society_id = $model->societies_id;
+                        $InSociety->starting = date("Y-m-d");
+                        $InSociety->save();
+                    }
+                    Yii::$app->session->addFlash("success", Yii::t("app", "User successfully updated!"));
+                }
                 return $this->redirect(['view', 'id' => $model->id]);
-            else
+            } else
                 Yii::$app->session->setFlash("error", print_r($model->getErrors(), true));
         }
 
@@ -104,7 +148,7 @@ class UserController extends \yii\web\Controller {
     }
 
     /**
-     * Returns the users in an JSON List
+     * Returns 20 users in an JSON List
      * @param type $search
      * @param type $id
      */
@@ -121,6 +165,30 @@ class UserController extends \yii\web\Controller {
             $out['results'] = array_values($data);
         } elseif ($id > 0) {
             $out['results'] = ['id' => $id, 'text' => User::findOne($id)->name];
+        } else {
+            $out['results'] = ['id' => 0, 'text' => 'No matching records found'];
+        }
+        echo \yii\helpers\Json::encode($out);
+    }
+
+    /**
+     * Returns 20 societies in an JSON List
+     * @param type $search
+     * @param type $id
+     */
+    public function actionSocieties($search = null, $id = null) {
+        $out = ['more' => false];
+        if (!is_null($search)) {
+            $query = new \yii\db\Query;
+            $query->select(["id", "fullname as text"])
+                    ->from('society')
+                    ->where('fullname LIKE "%' . $search . '%"')
+                    ->limit(20);
+            $command = $query->createCommand();
+            $data = $command->queryAll();
+            $out['results'] = array_values($data);
+        } elseif ($id > 0) {
+            $out['results'] = ['id' => $id, 'text' => Society::findOne($id)->fullname];
         } else {
             $out['results'] = ['id' => 0, 'text' => 'No matching records found'];
         }

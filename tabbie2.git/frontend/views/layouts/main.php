@@ -141,14 +141,14 @@ AppAsset::register($this);
                 ?>
                 <?= $content ?>
             </div>
-        </div>
 
-        <footer class="footer">
-            <div class="container">
-                <p class="pull-left"><?= Yii::$app->params["appName"] ?> &copy; <?= date('Y') ?></p>
-                <p class="pull-right"><?= HTML::a("Contact", 'mailto:' . Yii::$app->params["adminEmail"]) ?></p>
-            </div>
-        </footer>
+            <footer class="footer">
+                <div class="container">
+                    <p class="pull-left"><?= Yii::$app->params["appName"] ?> &copy; <?= date('Y') ?></p>
+                    <p class="pull-right"><?= HTML::a("Contact", 'mailto:' . Yii::$app->params["adminEmail"]) ?></p>
+                </div>
+            </footer>
+        </div>
 
         <?php $this->endBody() ?>
     </body>

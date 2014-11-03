@@ -18,14 +18,14 @@ use yii\web\JsExpression;
     <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
 
     <?
-    $url = Url::to(['user/list']);
+    $urlUserList = Url::to(['user/list']);
 
     // Script to initialize the selection based on the value of the select2 element
-    $initScript = <<< SCRIPT
+    $initUserScript = <<< SCRIPT
 function (element, callback) {
     var id=\$(element).val();
     if (id !== "") {
-        \$.ajax("{$url}?id=" + id, {
+        \$.ajax("{$urlUserList}?id=" + id, {
         dataType: "json"
         }).done(function(data) { callback(data.results);});
     }
@@ -34,16 +34,21 @@ SCRIPT;
 
     echo $form->field($model, 'speakerA_id')->widget(Select2::classname(), [
         'options' => ['placeholder' => 'Search for a user ...'],
+        'addon' => [
+            "prepend" => [
+                "content" => '<i class="glyphicon glyphicon-user"></i>'
+            ],
+        ],
         'pluginOptions' => [
             'allowClear' => true,
             'minimumInputLength' => 3,
             'ajax' => [
-                'url' => $url,
+                'url' => $urlUserList,
                 'dataType' => 'json',
                 'data' => new JsExpression('function(term,page) { return {search:term}; }'),
                 'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
             ],
-            'initSelection' => new JsExpression($initScript)
+            'initSelection' => new JsExpression($initUserScript)
         ],
     ]);
     ?>
@@ -51,24 +56,29 @@ SCRIPT;
     <?=
     $form->field($model, 'speakerB_id')->widget(Select2::classname(), [
         'options' => ['placeholder' => 'Search for a user ...'],
+        'addon' => [
+            "prepend" => [
+                "content" => '<i class="glyphicon glyphicon-user"></i>'
+            ],
+        ],
         'pluginOptions' => [
             'allowClear' => true,
             'minimumInputLength' => 3,
             'ajax' => [
-                'url' => $url,
+                'url' => $urlUserList,
                 'dataType' => 'json',
                 'data' => new JsExpression('function(term,page) { return {search:term}; }'),
                 'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
             ],
-            'initSelection' => new JsExpression($initScript)
+            'initSelection' => new JsExpression($initUserScript)
         ],
     ]);
     ?>
 
     <div class="form-group">
-    <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
-<?php ActiveForm::end(); ?>
+    <?php ActiveForm::end(); ?>
 
 </div>

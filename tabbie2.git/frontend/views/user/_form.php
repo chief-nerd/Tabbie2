@@ -3,6 +3,9 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use \common\models\User;
+use yii\helpers\Url;
+use kartik\widgets\Select2;
+use yii\web\JsExpression;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\User */
@@ -22,6 +25,45 @@ use \common\models\User;
     <?= $form->field($model, 'surename')->textInput(['maxlength' => 255]) ?>
 
     <?= $form->field($model, 'email')->textInput(['maxlength' => 255]) ?>
+
+    <?
+    $urlUserList = Url::to(['user/societies']);
+
+    // Script to initialize the selection based on the value of the select2 element
+    $initUserScript = <<< SCRIPT
+function (element, callback) {
+    var id=\$(element).val();
+    if (id !== "") {
+        \$.ajax("{$urlUserList}?id=" + id, {
+        dataType: "json"
+        }).done(function(data) { callback(data.results);});
+    }
+}
+SCRIPT;
+
+    echo $form->field($model, 'societies_id')->widget(Select2::classname(), [
+        'options' => [
+            'placeholder' => 'Search for a societies ...',
+            'multiple' => true,
+        ],
+        'addon' => [
+            "prepend" => [
+                "content" => '<i class="glyphicon glyphicon-tower"></i>'
+            ],
+        ],
+        'pluginOptions' => [
+            'allowClear' => true,
+            'minimumInputLength' => 3,
+            'ajax' => [
+                'url' => $urlUserList,
+                'dataType' => 'json',
+                'data' => new JsExpression('function(term,page) { return {search:term}; }'),
+                'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
+            ],
+            'initSelection' => new JsExpression($initUserScript)
+        ],
+    ]);
+    ?>
 
     <?=
     $form->field($model, 'role')->dropDownList(User::getRoleOptions());

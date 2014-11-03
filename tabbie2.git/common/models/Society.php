@@ -1,6 +1,6 @@
 <?php
 
-namespace frontend\models;
+namespace common\models;
 
 use Yii;
 
@@ -13,8 +13,10 @@ use Yii;
  * @property string $city
  * @property string $country
  *
+ * @property Adjudicator[] $adjudicators
  * @property InSociety[] $inSocieties
  * @property User[] $usernames
+ * @property Team[] $teams
  */
 class Society extends \yii\db\ActiveRecord
 {
@@ -55,6 +57,14 @@ class Society extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getAdjudicators()
+    {
+        return $this->hasMany(Adjudicator::className(), ['society_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getInSocieties()
     {
         return $this->hasMany(InSociety::className(), ['society_id' => 'id']);
@@ -66,5 +76,13 @@ class Society extends \yii\db\ActiveRecord
     public function getUsernames()
     {
         return $this->hasMany(User::className(), ['id' => 'username_id'])->viaTable('in_society', ['society_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTeams()
+    {
+        return $this->hasMany(Team::className(), ['society_id' => 'id']);
     }
 }

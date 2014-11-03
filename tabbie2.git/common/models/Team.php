@@ -14,6 +14,7 @@ use Yii;
  * @property integer $speakerB_id
  *
  * @property DrawPosition[] $drawPositions
+ * @property InSociety $inSocieties
  * @property Strikes[] $strikes
  * @property Adjudicator[] $adjudicators
  * @property Tournament $tournament
@@ -34,7 +35,7 @@ class Team extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['tournament_id', 'speakerA_id', 'speakerB_id'], 'required'],
+            [['tournament_id', 'name', 'speakerA_id', 'speakerB_id'], 'required'],
             [['tournament_id', 'speakerA_id', 'speakerB_id'], 'integer'],
             [['name'], 'string', 'max' => 255]
         ];
@@ -93,6 +94,16 @@ class Team extends \yii\db\ActiveRecord {
      */
     public function getSpeakerB() {
         return $this->hasOne(User::className(), ['id' => 'speakerB_id'])->from('user uB');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInSocieties() {
+        return InSociety::find()->where("user_id IN (:userA, :userB)", [
+                    ":userA" => $this->speakerA_id,
+                    ":userB" => $this->speakerB_id,
+        ]);
     }
 
 }
