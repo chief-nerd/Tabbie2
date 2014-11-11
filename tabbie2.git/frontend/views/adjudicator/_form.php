@@ -31,6 +31,20 @@ function (element, callback) {
 }
 SCRIPT;
 
+    $Societyurl = Url::to(['user/societies']);
+
+    // Script to initialize the selection based on the value of the select2 element
+    $initSocietyScript = <<< SCRIPT
+function (element, callback) {
+    var id=\$(element).val();
+    if (id !== "") {
+        \$.ajax("{$Societyurl}?id=" + id, {
+        dataType: "json"
+        }).done(function(data) { callback(data.results);});
+    }
+}
+SCRIPT;
+
     echo $form->field($model, 'user_id')->widget(Select2::classname(), [
         'options' => ['placeholder' => 'Search for a user ...'],
         'addon' => [
@@ -48,6 +62,30 @@ SCRIPT;
                 'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
             ],
             'initSelection' => new JsExpression($initScript)
+        ],
+    ]);
+    ?>
+    <?
+    echo $form->field($model, 'society_id')->widget(Select2::classname(), [
+        'options' => [
+            'placeholder' => 'Search for a societies ...',
+            'multiple' => true,
+        ],
+        'addon' => [
+            "prepend" => [
+                "content" => '<i class="glyphicon glyphicon-tower"></i>'
+            ],
+        ],
+        'pluginOptions' => [
+            'allowClear' => true,
+            'minimumInputLength' => 3,
+            'ajax' => [
+                'url' => $Societyurl,
+                'dataType' => 'json',
+                'data' => new JsExpression('function(term,page) { return {search:term}; }'),
+                'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
+            ],
+            'initSelection' => new JsExpression($initSocietyScript)
         ],
     ]);
     ?>
@@ -69,6 +107,7 @@ SCRIPT;
                 "6" => 'Chair',
                 "7" => 'Good Chair',
                 "8" => 'EUDC Break',
+                "9" => 'Judge God',
             ]
         ],
     ])

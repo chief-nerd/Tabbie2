@@ -11,10 +11,11 @@ use Yii;
  * @property integer $tournament_id
  * @property integer $user_id
  * @property integer $strength
+ * @property integer $society_id
  *
  * @property Tournament $tournament
  * @property User $user
- * @property InSociety $inSocieties
+ * @property Society $society
  * @property AdjudicatorInPanel[] $adjudicatorInPanels
  * @property Panel[] $panels
  * @property Strikes[] $strikes
@@ -35,7 +36,7 @@ class Adjudicator extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['tournament_id', 'user_id', 'society_id'], 'required'],
-            [['tournament_id', 'user_id', 'strength'], 'integer'],
+            [['tournament_id', 'user_id', 'strength', 'society_id'], 'integer']
         ];
     }
 
@@ -48,11 +49,16 @@ class Adjudicator extends \yii\db\ActiveRecord {
             'tournament_id' => Yii::t('app', 'Tournament ID'),
             'user_id' => Yii::t('app', 'User ID'),
             'strength' => Yii::t('app', 'Strength'),
+            'societyName' => Yii::t('app', 'Society Name'),
         ];
     }
 
     public function getName() {
-        return $this->user->givenname . " " . $this->user->surename;
+        return $this->user->name;
+    }
+
+    public function getSocietyName() {
+        return $this->society->fullname;
     }
 
     /**
@@ -102,6 +108,10 @@ class Adjudicator extends \yii\db\ActiveRecord {
      */
     public function getStrikedTeams() {
         return $this->hasMany(Team::className(), ['id' => 'team_id'])->viaTable('strikes', ['adjudicator_id' => 'id']);
+    }
+
+    public function getSociety() {
+        return $this->hasOne(Society::className(), ['id' => 'society_id']);
     }
 
 }

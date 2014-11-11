@@ -12,6 +12,7 @@ use Yii;
  * @property integer $tournament_id
  * @property integer $speakerA_id
  * @property integer $speakerB_id
+ * @property integer $society_id
  *
  * @property DrawPosition[] $drawPositions
  * @property InSociety $inSocieties
@@ -36,7 +37,7 @@ class Team extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['tournament_id', 'name', 'speakerA_id', 'speakerB_id'], 'required'],
-            [['tournament_id', 'speakerA_id', 'speakerB_id'], 'integer'],
+            [['tournament_id', 'speakerA_id', 'speakerB_id', 'society_id'], 'integer'],
             [['name'], 'string', 'max' => 255]
         ];
     }
@@ -49,9 +50,15 @@ class Team extends \yii\db\ActiveRecord {
             'id' => Yii::t('app', 'ID'),
             'name' => Yii::t('app', 'Team Name'),
             'tournament_id' => Yii::t('app', 'Tournament ID'),
+            'speakerName' => Yii::t('app', 'Speaker Name'),
             'speakerA_id' => Yii::t('app', 'Speaker A'),
             'speakerB_id' => Yii::t('app', 'Speaker B'),
+            'societyName' => Yii::t('app', 'Society Name'),
         ];
+    }
+
+    public function getSocietyName() {
+        return $this->society->fullname;
     }
 
     /**
@@ -104,6 +111,10 @@ class Team extends \yii\db\ActiveRecord {
                     ":userA" => $this->speakerA_id,
                     ":userB" => $this->speakerB_id,
         ]);
+    }
+
+    public function getSociety() {
+        return $this->hasOne(Society::className(), ['id' => 'society_id']);
     }
 
 }

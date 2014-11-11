@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models\search;
+namespace common\models\search;
 
 use Yii;
 use yii\base\Model;
@@ -10,13 +10,12 @@ use common\models\Society;
 /**
  * SocietySearch represents the model behind the search form about `\common\models\Society`.
  */
-class SocietySearch extends Society
-{
+class SocietySearch extends Society {
+
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['id'], 'integer'],
             [['fullname', 'adr', 'city', 'country'], 'safe'],
@@ -26,8 +25,7 @@ class SocietySearch extends Society
     /**
      * @inheritdoc
      */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -39,8 +37,7 @@ class SocietySearch extends Society
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
-    {
+    public function search($params) {
         $query = Society::find();
 
         $dataProvider = new ActiveDataProvider([
@@ -56,10 +53,16 @@ class SocietySearch extends Society
         ]);
 
         $query->andFilterWhere(['like', 'fullname', $this->fullname])
-            ->andFilterWhere(['like', 'adr', $this->adr])
-            ->andFilterWhere(['like', 'city', $this->city])
-            ->andFilterWhere(['like', 'country', $this->country]);
+                ->andFilterWhere(['like', 'adr', $this->adr])
+                ->andFilterWhere(['like', 'city', $this->city])
+                ->andFilterWhere(['like', 'country', $this->country]);
 
         return $dataProvider;
     }
+
+    public static function getSearchArray($tid) {
+        $tournament = \common\models\Tournament::findOne($tid);
+        return \yii\helpers\ArrayHelper::map($tournament->societies, "fullname", "fullname");
+    }
+
 }

@@ -259,7 +259,8 @@ class User extends ActiveRecord implements IdentityInterface {
      * @return type
      */
     public function getTeams() {
-        return $this->hasMany(Team::className(), ['speakerB_id' => 'id']);
+        return $this->hasMany(Team::className(), ['speakerA_id' => 'id'])->union(
+                        $this->hasMany(Team::className(), ['speakerB_id' => 'id']));
     }
 
     /**

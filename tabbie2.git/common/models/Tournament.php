@@ -178,6 +178,15 @@ class Tournament extends \yii\db\ActiveRecord {
         return $this->hasMany(Questions::className(), ['id' => 'questions_id'])->viaTable('tournament_has_questions', ['tournament_id' => 'id']);
     }
 
+    public function getSocieties() {
+        return $this->hasMany(Society::className(), ['id' => 'society_id'])
+                        ->viaTable('team', ['tournament_id' => 'id'])
+                        ->union(
+                                $this->hasMany(Society::className(), ['id' => 'society_id'])
+                                ->viaTable('adjudicator', ['tournament_id' => 'id'])
+        );
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */

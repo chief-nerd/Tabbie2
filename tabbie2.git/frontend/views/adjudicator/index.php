@@ -41,7 +41,18 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         [
             'class' => '\kartik\grid\DataColumn',
+            'attribute' => 'societyName',
+            'filterType' => GridView::FILTER_SELECT2,
+            'filter' => \common\models\search\SocietySearch::getSearchArray($tournament->id),
+            'filterWidgetOptions' => [
+                'pluginOptions' => ['allowClear' => true],
+            ],
+            'filterInputOptions' => ['placeholder' => 'Any Society'],
+        ],
+        [
+            'class' => '\kartik\grid\DataColumn',
             'attribute' => 'strength',
+            'width' => '100px',
         ],
         [
             'class' => 'kartik\grid\ActionColumn',
