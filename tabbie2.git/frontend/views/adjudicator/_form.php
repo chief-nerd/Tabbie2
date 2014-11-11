@@ -98,17 +98,7 @@ SCRIPT;
             "max" => 9,
             "step" => 1,
             "size" => "md",
-            "starCaptions" => [
-                "1" => 'Bad Judge',
-                "2" => 'Can Judge',
-                "3" => 'Decent Judge',
-                "4" => 'Average Judge',
-                "5" => 'High Potential',
-                "6" => 'Chair',
-                "7" => 'Good Chair',
-                "8" => 'EUDC Break',
-                "9" => 'Judge God',
-            ]
+            "starCaptions" => common\models\Adjudicator::translateStrength(),
         ],
     ])
     ?>

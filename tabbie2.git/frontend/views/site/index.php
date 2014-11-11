@@ -8,9 +8,9 @@ $this->title = Yii::$app->params["slogan"];
 <div class="site-index">
 
     <div class="jumbotron">
-        <h1>Welcome!</h1>
+        <h1>Welcome to <?= Yii::$app->params["appName"] ?>!</h1>
 
-        <p class="lead">Get access to the new Tabbie2 Tab System:</p>
+        <p class="lead"><?= Yii::$app->params["slogan"] ?><br>Start by choosing an option:</p>
 
         <p>
             <?= Html::a(Yii::t("app", "View existing Tournament"), ['tournament/index'], ["class" => "btn btn-lg btn-success"]) ?>

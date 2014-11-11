@@ -115,4 +115,25 @@ class Adjudicator extends \yii\db\ActiveRecord {
         return $this->hasOne(Society::className(), ['id' => 'society_id']);
     }
 
+    /**
+     *
+     * @param type $id
+     * @return type
+     */
+    public static function translateStrength($id = null) {
+        $table = [
+            0 => Yii::t("app", 'Not Rated'),
+            1 => Yii::t("app", 'Bad Judge'),
+            2 => Yii::t("app", 'Can Judge'),
+            3 => Yii::t("app", 'Decent Judge'),
+            4 => Yii::t("app", 'Average Judge'),
+            5 => Yii::t("app", 'High Potential'),
+            6 => Yii::t("app", 'Chair'),
+            7 => Yii::t("app", 'Good Chair'),
+            8 => Yii::t("app", 'Breaking Chair'),
+            9 => Yii::t("app", 'Chief Adjudicator'),
+        ];
+        return ($id !== null) ? $table[$id] : $table;
+    }
+
 }

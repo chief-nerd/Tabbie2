@@ -52,8 +52,11 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'class' => '\kartik\grid\DataColumn',
             'attribute' => 'strength',
+            'format' => "raw",
+            'value' => function ($model, $key, $index, $widget) {
+                return "( $model->strength )&nbsp;&nbsp;" . Adjudicator::translateStrength($model->strength);
+            },
             'width' => '15%',
-            'hAlign' => GridView::ALIGN_CENTER
         ],
         [
             'class' => 'kartik\grid\ActionColumn',

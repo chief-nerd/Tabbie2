@@ -33,7 +33,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'societyName',
-            'strength',
+            [
+                'label' => 'Strength',
+                'value' => common\models\Adjudicator::translateStrength($model->strength)
+            ],
         ],
     ])
     ?>
