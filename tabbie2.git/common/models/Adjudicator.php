@@ -51,6 +51,10 @@ class Adjudicator extends \yii\db\ActiveRecord {
         ];
     }
 
+    public function getName() {
+        return $this->user->givenname . " " . $this->user->surename;
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */

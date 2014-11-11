@@ -13,7 +13,7 @@ use common\models\Adjudicator;
 class AdjudicatorSearch extends Adjudicator {
 
     public $tournament_id;
-    public $judge_name;
+    public $name;
 
     /**
      * @inheritdoc
@@ -22,7 +22,7 @@ class AdjudicatorSearch extends Adjudicator {
         return [
             ['id', 'integer'],
             ['strength', 'safe'],
-            ['judge_name', 'string', 'max' => 255]
+            ['name', 'string', 'max' => 255]
         ];
     }
 
@@ -44,8 +44,17 @@ class AdjudicatorSearch extends Adjudicator {
     public function search($params) {
         $query = Adjudicator::find()->joinWith("user")->where(["tournament_id" => $this->tournament_id]);
 
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+        ]);
+
+        $dataProvider->setSort([
+            'attributes' => [
+                'id',
+                'strength',
+                'name',
+            ]
         ]);
 
         if (!($this->load($params) && $this->validate())) {
@@ -56,9 +65,17 @@ class AdjudicatorSearch extends Adjudicator {
             'id' => $this->id,
             'strength' => $this->strength,
         ]);
-        $query->andFilterWhere(["like", "CONCAT(user.givenname, ' ', user.surename)", $this->judge_name]);
+        $query->andFilterWhere(["like", "CONCAT(user.givenname, ' ', user.surename)", $this->name]);
 
         return $dataProvider;
+    }
+
+    public static function getSearchArray($tid) {
+        $adjudicators = Adjudicator::find()->joinWith("user")->where(["tournament_id" => $tid])->all();
+        foreach ($adjudicators as $a) {
+            $filter[$a->name] = $a->name;
+        }
+        return $filter;
     }
 
 }

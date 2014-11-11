@@ -31,7 +31,13 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         [
             'class' => '\kartik\grid\DataColumn',
-            'attribute' => 'user.name',
+            'attribute' => 'name',
+            'filterType' => GridView::FILTER_SELECT2,
+            'filter' => \common\models\search\AdjudicatorSearch::getSearchArray($tournament->id),
+            'filterWidgetOptions' => [
+                'pluginOptions' => ['allowClear' => true],
+            ],
+            'filterInputOptions' => ['placeholder' => 'Any Adjudicator'],
         ],
         [
             'class' => '\kartik\grid\DataColumn',
