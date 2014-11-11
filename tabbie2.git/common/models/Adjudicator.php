@@ -50,6 +50,7 @@ class Adjudicator extends \yii\db\ActiveRecord {
             'user_id' => Yii::t('app', 'User ID'),
             'strength' => Yii::t('app', 'Strength'),
             'societyName' => Yii::t('app', 'Society Name'),
+            'society_id' => Yii::t('app', 'Society'),
         ];
     }
 

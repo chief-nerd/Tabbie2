@@ -97,7 +97,7 @@ SCRIPT;
         'options' => ['placeholder' => 'Search for a society ...'],
         'addon' => [
             "prepend" => [
-                "content" => '<i class="glyphicon glyphicon-user"></i>'
+                "content" => '<i class="glyphicon glyphicon-tower"></i>'
             ],
         ],
         'pluginOptions' => [

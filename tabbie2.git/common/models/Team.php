@@ -36,7 +36,7 @@ class Team extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['tournament_id', 'name', 'speakerA_id', 'speakerB_id'], 'required'],
+            [['tournament_id', 'name', 'speakerA_id', 'speakerB_id', 'society_id'], 'required'],
             [['tournament_id', 'speakerA_id', 'speakerB_id', 'society_id'], 'integer'],
             [['name'], 'string', 'max' => 255]
         ];
@@ -54,6 +54,7 @@ class Team extends \yii\db\ActiveRecord {
             'speakerA_id' => Yii::t('app', 'Speaker A'),
             'speakerB_id' => Yii::t('app', 'Speaker B'),
             'societyName' => Yii::t('app', 'Society Name'),
+            'society_id' => Yii::t('app', 'Society'),
         ];
     }
 
