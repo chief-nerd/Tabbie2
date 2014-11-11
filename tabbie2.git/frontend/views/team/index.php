@@ -62,8 +62,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'value' => function ($model, $key, $index, $widget) {
                                         $inSocieties = $model->getInSocieties()->all();
                                         $societies = "";
+                                        $last = null;
                                         foreach ($inSocieties as $in) {
-                                            $societies .= Html::a($in->society->fullname, '#') . "\n";
+                                            if ($last == null || $last != $in->society_id) {
+                                                if ($last != null)
+                                                    $societies .= " + ";
+                                                $societies .= Html::a($in->society->fullname, '#');
+                                                $last = $in->society_id;
+                                            }
                                         }
 
                                         return $societies;

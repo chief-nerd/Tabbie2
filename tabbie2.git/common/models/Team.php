@@ -100,7 +100,7 @@ class Team extends \yii\db\ActiveRecord {
      * @return \yii\db\ActiveQuery
      */
     public function getInSocieties() {
-        return InSociety::find()->where("user_id IN (:userA, :userB)", [
+        return InSociety::find()->where("user_id IN (:userA, :userB) AND ending is null", [
                     ":userA" => $this->speakerA_id,
                     ":userB" => $this->speakerB_id,
         ]);

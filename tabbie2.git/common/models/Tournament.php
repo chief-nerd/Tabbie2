@@ -193,4 +193,8 @@ class Tournament extends \yii\db\ActiveRecord {
         return $this->hasMany(Panel::className(), ['tournament_id' => 'id']);
     }
 
+    public static function getAlgoOptions() {
+        return Yii::$app->params["algoOptions"];
+    }
+
 }
