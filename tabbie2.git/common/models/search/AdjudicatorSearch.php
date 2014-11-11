@@ -73,8 +73,19 @@ class AdjudicatorSearch extends Adjudicator {
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'strength' => $this->strength,
         ]);
+
+        switch (substr($this->strength, 0, 1)) {
+            case ">":
+            case "<":
+                $query->andWhere("strength $this->strength");
+                break;
+            default:
+                $query->andFilterWhere([
+                    'strength' => $this->strength
+                ]);
+                break;
+        }
 
         // filter by user name
         $query->joinWith(['user' => function ($q) {

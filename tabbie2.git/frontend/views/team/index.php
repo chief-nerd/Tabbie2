@@ -34,6 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'class' => '\kartik\grid\DataColumn',
             'attribute' => 'name',
             'format' => 'raw',
+            'vAlign' => GridView::ALIGN_MIDDLE,
             'value' => function ($model, $key, $index, $widget) {
                 return Html::a($model->name, ["view", "id" => $model->id, "tournament_id" => $model->tournament->id]);
             },
@@ -47,6 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'class' => '\kartik\grid\DataColumn',
                     'attribute' => 'societyName',
+                    'vAlign' => GridView::ALIGN_MIDDLE,
                     'filter' => \common\models\search\SocietySearch::getSearchArray($tournament->id),
                     'filterType' => GridView::FILTER_SELECT2,
                     'filterWidgetOptions' => [

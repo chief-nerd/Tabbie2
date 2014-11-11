@@ -52,7 +52,8 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'class' => '\kartik\grid\DataColumn',
             'attribute' => 'strength',
-            'width' => '100px',
+            'width' => '15%',
+            'hAlign' => GridView::ALIGN_CENTER
         ],
         [
             'class' => 'kartik\grid\ActionColumn',
