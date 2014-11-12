@@ -3,6 +3,7 @@
 namespace common\components\TabAlgorithmus;
 
 use \common\components\TabAlgorithmus;
+use yii\base\Exception;
 
 class DummyTest extends TabAlgorithmus {
 
@@ -19,7 +20,7 @@ class DummyTest extends TabAlgorithmus {
             if (isset($adjudicators[$a])) {
                 $chair = $adjudicators[$a];
             } else {
-                //We are missing a chair -> take last wing in panel > 1
+//We are missing a chair -> take last wing in panel > 1
                 for ($last = (count($draw) - 1); $last > 0; $last--) {
                     $prevPanel = $draw[$last]->panel;
                     if (count($prevPanel) > 1) { //Don't reset chair

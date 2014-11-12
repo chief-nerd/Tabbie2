@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\base\Exception;
 
 /**
  * This is the model class for table "round".
@@ -64,6 +65,22 @@ class Round extends \yii\db\ActiveRecord {
      */
     public function getTournament() {
         return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
+    }
+
+    /**
+     * Generate a draw for the model
+     */
+    public function generateDraw() {
+        try {
+            $algoName = "common\components\TabAlgorithmus\\" . "DummyTest";
+            $algo = new $algoName();
+            $draw = $algo->makeDraw($this->tournament->venues, $this->tournament->teams, $this->tournament->adjudicators);
+
+            print_r($draw);
+        } catch (Exception $ex) {
+            $this->addError("TabAlgorithmus", $ex->getMessage());
+        }
+        return false;
     }
 
 }
