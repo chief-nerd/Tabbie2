@@ -102,6 +102,171 @@ class TeamController extends BaseController {
         return $this->redirect(['tournament/view', 'id' => $this->_tournament->id]);
     }
 
+    public function actionImport() {
+        $tournament = $this->_tournament;
+        $model = new \frontend\models\ImportForm();
+
+        if (Yii::$app->request->isPost) {
+            $model->scenario = "screen";
+            if (Yii::$app->request->post("makeItSo", false)) { //Everything corrected
+                $choices = Yii::$app->request->post("field", false);
+                $model->tempImport = unserialize(Yii::$app->request->post("csvFile", false));
+                $type = Yii::$app->request->post("type", false);
+
+                //APPLY CHOICES
+                foreach ($choices as $row => $choice) {
+                    foreach ($choice as $id => $value) {
+                        $input = $model->tempImport[$row][$id][0];
+                        unset($model->tempImport[$row][$id]);
+                        $model->tempImport[$row][$id][0] = $input;
+                        $model->tempImport[$row][$id][1]["id"] = $value;
+                    }
+                }
+
+                //INSERT DATA
+                for ($r = 1; $r <= count($model->tempImport); $r++) {
+                    $row = $model->tempImport[$r];
+
+                    //UserA
+                    if (count($row[2]) == 1) { //NEW
+                        $userA = new \common\models\User();
+                        $userA->givenname = $row[2][0];
+                        $userA->surename = $row[3][0];
+                        $userA->username = $userA->givenname . $userA->surename;
+                        $userA->email = $row[4][0];
+                        $userA->setPassword($userA->email);
+                        $userA->generateAuthKey();
+                        $userA->time = $userA->last_change = date("Y-m-d H:i:s");
+                        if (!$userA->save())
+                            Yii::$app->session->addFlash("error", "Save error: " . print_r($userA->getErrors(), true));
+                        $userAID = $userA->id;
+                    } else if (count($row[2]) == 2) {
+                        $userAID = $row[2][1]["id"];
+                    }
+
+                    //UserB
+                    if (count($row[5]) == 1) { //NEW
+                        $userB = new \common\models\User();
+                        $userB->givenname = $row[5][0];
+                        $userB->surename = $row[6][0];
+                        $userB->username = $userB->givenname . $userB->surename;
+                        $userB->email = $row[7][0];
+                        $userB->setPassword($userB->email);
+                        $userB->generateAuthKey();
+                        $userB->time = $userB->last_change = date("Y-m-d H:i:s");
+                        if (!$userB->save())
+                            Yii::$app->session->addFlash("error", "Save error: " . print_r($userB->getErrors(), true));
+                        $userBID = $userB->id;
+                    } else if (count($row[5]) == 2) {
+                        $userBID = $row[5][1]["id"];
+                    }
+
+                    //Society
+                    if (count($row[1]) == 1) { //NEW
+                        $society = new \common\models\Society();
+                        $society->fullname = $row[1][0];
+                        $society->adr = strtoupper(substr($society->fullname, 0, 3));
+                        $society->save();
+                        $societyID = $society->id;
+                    } else if (count($row[1]) == 2) {
+                        $societyID = $row[1][1]["id"];
+                    }
+
+                    $team = new Team();
+                    $team->name = $row[0][0];
+                    $team->tournament_id = $this->_tournament->id;
+                    $team->speakerA_id = $userAID;
+                    $team->speakerB_id = $userBID;
+                    $team->society_id = $societyID;
+                    if (!$team->save())
+                        Yii::$app->session->addFlash("error", "Save error: " . print_r($team->getErrors(), true));
+                }
+                return $this->redirect(['index', "tournament_id" => $this->_tournament->id]);
+            } else { //FORM UPLOAD
+                $file = \yii\web\UploadedFile::getInstance($model, 'csvFile');
+                $model->load(Yii::$app->request->post());
+
+                $row = 0;
+                if ($file && ($handle = fopen($file->tempName, "r")) !== FALSE) {
+                    while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+
+                        if ($row == 0) { //Don't use first column
+                            $row++;
+                            continue;
+                        }
+
+                        if (($num = count($data)) != 8) {
+                            throw new \yii\base\Exception("500", "File Syntax Wrong");
+                        }
+                        for ($c = 0; $c < $num; $c++) {
+                            $model->tempImport[$row][$c][0] = trim($data[$c]);
+                        }
+                        $row++;
+                    }
+                    fclose($handle);
+
+                    //Find Matches
+                    for ($i = 1; $i <= count($model->tempImport); $i++) {
+                        //TeamName - not match
+                        //
+                        //Debating Society
+                        $name = $model->tempImport[$i][1][0];
+                        $societies = \common\models\Society::find()->where("fullname LIKE '%$name%'")->all();
+                        $model->tempImport[$i][1] = array();
+                        $model->tempImport[$i][1][0] = $name;
+                        $a = 1;
+                        foreach ($societies as $s) {
+                            $model->tempImport[$i][1][$a] = [
+                                "id" => $s->id,
+                                "name" => $s->fullname,
+                            ];
+                            $a++;
+                        }
+
+                        //User A
+                        $givenname = $model->tempImport[$i][2][0];
+                        $surename = $model->tempImport[$i][3][0];
+                        $email = $model->tempImport[$i][4][0];
+                        $user = \common\models\User::find()->where("(givenname LIKE '%$givenname%' AND surename LIKE '%$surename%') OR surename LIKE '%$email%'")->all();
+                        $a = 1;
+                        foreach ($user as $u) {
+                            $model->tempImport[$i][2][$a] = [
+                                "id" => $u->id,
+                                "name" => $u->name,
+                                "email" => $u->email,
+                            ];
+                            $a++;
+                        }
+
+                        //User B
+                        $givenname = $model->tempImport[$i][5][0];
+                        $surename = $model->tempImport[$i][6][0];
+                        $email = $model->tempImport[$i][7][0];
+                        $user = \common\models\User::find()->where("(givenname LIKE '%$givenname%' AND surename LIKE '%$surename%') OR surename LIKE '%$email%'")->all();
+                        $a = 1;
+                        foreach ($user as $u) {
+                            $model->tempImport[$i][5][$a] = [
+                                "id" => $u->id,
+                                "name" => $u->name,
+                                "email" => $u->email,
+                            ];
+                            $a++;
+                        }
+                    }
+                } else {
+                    Yii::$app->session->addFlash("error", "No File available");
+                    print_r($file);
+                }
+            }
+        } else
+            $model->scenario = "upload";
+
+        return $this->render('import', [
+                    "model" => $model,
+                    "tournament" => $tournament
+        ]);
+    }
+
     /**
      * Finds the Team model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

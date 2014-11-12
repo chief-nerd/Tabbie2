@@ -23,6 +23,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     'modelClass' => 'Team',
                 ]), ['create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
         ?>
+        <?=
+        Html::a(Yii::t('app', 'Import {modelClass}', [
+                    'modelClass' => 'Team',
+                ]), ['import', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
+        ?>
     </p>
 
     <?

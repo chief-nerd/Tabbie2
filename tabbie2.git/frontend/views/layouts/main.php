@@ -95,6 +95,7 @@ AppAsset::register($this);
                             "items" => [
                                 ['label' => 'List Teams', 'url' => ['team/index', "tournament_id" => $tournament->id]],
                                 ['label' => 'Create Team', 'url' => ['team/create', "tournament_id" => $tournament->id]],
+                                ['label' => 'Import Team', 'url' => ['team/import', "tournament_id" => $tournament->id]],
                             ]
                         ],
                         ['label' => 'Adjudicators', 'url' => '#',

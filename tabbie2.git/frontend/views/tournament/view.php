@@ -19,7 +19,6 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <div class="col-sm-4 text-right">
             <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-            <?= Html::a(Yii::t('app', 'Import from Reg'), ['import', 'id' => $model->id], ['class' => 'btn btn-success']) ?>
             <?=
             Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
                 'class' => 'btn btn-danger',

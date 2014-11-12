@@ -79,7 +79,7 @@ class User extends ActiveRecord implements IdentityInterface {
             ['username', 'validateIsUrlAllowed'],
             ['role', 'default', 'value' => self::ROLE_USER],
             ['role', 'in', 'range' => [self::ROLE_USER, self::ROLE_TABMASTER, self::ROLE_ADMIN]],
-            [['username', 'auth_key', 'password_hash', 'email', 'societies_id'], 'required'],
+            [['username', 'auth_key', 'password_hash', 'email'], 'required'],
             [['role', 'status'], 'integer'],
             [['picture'], 'string'],
             [['auth_key', 'time', 'last_change'], 'safe'],
