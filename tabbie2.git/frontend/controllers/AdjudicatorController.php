@@ -117,4 +117,142 @@ class AdjudicatorController extends BaseController {
         }
     }
 
+    public function actionImport() {
+        $tournament = $this->_tournament;
+        $model = new \frontend\models\ImportForm();
+
+        if (Yii::$app->request->isPost) {
+            $model->scenario = "screen";
+            if (Yii::$app->request->post("makeItSo", false)) { //Everything corrected
+                $choices = Yii::$app->request->post("field", false);
+                $model->tempImport = unserialize(Yii::$app->request->post("csvFile", false));
+
+                //APPLY CHOICES
+                foreach ($choices as $row => $choice) {
+                    foreach ($choice as $id => $value) {
+                        $input = $model->tempImport[$row][$id][0];
+                        unset($model->tempImport[$row][$id]);
+                        $model->tempImport[$row][$id][0] = $input;
+                        $model->tempImport[$row][$id][1]["id"] = $value;
+                    }
+                }
+
+                //INSERT DATA
+                for ($r = 1; $r <= count($model->tempImport); $r++) {
+                    $row = $model->tempImport[$r];
+
+                    //Society
+                    if (count($row[0]) == 1) { //NEW
+                        $society = new \common\models\Society();
+                        $society->fullname = $row[0][0];
+                        $society->adr = strtoupper(substr($society->fullname, 0, 3));
+                        $society->save();
+                        $societyID = $society->id;
+                    } else if (count($row[0]) == 2) {
+                        $societyID = $row[0][1]["id"];
+                    }
+
+                    //User
+                    if (count($row[1]) == 1) { //NEW
+                        $userA = new \common\models\User();
+                        $userA->givenname = $row[1][0];
+                        $userA->surename = $row[2][0];
+                        $userA->username = $userA->givenname . $userA->surename;
+                        $userA->email = $row[3][0];
+                        $userA->setPassword($userA->email);
+                        $userA->generateAuthKey();
+                        $userA->time = $userA->last_change = date("Y-m-d H:i:s");
+                        if (!$userA->save()) {
+                            $inSociety = new \common\models\InSociety();
+                            $inSociety->user_id = $userA->id;
+                            $inSociety->society_id = $societyID;
+                            $inSociety->starting = date("Y-m-d H:i:s");
+                            $inSociety->save();
+                            Yii::$app->session->addFlash("error", "Save error: " . print_r($userA->getErrors(), true));
+                        }
+                        $userAID = $userA->id;
+                    } else if (count($row[2]) == 2) {
+                        $userAID = $row[1][1]["id"];
+                    }
+
+                    $adj = new Adjudicator();
+                    $adj->user_id = $userAID;
+                    $adj->tournament_id = $this->_tournament->id;
+                    $adj->strength = $row[4][0];
+                    $adj->society_id = $societyID;
+                    if (!$adj->save())
+                        Yii::$app->session->addFlash("error", "Save error: " . print_r($adj->getErrors(), true));
+                }
+                return $this->redirect(['index', "tournament_id" => $this->_tournament->id]);
+            } else { //FORM UPLOAD
+                $file = \yii\web\UploadedFile::getInstance($model, 'csvFile');
+                $model->load(Yii::$app->request->post());
+
+                $row = 0;
+                if ($file && ($handle = fopen($file->tempName, "r")) !== FALSE) {
+                    while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+
+                        if ($row == 0) { //Don't use first column
+                            $row++;
+                            continue;
+                        }
+
+                        if (($num = count($data)) != 5) {
+                            throw new \yii\base\Exception("500", "File Syntax Wrong");
+                        }
+                        for ($c = 0; $c < $num; $c++) {
+                            $model->tempImport[$row][$c][0] = trim($data[$c]);
+                        }
+                        $row++;
+                    }
+                    fclose($handle);
+
+                    //Find Matches
+                    for ($i = 1; $i <= count($model->tempImport); $i++) {
+                        //Debating Society
+                        $name = $model->tempImport[$i][0][0];
+                        $societies = \common\models\Society::find()->where("fullname LIKE '%$name%'")->all();
+                        $model->tempImport[$i][0] = array();
+                        $model->tempImport[$i][0][0] = $name;
+                        $a = 1;
+                        foreach ($societies as $s) {
+                            $model->tempImport[$i][0][$a] = [
+                                "id" => $s->id,
+                                "name" => $s->fullname,
+                            ];
+                            $a++;
+                        }
+
+                        //User A
+                        $givenname = $model->tempImport[$i][1][0];
+                        $surename = $model->tempImport[$i][2][0];
+                        $email = $model->tempImport[$i][3][0];
+                        $user = \common\models\User::find()->where("(givenname LIKE '%$givenname%' AND surename LIKE '%$surename%') OR surename LIKE '%$email%'")->all();
+                        $a = 1;
+                        foreach ($user as $u) {
+                            $model->tempImport[$i][1][$a] = [
+                                "id" => $u->id,
+                                "name" => $u->name,
+                                "email" => $u->email,
+                            ];
+                            $a++;
+                        }
+
+                        //Just make sure it is int
+                        $model->tempImport[$i][4][0] = (int) $model->tempImport[$i][4][0];
+                    }
+                } else {
+                    Yii::$app->session->addFlash("error", "No File available");
+                    print_r($file);
+                }
+            }
+        } else
+            $model->scenario = "upload";
+
+        return $this->render('import', [
+                    "model" => $model,
+                    "tournament" => $tournament
+        ]);
+    }
+
 }

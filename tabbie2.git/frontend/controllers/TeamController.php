@@ -111,7 +111,6 @@ class TeamController extends BaseController {
             if (Yii::$app->request->post("makeItSo", false)) { //Everything corrected
                 $choices = Yii::$app->request->post("field", false);
                 $model->tempImport = unserialize(Yii::$app->request->post("csvFile", false));
-                $type = Yii::$app->request->post("type", false);
 
                 //APPLY CHOICES
                 foreach ($choices as $row => $choice) {

@@ -11,7 +11,6 @@ use yii\base\Model;
 class ImportForm extends Model {
 
     public $csvFile;
-    public $type;
     public $tempImport;
 
     /**
@@ -20,7 +19,7 @@ class ImportForm extends Model {
     public function rules() {
         return [
             // name, email, subject and body are required
-            [['csvFile', 'type'], 'required'],
+            [['csvFile'], 'required'],
         ];
     }
 
@@ -30,23 +29,7 @@ class ImportForm extends Model {
     public function attributeLabels() {
         return [
             'csvFile' => '*.csv File',
-            'type' => 'Type of Import Syntax',
         ];
-    }
-
-    public static function typeOptions() {
-        return [
-            0 => "Teams",
-            1 => "Adjudicators",
-        ];
-    }
-
-    public function importTeams() {
-
-    }
-
-    public function importAdjudicators() {
-
     }
 
 }

@@ -99,6 +99,7 @@ SCRIPT;
             "step" => 1,
             "size" => "md",
             "starCaptions" => common\models\Adjudicator::translateStrength(),
+            "starCaptionClasses" => common\models\Adjudicator::starLabels(),
         ],
     ])
     ?>

@@ -77,7 +77,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     if ($class == "green" OR $class == "new") {
                         echo $value;
                     } else {
-                        echo Html::dropDownList("field[$i][4]", $userField[0], $options);
+                        echo Html::dropDownList("field[$i][2]", $userField[0], $options);
                     }
                     ?>
                 </div>
@@ -103,7 +103,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     if ($class == "green" OR $class == "new") {
                         echo $value;
                     } else {
-                        echo Html::dropDownList("field[$i][7]", $userField[0], $options);
+                        echo Html::dropDownList("field[$i][5]", $userField[0], $options);
                     }
                     ?>
                 </div>
@@ -111,7 +111,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <? endfor; ?>
         <div class="form-group">
             <?= Html::hiddenInput("csvFile", serialize($model->tempImport)); ?>
-            <?= Html::hiddenInput("type", (int) $model->type); ?>
             <?= Html::hiddenInput("makeItSo", "true"); ?>
             <?= Html::submitButton(Yii::t('app', 'Make it so'), ['class' => 'btn btn-success'])
             ?>
@@ -123,10 +122,6 @@ $this->params['breadcrumbs'][] = $this->title;
             $form->field($model, 'csvFile')->fileInput([
                 'accept' => '.csv'
             ])
-            ?>
-
-            <?=
-            $form->field($model, 'type')->dropDownList(frontend\models\ImportForm::typeOptions());
             ?>
 
             <div class="form-group">

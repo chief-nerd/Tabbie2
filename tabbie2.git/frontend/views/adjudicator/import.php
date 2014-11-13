@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 $class = "";
                 if (count($userField) == 1) { //NEW
                     $class = "new";
-                    $value = $userField[0];
+                    $value = $userField[0] . " " . $model->tempImport[$i][2][0] . " (" . $model->tempImport[$i][3][0] . ")";
                 } else if (count($userField) == 2) { //Found 1 - easy
                     $class = "green";
                     $value = Html::a($userField[1]["name"], ["user/view", "id" => $userField[1]["id"]]);
