@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
 
                 <?
-                $userField = $model->tempImport[$i][4];
+                $userField = $model->tempImport[$i][2];
                 $class = "";
                 if (count($userField) == 1) { //NEW
                     $class = "new";
@@ -83,7 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
 
                 <?
-                $userField = $model->tempImport[$i][7];
+                $userField = $model->tempImport[$i][5];
                 $class = "";
                 if (count($userField) == 1) { //NEW
                     $class = "new";

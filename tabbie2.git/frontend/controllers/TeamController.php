@@ -127,6 +127,17 @@ class TeamController extends BaseController {
                 for ($r = 1; $r <= count($model->tempImport); $r++) {
                     $row = $model->tempImport[$r];
 
+                    //Society
+                    if (count($row[1]) == 1) { //NEW
+                        $society = new \common\models\Society();
+                        $society->fullname = $row[1][0];
+                        $society->adr = strtoupper(substr($society->fullname, 0, 3));
+                        $society->save();
+                        $societyID = $society->id;
+                    } else if (count($row[1]) == 2) {
+                        $societyID = $row[1][1]["id"];
+                    }
+
                     //UserA
                     if (count($row[2]) == 1) { //NEW
                         $userA = new \common\models\User();
@@ -137,8 +148,14 @@ class TeamController extends BaseController {
                         $userA->setPassword($userA->email);
                         $userA->generateAuthKey();
                         $userA->time = $userA->last_change = date("Y-m-d H:i:s");
-                        if (!$userA->save())
+                        if (!$userA->save()) {
+                            $inSociety = new \common\models\InSociety();
+                            $inSociety->user_id = $userA->id;
+                            $inSociety->society_id = $societyID;
+                            $inSociety->starting = date("Y-m-d H:i:s");
+                            $inSociety->save();
                             Yii::$app->session->addFlash("error", "Save error: " . print_r($userA->getErrors(), true));
+                        }
                         $userAID = $userA->id;
                     } else if (count($row[2]) == 2) {
                         $userAID = $row[2][1]["id"];
@@ -154,22 +171,17 @@ class TeamController extends BaseController {
                         $userB->setPassword($userB->email);
                         $userB->generateAuthKey();
                         $userB->time = $userB->last_change = date("Y-m-d H:i:s");
-                        if (!$userB->save())
+                        if (!$userB->save()) {
+                            $inSociety = new \common\models\InSociety();
+                            $inSociety->user_id = $userB->id;
+                            $inSociety->society_id = $societyID;
+                            $inSociety->starting = date("Y-m-d H:i:s");
+                            $inSociety->save();
                             Yii::$app->session->addFlash("error", "Save error: " . print_r($userB->getErrors(), true));
+                        }
                         $userBID = $userB->id;
                     } else if (count($row[5]) == 2) {
                         $userBID = $row[5][1]["id"];
-                    }
-
-                    //Society
-                    if (count($row[1]) == 1) { //NEW
-                        $society = new \common\models\Society();
-                        $society->fullname = $row[1][0];
-                        $society->adr = strtoupper(substr($society->fullname, 0, 3));
-                        $society->save();
-                        $societyID = $society->id;
-                    } else if (count($row[1]) == 2) {
-                        $societyID = $row[1][1]["id"];
                     }
 
                     $team = new Team();
