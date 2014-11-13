@@ -98,8 +98,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'showPageSummary' => false,
                                 'responsive' => true,
                                 'hover' => true,
-                                'floatHeader' => false,
-                                'floatHeaderOptions' => ['scrollingTop' => '150'],
+                                'floatHeader' => true,
+                                'floatHeaderOptions' => ['scrollingTop' => 100],
                                 'toolbar' => [
                                     ['content' =>
                                         Html::a('<i class="glyphicon glyphicon-plus"></i> ' . Yii::t('app', 'Add Team'), ["team/create", "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])

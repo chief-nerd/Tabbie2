@@ -9,6 +9,7 @@ use frontend\controllers\BaseController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use common\components\filter\TournamentContextFilter;
+use common\models\search\DebateSearch;
 
 /**
  * RoundController implements the CRUD actions for Round model.
@@ -49,8 +50,14 @@ class RoundController extends BaseController {
      * @return mixed
      */
     public function actionView($id) {
+
+        $debateSearchModel = new DebateSearch();
+        $debateDataProvider = $debateSearchModel->search(Yii::$app->request->queryParams);
+
         return $this->render('view', [
                     'model' => $this->findModel($id),
+                    'debateSearchModel' => $debateSearchModel,
+                    'debateDataProvider' => $debateDataProvider,
         ]);
     }
 

@@ -113,7 +113,7 @@ AppAsset::register($this);
                                 ['label' => 'Create Round', 'url' => ['round/create', "tournament_id" => $tournament->id]],
                             ]
                         ],
-                        ['label' => 'Draws', 'url' => ['draw/index', "tournament_id" => $tournament->id]],
+                        ['label' => 'Results', 'url' => ['result/index', "tournament_id" => $tournament->id]],
                         ['label' => 'Feedback', 'url' => '#',
                             "items" => [
                                 ['label' => 'Every Feedback', 'url' => ['feedback/index', "tournament_id" => $tournament->id]],

@@ -27,21 +27,19 @@ use Yii;
  * @property Feedback[] $feedbacks
  * @property Result[] $results
  */
-class Debate extends \yii\db\ActiveRecord
-{
+class Debate extends \yii\db\ActiveRecord {
+
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'debate';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['round_id', 'tournament_id', 'og_team_id', 'oo_team_id', 'cg_team_id', 'co_team_id', 'panel_id', 'venue_id'], 'required'],
             [['round_id', 'tournament_id', 'og_team_id', 'oo_team_id', 'cg_team_id', 'co_team_id', 'panel_id', 'venue_id', 'og_feedback', 'oo_feedback', 'cg_feedback', 'co_feedback'], 'integer'],
@@ -52,8 +50,7 @@ class Debate extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
             'round_id' => Yii::t('app', 'Round ID'),
@@ -75,32 +72,45 @@ class Debate extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPanel()
-    {
+    public function getPanel() {
         return $this->hasOne(Panel::className(), ['id' => 'panel_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getVenue()
-    {
+    public function getVenue() {
         return $this->hasOne(Venue::className(), ['id' => 'venue_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getFeedbacks()
-    {
+    public function getFeedbacks() {
         return $this->hasMany(Feedback::className(), ['debate_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getResults()
-    {
+    public function getResults() {
         return $this->hasMany(Result::className(), ['debate_id' => 'id']);
     }
+
+    public function getOg_team() {
+        return $this->hasOne(Team::className(), ['id' => 'og_team_id']);
+    }
+
+    public function getOo_team() {
+        return $this->hasOne(Team::className(), ['id' => 'oo_team_id']);
+    }
+
+    public function getCg_team() {
+        return $this->hasOne(Team::className(), ['id' => 'cg_team_id']);
+    }
+
+    public function getCo_team() {
+        return $this->hasOne(Team::className(), ['id' => 'co_team_id']);
+    }
+
 }
