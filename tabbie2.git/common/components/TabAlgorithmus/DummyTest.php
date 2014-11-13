@@ -8,48 +8,58 @@ use yii\base\Exception;
 class DummyTest extends TabAlgorithmus {
 
     public function makeDraw($venues, $teams, $adjudicators, $preset_panels = null, $strikes = null) {
-        $draw = [];
-        $a = 0;
-        $v = 0;
-        $line = 0;
+
         if (count($teams) % 4 != 0)
             throw new Exception("Amount of Teams must be divided by 4 ;)", "500");
+        if ((count($teams) / 4) > count($venues))
+            throw new Exception("Not enough active Rooms", "500");
+        if (count($venues) > count($adjudicators))
+            throw new Exception("Not enough adjudicators", "500");
 
-        for ($i = 0; $i <= count($teams); $i + 4) {
+        $draw = [];
+        $iterateAdj = -1; //Because of ++
+        $iterateVenue = 0;
+        $line = 0;
 
-            if (isset($adjudicators[$a])) {
-                $chair = $adjudicators[$a];
+        for ($iterateTeam = 0; $iterateTeam < count($teams); $iterateTeam = $iterateTeam + 4) {
+
+            if (isset($adjudicators[$iterateAdj + 1])) {
+                $iterateAdj++;
+                $chair = $adjudicators[$iterateAdj];
             } else {
 //We are missing a chair -> take last wing in panel > 1
                 for ($last = (count($draw) - 1); $last > 0; $last--) {
-                    $prevPanel = $draw[$last]->panel;
+                    $prevPanel = $draw[$last]["panel"];
                     if (count($prevPanel) > 1) { //Don't reset chair
-                        $chair = $prevPanel->panel[count($prevPanel->panel) - 1];
-                        unset($prevPanel->panel[count($prevPanel->panel) - 1]);
+                        $chair = $prevPanel[count($prevPanel) - 1];
+                        unset($prevPanel[count($prevPanel) - 1]);
                     }
                 }
             }
 
             $draw[$line] = [
-                "venue" => $venues[$v],
-                "og" => $teams[$i],
-                "oo" => $teams[$i + 1],
-                "cg" => $teams[$i + 2],
-                "co" => $teams[$i + 3],
+                "venue" => $venues[$iterateVenue],
+                "og" => $teams[$iterateTeam],
+                "oo" => $teams[$iterateTeam + 1],
+                "cg" => $teams[$iterateTeam + 2],
+                "co" => $teams[$iterateTeam + 3],
                 "panel" => [
                     "chair" => $chair,
-                    (isset($adjudicators[$a + 1]) ? $adjudicators[$a + 1] : null),
+                    "strength" => 1,
                 ]
             ];
 
-            if (isset($adjudicators[$a + 1]))
-                $draw[$line - 1]->panel[] = $adjudicators[$a + 1];
-            if (isset($adjudicators[$a + 2]))
-                $draw[$line - 1]->panel[] = $adjudicators[$a + 2];
+            if (isset($adjudicators[$iterateAdj + 1])) {
+                $iterateAdj++;
+                $draw[$line]["panel"][] = $adjudicators[$iterateAdj];
+            }
+            if (isset($adjudicators[$iterateAdj + 1])) {
+                $iterateAdj++;
+                $draw[$line]["panel"][] = $adjudicators[$iterateAdj];
+            }
 
             $line++;
-            $v++;
-            $a = $a + 3;
+            $iterateVenue++;
         }
 
         return $draw;

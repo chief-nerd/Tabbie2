@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'id')->textInput(["value" => 1, "readonly" => "readonly"]); ?>
+    <?= $form->field($model, 'id')->textInput(["readonly" => "readonly"]); ?>
 
     <?= Html::activeHiddenInput($model, 'tournament_id') ?>
 

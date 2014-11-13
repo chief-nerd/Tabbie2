@@ -39,6 +39,14 @@ class Venue extends \yii\db\ActiveRecord {
 
     /**
      * @inheritdoc
+     * @return CommentQuery
+     */
+    public static function find() {
+        return new VenueQuery(get_called_class());
+    }
+
+    /**
+     * @inheritdoc
      */
     public function attributeLabels() {
         return [

@@ -70,11 +70,21 @@ class RoundController extends BaseController {
             } else {
                 Yii::$app->session->addFlash("error", print_r($model->getErrors(), true));
             }
+        } else {
+            $model->id = $this->nextRoundNumber();
         }
 
         return $this->render('create', [
                     'model' => $model,
         ]);
+    }
+
+    public function nextRoundNumber() {
+        $lastRound = Round::find()->where(["tournament_id" => $this->_tournament->id])->orderBy("id")->one();
+        if (!$lastRound)
+            return 1;
+        else
+            return ($lastRound->id + 1);
     }
 
     /**
