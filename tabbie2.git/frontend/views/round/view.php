@@ -84,6 +84,7 @@ $this->params['breadcrumbs'][] = "#" . $model->id;
             'attribute' => 'panel',
             'label' => 'Adjudicator',
             'format' => 'raw',
+            'width' => '40%',
             'value' => function ($model, $key, $index, $widget) {
                 $list = array();
                 $panel = common\models\Panel::findOne($model->panel_id);
@@ -104,7 +105,10 @@ $this->params['breadcrumbs'][] = "#" . $model->id;
                                 'options' => [
                                     "data-panel" => $panel->id,
                                     "class" => "adj_panel",
-                                ]
+                                ],
+                                "pluginEvents" => [
+                                    'sortupdate' => 'function(item) { console.log("sortupdate", item); }',
+                                ],
                     ]);
                 }
                 return "";

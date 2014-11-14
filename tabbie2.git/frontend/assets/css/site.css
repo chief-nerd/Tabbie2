@@ -152,6 +152,7 @@ ul li:first-child .adj
 
 .sortable li:first-child .label {
     box-shadow: 0px 0px 5px black;
+    text-decoration: underline;
 }
 
 .sortable.grid li {
