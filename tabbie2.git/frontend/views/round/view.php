@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\widgets\DetailView;
 use common\models\search\DebateSearch;
+use kartik\sortable\Sortable;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Round */
@@ -18,29 +19,36 @@ $this->params['breadcrumbs'][] = "#" . $model->id;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-primary']) ?>
-        <?=
-        Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id, "tournament_id" => $tournament->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
-                'method' => 'post',
-            ],
-        ])
-        ?>
-    </p>
+    <? if (!$model->published): ?>
+        <p>
+            <?= Html::a(Yii::t('app', 'Publish Tab'), ['publish', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success']) ?>
+            <?= Html::a(Yii::t('app', 'Update Round Info'), ['update', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-primary']) ?>
+            <?=
+            Html::a(Yii::t('app', 'ReDraw Round'), ['redraw', 'id' => $model->id, "tournament_id" => $tournament->id], [
+                'class' => 'btn btn-default',
+                'data' => [
+                    'confirm' => Yii::t('app', 'Are you sure you want to re-draw the round? All information will be lost!'),
+                    'method' => 'post',
+                ],
+            ])
+            ?>
+        </p>
+    <? endif; ?>
+    <?
+    $attributes = [
+        'time:text:Creation Time',
+        'motion:ntext',
+    ];
+    $attributes[] = [
+        "label" => 'Round Status',
+        'value' => ($model->published) ? Yii::t("app", "Published") : Yii::t("app", "In Edit Mode"),
+    ];
+    if ($model->infoslide)
+        $attributes[] = 'infoslide:ntext';
 
-    <?=
-    DetailView::widget([
+    echo DetailView::widget([
         'model' => $model,
-        'attributes' => [
-            'id',
-            'motion:ntext',
-            'infoslide:ntext',
-            'published',
-            'time',
-        ],
+        'attributes' => $attributes,
     ])
     ?>
 
@@ -81,14 +89,23 @@ $this->params['breadcrumbs'][] = "#" . $model->id;
                 $panel = common\models\Panel::findOne($model->panel_id);
                 if ($panel) {
                     foreach ($panel->adjudicators as $adj) {
-                        $chairID = common\models\AdjudicatorInPanel::findOne(["panel_id" => $model->panel_id, "function" => 1])->adjudicator_id;
-                        if ($chairID == $adj->id)
-                            $name = "<b>" . $adj->user->name . "</b>";
-                        else
-                            $name = $adj->user->name;
-                        $list[] = Html::a($name, ["user/view", "id" => $adj->user->id]);
+
+                        $list[]['content'] = Html::a($adj->user->name, ["user/view", "id" => $adj->user->id], [
+                                    "data-id" => $adj->user_id,
+                                    "data-strength" => $adj->strength,
+                                    "class" => "adj " . common\models\Adjudicator::starLabels($adj->strength),
+                        ]);
                     }
-                    return Html::ul($list, ["encode" => false]);
+                    return Sortable::widget([
+                                'type' => Sortable::TYPE_GRID,
+                                'items' => $list,
+                                'connected' => true,
+                                'showHandle' => true,
+                                'options' => [
+                                    "data-panel" => $panel->id,
+                                    "class" => "adj_panel",
+                                ]
+                    ]);
                 }
                 return "";
             }

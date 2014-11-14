@@ -26,10 +26,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <?=
     ListView::widget([
         'dataProvider' => $dataProvider,
-        'itemOptions' => ['class' => 'item'],
-        'itemView' => function ($model, $key, $index, $widget) {
-    return Html::a(Html::encode("#" . $model->id . " " . $model->motion), ['view', 'id' => $model->id, "tournament_id" => $model->tournament->id]);
-},
+        'itemOptions' => ['class' => 'item row'],
+        'itemView' => "_item",
     ])
     ?>
 

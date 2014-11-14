@@ -54,6 +54,15 @@ class RoundController extends BaseController {
         $debateSearchModel = new DebateSearch();
         $debateDataProvider = $debateSearchModel->search(Yii::$app->request->queryParams);
 
+        $publishpath = Yii::$app->assetManager->publish(Yii::getAlias("@frontend/assets/js/adjudicatorActions.js"));
+        $this->view->registerJsFile($publishpath[1], [
+            "depends" => [
+                \yii\web\JqueryAsset::className(),
+                \kartik\sortable\SortableAsset::className(),
+                \yii\bootstrap\BootstrapAsset::className(),
+                \yii\bootstrap\BootstrapPluginAsset::className()]
+        ]);
+
         return $this->render('view', [
                     'model' => $this->findModel($id),
                     'debateSearchModel' => $debateSearchModel,
@@ -122,6 +131,14 @@ class RoundController extends BaseController {
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionPublish($id) {
+        $model = $this->findModel($id);
+        $model->published = 1;
+        $model->save();
+
+        return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
     }
 
     /**
