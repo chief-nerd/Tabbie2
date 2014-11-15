@@ -5,6 +5,7 @@ use kartik\grid\GridView;
 use yii\widgets\DetailView;
 use common\models\search\DebateSearch;
 use kartik\sortable\Sortable;
+use kartik\popover\PopoverX;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Round */
@@ -91,15 +92,28 @@ $this->params['breadcrumbs'][] = "#" . $model->id;
                 if ($panel) {
                     foreach ($panel->adjudicators as $adj) {
 
-                        $list[]['content'] = Html::a($adj->user->name, ["user/view", "id" => $adj->user->id], [
-                                    "data-id" => $adj->user_id,
-                                    "data-strength" => $adj->strength,
-                                    "class" => "adj " . common\models\Adjudicator::starLabels($adj->strength),
+                        $popcontent = "Loading...";
+
+                        $list[]['content'] = PopoverX::widget([
+                                    'header' => 'Info',
+                                    'size' => 'md',
+                                    'placement' => PopoverX::ALIGN_TOP,
+                                    'content' => $popcontent,
+                                    'footer' => Html::a('View more', ["adjudicator/view", "id" => $adj->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-sm btn-primary']),
+                                    'toggleButton' => [
+                                        'label' => $adj->user->name,
+                                        'class' => 'btn btn-sm adj ' . common\models\Adjudicator::starLabels($adj->strength),
+                                        "data-id" => $adj->user_id,
+                                        "data-strength" => $adj->strength,
+                                        "data-href" => yii\helpers\Url::to(["adjudicator/popup", "id" => $adj->id, "round_id" => $model->round_id, "tournament_id" => $model->tournament_id]),
+                                    ],
                         ]);
                     }
                     return Sortable::widget([
                                 'type' => Sortable::TYPE_GRID,
                                 'items' => $list,
+                                'disabled' => $model->round->published,
+                                'handleLabel' => ($model->round->published) ? '' : '<i class="glyphicon glyphicon-move"></i> ',
                                 'connected' => true,
                                 'showHandle' => true,
                                 'options' => [
@@ -123,6 +137,7 @@ $this->params['breadcrumbs'][] = "#" . $model->id;
                 'showPageSummary' => false,
                 'bootstrap' => true,
                 'hover' => true,
+                'responsive' => false,
                 'floatHeader' => true,
                 'floatHeaderOptions' => ['scrollingTop' => 100],
             ])

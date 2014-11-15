@@ -50,7 +50,6 @@ class RoundController extends BaseController {
      * @return mixed
      */
     public function actionView($id) {
-
         $debateSearchModel = new DebateSearch();
         $debateDataProvider = $debateSearchModel->search(Yii::$app->request->queryParams);
 

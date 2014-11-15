@@ -326,4 +326,13 @@ class User extends ActiveRecord implements IdentityInterface {
         }
     }
 
+    public function getPicture() {
+        if (file_exists(($this->picture)))
+            return $this->picture;
+        else {
+            $defaultPath = Yii::getAlias("@frontend/assets/images/") . "default-avatar.png";
+            return Yii::$app->assetManager->publish($defaultPath)[1];
+        }
+    }
+
 }

@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3a15eb6e3255b532ae6bb22b4fecf3df",
+    "hash": "720430583356f5f6d1e4b5542ba06561",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -357,6 +357,50 @@
             "time": "2014-11-13 18:14:54"
         },
         {
+            "name": "kartik-v/bootstrap-popover-x",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kartik-v/bootstrap-popover-x.git",
+                "reference": "ee49b24af87f60f00433db1c4fab2ac79100f9f2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kartik-v/bootstrap-popover-x/zipball/ee49b24af87f60f00433db1c4fab2ac79100f9f2",
+                "reference": "ee49b24af87f60f00433db1c4fab2ac79100f9f2",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "kartik\\plugins\\popover\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD 3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Kartik Visweswaran",
+                    "email": "kartikv2@gmail.com",
+                    "homepage": "http://www.krajee.com/"
+                }
+            ],
+            "description": "Bootstrap Popover Extended - Popover with modal behavior, styling enhancements and more.",
+            "homepage": "https://github.com/kartik-v/bootstrap-popover-x",
+            "keywords": [
+                "bootstrap",
+                "extended",
+                "jquery",
+                "modal",
+                "modal-popover",
+                "popover",
+                "popover-x"
+            ],
+            "time": "2014-11-09 18:57:22"
+        },
+        {
             "name": "kartik-v/bootstrap-star-rating",
             "version": "dev-master",
             "source": {
@@ -624,12 +668,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-krajee-base.git",
-                "reference": "a64458b8085849fdce3cf8a0086c6f49523a323f"
+                "reference": "8da0e9684dc7bc547fa33f6d6685eaad9a1b2290"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-krajee-base/zipball/a64458b8085849fdce3cf8a0086c6f49523a323f",
-                "reference": "a64458b8085849fdce3cf8a0086c6f49523a323f",
+                "url": "https://api.github.com/repos/kartik-v/yii2-krajee-base/zipball/8da0e9684dc7bc547fa33f6d6685eaad9a1b2290",
+                "reference": "8da0e9684dc7bc547fa33f6d6685eaad9a1b2290",
                 "shasum": ""
             },
             "require": {
@@ -662,7 +706,7 @@
                 "widget",
                 "yii2"
             ],
-            "time": "2014-11-12 13:37:20"
+            "time": "2014-11-14 18:45:45"
         },
         {
             "name": "kartik-v/yii2-mpdf",
@@ -710,6 +754,54 @@
                 "yii2"
             ],
             "time": "2014-11-10 18:12:05"
+        },
+        {
+            "name": "kartik-v/yii2-popover-x",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kartik-v/yii2-popover-x.git",
+                "reference": "bc42d7063c5b28fc76855f91b2ecc91415e47738"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kartik-v/yii2-popover-x/zipball/bc42d7063c5b28fc76855f91b2ecc91415e47738",
+                "reference": "bc42d7063c5b28fc76855f91b2ecc91415e47738",
+                "shasum": ""
+            },
+            "require": {
+                "kartik-v/bootstrap-popover-x": "*",
+                "kartik-v/yii2-krajee-base": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "kartik\\popover\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD 3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Kartik Visweswaran",
+                    "email": "kartikv2@gmail.com",
+                    "homepage": "http://www.krajee.com/"
+                }
+            ],
+            "description": "An extended bootstrap 3.0 popover widget which combines both the bootstrap popover and modal features and includes various new styling enhancements.",
+            "homepage": "https://github.com/kartik-v/yii2-popover-x",
+            "keywords": [
+                "bootstrap",
+                "extended",
+                "jquery",
+                "modal",
+                "modal-popover",
+                "popover",
+                "popover-x"
+            ],
+            "time": "2014-11-10 18:29:01"
         },
         {
             "name": "kartik-v/yii2-sortable",
@@ -764,12 +856,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kartik-v/yii2-widget-activeform.git",
-                "reference": "0f33f786611eb6fa21a6030897668ae1e9ee14ae"
+                "reference": "bd005e920779e28113c77efa2a4fc8284a705036"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kartik-v/yii2-widget-activeform/zipball/0f33f786611eb6fa21a6030897668ae1e9ee14ae",
-                "reference": "0f33f786611eb6fa21a6030897668ae1e9ee14ae",
+                "url": "https://api.github.com/repos/kartik-v/yii2-widget-activeform/zipball/bd005e920779e28113c77efa2a4fc8284a705036",
+                "reference": "bd005e920779e28113c77efa2a4fc8284a705036",
                 "shasum": ""
             },
             "require": {
@@ -803,7 +895,7 @@
                 "widget",
                 "yii2"
             ],
-            "time": "2014-11-09 18:48:44"
+            "time": "2014-11-14 15:16:21"
         },
         {
             "name": "kartik-v/yii2-widget-affix",

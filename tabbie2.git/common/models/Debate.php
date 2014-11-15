@@ -113,4 +113,8 @@ class Debate extends \yii\db\ActiveRecord {
         return $this->hasOne(Team::className(), ['id' => 'co_team_id']);
     }
 
+    public function getRound() {
+        return $this->hasOne(Round::className(), ['id' => 'round_id']);
+    }
+
 }

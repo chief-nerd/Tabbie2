@@ -40,9 +40,11 @@ class TournamentUrlRule extends UrlRule {
                 switch ($parts[1]) {
                     case "view":
                         $parts[1] = $params['id'];
+                        unset($params['id']);
                         break;
                     default:
                         $parts[] = $params['id'];
+                        unset($params['id']);
                 }
             } else {
                 if ($parts[1] == "index") {
@@ -51,7 +53,12 @@ class TournamentUrlRule extends UrlRule {
                     $parts[1] = null;
                 }
             }
-            $ret = $tournament->url_slug . "/" . implode("/", $parts);
+            unset($params['tournament_id']);
+            $paramsString = "";
+            foreach ($params as $key => $value) {
+                $paramsString .= "/" . $key . "/" . $value;
+            }
+            $ret = $tournament->url_slug . "/" . implode("/", $parts) . $paramsString;
             Yii::trace("Returning Sub: " . $ret, __METHOD__);
             return $ret;
         }
@@ -89,8 +96,13 @@ class TournamentUrlRule extends UrlRule {
                         unset($parts[3]);
                     }
 
+                    //Further Params
+                    for ($i = 4; $i <= count($parts); $i = $i + 2) {
+                        $params[$parts[$i]] = $parts[$i + 1];
+                    }
+
                     $params['tournament_id'] = $tournament->id;
-                    $route = implode("/", $parts);
+                    $route = implode("/", array_slice($parts, 0, 2));
                 } else {
                     $params['id'] = $tournament->id;
                     $route = "tournament/" . $parts[1];

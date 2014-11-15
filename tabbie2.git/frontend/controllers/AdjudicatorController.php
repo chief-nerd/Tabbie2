@@ -255,4 +255,12 @@ class AdjudicatorController extends BaseController {
         ]);
     }
 
+    public function actionPopup($id, $round_id) {
+        $model = $this->findModel($id);
+        return $this->renderAjax("_popup", [
+                    "model" => $model,
+                    "round_id" => $round_id
+        ]);
+    }
+
 }
