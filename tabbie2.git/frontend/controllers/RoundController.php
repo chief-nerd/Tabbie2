@@ -50,6 +50,7 @@ class RoundController extends BaseController {
      * @return mixed
      */
     public function actionView($id) {
+        $model = $this->findModel($id);
         $debateSearchModel = new DebateSearch();
         $debateDataProvider = $debateSearchModel->search(Yii::$app->request->queryParams);
 
@@ -59,11 +60,14 @@ class RoundController extends BaseController {
                 \yii\web\JqueryAsset::className(),
                 \kartik\sortable\SortableAsset::className(),
                 \yii\bootstrap\BootstrapAsset::className(),
-                \yii\bootstrap\BootstrapPluginAsset::className()]
+                \yii\bootstrap\BootstrapPluginAsset::className()
+            ],
+            "data-href" => \yii\helpers\Url::to(["adjudicator/replace", "tournament_id" => $model->tournament_id]),
+            "id" => "adjudicatorActionsJS",
         ]);
 
         return $this->render('view', [
-                    'model' => $this->findModel($id),
+                    'model' => $model,
                     'debateSearchModel' => $debateSearchModel,
                     'debateDataProvider' => $debateDataProvider,
         ]);

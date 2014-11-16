@@ -9,6 +9,8 @@ use frontend\controllers\BaseController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use common\components\filter\TournamentContextFilter;
+use common\models\AdjudicatorInPanel;
+use \common\models\Panel;
 
 /**
  * AdjudicatorController implements the CRUD actions for Adjudicator model.
@@ -41,6 +43,40 @@ class AdjudicatorController extends BaseController {
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
         ]);
+    }
+
+    public function actionReplace() {
+
+        if (Yii::$app->request->isPost) {
+            $params = Yii::$app->request->post();
+            /* @var $adjInPanel AdjudicatorInPanel */
+            $adjInPanel = AdjudicatorInPanel::find()->where([
+                        "adjudicator_id" => $params["id"],
+                        "panel_id" => $params["old_panel"]
+                    ])->one();
+
+            if ($adjInPanel->function == Panel::FUNCTION_CHAIR && $params["pos"] > 0) { //Set away from Chair Position, promote next one
+                $newChair = AdjudicatorInPanel::find()->where([
+                            "panel_id" => $params["old_panel"]
+                        ])->joinWith("adjudicator")->orderBy("strength")->one();
+                $newChair->function = Panel::FUNCTION_CHAIR;
+                if ($newChair->save())
+                    $adjInPanel->function = Panel::FUNCTION_WING;
+            }
+            if ($params["pos"] == 0) { //is new Chair -> reset old one
+                $chair = AdjudicatorInPanel::findOne(['panel_id' => $params["new_panel"], "function" => 1]);
+                $chair->function = Panel::FUNCTION_WING;
+                if (!$chair->save())
+                    return print_r($chair->getErrors(), true);
+                else
+                    $adjInPanel->function = Panel::FUNCTION_CHAIR;
+            }
+
+            $adjInPanel->panel_id = $params["new_panel"];
+
+            return ($adjInPanel->save()) ? 1 : print_r($adjInPanel->getErrors(), true);
+        }
+        return 0;
     }
 
     /**

@@ -19,20 +19,48 @@ $(".adj").on("click.target.popoverX", function () {
     }
 });
 
-/**
- * Function when a adjudicator is set to a new room
- * view:124
- * @property {this}
- */
-function moveAdjudicator(item)
-{
-    panel = $(this).data("panel");
-}
-
 $(".adj_panel li").on("dragstart", function () {
-    console.log("dragstart", this, $(this.children[1]).data("id"));
+    window.dragid = $(this.children[1]).data("id");
+    window.panelid = $(this.parentNode).data("panel");
 });
 
-$(".adj_panel li").on("drop", function () {
-    console.log("drop", this);
+th = $("#w0-container thead th:nth-child(6)");
+th.html(th.html() + " <i></i>");
+
+$(".adj_panel").on("drop", function (event) {
+    //console.log(event);
+    href = $("#adjudicatorActionsJS").data("href");
+    panel = $(this).data("panel");
+    placeholder = $(this).find("li.sortable-placeholder");
+    position = $(this).find("li").index(placeholder);
+    //console.log("#", window.dragid, "from Panel", window.panelid, "to", panel, "at pos", position);
+
+    th = $("#w0-container thead th:nth-child(6) i");
+    th[0].className = "glyphicon glyphicon-refresh";
+
+    $.ajax({
+        type: "POST",
+        url: href,
+        data: {
+            id: window.dragid,
+            old_panel: window.panelid,
+            new_panel: panel,
+            pos: position
+        },
+    }).success(function (data) {
+        if (data == "1")
+        {
+            //console.log("Saved!");
+            th = $("#w0-container thead th:nth-child(6) i");
+            th[0].className = "glyphicon glyphicon-ok-circle";
+        }
+        else
+        {
+            th = $("#w0-container thead th:nth-child(6) i");
+            th[0].className = "glyphicon glyphicon-remove-circle";
+            console.log("ERROR Return value", data);
+        }
+    }).error(function (jqXHR, textStatus, errorThrown) {
+        console.error(textStatus + " : " + errorThrown);
+    });
 });

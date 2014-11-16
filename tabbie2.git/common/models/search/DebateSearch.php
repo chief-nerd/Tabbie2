@@ -10,13 +10,12 @@ use common\models\Debate;
 /**
  * DebateSearch represents the model behind the search form about `\common\models\Debate`.
  */
-class DebateSearch extends Debate
-{
+class DebateSearch extends Debate {
+
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['id', 'round_id', 'tournament_id', 'og_team_id', 'oo_team_id', 'cg_team_id', 'co_team_id', 'panel_id', 'venue_id', 'og_feedback', 'oo_feedback', 'cg_feedback', 'co_feedback'], 'integer'],
             [['time'], 'safe'],
@@ -26,8 +25,7 @@ class DebateSearch extends Debate
     /**
      * @inheritdoc
      */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -39,8 +37,7 @@ class DebateSearch extends Debate
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
-    {
+    public function search($params) {
         $query = Debate::find();
 
         $dataProvider = new ActiveDataProvider([
@@ -70,4 +67,5 @@ class DebateSearch extends Debate
 
         return $dataProvider;
     }
+
 }

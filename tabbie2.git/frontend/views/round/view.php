@@ -90,11 +90,15 @@ $this->params['breadcrumbs'][] = "#" . $model->id;
                 $list = array();
                 $panel = common\models\Panel::findOne($model->panel_id);
                 if ($panel) {
+                    $chair = common\models\AdjudicatorInPanel::findOne([
+                                "panel_id" => $panel->id,
+                                "function" => "1",
+                    ]);
+
                     foreach ($panel->adjudicators as $adj) {
 
                         $popcontent = "Loading...";
-
-                        $list[]['content'] = PopoverX::widget([
+                        $popup_obj = PopoverX::widget([
                                     'header' => $adj->user->name,
                                     'size' => 'md',
                                     'placement' => PopoverX::ALIGN_TOP,
@@ -103,12 +107,18 @@ $this->params['breadcrumbs'][] = "#" . $model->id;
                                     'toggleButton' => [
                                         'label' => $adj->user->name,
                                         'class' => 'btn btn-sm adj ' . common\models\Adjudicator::starLabels($adj->strength),
-                                        "data-id" => $adj->user_id,
+                                        "data-id" => $adj->id,
                                         "data-strength" => $adj->strength,
                                         "data-href" => yii\helpers\Url::to(["adjudicator/popup", "id" => $adj->id, "round_id" => $model->round_id, "tournament_id" => $model->tournament_id]),
                                     ],
                         ]);
+
+                        if ($adj->id == $chair->adjudicator_id) {
+                            array_unshift($list, array('content' => $popup_obj));
+                        } else
+                            $list[]['content'] = $popup_obj;
                     }
+
                     return Sortable::widget([
                                 'type' => Sortable::TYPE_GRID,
                                 'items' => $list,
@@ -119,9 +129,6 @@ $this->params['breadcrumbs'][] = "#" . $model->id;
                                 'options' => [
                                     "data-panel" => $panel->id,
                                     "class" => "adj_panel",
-                                ],
-                                "pluginEvents" => [
-                                    'sortupdate' => 'function(item) { moveAdjudicator.call(this,item); }',
                                 ],
                     ]);
                 }

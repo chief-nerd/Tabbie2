@@ -112,7 +112,10 @@ class TournamentUrlRule extends UrlRule {
                 $route = "tournament/view";
             }
 
-            $ret = [$route, $params];
+            //get ? params
+
+
+            $ret = [$route, array_merge(Yii::$app->request->getQueryParams(), $params)];
             Yii::trace("Returning: " . print_r($ret, true), __METHOD__);
             return $ret;
         }
