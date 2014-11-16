@@ -10,10 +10,9 @@ $this->context->layout = null;
     <img src="<?= $model->user->getPicture() ?>" width="80" height="80">
 </div>
 <table>
-    <tr>
-        <th width="80"><?= Yii::t("app", "Fullname") ?></th>
-        <td><?= $model->user->name ?></td>
-    </tr>
+    <colgroup>
+        <col width="80"></col>
+    </colgroup>
     <tr>
         <th><?= Yii::t("app", "Strength") ?></th>
         <td><?= Adjudicator::translateStrength($model->strength) ?> (<?= $model->strength ?>)</td>
@@ -31,7 +30,11 @@ $this->context->layout = null;
     </tr>
     <tr>
         <th><?= Yii::t("app", "Feedback") ?></th>
-        <td></td>
+        <td>@todo</td>
+    </tr>
+    <tr>
+        <th>Pointer</th>
+        <td>@todo</td>
     </tr>
 </table>
 <div class="clear"></div>

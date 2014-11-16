@@ -95,7 +95,7 @@ $this->params['breadcrumbs'][] = "#" . $model->id;
                         $popcontent = "Loading...";
 
                         $list[]['content'] = PopoverX::widget([
-                                    'header' => 'Info',
+                                    'header' => $adj->user->name,
                                     'size' => 'md',
                                     'placement' => PopoverX::ALIGN_TOP,
                                     'content' => $popcontent,
@@ -121,7 +121,7 @@ $this->params['breadcrumbs'][] = "#" . $model->id;
                                     "class" => "adj_panel",
                                 ],
                                 "pluginEvents" => [
-                                    'sortupdate' => 'function(item) { console.log("sortupdate", item); }',
+                                    'sortupdate' => 'function(item) { moveAdjudicator.call(this,item); }',
                                 ],
                     ]);
                 }
