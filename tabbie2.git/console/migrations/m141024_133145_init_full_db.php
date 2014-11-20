@@ -10,7 +10,9 @@ class m141024_133145_init_full_db extends Migration {
         if (file_exists($filename)) {
             $sql = file_get_contents($filename, "r");
             $this->execute($sql);
+            return true;
         }
+        return false;
     }
 
     public function down() {
