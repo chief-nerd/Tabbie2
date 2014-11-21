@@ -117,4 +117,40 @@ class Debate extends \yii\db\ActiveRecord {
         return $this->hasOne(Round::className(), ['id' => 'round_id']);
     }
 
+    public function getAdjudicators() {
+        return Adjudicator::findBySql("SELECT * from " . Adjudicator::tableName() . " "
+                        . "LEFT JOIN " . AdjudicatorInPanel::tableName() . " on " . Adjudicator::tableName() . ".id = " . AdjudicatorInPanel::tableName() . ".adjudicator_id "
+                        . "LEFT JOIN " . Panel::tableName() . " ON panel_id = " . Panel::tableName() . ".id "
+                        . "LEFT JOIN " . Debate::tableName() . " ON " . Debate::tableName() . ".panel_id = " . Panel::tableName() . ".id "
+                        . "WHERE " . Debate::tableName() . ".id = " . $this->id);
+    }
+
+    public function getChair() {
+        return Adjudicator::findBySql("SELECT * from " . Adjudicator::tableName() . " "
+                        . "LEFT JOIN " . AdjudicatorInPanel::tableName() . " on " . Adjudicator::tableName() . ".id = " . AdjudicatorInPanel::tableName() . ".adjudicator_id "
+                        . "LEFT JOIN " . Panel::tableName() . " ON panel_id = " . Panel::tableName() . ".id "
+                        . "LEFT JOIN " . Debate::tableName() . " ON " . Debate::tableName() . ".panel_id = " . Panel::tableName() . ".id "
+                        . "WHERE " . Debate::tableName() . ".id = " . $this->id . " AND " . AdjudicatorInPanel::tableName() . ".function = " . Panel::FUNCTION_CHAIR)->one();
+    }
+
+    public static function findOneByChair($user_id, $tournament_id, $round_id) {
+        $query = static::find();
+        $query->sql = "SELECT debate.* from " . Adjudicator::tableName() . " "
+                . "LEFT JOIN " . AdjudicatorInPanel::tableName() . " on " . Adjudicator::tableName() . ".id = adjudicator_id "
+                . "LEFT JOIN " . Panel::tableName() . " ON panel_id = " . Panel::tableName() . ".id "
+                . "LEFT JOIN " . Debate::tableName() . " ON " . Debate::tableName() . ".panel_id = " . Panel::tableName() . ".id "
+                . "WHERE user_id = :user_id "
+                . "AND function = " . Panel::FUNCTION_CHAIR . " "
+                . "AND round_id = :round_id "
+                . "AND debate.tournament_id = :tournament_id";
+
+        $params = [
+            ":user_id" => $user_id,
+            ":round_id" => $round_id,
+            ":tournament_id" => $tournament_id,
+        ];
+
+        return $query->params($params)->one();
+    }
+
 }

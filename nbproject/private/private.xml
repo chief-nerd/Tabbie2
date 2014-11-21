@@ -4,14 +4,16 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/assets/css/site.css</file>
-            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/controllers/RoundController.php</file>
-            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/assets/js/dragDrop.js</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/controllers/TournamentController.php</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/common/models/Round.php</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/vendor/yiisoft/yii2/db/BaseActiveRecord.php</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/assets/js/autoScroll.js</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/views/display/view.php</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/views/tournament/_item.php</file>
             <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/views/round/view.php</file>
-            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/common/models/Panel.php</file>
-            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/composer.json</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/views/layouts/public.php</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/views/tournament/index.php</file>
             <file>file:/Users/jareiter/Tabbie2/tabbie2.git/common/models/Debate.php</file>
-            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/views/round/_item.php</file>
-            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/vendor/yiisoft/yii2/widgets/DetailView.php</file>
         </group>
     </open-files>
 </project-private>

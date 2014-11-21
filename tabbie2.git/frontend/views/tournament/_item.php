@@ -3,16 +3,24 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 ?>
-<a href="<?= Url::to(['view', 'id' => $model->id]) ?>">
+<a href="<?= Url::to(['view', 'id' => $tournament->id]) ?>">
     <div class="col-sm-2">
-        <?= Html::img($model->logo, ["style" => "height:80px; margin: 10px;"]) ?>
+        <?= Html::img($tournament->logo, ["style" => "height:80px; margin: 10px;"]) ?>
     </div>
     <div class="col-sm-6">
-        <h2><?= Html::encode($model->name) ?></h2>
-        <h4><?= Html::encode($model->start_date) ?> - <?= Html::encode($model->end_date) ?></h4>
+        <h2><?= Html::encode($tournament->name) ?></h2>
+        <h4><?= Html::encode($tournament->start_date) ?> - <?= Html::encode($tournament->end_date) ?></h4>
     </div>
     <div class="col-sm-4 form-group">
-        <?= Html::a(Yii::t('app', 'View Team Tab'), ['draw/team', 'tournament_id' => $model->id], ['class' => 'btn btn-lg btn-default']) ?>
-        <?= Html::a(Yii::t('app', 'View Speaker Tab'), ['draw/speaker', 'tournament_id' => $model->id], ['class' => 'btn btn-lg btn-default']) ?>
+        <?
+        $debate_id = $this->context->activeInputAvailable($tournament);
+        if (isset($debate_id) && $debate_id != false) {
+            echo Html::a(Yii::t('app', 'Enter Results'), [
+                'result/create',
+                'tournament_id' => $tournament->id,
+                'debate_id' => $debate_id
+                    ], ['class' => 'btn btn-lg btn-success']);
+        }
+        ?>
     </div>
 </a>

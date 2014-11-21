@@ -167,3 +167,12 @@ ul li:first-child .adj
 .sortable li .label {
     font-size: 95%;
 }
+
+#drawdisplay #motionContent h1 {
+    margin-top: 80px;
+}
+
+#drawdisplay {
+    height: 100%;
+    position: absolute;
+}

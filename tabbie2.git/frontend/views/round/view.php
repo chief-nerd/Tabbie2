@@ -36,16 +36,17 @@ $this->params['breadcrumbs'][] = "#" . $model->id;
         </p>
     <? endif; ?>
     <?
-    $attributes = [
-        'time:text:Creation Time',
-        'motion:ntext',
-    ];
+    $attributes = [];
     $attributes[] = [
         "label" => 'Round Status',
         'value' => ($model->published) ? Yii::t("app", "Published") : Yii::t("app", "In Edit Mode"),
     ];
+    $attributes[] = 'motion:ntext';
     if ($model->infoslide)
         $attributes[] = 'infoslide:ntext';
+    if ($model->displayed)
+        $attributes[] = 'prep_started';
+    $attributes[] = 'time:text:Creation Time';
 
     echo DetailView::widget([
         'model' => $model,

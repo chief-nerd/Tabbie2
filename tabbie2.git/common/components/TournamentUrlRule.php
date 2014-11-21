@@ -83,29 +83,34 @@ class TournamentUrlRule extends UrlRule {
             unset($parts[0]);
 
             if (isset($parts[1]) && $parts[1] != null) {
-                if (isset($parts[2])) {
-                    if (is_numeric($parts[2])) {
-                        Yii::trace("parts[2] is numeric", __METHOD__);
-                        $params['id'] = $parts[2];
-                        $parts[2] = "view";
-                    }
+                $controller = $parts[1];
 
-                    if (isset($parts[3]) && is_numeric($parts[3])) {
-                        Yii::trace("parts[3] is numeric", __METHOD__);
-                        $params['id'] = $parts[3];
-                        unset($parts[3]);
+                if (isset($parts[2])) {
+                    $startParam = 3;
+                    $action = $parts[2];
+                    if (is_numeric($action)) {
+                        Yii::trace("action is numeric", __METHOD__);
+                        $params['id'] = $action;
+                        $action = "view";
+                    } else {
+                        Yii::trace("action is NOT numeric", __METHOD__);
+                        $action = $parts[2];
+                        if (isset($parts[3]) && is_numeric($parts[3])) {
+                            $params['id'] = $parts[3];
+                            $startParam = 4;
+                        }
                     }
 
                     //Further Params
-                    for ($i = 4; $i <= count($parts); $i = $i + 2) {
+                    for ($i = $startParam; $i <= count($parts); $i = $i + 2) {
                         $params[$parts[$i]] = $parts[$i + 1];
                     }
 
                     $params['tournament_id'] = $tournament->id;
-                    $route = implode("/", array_slice($parts, 0, 2));
+                    $route = $controller . "/" . $action;
                 } else {
                     $params['id'] = $tournament->id;
-                    $route = "tournament/" . $parts[1];
+                    $route = "tournament/" . $controller;
                 }
             } else {
                 $params['id'] = $tournament->id;

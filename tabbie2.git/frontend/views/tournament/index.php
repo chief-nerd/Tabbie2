@@ -20,14 +20,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row">
         <?php echo $this->render('_search', ['model' => $searchModel]); ?>
     </div>
-    <div class="row">
-        <?=
-        ListView::widget([
-            'dataProvider' => $dataProvider,
-            'itemOptions' => ['class' => 'item row'],
-            'itemView' => function ($model, $key, $index, $widget) {
-        return $this->render('_item', compact("model", "key", "index", "widget"));
-    },])
-        ?>
+    <div class="tournaments">
+        <? foreach ($dataProvider->getModels() as $tournament): ?>
+            <div class="row">
+                <?= $this->render('_item', compact("tournament")); ?>
+            </div>
+        <? endforeach; ?>
     </div>
 </div>

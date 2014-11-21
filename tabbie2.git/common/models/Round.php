@@ -14,6 +14,10 @@ use yii\base\Exception;
  * @property string $infoslide
  * @property string $time
  * @property bool $published
+ * @property bool $displayed
+ * @property bool $closed
+ * @property datetime $prep_started
+ * @property datetime $finished_time
  *
  * @property DrawAfterRound[] $drawAfterRounds
  * @property Tournament $tournament
@@ -50,6 +54,8 @@ class Round extends \yii\db\ActiveRecord {
             'infoslide' => Yii::t('app', 'Info Slide'),
             'time' => Yii::t('app', 'Time'),
             'published' => Yii::t('app', 'Published'),
+            'displayed' => Yii::t('app', 'Displayed'),
+            'prep_started' => Yii::t('app', 'PrepTime started'),
         ];
     }
 

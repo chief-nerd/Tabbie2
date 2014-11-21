@@ -9,6 +9,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\components\filter\TournamentContextFilter;
+use \common\models;
 
 /**
  * TournamentController implements the CRUD actions for Tournament model.
@@ -46,9 +47,12 @@ class TournamentController extends BaseController {
         $searchModel = new TournamentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $debate_id = 1;
+
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
+                    'debate_id' => $debate_id,
         ]);
     }
 
@@ -152,6 +156,30 @@ class TournamentController extends BaseController {
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    /**
+     *
+     * @param Tournament $tournament
+     * @return int|null
+     */
+    public function activeInputAvailable($tournament) {
+        $user_id = Yii::$app->user->id;
+
+        $activeRound = models\Round::findOne([
+                    "tournament_id" => $tournament->id,
+                    "displayed" => 1,
+                    "published" => 1,
+                    "closed" => 0,
+        ]);
+
+        if ($activeRound) {
+            $debate = models\Debate::findOneByChair($user_id, $tournament->id, $activeRound->id);
+            if ($debate instanceof models\Debate)
+                return $debate->id;
+        }
+
+        return false;
     }
 
 }
