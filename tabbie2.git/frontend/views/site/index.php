@@ -40,7 +40,7 @@ $this->title = Yii::$app->params["slogan"];
             <div class="col-lg-4">
                 <h2>Tabbing</h2>
 
-                <p>Rock solid tabbing algorism based on the famous Tabbie software<br>Lorem ipsum dolor sit amet,
+                <p>Rock solid tabbing algorithm based on the famous Tabbie software<br>Lorem ipsum dolor sit amet,
                     consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna
                     aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
             </div>
