@@ -14,8 +14,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="row">
         <div class="col-sm-8">
-            <div class="col-sm-2"><img class="img-rounded img-responsive" src="<?= $model["logo"] ?>" alt="<?= $model["fullname"] ?> Logo"></div>
-            <div class="col-sm-10"><h1><?= Html::encode($this->title) ?></h1></div>
+            <div class="col-sm-2">
+                <img class="img-rounded img-responsive" src="<?= $model["logo"] ?>" alt="<?= $model["fullname"] ?> Logo"></div>
+            <div class="col-sm-10">
+                <h1><?= Html::encode($this->title) ?></h1>
+            </div>
         </div>
         <div class="col-sm-4 text-right">
             <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
@@ -31,20 +34,19 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-8 leftcolumn">
             <? foreach ($model->getRounds()->where(["published" => 1])->all() as $round): ?>
-                <div class="col-md-3">
-                    <?= Html::a("Motion Round #" . $round->id, ["round/view", "id" => $round->id, "tournament_id" => $model->id]); ?>
-                </div>
-                <div class="col-md-9">
-                    <?= $round->motion ?>
-                </div>
-                <div class="hidden">
-                    <?= $round->infoslide ?>
+                <div class="row">
+                    <div class="col-md-3">
+                        <?= Html::a("Motion Round #" . $round->id, ["round/view", "id" => $round->id, "tournament_id" => $model->id]); ?>
+                    </div>
+                    <div class="col-md-9">
+                        <?= $round->motion ?>
+                    </div>
                 </div>
             <? endforeach; ?>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 rightcolumn">
             <?=
             DetailView::widget([
                 'model' => $model,
