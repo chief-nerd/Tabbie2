@@ -47,12 +47,10 @@ class TournamentController extends BaseController {
         $searchModel = new TournamentSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $debate_id = 1;
 
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
-                    'debate_id' => $debate_id,
         ]);
     }
 

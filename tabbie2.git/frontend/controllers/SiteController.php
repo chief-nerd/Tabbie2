@@ -64,7 +64,12 @@ class SiteController extends BaseController {
     }
 
     public function actionIndex() {
-        return $this->render('index');
+
+        $tournaments = \common\models\Tournament::find()->where("start_date <= NOW() AND end_date >= NOW()")->all();
+
+        return $this->render('index', [
+                    "tournaments" => $tournaments
+        ]);
     }
 
     public function actionLogin() {

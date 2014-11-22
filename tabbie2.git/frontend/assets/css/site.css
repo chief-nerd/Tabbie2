@@ -45,11 +45,22 @@ body.movedown {
 .jumbotron {
     text-align: center;
     background-color: transparent;
+    padding: 0px;
 }
 
 .jumbotron .btn {
     font-size: 21px;
     padding: 14px 24px;
+}
+
+.tournament img{
+    float: left;
+    margin-right: 30px;
+}
+
+.tournament h2{
+    padding-top: 20px;
+    text-align: left;
 }
 
 .not-set {
