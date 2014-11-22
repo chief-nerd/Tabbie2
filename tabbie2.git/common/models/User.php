@@ -87,6 +87,21 @@ class User extends ActiveRecord implements IdentityInterface {
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert) {
+        if ($insert) {
+            $this->time = date("Y-m-d H:i:s");
+        }
+        parent::beforeSave($insert);
+    }
+
+    /**
+     * Check if the URL is allowed or if there are any conflicts with Actions
+     * @param type $attribute
+     * @param type $params
+     */
     public function validateIsUrlAllowed($attribute, $params) {
         foreach (get_class_methods(\frontend\controllers\UserController::className()) as $key => $value) {
             if (substr($value, 0, 6) == "action" && $value != "actions") {
