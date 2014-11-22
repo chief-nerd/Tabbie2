@@ -16,8 +16,8 @@ function pageScroll() {
             $("#infoslide").removeAttr("disabled");
         else
         {
-            if ($("#motionContent").length > 0)
-                $("#motionContent").removeAttr("disabled");
+            if ($("#motion").length > 0)
+                $("#motion").removeAttr("disabled");
         }
     }
 

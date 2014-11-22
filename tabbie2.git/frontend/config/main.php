@@ -40,7 +40,7 @@ return [
                 ],
                 [
                     'class' => 'yii\log\FileTarget',
-                    'categories' => ['debug'],
+                    'categories' => ['frontend\*', 'common\*'],
                     'levels' => ['error', 'warning', 'trace'],
                     'logFile' => '@frontend/runtime/logs/debug.log',
                 ],

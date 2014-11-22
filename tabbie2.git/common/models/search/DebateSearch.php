@@ -37,8 +37,8 @@ class DebateSearch extends Debate {
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $tid, $displayed = true) {
-        $query = Debate::find()->where(["tournament_id" => $tid]);
+    public function search($params, $tid, $rid, $displayed = true) {
+        $query = Debate::find()->where(["tournament_id" => $tid, "round_id" => $rid]);
 
         if (!$displayed)
             $query->andWhere(["displayed" => 0]);

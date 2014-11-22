@@ -14,6 +14,8 @@ class DisplayController extends BaseController {
 
     //Override Layout
     public $layout = "public";
+    //MenuRight Items
+    public $menuItems = [];
 
     public function behaviors() {
         return [
@@ -65,7 +67,7 @@ class DisplayController extends BaseController {
     public function actionView($id) {
         $round = \common\models\Round::findOne($id);
         $searchModel = new DebateSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->_tournament->id);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->_tournament->id, $id);
 
         $publishpath = Yii::$app->assetManager->publish(Yii::getAlias("@frontend/assets/js/autoScroll.js"));
         $this->view->registerJsFile($publishpath[1], [

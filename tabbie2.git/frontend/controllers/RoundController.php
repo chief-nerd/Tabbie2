@@ -52,7 +52,7 @@ class RoundController extends BaseController {
     public function actionView($id) {
         $model = $this->findModel($id);
         $debateSearchModel = new DebateSearch();
-        $debateDataProvider = $debateSearchModel->search(Yii::$app->request->queryParams, $this->_tournament->id);
+        $debateDataProvider = $debateSearchModel->search(Yii::$app->request->queryParams, $this->_tournament->id, $id);
 
         $publishpath = Yii::$app->assetManager->publish(Yii::getAlias("@frontend/assets/js/adjudicatorActions.js"));
         $this->view->registerJsFile($publishpath[1], [

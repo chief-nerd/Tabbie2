@@ -2,6 +2,10 @@
 
 use kartik\grid\GridView;
 
+$this->context->menuItems = [
+    ['label' => 'Run', 'url' => "#run", "linkOptions" => ["class" => "run"]],
+];
+
 $this->title = "Round " . $round->id . " Draw";
 ?>
 <div class="row">
@@ -91,11 +95,11 @@ $this->title = "Round " . $round->id . " Draw";
                 </div>
             </div>
         <? else: ?>
-            <div class="row" id="drawdisplay" style="width: 60%; margin: 0 auto;">
+            <div class="row" id="drawdisplay" style="width: 90%; margin: 0 auto;">
                 <center>
-                    <?= yii\helpers\Html::button("Show Motion", ["class" => "btn btn-default", "id" => 'motion']) ?>
+                    <?= yii\helpers\Html::button("Show Motion", ["disabled" => "disabled", "class" => "btn btn-success", "id" => 'motion']) ?>
                 </center>
-                <div class="col-sm-12 text-center" id="motionContent" style="display:none; margin-bottom: 100%">
+                <div class="col-sm-12 text-center" id="motionContent" data-href="<?= yii\helpers\Url::to(["display/start", "id" => $round->id, "tournament_id" => $round->tournament_id]) ?>" style="display:none; margin-bottom: 100%">
                     <h1><?= $round->motion ?></h1>
                 </div>
             </div>

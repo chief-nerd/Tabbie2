@@ -35,12 +35,9 @@ AppAsset::register($this);
                     'class' => 'navbar navbar-default navbar-fixed-top',
                 ],
             ]);
-            $menuItems = [
-                ['label' => 'Run', 'url' => "#run", "linkOptions" => ["class" => "run"]],
-            ];
             echo Nav::widget([
                 'options' => ['class' => 'navbar-nav menu navbar-right'],
-                'items' => $menuItems,
+                'items' => $this->context->menuItems,
             ]);
             NavBar::end();
             ?>
