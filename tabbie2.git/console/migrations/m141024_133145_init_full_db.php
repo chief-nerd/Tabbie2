@@ -11,7 +11,9 @@ class m141024_133145_init_full_db extends Migration {
             $sql = file_get_contents($filename, "r");
             $this->execute($sql);
             return true;
-        }
+        } else
+            echo "ERROR: $filename doesn't exist!";
+
         return false;
     }
 
