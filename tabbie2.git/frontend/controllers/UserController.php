@@ -67,6 +67,7 @@ class UserController extends \yii\web\Controller {
             $model->setPassword($model->email);
             $model->generateAuthKey();
             if ($model->save()) {
+                print_r($model->attributes);
                 if ($model->societies_id > 0) {
                     $inSociety = new InSociety();
                     $inSociety->user_id = $model->id;
@@ -81,7 +82,7 @@ class UserController extends \yii\web\Controller {
                 }
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
-                Yii::warning("User Model not saved! Errors: " . print_r($inSociety->getErrors(), true), __METHOD__);
+                Yii::warning("User Model not saved! Errors: " . print_r($model->getErrors(), true), __METHOD__);
                 Yii::$app->session->addFlash("error", Yii::t("app", "User not saved!"));
             }
         }
@@ -121,10 +122,13 @@ class UserController extends \yii\web\Controller {
                         $InSociety->user_id = $model->id;
                         $InSociety->society_id = $model->societies_id;
                         $InSociety->starting = date("Y-m-d");
-                        $InSociety->save();
+                        if (!$InSociety->save()) {
+                            Yii::warning("Error saving InSociety " . print_r($InSociety->getErrors(), true));
+                            Yii::$app->session->addFlash("warning", Yii::t("app", "Society Connection not saved!"));
+                        }
                     }
-                    Yii::$app->session->addFlash("success", Yii::t("app", "User successfully updated!"));
                 }
+                Yii::$app->session->addFlash("success", Yii::t("app", "User successfully updated!"));
                 return $this->redirect(['view', 'id' => $model->id]);
             } else
                 Yii::$app->session->setFlash("error", print_r($model->getErrors(), true));

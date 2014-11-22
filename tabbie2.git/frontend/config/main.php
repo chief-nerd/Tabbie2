@@ -38,6 +38,12 @@ return [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
                 ],
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'categories' => ['debug'],
+                    'levels' => ['error', 'warning', 'trace'],
+                    'logFile' => '@frontend/runtime/logs/debug.log',
+                ],
             ],
         ],
         'errorHandler' => [

@@ -82,7 +82,7 @@ class User extends ActiveRecord implements IdentityInterface {
             [['username', 'auth_key', 'password_hash', 'email'], 'required'],
             [['role', 'status'], 'integer'],
             [['picture'], 'string'],
-            [['auth_key', 'time', 'last_change'], 'safe'],
+            [['auth_key', 'time', 'last_change', 'societies_id'], 'safe'],
             [['username', 'password_hash', 'password_reset_token', 'email', 'givenname', 'surename'], 'string', 'max' => 255],
         ];
     }
@@ -92,9 +92,9 @@ class User extends ActiveRecord implements IdentityInterface {
      */
     public function beforeSave($insert) {
         if ($insert) {
-            $this->time = date("Y-m-d H:i:s");
+            $this->last_change = $this->time = date("Y-m-d H:i:s");
         }
-        parent::beforeSave($insert);
+        return true;
     }
 
     /**

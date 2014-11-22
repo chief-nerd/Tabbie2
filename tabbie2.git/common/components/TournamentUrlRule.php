@@ -16,8 +16,7 @@ class TournamentUrlRule extends UrlRule {
 
     public function createUrl($manager, $route, $params) {
         $parts = explode("/", $route);
-        Yii::trace("Start with Route parts: " . print_r($parts, true) . " and params " . print_r($params, true), __METHOD__);
-
+        //Yii::trace("Start with Route parts: " . print_r($parts, true) . " and params " . print_r($params, true), __METHOD__);
         //Handle tournament base
         if ($parts[0] == "tournament") {
             if ($parts[1] == "index")
@@ -28,7 +27,7 @@ class TournamentUrlRule extends UrlRule {
                 if ($parts[1] == "view")
                     $parts[1] = null;
                 $ret = $tournament->url_slug . "/" . $parts[1];
-                Yii::trace("Returning Base: " . $ret, __METHOD__);
+                //Yii::trace("Returning Base: " . $ret, __METHOD__);
                 return $ret;
             }
         }
@@ -59,11 +58,11 @@ class TournamentUrlRule extends UrlRule {
                 $paramsString .= "/" . $key . "/" . $value;
             }
             $ret = $tournament->url_slug . "/" . implode("/", $parts) . $paramsString;
-            Yii::trace("Returning Sub: " . $ret, __METHOD__);
+            //Yii::trace("Returning Sub: " . $ret, __METHOD__);
             return $ret;
         }
 
-        Yii::trace("Returnning: FALSE", __METHOD__);
+        //Yii::trace("Returnning: FALSE", __METHOD__);
         return false;  // this rule does not apply
     }
 
@@ -74,12 +73,12 @@ class TournamentUrlRule extends UrlRule {
             return ["tournament/index", $params];
 
         $parts = explode("/", $pathInfo);
-        Yii::trace("Request URL Parts: " . print_r($parts, true), __METHOD__);
+        //Yii::trace("Request URL Parts: " . print_r($parts, true), __METHOD__);
 
         $potential_slug = $parts[0];
         $tournament = Tournament::findByUrlSlug($potential_slug);
         if ($tournament !== null) {
-            Yii::trace("Tournament found with id: #" . $tournament->id . " named " . $tournament->fullname, __METHOD__);
+            //Yii::trace("Tournament found with id: #" . $tournament->id . " named " . $tournament->fullname, __METHOD__);
             unset($parts[0]);
 
             if (isset($parts[1]) && $parts[1] != null) {
@@ -89,11 +88,11 @@ class TournamentUrlRule extends UrlRule {
                     $startParam = 3;
                     $action = $parts[2];
                     if (is_numeric($action)) {
-                        Yii::trace("action is numeric", __METHOD__);
+                        //Yii::trace("action is numeric", __METHOD__);
                         $params['id'] = $action;
                         $action = "view";
                     } else {
-                        Yii::trace("action is NOT numeric", __METHOD__);
+                        //Yii::trace("action is NOT numeric", __METHOD__);
                         $action = $parts[2];
                         if (isset($parts[3]) && is_numeric($parts[3])) {
                             $params['id'] = $parts[3];
@@ -121,7 +120,7 @@ class TournamentUrlRule extends UrlRule {
 
 
             $ret = [$route, array_merge(Yii::$app->request->getQueryParams(), $params)];
-            Yii::trace("Returning: " . print_r($ret, true), __METHOD__);
+            //Yii::trace("Returning: " . print_r($ret, true), __METHOD__);
             return $ret;
         }
         // check $matches[1] and $matches[3] to see
