@@ -75,21 +75,22 @@ class TournamentController extends BaseController {
         if (Yii::$app->request->isPost) {
             $file = \yii\web\UploadedFile::getInstance($model, 'logo');
             $model->load(Yii::$app->request->post());
+            $model->generateUrlSlug();
             $path = "/uploads/TournamentLogo-" . $model->url_slug . ".jpg";
             if ($file && $file->saveAs(Yii::getAlias("@frontend/web") . $path))
                 $model->logo = $path;
             else
                 $model->logo = null;
 
-            if ($model->validate()) {
-                $model->save();
+            if ($model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                Yii::$app->session->setFlash("error", "Can't save Tournament!" . print_r($model->getErrors(), true));
             }
-        } else {
-            return $this->render('create', [
-                        'model' => $model,
-            ]);
         }
+        return $this->render('create', [
+                    'model' => $model,
+        ]);
     }
 
     /**

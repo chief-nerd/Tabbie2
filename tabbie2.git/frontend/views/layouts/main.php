@@ -84,6 +84,7 @@ AppAsset::register($this);
                         ],
                     ]);
 
+                    $rounds = array();
                     foreach ($tournament->rounds as $r) {
                         $rounds[] = ['label' => "Round #$r->id", 'url' => ['round/view', "id" => $r->id, "tournament_id" => $tournament->id]];
                     }
