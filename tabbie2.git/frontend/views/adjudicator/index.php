@@ -23,6 +23,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     'modelClass' => 'Adjudicator',
                 ]), ['create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
         ?>
+        <?=
+        Html::a(Yii::t('app', 'Import {modelClass}', [
+                    'modelClass' => 'Adjudicator',
+                ]), ['import', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
+        ?>
     </p>
     <?
     $gridColumns = [
