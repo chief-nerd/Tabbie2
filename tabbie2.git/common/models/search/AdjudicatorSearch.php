@@ -102,6 +102,7 @@ class AdjudicatorSearch extends Adjudicator {
 
     public static function getSearchArray($tid) {
         $adjudicators = Adjudicator::find()->joinWith("user")->where(["tournament_id" => $tid])->all();
+        $filter = [];
         foreach ($adjudicators as $a) {
             $filter[$a->name] = $a->name;
         }
