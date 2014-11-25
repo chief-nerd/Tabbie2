@@ -30,6 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ?>
     </p>
 
+    <?php \yii\widgets\Pjax::begin(); ?>
     <?
     $gridColumns = [
         [
@@ -95,6 +96,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'dataProvider' => $dataProvider,
                                 'filterModel' => $searchModel,
                                 'columns' => $gridColumns,
+                                'id' => 'teams',
+                                'pjax' => true,
                                 'showPageSummary' => false,
                                 'responsive' => true,
                                 'hover' => true,
@@ -107,5 +110,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ]
                             ])
                             ?>
+                            <?php \yii\widgets\Pjax::end(); ?>
 
 </div>

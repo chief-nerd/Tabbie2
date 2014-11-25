@@ -13,5 +13,5 @@ use yii\helpers\Html;
     <?= Html::encode("#" . $model->id) ?>
 </div>
 <div class="col-sm-8">
-    <?= Html::a(Html::encode($model->motion), ['view', 'id' => $model->id, "tournament_id" => $model->tournament->id]); ?>
+    <?= Html::a(Html::encode($model->motion), ['view', 'id' => $model->id, "tournament_id" => $model->tournament->id], ["class" => "btn btn-default"]); ?>
 </div>

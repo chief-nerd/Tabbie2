@@ -50,7 +50,7 @@ class DisplayController extends BaseController {
             return $buttons;
         } else {
 
-            $publishpath = Yii::$app->assetManager->publish(Yii::getAlias("@frontend/assets/js/roundPoll.js"));
+            $publishpath = Yii::$app->assetManager->publish(Yii::getAlias("@frontend/assets/js/display_roundPoll.js"));
             $this->view->registerJsFile($publishpath[1], [
                 "depends" => [
                     \yii\web\JqueryAsset::className(),
@@ -69,7 +69,7 @@ class DisplayController extends BaseController {
         $searchModel = new DebateSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->_tournament->id, $id);
 
-        $publishpath = Yii::$app->assetManager->publish(Yii::getAlias("@frontend/assets/js/autoScroll.js"));
+        $publishpath = Yii::$app->assetManager->publish(Yii::getAlias("@frontend/assets/js/display_autoScroll.js"));
         $this->view->registerJsFile($publishpath[1], [
             "depends" => [
                 \yii\web\JqueryAsset::className(),

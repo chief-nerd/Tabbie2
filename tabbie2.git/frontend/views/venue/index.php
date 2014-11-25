@@ -71,16 +71,13 @@ $this->params['breadcrumbs'][] = $this->title;
             echo GridView::widget([
                 'dataProvider' => $dataProvider,
                 'columns' => $gridColumns,
+                'id' => 'venues',
+                'pjax' => true,
                 'showPageSummary' => false,
                 'responsive' => true,
                 'hover' => true,
                 'floatHeader' => false,
                 'floatHeaderOptions' => ['scrollingTop' => '150'],
-                'toolbar' => [
-                    ['content' =>
-                        Html::a('<i class="glyphicon glyphicon-plus"></i> ' . Yii::t('app', 'Add Team'), ["team/create", "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
-                    ]
-                ]
             ])
             ?>
 </div>

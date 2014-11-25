@@ -10,13 +10,12 @@ use common\models\Result;
 /**
  * ResultSearch represents the model behind the search form about `\common\models\Result`.
  */
-class ResultSearch extends Result
-{
+class ResultSearch extends Result {
+
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['id', 'debate_id', 'og_speaks', 'og_place', 'oo_speaks', 'oo_place', 'cg_speaks', 'cg_place', 'co_speaks', 'co_place'], 'integer'],
             [['time'], 'safe'],
@@ -26,8 +25,7 @@ class ResultSearch extends Result
     /**
      * @inheritdoc
      */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -39,9 +37,8 @@ class ResultSearch extends Result
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
-    {
-        $query = Result::find();
+    public function search($params, $tournament_id, $roundid) {
+        $query = \common\models\Debate::find()->joinWith("result")->where(["debate.round_id" => $roundid, "debate.tournament_id" => $tournament_id]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -67,4 +64,5 @@ class ResultSearch extends Result
 
         return $dataProvider;
     }
+
 }

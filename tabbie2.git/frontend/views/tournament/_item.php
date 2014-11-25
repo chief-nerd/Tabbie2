@@ -18,7 +18,7 @@ use yii\helpers\Url;
             echo Html::a(Yii::t('app', 'Enter Results'), [
                 'result/create',
                 'tournament_id' => $tournament->id,
-                'debate_id' => $debate_id
+                'id' => $debate_id
                     ], ['class' => 'btn btn-lg btn-success']);
         }
         ?>

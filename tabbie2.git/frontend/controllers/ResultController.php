@@ -8,6 +8,8 @@ use common\models\search\ResultSearch;
 use frontend\controllers\BaseController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use common\components\filter\TournamentContextFilter;
+use yii\data\ActiveDataProvider;
 
 /**
  * ResultController implements the CRUD actions for Result model.
@@ -16,6 +18,9 @@ class ResultController extends BaseController {
 
     public function behaviors() {
         return [
+            'tournamentFilter' => [
+                'class' => TournamentContextFilter::className(),
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -30,10 +35,37 @@ class ResultController extends BaseController {
      * @return mixed
      */
     public function actionIndex() {
-        $searchModel = new ResultSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $rounds = new ActiveDataProvider([
+            'query' => \common\models\Round::findBySql("SELECT round.* from round "
+                    . "LEFT JOIN debate ON round.id = debate.round_id "
+                    . "RIGHT JOIN result ON result.debate_id = debate.id "
+                    . "GROUP BY round.id"),
+        ]);
 
         return $this->render('index', [
+                    'rounds' => $rounds,
+        ]);
+    }
+
+    /**
+     * Lists all Result models.
+     * @return mixed
+     */
+    public function actionRound($id) {
+        $searchModel = new ResultSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->_tournament->id, $id);
+
+        $publishpath = Yii::$app->assetManager->publish(Yii::getAlias("@frontend/assets/js/result_poll.js"));
+        $this->view->registerJsFile($publishpath[1], [
+            "depends" => [
+                \yii\web\JqueryAsset::className(),
+                \yii\widgets\PjaxAsset::className(),
+            ],
+        ]);
+
+        return $this->render('round', [
+                    'round_id' => $id,
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
         ]);

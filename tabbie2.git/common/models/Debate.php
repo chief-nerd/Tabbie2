@@ -100,8 +100,8 @@ class Debate extends \yii\db\ActiveRecord {
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getResults() {
-        return $this->hasMany(Result::className(), ['debate_id' => 'id']);
+    public function getResult() {
+        return $this->hasOne(Result::className(), ['debate_id' => 'id']);
     }
 
     public function getOg_team() {
