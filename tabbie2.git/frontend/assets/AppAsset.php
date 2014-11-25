@@ -19,7 +19,8 @@ class AppAsset extends AssetBundle {
     public $sourcePath = '@frontend/assets';
     public $css = [
         'css/site.css',
-        'css/tournament.css'
+        'css/tournament.css',
+        'css/result.css',
     ];
     public $js = [
     ];

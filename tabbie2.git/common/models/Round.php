@@ -24,6 +24,71 @@ use yii\base\Exception;
  */
 class Round extends \yii\db\ActiveRecord {
 
+    const STATUS_CREATED = 0;
+    const STATUS_PUBLISHED = 1;
+    const STATUS_DISPLAYED = 2;
+    const STATUS_STARTED = 3;
+    const STATUS_JUDGING = 4;
+    const STATUS_CLOSED = 5;
+
+    static function statusLabel($code = null) {
+
+        $labels = [
+            0 => Yii::t("app", "Created"),
+            1 => Yii::t("app", "Published"),
+            2 => Yii::t("app", "Displayed"),
+            3 => Yii::t("app", "Started"),
+            4 => Yii::t("app", "Judging"),
+            5 => Yii::t("app", "Finished"),
+        ];
+        return (is_numeric($code)) ? $labels[$code] : $labels;
+    }
+
+    public function getStatus() {
+
+        if ($this->hasAllResultsEntered())
+            return Round::STATUS_CLOSED;
+        else if ($this->isJudgingTime())
+            return Round::STATUS_JUDGING;
+        else if ($this->isStartingTime())
+            return Round::STATUS_STARTED;
+        else if ($this->displayed == 1)
+            return Round::STATUS_DISPLAYED;
+        else if ($this->published == 1)
+            return Round::STATUS_PUBLISHED;
+        else if ($this->time)
+            return Round::STATUS_CREATED;
+        else
+            throw new Exception("Unknow Round status for Round" . $this->id . " No create time");
+    }
+
+    public function isJudgingTime() {
+        $debatetime = (8 * 7) + 8;
+        $preptime = 15;
+        if ($this->prep_started) {
+            $judgeTime = strtotime($this->prep_started) + $preptime + $debatetime;
+
+            if (time() > $judgeTime)
+                return true;
+        }
+        return false;
+    }
+
+    public function isStartingTime() {
+        $preptime = 15;
+        if ($this->prep_started) {
+            $prepende = strtotime($this->prep_started) + $preptime;
+
+            if (time() > $prepende)
+                return true;
+        }
+        return false;
+    }
+
+    public function hasAllResultsEntered() {
+        return false;
+    }
+
     /**
      * @inheritdoc
      */
@@ -71,6 +136,13 @@ class Round extends \yii\db\ActiveRecord {
      */
     public function getTournament() {
         return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDebates() {
+        return $this->hasMany(Debate::className(), ['round_id' => 'id', 'tournament_id' => 'tournament_id']);
     }
 
     /**

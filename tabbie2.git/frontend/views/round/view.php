@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = "#" . $model->id;
     $attributes = [];
     $attributes[] = [
         "label" => 'Round Status',
-        'value' => ($model->published) ? Yii::t("app", "Published") : Yii::t("app", "In Edit Mode"),
+        'value' => common\models\Round::statusLabel($model->status),
     ];
     $attributes[] = 'motion:ntext';
     if ($model->infoslide)

@@ -136,6 +136,14 @@ class Tournament extends \yii\db\ActiveRecord {
     }
 
     /**
+     * Get's the last round
+     * @return Round
+     */
+    public function getLastRound() {
+        return $this->getRounds()->where(["displayed" => 1])->orderBy(['id' => SORT_ASC])->one();
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getTeams() {
