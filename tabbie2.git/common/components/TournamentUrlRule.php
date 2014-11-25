@@ -55,7 +55,12 @@ class TournamentUrlRule extends UrlRule {
             unset($params['tournament_id']);
             $paramsString = "";
             foreach ($params as $key => $value) {
-                $paramsString .= "/" . $key . "/" . $value;
+                if (is_array($value)) {
+                    foreach ($value as $k => $v) {
+                        $paramsString .= "/" . $key . "[" . $k . "]/" . $v;
+                    }
+                } else
+                    $paramsString .= "/" . $key . "/" . $value;
             }
             $ret = $tournament->url_slug . "/" . implode("/", $parts) . $paramsString;
             //Yii::trace("Returning Sub: " . $ret, __METHOD__);
