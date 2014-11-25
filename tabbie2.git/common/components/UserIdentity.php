@@ -39,6 +39,22 @@ class UserIdentity extends \yii\web\User {
     }
 
     /**
+     *
+     * @param Tournament $model
+     */
+    public function hasChairedLastRound($model) {
+        $lastRound = $model->getLastRound();
+        if ($lastRound) {
+            /* @var $debate Debate */
+            foreach ($lastRound->getDebates()->all() as $debate) {
+                if ($debate->getChair()->user_id == $this->id)
+                    return $debate;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Get the full User Model
      * @return \common\models\User
      */

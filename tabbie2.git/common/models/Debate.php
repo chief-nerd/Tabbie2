@@ -86,6 +86,13 @@ class Debate extends \yii\db\ActiveRecord {
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getTournament() {
+        return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getFeedbacks() {
         return $this->hasMany(Feedback::className(), ['debate_id' => 'id']);
     }

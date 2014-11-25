@@ -21,13 +21,20 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
         <div class="col-sm-4 text-right">
+
+            <?
+            if ($debate = Yii::$app->user->hasChairedLastRound($model)) {
+                echo Html::a(Yii::t('app', 'Enter Result'), ['result/create', "id" => $debate->id, "tournament_id" => $model->id], ['class' => 'btn btn-success']);
+            }
+            ?>
+
             <?= Html::a(Yii::t('app', 'Display Draw'), ['display/index', "tournament_id" => $model->id], ['class' => 'btn btn-success']) ?>
             <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         </div>
     </div>
     <div class="row">
         <div class="col-md-8 leftcolumn">
-            <? foreach ($model->getRounds()->where(["published" => 1])->all() as $round): ?>
+            <? foreach ($model->getRounds()->where(["displayed" => 1])->all() as $round): ?>
                 <div class="row">
                     <div class="col-md-3">
                         <?= Html::a("Motion Round #" . $round->id, ["round/view", "id" => $round->id, "tournament_id" => $model->id]); ?>

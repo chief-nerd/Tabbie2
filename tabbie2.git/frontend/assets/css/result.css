@@ -1,0 +1,13 @@
+.result-form input {
+    width: auto;
+    display: inline-block;
+    position: absolute;
+    right: 20px;
+}
+
+.result-confirm input {
+    width: auto;
+    display: inline-block;
+    position: absolute;
+    right: 20px;
+}

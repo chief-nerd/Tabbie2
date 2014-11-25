@@ -12,25 +12,41 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'debate_id')->textInput() ?>
+    <?= Html::activeHiddenInput($model, 'debate_id') ?>
+    <?
+    /* @var $debate Debate */
+    $debate = $model->debate;
+    $cols = "col-xs-12 col-sm-6";
+    $fieldOption = [
+        "template" => "{label} {input}\n{hint}\n{error}",
+    ];
+    $textOption = ["size" => 2, "maxlength" => 2];
+    ?>
 
-    <?= $form->field($model, 'og_speaks')->textInput() ?>
-
-    <?= $form->field($model, 'og_place')->textInput() ?>
-
-    <?= $form->field($model, 'oo_speaks')->textInput() ?>
-
-    <?= $form->field($model, 'oo_place')->textInput() ?>
-
-    <?= $form->field($model, 'cg_speaks')->textInput() ?>
-
-    <?= $form->field($model, 'cg_place')->textInput() ?>
-
-    <?= $form->field($model, 'co_speaks')->textInput() ?>
-
-    <?= $form->field($model, 'co_place')->textInput() ?>
-
-    <?= $form->field($model, 'time')->textInput() ?>
+    <div class="row">
+        <div class="<?= $cols ?>">
+            <h3>Opening Government</h3>
+            <?= $form->field($model, 'og_A_speaks', $fieldOption)->label($debate->og_team->speakerA->name)->textInput($textOption) ?>
+            <?= $form->field($model, 'og_B_speaks', $fieldOption)->label($debate->og_team->speakerB->name)->textInput($textOption) ?>
+        </div>
+        <div class="<?= $cols ?>">
+            <h3>Opening Opposition</h3>
+            <?= $form->field($model, 'oo_A_speaks', $fieldOption)->label($debate->oo_team->speakerA->name)->textInput($textOption) ?>
+            <?= $form->field($model, 'oo_B_speaks', $fieldOption)->label($debate->oo_team->speakerB->name)->textInput($textOption) ?>
+        </div>
+    </div>
+    <div class="row">
+        <div class="<?= $cols ?>">
+            <h3>Closing Government</h3>
+            <?= $form->field($model, 'cg_A_speaks', $fieldOption)->label($debate->cg_team->speakerA->name)->textInput($textOption) ?>
+            <?= $form->field($model, 'cg_B_speaks', $fieldOption)->label($debate->cg_team->speakerB->name)->textInput($textOption) ?>
+        </div>
+        <div class="<?= $cols ?>">
+            <h3>Closing Opposition</h3>
+            <?= $form->field($model, 'co_A_speaks', $fieldOption)->label($debate->co_team->speakerA->name)->textInput($textOption) ?>
+            <?= $form->field($model, 'co_B_speaks', $fieldOption)->label($debate->co_team->speakerB->name)->textInput($textOption) ?>
+        </div>
+    </div>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
