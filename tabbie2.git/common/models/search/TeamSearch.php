@@ -70,16 +70,15 @@ class TeamSearch extends Team {
             return $dataProvider;
         }
 
-
-        $query->andFilterWhere(['id' => $this->id]);
-        $query->andFilterWhere(['like', 'name', $this->name]);
-
         // filter by user name
         $query->where("(CONCAT(uA.givenname, ' ', uA.surename) LIKE '%" . $this->speakerName . "%') OR (CONCAT(uB.givenname, ' ', uB.surename) LIKE '%" . $this->speakerName . "%')");
         // filter by society name
         $query->joinWith(['society' => function ($q) {
                 $q->where('society.fullname LIKE "%' . $this->societyName . '%"');
             }]);
+
+        $query->andFilterWhere(['id' => $this->id]);
+        $query->andFilterWhere(['like', 'name', $this->name]);
 
         //Filter for Tournament scope
         //@todo Unknow why this line is neccessary -> siehe self:50
