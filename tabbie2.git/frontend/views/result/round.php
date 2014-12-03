@@ -23,6 +23,14 @@ $this->params['breadcrumbs'][] = $this->title;
             "data-pjax" => 0,
         ]);
         ?>
+        &nbsp;|&nbsp;
+        <?=
+        Html::a("Switch to Venue View", ["round",
+            "id" => $round_id,
+            "tournament_id" => $tournament->id,
+            "view" => "overview",
+                ], ["class" => "btn btn-default"]);
+        ?>
     </p>
     <!-- AJAX -->
     <?=

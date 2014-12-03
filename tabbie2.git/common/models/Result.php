@@ -45,7 +45,9 @@ class Result extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['debate_id', 'og_A_speaks', 'og_B_speaks', 'og_place', 'oo_A_speaks', 'oo_B_speaks', 'oo_place', 'cg_A_speaks', 'cg_B_speaks', 'cg_place', 'co_A_speaks', 'co_B_speaks', 'co_place', 'enteredBy_adjudicator_id'], 'required'],
-            [['debate_id', 'og_A_speaks', 'og_B_speaks', 'og_place', 'oo_A_speaks', 'oo_B_speaks', 'oo_place', 'cg_A_speaks', 'cg_B_speaks', 'cg_place', 'co_A_speaks', 'co_B_speaks', 'co_place', 'enteredBy_adjudicator_id'], 'integer'],
+            [['debate_id', 'og_place', 'oo_place', 'cg_place', 'co_place', 'enteredBy_adjudicator_id'], 'integer'],
+            [['og_A_speaks', 'og_B_speaks', 'oo_A_speaks', 'oo_B_speaks', 'cg_A_speaks', 'cg_B_speaks', 'co_A_speaks', 'co_B_speaks'],
+                "integer", "max" => Yii::$app->params["speaks_max"], "min" => Yii::$app->params["speaks_min"]],
             ['debate_id', 'unique'],
             [['time', 'confirmed'], 'safe']
         ];
@@ -60,16 +62,16 @@ class Result extends \yii\db\ActiveRecord {
             'debate_id' => Yii::t('app', 'Debate ID'),
             'og_A_speaks' => Yii::t('app', 'OG A Speaks'),
             'og_B_speaks' => Yii::t('app', 'OG B Speaks'),
-            'og_place' => Yii::t('app', 'Og Place'),
+            'og_place' => Yii::t('app', 'OG Place'),
             'oo_A_speaks' => Yii::t('app', 'OO A Speaks'),
             'oo_B_speaks' => Yii::t('app', 'OO B Speaks'),
-            'oo_place' => Yii::t('app', 'Oo Place'),
+            'oo_place' => Yii::t('app', 'OO Place'),
             'cg_A_speaks' => Yii::t('app', 'CG A Speaks'),
             'cg_B_speaks' => Yii::t('app', 'CG B Speaks'),
-            'cg_place' => Yii::t('app', 'Cg Place'),
+            'cg_place' => Yii::t('app', 'CG Place'),
             'co_A_speaks' => Yii::t('app', 'CO A Speaks'),
             'co_B_speaks' => Yii::t('app', 'CO B Speaks'),
-            'co_place' => Yii::t('app', 'Co Place'),
+            'co_place' => Yii::t('app', 'CO Place'),
             'time' => Yii::t('app', 'Time'),
             'enteredBy_adjudicator_id' => Yii::t('app', 'Entered By Adjudicator ID'),
         ];

@@ -52,7 +52,7 @@ class ResultController extends BaseController {
      * Lists all Result models.
      * @return mixed
      */
-    public function actionRound($id) {
+    public function actionRound($id, $view = "overview") {
         $searchModel = new ResultSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->_tournament->id, $id);
 
@@ -64,7 +64,18 @@ class ResultController extends BaseController {
             ],
         ]);
 
-        return $this->render('round', [
+        switch ($view) {
+            case "overview":
+                $view = "overview";
+                break;
+            case "full":
+                $view = "round";
+                break;
+            default:
+                throw new Exception("View does not exist", 404);
+        }
+
+        return $this->render($view, [
                     'round_id' => $id,
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,

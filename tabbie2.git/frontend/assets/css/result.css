@@ -11,3 +11,24 @@
     position: absolute;
     right: 20px;
 }
+
+#debates.list-view .venue {
+    margin: 10px 0;
+}
+
+#debates.list-view .venue .status {
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    border: 1px solid gray;
+    float: left;
+    margin-right: 5px;
+}
+
+.status.entered {
+    background: green;
+}
+
+.status.missing {
+    background: yellow;
+}
