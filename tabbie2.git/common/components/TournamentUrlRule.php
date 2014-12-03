@@ -107,7 +107,8 @@ class TournamentUrlRule extends UrlRule {
 
                     //Further Params
                     for ($i = $startParam; $i <= count($parts); $i = $i + 2) {
-                        $params[$parts[$i]] = $parts[$i + 1];
+                        if (isset($parts[$i + 1]))
+                            $params[$parts[$i]] = $parts[$i + 1];
                     }
 
                     $params['tournament_id'] = $tournament->id;
