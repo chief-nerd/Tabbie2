@@ -18,7 +18,6 @@ class TournamentContextFilter extends ActionFilter {
 
             if ($action->controller->hasMethod('_setContext') && $action->controller->hasMethod('_getContext') && $tournamnet_identifier > 0) {
                 $action->controller->_setContext($tournamnet_identifier);
-                Yii::trace("Set Context: " . $tournamnet_identifier, __METHOD__);
                 return true;
             } else {
                 \Yii::error("Controller " . $action->controller->id . "/" . $action->id . " failed with tournamnet_identifier=" . $tournamnet_identifier . "\n GET:" . print_r($_GET, true));
