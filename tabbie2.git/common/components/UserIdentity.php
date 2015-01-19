@@ -4,6 +4,7 @@ namespace common\components;
 
 use \common\models\Tournament;
 use \common\models\User;
+use common\models\Debate;
 
 class UserIdentity extends \yii\web\User {
 
@@ -55,11 +56,55 @@ class UserIdentity extends \yii\web\User {
     }
 
     /**
+     *
+     * @param Tournament $model
+     */
+    public function hasOpenFeedback($model) {
+        $lastRound = $model->getLastRound();
+        if ($lastRound) {
+            /* @var $debate Debate */
+            foreach ($lastRound->getDebates()->all() as $debate) {
+                /** check teams* */
+                if ($debate->og_feedback == 0 && $debate->isOGTeamMember($this->id))
+                    return $debate;
+                if ($debate->oo_feedback == 0 && $debate->isOOTeamMember($this->id))
+                    return $debate;
+                if ($debate->cg_feedback == 0 && $debate->isCGTeamMember($this->id))
+                    return $debate;
+                if ($debate->co_feedback == 0 && $debate->isCOTeamMember($this->id))
+                    return $debate;
+
+                /** check judges * */
+                foreach ($debate->panel->adjudicatorInPanels as $judge) {
+                    if ($judge->got_feedback == 0 && $judge->adjudicator->user_id == $this->id)
+                        return $debate;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Get the full User Model
      * @return \common\models\User
      */
     public function getModel() {
         return $user = User::findOne($this->id);
+    }
+
+    public function getRoleModel($tid) {
+        $adj = \common\models\Adjudicator::find()->where(["tournament_id" => $tid, "user_id" => $this->id])->one();
+        if ($adj instanceof \common\models\Adjudicator)
+            return $adj;
+        else {
+            $team = \common\models\Team::find()->where("tournament_id = :tid AND (speakerA_id = :uid OR speaker_B_id = :uid)", [
+                        ":tid" => $tid,
+                        ":uid" => $this->id,
+                    ])->one();
+            if ($team instanceof \common\models\Team)
+                return $team;
+        }
+        return null;
     }
 
 }

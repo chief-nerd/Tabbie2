@@ -6,7 +6,7 @@ $this->context->menuItems = [
     ['label' => 'Run', 'url' => "#run", "linkOptions" => ["class" => "run"]],
 ];
 
-$this->title = "Round " . $round->id . " Draw";
+$this->title = "Round " . $round->number . " Draw";
 ?>
 <div class="row">
     <div class="col-sm-12">

@@ -9,6 +9,7 @@ use yii\base\Exception;
  * This is the model class for table "round".
  *
  * @property integer $id
+ * @property integer $number
  * @property integer $tournament_id
  * @property string $motion
  * @property string $infoslide
@@ -59,7 +60,7 @@ class Round extends \yii\db\ActiveRecord {
         else if ($this->time)
             return Round::STATUS_CREATED;
         else
-            throw new Exception("Unknow Round status for Round" . $this->id . " No create time");
+            throw new Exception("Unknow Round status for Round" . $this->number . " No create time");
     }
 
     public function isJudgingTime() {
@@ -101,8 +102,8 @@ class Round extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['id', 'tournament_id', 'motion'], 'required'],
-            [['id', 'tournament_id', 'published'], 'integer'],
+            [['id', 'number', 'tournament_id', 'motion'], 'required'],
+            [['id', 'number', 'tournament_id', 'published'], 'integer'],
             [['motion', 'infoslide'], 'string'],
             [['time'], 'safe']
         ];
@@ -113,6 +114,7 @@ class Round extends \yii\db\ActiveRecord {
      */
     public function attributeLabels() {
         return [
+            'id' => Yii::t('app', 'Round ID'),
             'id' => Yii::t('app', 'Round Number'),
             'tournament_id' => Yii::t('app', 'Tournament ID'),
             'motion' => Yii::t('app', 'Motion'),

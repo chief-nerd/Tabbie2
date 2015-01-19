@@ -86,7 +86,7 @@ AppAsset::register($this);
 
                     $rounds = array();
                     foreach ($tournament->rounds as $r) {
-                        $rounds[] = ['label' => "Round #$r->id", 'url' => ['round/view', "id" => $r->id, "tournament_id" => $tournament->id]];
+                        $rounds[] = ['label' => "Round #$r->number", 'url' => ['round/view', "id" => $r->id, "tournament_id" => $tournament->id]];
                     }
                     $menuItems = [
                         ['label' => 'Venues', 'url' => '#',
@@ -125,6 +125,8 @@ AppAsset::register($this);
                                 '<li class="divider"></li>',
                                 ['label' => 'Adjudicator Feedback', 'url' => ['feedback/adjudicator', "tournament_id" => $tournament->id]],
                                 ['label' => 'Team to Chair Feedback', 'url' => ['feedback/team', "tournament_id" => $tournament->id]],
+                                '<li class="divider"></li>',
+                                ['label' => 'Setup Questions', 'url' => ['question/index', "tournament_id" => $tournament->id]],
                                 '<li class="divider"></li>',
                                 ['label' => 'Tournament Feedback', 'url' => ['feedback/tournament', "tournament_id" => $tournament->id]],
                                 ['label' => Yii::$app->params["appName"] . ' Feedback', 'url' => ['feedback/tabbie', "tournament_id" => $tournament->id]],

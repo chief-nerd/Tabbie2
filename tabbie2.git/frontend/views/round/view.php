@@ -10,11 +10,11 @@ use kartik\popover\PopoverX;
 /* @var $this yii\web\View */
 /* @var $model common\models\Round */
 
-$this->title = "Round #" . $model->id;
+$this->title = "Round #" . $model->number;
 $tournament = $this->context->_getContext();
 $this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Rounds'), 'url' => ['index', "tournament_id" => $tournament->id]];
-$this->params['breadcrumbs'][] = "#" . $model->id;
+$this->params['breadcrumbs'][] = "#" . $model->number;
 ?>
 <div class="round-view">
 

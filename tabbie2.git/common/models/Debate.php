@@ -160,4 +160,32 @@ class Debate extends \yii\db\ActiveRecord {
         return $query->params($params)->one();
     }
 
+    public function isOGTeamMember($id) {
+        if ($this->og_team->speakerA_id == $id || $this->og_team->speakerB_id == $id)
+            return true;
+        else
+            return false;
+    }
+
+    public function isOOTeamMember($id) {
+        if ($this->oo_team->speakerA_id == $id || $this->oo_team->speakerB_id == $id)
+            return true;
+        else
+            return false;
+    }
+
+    public function isCGTeamMember($id) {
+        if ($this->cg_team->speakerA_id == $id || $this->cg_team->speakerB_id == $id)
+            return true;
+        else
+            return false;
+    }
+
+    public function isCOTeamMember($id) {
+        if ($this->co_team->speakerA_id == $id || $this->co_team->speakerB_id == $id)
+            return true;
+        else
+            return false;
+    }
+
 }

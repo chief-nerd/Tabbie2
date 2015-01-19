@@ -23,12 +23,19 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-sm-4 text-right">
 
             <?
-            if ($debate = Yii::$app->user->hasChairedLastRound($model)) {
+            $debate = Yii::$app->user->hasOpenFeedback($model);
+            if ($debate instanceof common\models\Debate) {
+                echo Html::a(Yii::t('app', 'Enter Feedback'), ['feedback/create', "id" => $debate->id, "tournament_id" => $model->id], ['class' => 'btn btn-success']);
+            }
+            ?>
+            <?
+            $debate = Yii::$app->user->hasChairedLastRound($model);
+            if ($debate instanceof common\models\Debate && !$debate->result instanceof \common\models\Result) {
                 echo Html::a(Yii::t('app', 'Enter Result'), ['result/create', "id" => $debate->id, "tournament_id" => $model->id], ['class' => 'btn btn-success']);
             }
             ?>
 
-            <?= Html::a(Yii::t('app', 'Display Draw'), ['display/index', "tournament_id" => $model->id], ['class' => 'btn btn-success']) ?>
+            <?= Html::a(Yii::t('app', 'Display Draw'), ['display/index', "tournament_id" => $model->id], ['class' => 'btn btn-default']) ?>
             <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         </div>
     </div>
