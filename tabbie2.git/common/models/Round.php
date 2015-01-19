@@ -102,7 +102,7 @@ class Round extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['id', 'number', 'tournament_id', 'motion'], 'required'],
+            [['number', 'tournament_id', 'motion'], 'required'],
             [['id', 'number', 'tournament_id', 'published'], 'integer'],
             [['motion', 'infoslide'], 'string'],
             [['time'], 'safe']
@@ -152,8 +152,8 @@ class Round extends \yii\db\ActiveRecord {
      */
     public function generateDraw() {
         try {
-            $algoName = "common\components\TabAlgorithmus\\" . "DummyTest";
-            $algo = new $algoName();
+
+            $algo = $this->tournament->getTabAlgorithmInstance();
             $venues = Venue::find()->active()->tournament($this->tournament->id)->all();
             $draw = $algo->makeDraw($venues, $this->tournament->teams, $this->tournament->adjudicators);
 
@@ -200,7 +200,7 @@ class Round extends \yii\db\ActiveRecord {
                 $debate->venue_id = $line["venue"]->id;
                 $debate->panel_id = $panelID;
 
-                $algo->calcEnergyLevel($debate);
+                $algo->calcEnergyLevel($debate, $this->tournament);
 
                 if (!$debate->save())
                     throw new Exception("Can't save Debate " . print_r($debate->getErrors(), true));

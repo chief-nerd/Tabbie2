@@ -4,23 +4,21 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Round */
+/* @var $model common\models\EnergyConfig */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="round-form">
+<div class="energy-config-form">
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'number')->textInput(["readonly" => "readonly"]); ?>
+    <?= $form->field($model, 'key')->textInput(['maxlength' => 100]) ?>
 
-    <?= Html::activeHiddenInput($model, 'tournament_id') ?>
+    <?= $form->field($model, 'tournament_id')->textInput() ?>
 
-    <?= $form->field($model, 'motion')->textarea(['rows' => 2]) ?>
+    <?= $form->field($model, 'label')->textInput(['maxlength' => 45]) ?>
 
-    <?= $form->field($model, 'infoslide')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'published')->checkbox(); ?>
+    <?= $form->field($model, 'value')->textInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

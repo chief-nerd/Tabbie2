@@ -39,6 +39,8 @@ use kartik\widgets\DateTimePicker;
     ]);
     ?>
 
+    <?= $form->field($model, 'tabAlgorithmClass')->dropDownList($model->getTabAlgorithmOptions()) ?>
+
     <div class="row">
         <div class="col-sm-2">
             <img class="image-responsive" style="margin-right: 50px;" src="<?= $model["logo"] ?>" height="150" alt="<?= $model["fullname"] ?>">

@@ -16,6 +16,7 @@ use Yii;
  * @property string $end_date
  * @property string $logo
  * @property string $time
+ * @property string $tabAlgorithmClass
  *
  * @property Adjudicator[] $adjudicators
  * @property DrawAfterRound[] $drawAfterRounds
@@ -45,7 +46,7 @@ class Tournament extends \yii\db\ActiveRecord {
             [['url_slug', 'convenor_user_id', 'tabmaster_user_id', 'name', 'start_date', 'end_date'], 'required'],
             [['convenor_user_id', 'tabmaster_user_id'], 'integer'],
             [['start_date', 'end_date', 'time'], 'safe'],
-            [['url_slug', 'name'], 'string', 'max' => 100],
+            [['url_slug', 'name', 'tabAlgorithmClass'], 'string', 'max' => 100],
             [['logo'], 'string', 'max' => 255],
             [['url_slug'], 'unique']
         ];
@@ -85,7 +86,7 @@ class Tournament extends \yii\db\ActiveRecord {
         if (Tournament::findByUrlSlug($potential_slug) !== null) {
             $i = 1;
             $iterate_slug = $potential_slug . "-" . $i;
-            while (Tournament::findByUrlSlug($try_slug) !== null) {
+            while (Tournament::findByUrlSlug($iterate_slug) !== null) {
                 $i++;
                 $iterate_slug = $potential_slug . "-" . $i;
             }
@@ -119,6 +120,13 @@ class Tournament extends \yii\db\ActiveRecord {
      */
     public function getAdjudicators() {
         return $this->hasMany(Adjudicator::className(), ['tournament_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEnergyConfigs() {
+        return $this->hasMany(EnergyConfig::className(), ['tournament_id' => 'id']);
     }
 
     /**
@@ -210,8 +218,22 @@ class Tournament extends \yii\db\ActiveRecord {
         return $this->hasMany(Panel::className(), ['tournament_id' => 'id']);
     }
 
-    public static function getAlgoOptions() {
-        return Yii::$app->params["algoOptions"];
+    public static function getTabAlgorithmOptions() {
+        $dropdown = [];
+        foreach (Yii::$app->params["tabAlgorithmOptions"] as $algoOptions) {
+            $dropdown[] = [$algoOptions => $algoOptions];
+        }
+        return $dropdown;
+    }
+
+    /**
+     * Get a new Instance of the Tab Algorithm
+     * @return \common\models\algoName
+     */
+    public function getTabAlgorithmInstance() {
+        $algoClass = $this->tabAlgorithmClass;
+        $algoName = "common\components\TabAlgorithmus\\" . $algoClass;
+        return new $algoName();
     }
 
 }

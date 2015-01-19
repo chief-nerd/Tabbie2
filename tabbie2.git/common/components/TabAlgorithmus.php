@@ -20,4 +20,9 @@ abstract class TabAlgorithmus {
      * @param \common\models\Debate $debate The Debate to be calculated
      */
     abstract public function calcEnergyLevel($debate);
+
+    /**
+     * @param \common\models\Debate $debate The Debate to be calculated
+     */
+    abstract public function setup($tournament);
 }

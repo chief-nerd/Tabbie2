@@ -113,6 +113,8 @@ AppAsset::register($this);
                         ],
                         ['label' => 'Rounds', 'url' => '#',
                             "items" => array_merge_recursive([
+                                ['label' => 'Energy Options', 'url' => ['energy/index', "tournament_id" => $tournament->id]],
+                                '<li class="divider"></li>',
                                 ['label' => 'List Rounds', 'url' => ['round/index', "tournament_id" => $tournament->id]],
                                 ['label' => 'Create Round', 'url' => ['round/create', "tournament_id" => $tournament->id]],
                                 '<li class="divider"></li>',

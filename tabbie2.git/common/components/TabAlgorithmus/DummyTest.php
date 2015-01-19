@@ -69,10 +69,29 @@ class DummyTest extends TabAlgorithmus {
     /**
      *
      * @param Debate $debate
+     * @param type $name Description
      * @return boolean
      */
     public function calcEnergyLevel($debate) {
+        $tournament = $debate->tournament;
         $debate->energy = rand(1, 100);
+        return true;
+    }
+
+    /**
+     * Sets up the variables in the EnergyConfig
+     * @param \common\models\Tournament $tournament
+     */
+    public function setup($tournament) {
+        $tid = $tournament->id;
+
+        $strike = new \common\models\EnergyConfig();
+        $strike->tournament_id = $tid;
+        $strike->label = "Strike Penalty";
+        $strike->key = "strike";
+        $strike->value = -1000;
+        $strike->save();
+
         return true;
     }
 

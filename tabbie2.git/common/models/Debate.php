@@ -27,6 +27,7 @@ use Yii;
  * @property Venue $venue
  * @property Feedback[] $feedbacks
  * @property Result[] $results
+ * @property Tournament $tournament
  */
 class Debate extends \yii\db\ActiveRecord {
 

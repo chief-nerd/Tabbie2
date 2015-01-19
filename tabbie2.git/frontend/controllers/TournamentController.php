@@ -83,6 +83,9 @@ class TournamentController extends BaseController {
                 $model->logo = null;
 
             if ($model->save()) {
+                $energyConf = new models\EnergyConfig();
+                $energyConf->setup($model);
+
                 return $this->redirect(['view', 'id' => $model->id]);
             } else {
                 Yii::$app->session->setFlash("error", "Can't save Tournament!" . print_r($model->getErrors(), true));

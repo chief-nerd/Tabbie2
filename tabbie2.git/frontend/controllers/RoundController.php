@@ -85,7 +85,7 @@ class RoundController extends BaseController {
 
         if ($model->load(Yii::$app->request->post())) {
 
-            if ($model->generateDraw() && $model->save()) {
+            if ($model->save() && $model->generateDraw()) {
                 return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
             } else {
                 Yii::$app->session->addFlash("error", print_r($model->getErrors(), true));
@@ -98,7 +98,7 @@ class RoundController extends BaseController {
     }
 
     public function nextRoundNumber() {
-        $lastRound = Round::find()->where(["tournament_id" => $this->_tournament->id])->orderBy("number")->one();
+        $lastRound = Round::find()->where(["tournament_id" => $this->_tournament->id])->orderBy(["number" => SORT_DESC])->one();
         if (!$lastRound)
             return 1;
         else
