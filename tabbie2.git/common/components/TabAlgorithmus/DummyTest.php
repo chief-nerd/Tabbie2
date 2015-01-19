@@ -3,11 +3,12 @@
 namespace common\components\TabAlgorithmus;
 
 use \common\components\TabAlgorithmus;
+use common\models\Debate;
 use yii\base\Exception;
 
 class DummyTest extends TabAlgorithmus {
 
-    public function makeDraw($venues, $teams, $adjudicators, $preset_panels = null, $strikes = null) {
+    public function makeDraw($venues, $teams, $adjudicators, $preset_panels = null) {
 
         if (count($teams) % 4 != 0)
             throw new Exception("Amount of Teams must be divided by 4 ;)", "500");
@@ -63,6 +64,16 @@ class DummyTest extends TabAlgorithmus {
         }
 
         return $draw;
+    }
+
+    /**
+     *
+     * @param Debate $debate
+     * @return boolean
+     */
+    public function calcEnergyLevel($debate) {
+        $debate->energy = rand(1, 100);
+        return true;
     }
 
 }

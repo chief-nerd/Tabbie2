@@ -18,7 +18,6 @@ use Yii;
  * @property Society $society
  * @property AdjudicatorInPanel[] $adjudicatorInPanels
  * @property Panel[] $panels
- * @property Strikes[] $strikes
  * @property Team[] $teams
  */
 class Adjudicator extends \yii\db\ActiveRecord {
@@ -95,20 +94,6 @@ class Adjudicator extends \yii\db\ActiveRecord {
      */
     public function getInSocieties() {
         return $this->hasMany(InSociety::className(), ['id' => 'user_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getStrikes() {
-        return $this->hasMany(Strikes::className(), ['adjudicator_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getStrikedTeams() {
-        return $this->hasMany(Team::className(), ['id' => 'team_id'])->viaTable('strikes', ['adjudicator_id' => 'id']);
     }
 
     public function getSociety() {

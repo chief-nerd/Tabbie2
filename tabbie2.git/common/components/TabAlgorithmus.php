@@ -14,5 +14,10 @@ abstract class TabAlgorithmus {
      * )
      * @param \common\models\Adjudicator[] $adjudicators  Array of all active adujicators
      */
-    abstract public function makeDraw($venues, $teams, $adjudicators, $preset_panels, $strikes);
+    abstract public function makeDraw($venues, $teams, $adjudicators, $preset_panels);
+
+    /**
+     * @param \common\models\Debate $debate The Debate to be calculated
+     */
+    abstract public function calcEnergyLevel($debate);
 }

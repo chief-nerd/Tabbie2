@@ -16,7 +16,6 @@ use Yii;
  *
  * @property DrawPosition[] $drawPositions
  * @property InSociety $inSocieties
- * @property Strikes[] $strikes
  * @property Adjudicator[] $adjudicators
  * @property Tournament $tournament
  * @property User $speakerA
@@ -67,20 +66,6 @@ class Team extends \yii\db\ActiveRecord {
      */
     public function getDrawPositions() {
         return $this->hasMany(DrawPosition::className(), ['team_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getStrikes() {
-        return $this->hasMany(Strikes::className(), ['team_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getStrikedAdjudicators() {
-        return $this->hasMany(Adjudicator::className(), ['id' => 'adjudicator_id'])->viaTable('strikes', ['team_id' => 'id']);
     }
 
     /**

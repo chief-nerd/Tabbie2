@@ -199,6 +199,9 @@ class Round extends \yii\db\ActiveRecord {
                 $debate->co_team_id = $line["co"]->id;
                 $debate->venue_id = $line["venue"]->id;
                 $debate->panel_id = $panelID;
+
+                $algo->calcEnergyLevel($debate);
+
                 if (!$debate->save())
                     throw new Exception("Can't save Debate " . print_r($debate->getErrors(), true));
             }

@@ -16,6 +16,7 @@ use Yii;
  * @property integer $co_team_id
  * @property integer $panel_id
  * @property integer $venue_id
+ * @property int $energy
  * @property integer $og_feedback
  * @property integer $oo_feedback
  * @property integer $cg_feedback
@@ -42,7 +43,7 @@ class Debate extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['round_id', 'tournament_id', 'og_team_id', 'oo_team_id', 'cg_team_id', 'co_team_id', 'panel_id', 'venue_id'], 'required'],
-            [['round_id', 'tournament_id', 'og_team_id', 'oo_team_id', 'cg_team_id', 'co_team_id', 'panel_id', 'venue_id', 'og_feedback', 'oo_feedback', 'cg_feedback', 'co_feedback'], 'integer'],
+            [['round_id', 'tournament_id', 'og_team_id', 'oo_team_id', 'cg_team_id', 'co_team_id', 'panel_id', 'venue_id', 'energy', 'og_feedback', 'oo_feedback', 'cg_feedback', 'co_feedback'], 'integer'],
             [['time'], 'safe']
         ];
     }
