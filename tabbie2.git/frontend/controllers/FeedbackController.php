@@ -60,7 +60,7 @@ class FeedbackController extends BaseController {
      * @return mixed
      */
     public function actionCreate($id) {
-        $model = new feedback();
+        $model = new Feedback();
         $model->debate_id = $id;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
