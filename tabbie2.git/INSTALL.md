@@ -35,4 +35,10 @@ These instructions are for XAMPP on Linux.
 
         $ ./yii migrate
 
-9.
+9. Open in your browser: http://localhost/
+
+   If you encounter an error about `vendor/bower/dist` not existing, it might
+   have been installed as `vendor/bower-asset` instead. I found a symbolic link
+   helped:
+        $ cd vendor
+        $ ln -s bower-asset bower
