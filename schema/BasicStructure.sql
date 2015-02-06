@@ -3,7 +3,7 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Table `migration`
+-- Table `tabbie`.`migration`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`migration` ;
 
@@ -17,7 +17,7 @@ COLLATE = latin1_swedish_ci;
 
 
 -- -----------------------------------------------------
--- Table `user`
+-- Table `tabbie`.`user`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`user` ;
 
@@ -40,7 +40,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tournament`
+-- Table `tabbie`.`tournament`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`tournament` ;
 
@@ -73,7 +73,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `society`
+-- Table `tabbie`.`society`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`society` ;
 
@@ -89,7 +89,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `adjudicator`
+-- Table `tabbie`.`adjudicator`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`adjudicator` ;
 
@@ -122,7 +122,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `team`
+-- Table `tabbie`.`team`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`team` ;
 
@@ -162,18 +162,13 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `round`
+-- Table `tabbie`.`round`
 -- -----------------------------------------------------
-<<<<<<< HEAD
-CREATE TABLE IF NOT EXISTS `round` (
-  `id` INT UNSIGNED NOT NULL,
-=======
 DROP TABLE IF EXISTS `tabbie`.`round` ;
 
 CREATE TABLE IF NOT EXISTS `tabbie`.`round` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `number` INT NOT NULL,
->>>>>>> master
   `tournament_id` INT UNSIGNED NOT NULL,
   `motion` TEXT NOT NULL,
   `infoslide` TEXT NULL,
@@ -194,7 +189,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `venue`
+-- Table `tabbie`.`venue`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`venue` ;
 
@@ -214,7 +209,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `panel`
+-- Table `tabbie`.`panel`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`panel` ;
 
@@ -235,7 +230,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `debate`
+-- Table `tabbie`.`debate`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`debate` ;
 
@@ -272,7 +267,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `result`
+-- Table `tabbie`.`result`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`result` ;
 
@@ -311,7 +306,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `in_society`
+-- Table `tabbie`.`in_society`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`in_society` ;
 
@@ -337,7 +332,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `special_needs`
+-- Table `tabbie`.`special_needs`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`special_needs` ;
 
@@ -349,7 +344,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `username_has_special_needs`
+-- Table `tabbie`.`username_has_special_needs`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`username_has_special_needs` ;
 
@@ -373,7 +368,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `draw_after_round`
+-- Table `tabbie`.`draw_after_round`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`draw_after_round` ;
 
@@ -399,7 +394,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `draw_position`
+-- Table `tabbie`.`draw_position`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`draw_position` ;
 
@@ -434,7 +429,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `venue_provides_special_needs`
+-- Table `tabbie`.`venue_provides_special_needs`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`venue_provides_special_needs` ;
 
@@ -458,17 +453,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
-<<<<<<< HEAD
--- Table `questions`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `questions` (
-=======
 -- Table `tabbie`.`question`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`question` ;
 
 CREATE TABLE IF NOT EXISTS `tabbie`.`question` (
->>>>>>> master
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `text` VARCHAR(255) NOT NULL,
   `type` INT NOT NULL,
@@ -480,17 +469,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
-<<<<<<< HEAD
--- Table `tournament_has_questions`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `tournament_has_questions` (
-=======
 -- Table `tabbie`.`tournament_has_question`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`tournament_has_question` ;
 
 CREATE TABLE IF NOT EXISTS `tabbie`.`tournament_has_question` (
->>>>>>> master
   `tournament_id` INT UNSIGNED NOT NULL,
   `questions_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`tournament_id`, `questions_id`),
@@ -510,7 +493,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `adjudicator_in_panel`
+-- Table `tabbie`.`adjudicator_in_panel`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`adjudicator_in_panel` ;
 
@@ -536,7 +519,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `feedback`
+-- Table `tabbie`.`feedback`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`feedback` ;
 
@@ -555,7 +538,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `answer`
+-- Table `tabbie`.`answer`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`answer` ;
 
@@ -574,7 +557,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `feedback_has_answer`
+-- Table `tabbie`.`feedback_has_answer`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`feedback_has_answer` ;
 
@@ -598,25 +581,6 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
-<<<<<<< HEAD
--- Table `strikes`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `strikes` (
-  `team_id` INT UNSIGNED NOT NULL,
-  `adjudicator_id` INT UNSIGNED NOT NULL,
-  `approved` TINYINT(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`team_id`, `adjudicator_id`),
-  INDEX `fk_team_has_adjudicator_adjudicator1_idx` (`adjudicator_id` ASC),
-  INDEX `fk_team_has_adjudicator_team1_idx` (`team_id` ASC),
-  CONSTRAINT `fk_team_has_adjudicator_team1`
-    FOREIGN KEY (`team_id`)
-    REFERENCES `tabbie`.`team` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_team_has_adjudicator_adjudicator1`
-    FOREIGN KEY (`adjudicator_id`)
-    REFERENCES `tabbie`.`adjudicator` (`id`)
-=======
 -- Table `tabbie`.`energy_config`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tabbie`.`energy_config` ;
@@ -632,7 +596,6 @@ CREATE TABLE IF NOT EXISTS `tabbie`.`energy_config` (
   CONSTRAINT `fk_energy_config_tournament1`
     FOREIGN KEY (`tournament_id`)
     REFERENCES `tabbie`.`tournament` (`id`)
->>>>>>> master
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
