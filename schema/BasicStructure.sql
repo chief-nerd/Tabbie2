@@ -5,7 +5,9 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Table `migration`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `migration` (
+DROP TABLE IF EXISTS `tabbie`.`migration` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`migration` (
   `version` VARCHAR(180) NOT NULL,
   `apply_time` INT(11) NULL DEFAULT NULL,
   PRIMARY KEY (`version`))
@@ -17,7 +19,9 @@ COLLATE = latin1_swedish_ci;
 -- -----------------------------------------------------
 -- Table `user`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `user` (
+DROP TABLE IF EXISTS `tabbie`.`user` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`user` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
   `auth_key` VARCHAR(32) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
@@ -38,7 +42,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `tournament`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `tournament` (
+DROP TABLE IF EXISTS `tabbie`.`tournament` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`tournament` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `url_slug` VARCHAR(100) NOT NULL,
   `convenor_user_id` INT(11) UNSIGNED NOT NULL,
@@ -48,6 +54,7 @@ CREATE TABLE IF NOT EXISTS `tournament` (
   `end_date` DATETIME NOT NULL,
   `logo` VARCHAR(255) NULL,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `tabAlgorithmClass` VARCHAR(100) NOT NULL DEFAULT 'StrictWUDCRules',
   PRIMARY KEY (`id`),
   INDEX `fk_tournament_user1_idx` (`convenor_user_id` ASC),
   INDEX `fk_tournament_user2_idx` (`tabmaster_user_id` ASC),
@@ -68,7 +75,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `society`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `society` (
+DROP TABLE IF EXISTS `tabbie`.`society` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`society` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `fullname` VARCHAR(255) NULL,
   `adr` VARCHAR(45) NULL,
@@ -82,7 +91,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `adjudicator`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `adjudicator` (
+DROP TABLE IF EXISTS `tabbie`.`adjudicator` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`adjudicator` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `tournament_id` INT UNSIGNED NOT NULL,
   `user_id` INT UNSIGNED NOT NULL,
@@ -113,7 +124,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `team`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `team` (
+DROP TABLE IF EXISTS `tabbie`.`team` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`team` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NULL,
   `tournament_id` INT UNSIGNED NOT NULL,
@@ -151,8 +164,16 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `round`
 -- -----------------------------------------------------
+<<<<<<< HEAD
 CREATE TABLE IF NOT EXISTS `round` (
   `id` INT UNSIGNED NOT NULL,
+=======
+DROP TABLE IF EXISTS `tabbie`.`round` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`round` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `number` INT NOT NULL,
+>>>>>>> master
   `tournament_id` INT UNSIGNED NOT NULL,
   `motion` TEXT NOT NULL,
   `infoslide` TEXT NULL,
@@ -175,7 +196,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `venue`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `venue` (
+DROP TABLE IF EXISTS `tabbie`.`venue` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`venue` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `tournament_id` INT UNSIGNED NOT NULL,
   `name` VARCHAR(100) NOT NULL,
@@ -193,7 +216,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `panel`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `panel` (
+DROP TABLE IF EXISTS `tabbie`.`panel` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`panel` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `strength` INT NOT NULL DEFAULT 0,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -212,7 +237,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `debate`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `debate` (
+DROP TABLE IF EXISTS `tabbie`.`debate` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`debate` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `round_id` INT UNSIGNED NOT NULL,
   `tournament_id` INT UNSIGNED NOT NULL,
@@ -222,6 +249,7 @@ CREATE TABLE IF NOT EXISTS `debate` (
   `co_team_id` INT UNSIGNED NOT NULL,
   `panel_id` INT UNSIGNED NOT NULL,
   `venue_id` INT UNSIGNED NOT NULL,
+  `energy` INT(11) NOT NULL DEFAULT 0,
   `og_feedback` TINYINT(1) NOT NULL DEFAULT 0,
   `oo_feedback` TINYINT(1) NOT NULL DEFAULT 0,
   `cg_feedback` TINYINT(1) NOT NULL DEFAULT 0,
@@ -246,7 +274,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `result`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `result` (
+DROP TABLE IF EXISTS `tabbie`.`result` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`result` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `debate_id` INT UNSIGNED NOT NULL,
   `og_A_speaks` TINYINT NOT NULL,
@@ -283,7 +313,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `in_society`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `in_society` (
+DROP TABLE IF EXISTS `tabbie`.`in_society` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`in_society` (
   `user_id` INT(10) UNSIGNED NOT NULL,
   `society_id` INT UNSIGNED NOT NULL,
   `starting` DATE NOT NULL,
@@ -307,7 +339,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `special_needs`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `special_needs` (
+DROP TABLE IF EXISTS `tabbie`.`special_needs` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`special_needs` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NULL,
   PRIMARY KEY (`id`))
@@ -317,7 +351,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `username_has_special_needs`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `username_has_special_needs` (
+DROP TABLE IF EXISTS `tabbie`.`username_has_special_needs` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`username_has_special_needs` (
   `username_id` INT UNSIGNED NOT NULL,
   `special_needs_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`username_id`, `special_needs_id`),
@@ -339,7 +375,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `draw_after_round`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `draw_after_round` (
+DROP TABLE IF EXISTS `tabbie`.`draw_after_round` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`draw_after_round` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `tournament_id` INT UNSIGNED NOT NULL,
   `round_id` INT UNSIGNED NOT NULL,
@@ -363,7 +401,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `draw_position`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `draw_position` (
+DROP TABLE IF EXISTS `tabbie`.`draw_position` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`draw_position` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `draw_id` INT UNSIGNED NOT NULL,
   `team_id` INT UNSIGNED NOT NULL,
@@ -396,7 +436,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `venue_provides_special_needs`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `venue_provides_special_needs` (
+DROP TABLE IF EXISTS `tabbie`.`venue_provides_special_needs` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`venue_provides_special_needs` (
   `venue_id` INT UNSIGNED NOT NULL,
   `special_needs_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`venue_id`, `special_needs_id`),
@@ -416,11 +458,19 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+<<<<<<< HEAD
 -- Table `questions`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `questions` (
+=======
+-- Table `tabbie`.`question`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `tabbie`.`question` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`question` (
+>>>>>>> master
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `text` VARCHAR(45) NOT NULL,
+  `text` VARCHAR(255) NOT NULL,
   `type` INT NOT NULL,
   `apply_T2C` TINYINT(1) NOT NULL DEFAULT 0,
   `apply_C2W` TINYINT(1) NOT NULL DEFAULT 0,
@@ -430,9 +480,17 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+<<<<<<< HEAD
 -- Table `tournament_has_questions`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `tournament_has_questions` (
+=======
+-- Table `tabbie`.`tournament_has_question`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `tabbie`.`tournament_has_question` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`tournament_has_question` (
+>>>>>>> master
   `tournament_id` INT UNSIGNED NOT NULL,
   `questions_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`tournament_id`, `questions_id`),
@@ -445,7 +503,7 @@ CREATE TABLE IF NOT EXISTS `tournament_has_questions` (
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_tournament_has_questions_questions1`
     FOREIGN KEY (`questions_id`)
-    REFERENCES `tabbie`.`questions` (`id`)
+    REFERENCES `tabbie`.`question` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -454,10 +512,13 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `adjudicator_in_panel`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `adjudicator_in_panel` (
+DROP TABLE IF EXISTS `tabbie`.`adjudicator_in_panel` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`adjudicator_in_panel` (
   `adjudicator_id` INT UNSIGNED NOT NULL,
   `panel_id` INT UNSIGNED NOT NULL,
   `function` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  `got_feedback` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`adjudicator_id`, `panel_id`),
   INDEX `fk_adjudicator_has_panel_panel1_idx` (`panel_id` ASC),
   INDEX `fk_adjudicator_has_panel_adjudicator1_idx` (`adjudicator_id` ASC),
@@ -477,7 +538,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `feedback`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `feedback` (
+DROP TABLE IF EXISTS `tabbie`.`feedback` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`feedback` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `debate_id` INT UNSIGNED NOT NULL,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -494,7 +557,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `answer`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `answer` (
+DROP TABLE IF EXISTS `tabbie`.`answer` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`answer` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `questions_id` INT UNSIGNED NOT NULL,
   `value` TEXT NULL,
@@ -502,7 +567,7 @@ CREATE TABLE IF NOT EXISTS `answer` (
   INDEX `fk_answer_questions1_idx` (`questions_id` ASC),
   CONSTRAINT `fk_answer_questions1`
     FOREIGN KEY (`questions_id`)
-    REFERENCES `tabbie`.`questions` (`id`)
+    REFERENCES `tabbie`.`question` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -511,7 +576,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `feedback_has_answer`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `feedback_has_answer` (
+DROP TABLE IF EXISTS `tabbie`.`feedback_has_answer` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`feedback_has_answer` (
   `feedback_id` INT UNSIGNED NOT NULL,
   `answer_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`feedback_id`, `answer_id`),
@@ -531,6 +598,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+<<<<<<< HEAD
 -- Table `strikes`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `strikes` (
@@ -548,6 +616,23 @@ CREATE TABLE IF NOT EXISTS `strikes` (
   CONSTRAINT `fk_team_has_adjudicator_adjudicator1`
     FOREIGN KEY (`adjudicator_id`)
     REFERENCES `tabbie`.`adjudicator` (`id`)
+=======
+-- Table `tabbie`.`energy_config`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `tabbie`.`energy_config` ;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`energy_config` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `key` VARCHAR(100) NOT NULL,
+  `tournament_id` INT UNSIGNED NOT NULL,
+  `label` VARCHAR(45) NOT NULL,
+  `value` INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  INDEX `fk_energy_config_tournament1_idx` (`tournament_id` ASC),
+  CONSTRAINT `fk_energy_config_tournament1`
+    FOREIGN KEY (`tournament_id`)
+    REFERENCES `tabbie`.`tournament` (`id`)
+>>>>>>> master
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
