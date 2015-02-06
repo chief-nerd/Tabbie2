@@ -3,11 +3,11 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Table `tabbie`.`migration`
+-- Table `migration`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`migration` ;
+DROP TABLE IF EXISTS `migration` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`migration` (
+CREATE TABLE IF NOT EXISTS `migration` (
   `version` VARCHAR(180) NOT NULL,
   `apply_time` INT(11) NULL DEFAULT NULL,
   PRIMARY KEY (`version`))
@@ -17,11 +17,11 @@ COLLATE = latin1_swedish_ci;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`user`
+-- Table `user`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`user` ;
+DROP TABLE IF EXISTS `user` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`user` (
+CREATE TABLE IF NOT EXISTS `user` (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
   `auth_key` VARCHAR(32) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL,
@@ -40,11 +40,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`tournament`
+-- Table `tournament`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`tournament` ;
+DROP TABLE IF EXISTS `tournament` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`tournament` (
+CREATE TABLE IF NOT EXISTS `tournament` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `url_slug` VARCHAR(100) NOT NULL,
   `convenor_user_id` INT(11) UNSIGNED NOT NULL,
@@ -73,11 +73,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`society`
+-- Table `society`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`society` ;
+DROP TABLE IF EXISTS `society` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`society` (
+CREATE TABLE IF NOT EXISTS `society` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `fullname` VARCHAR(255) NULL,
   `adr` VARCHAR(45) NULL,
@@ -89,11 +89,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`adjudicator`
+-- Table `adjudicator`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`adjudicator` ;
+DROP TABLE IF EXISTS `adjudicator` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`adjudicator` (
+CREATE TABLE IF NOT EXISTS `adjudicator` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `tournament_id` INT UNSIGNED NOT NULL,
   `user_id` INT UNSIGNED NOT NULL,
@@ -122,11 +122,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`team`
+-- Table `team`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`team` ;
+DROP TABLE IF EXISTS `team` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`team` (
+CREATE TABLE IF NOT EXISTS `team` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NULL,
   `tournament_id` INT UNSIGNED NOT NULL,
@@ -162,11 +162,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`round`
+-- Table `round`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`round` ;
+DROP TABLE IF EXISTS `round` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`round` (
+CREATE TABLE IF NOT EXISTS `round` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `number` INT NOT NULL,
   `tournament_id` INT UNSIGNED NOT NULL,
@@ -189,11 +189,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`venue`
+-- Table `venue`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`venue` ;
+DROP TABLE IF EXISTS `venue` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`venue` (
+CREATE TABLE IF NOT EXISTS `venue` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `tournament_id` INT UNSIGNED NOT NULL,
   `name` VARCHAR(100) NOT NULL,
@@ -209,11 +209,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`panel`
+-- Table `panel`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`panel` ;
+DROP TABLE IF EXISTS `panel` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`panel` (
+CREATE TABLE IF NOT EXISTS `panel` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `strength` INT NOT NULL DEFAULT 0,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -230,11 +230,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`debate`
+-- Table `debate`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`debate` ;
+DROP TABLE IF EXISTS `debate` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`debate` (
+CREATE TABLE IF NOT EXISTS `debate` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `round_id` INT UNSIGNED NOT NULL,
   `tournament_id` INT UNSIGNED NOT NULL,
@@ -267,11 +267,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`result`
+-- Table `result`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`result` ;
+DROP TABLE IF EXISTS `result` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`result` (
+CREATE TABLE IF NOT EXISTS `result` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `debate_id` INT UNSIGNED NOT NULL,
   `og_A_speaks` TINYINT NOT NULL,
@@ -306,11 +306,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`in_society`
+-- Table `in_society`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`in_society` ;
+DROP TABLE IF EXISTS `in_society` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`in_society` (
+CREATE TABLE IF NOT EXISTS `in_society` (
   `user_id` INT(10) UNSIGNED NOT NULL,
   `society_id` INT UNSIGNED NOT NULL,
   `starting` DATE NOT NULL,
@@ -332,11 +332,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`special_needs`
+-- Table `special_needs`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`special_needs` ;
+DROP TABLE IF EXISTS `special_needs` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`special_needs` (
+CREATE TABLE IF NOT EXISTS `special_needs` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NULL,
   PRIMARY KEY (`id`))
@@ -344,11 +344,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`username_has_special_needs`
+-- Table `username_has_special_needs`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`username_has_special_needs` ;
+DROP TABLE IF EXISTS `username_has_special_needs` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`username_has_special_needs` (
+CREATE TABLE IF NOT EXISTS `username_has_special_needs` (
   `username_id` INT UNSIGNED NOT NULL,
   `special_needs_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`username_id`, `special_needs_id`),
@@ -368,11 +368,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`draw_after_round`
+-- Table `draw_after_round`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`draw_after_round` ;
+DROP TABLE IF EXISTS `draw_after_round` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`draw_after_round` (
+CREATE TABLE IF NOT EXISTS `draw_after_round` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `tournament_id` INT UNSIGNED NOT NULL,
   `round_id` INT UNSIGNED NOT NULL,
@@ -394,11 +394,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`draw_position`
+-- Table `draw_position`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`draw_position` ;
+DROP TABLE IF EXISTS `draw_position` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`draw_position` (
+CREATE TABLE IF NOT EXISTS `draw_position` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `draw_id` INT UNSIGNED NOT NULL,
   `team_id` INT UNSIGNED NOT NULL,
@@ -429,11 +429,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`venue_provides_special_needs`
+-- Table `venue_provides_special_needs`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`venue_provides_special_needs` ;
+DROP TABLE IF EXISTS `venue_provides_special_needs` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`venue_provides_special_needs` (
+CREATE TABLE IF NOT EXISTS `venue_provides_special_needs` (
   `venue_id` INT UNSIGNED NOT NULL,
   `special_needs_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`venue_id`, `special_needs_id`),
@@ -453,11 +453,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`question`
+-- Table `question`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`question` ;
+DROP TABLE IF EXISTS `question` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`question` (
+CREATE TABLE IF NOT EXISTS `question` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `text` VARCHAR(255) NOT NULL,
   `type` INT NOT NULL,
@@ -469,11 +469,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`tournament_has_question`
+-- Table `tournament_has_question`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`tournament_has_question` ;
+DROP TABLE IF EXISTS `tournament_has_question` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`tournament_has_question` (
+CREATE TABLE IF NOT EXISTS `tournament_has_question` (
   `tournament_id` INT UNSIGNED NOT NULL,
   `questions_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`tournament_id`, `questions_id`),
@@ -493,11 +493,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`adjudicator_in_panel`
+-- Table `adjudicator_in_panel`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`adjudicator_in_panel` ;
+DROP TABLE IF EXISTS `adjudicator_in_panel` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`adjudicator_in_panel` (
+CREATE TABLE IF NOT EXISTS `adjudicator_in_panel` (
   `adjudicator_id` INT UNSIGNED NOT NULL,
   `panel_id` INT UNSIGNED NOT NULL,
   `function` TINYINT UNSIGNED NOT NULL DEFAULT 0,
@@ -519,11 +519,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`feedback`
+-- Table `feedback`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`feedback` ;
+DROP TABLE IF EXISTS `feedback` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`feedback` (
+CREATE TABLE IF NOT EXISTS `feedback` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `debate_id` INT UNSIGNED NOT NULL,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -538,11 +538,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`answer`
+-- Table `answer`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`answer` ;
+DROP TABLE IF EXISTS `answer` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`answer` (
+CREATE TABLE IF NOT EXISTS `answer` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `questions_id` INT UNSIGNED NOT NULL,
   `value` TEXT NULL,
@@ -557,11 +557,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`feedback_has_answer`
+-- Table `feedback_has_answer`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`feedback_has_answer` ;
+DROP TABLE IF EXISTS `feedback_has_answer` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`feedback_has_answer` (
+CREATE TABLE IF NOT EXISTS `feedback_has_answer` (
   `feedback_id` INT UNSIGNED NOT NULL,
   `answer_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`feedback_id`, `answer_id`),
@@ -581,11 +581,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `tabbie`.`energy_config`
+-- Table `energy_config`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`energy_config` ;
+DROP TABLE IF EXISTS `energy_config` ;
 
-CREATE TABLE IF NOT EXISTS `tabbie`.`energy_config` (
+CREATE TABLE IF NOT EXISTS `energy_config` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `key` VARCHAR(100) NOT NULL,
   `tournament_id` INT UNSIGNED NOT NULL,
