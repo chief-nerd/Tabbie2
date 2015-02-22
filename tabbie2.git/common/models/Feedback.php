@@ -86,6 +86,7 @@ class Feedback extends \yii\db\ActiveRecord {
         } else
             throw new Exception("No Role");
 
+        $filter = array();
         $filter = array_merge($filter, [
             "tournament_id" => $tournament->id
         ]);

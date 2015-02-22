@@ -97,7 +97,7 @@ class UserIdentity extends \yii\web\User {
         if ($adj instanceof \common\models\Adjudicator)
             return $adj;
         else {
-            $team = \common\models\Team::find()->where("tournament_id = :tid AND (speakerA_id = :uid OR speaker_B_id = :uid)", [
+            $team = \common\models\Team::find()->where("tournament_id = :tid AND (speakerA_id = :uid OR speakerB_id = :uid)", [
                         ":tid" => $tid,
                         ":uid" => $this->id,
                     ])->one();

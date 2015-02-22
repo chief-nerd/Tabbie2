@@ -12,9 +12,9 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'key')->textInput(['maxlength' => 100]) ?>
+    <?= Html::hiddenInput('tournament_id', $model->tournament_id); ?>
 
-    <?= $form->field($model, 'tournament_id')->textInput() ?>
+    <?= $form->field($model, 'key')->textInput(['maxlength' => 100]) ?>
 
     <?= $form->field($model, 'label')->textInput(['maxlength' => 45]) ?>
 

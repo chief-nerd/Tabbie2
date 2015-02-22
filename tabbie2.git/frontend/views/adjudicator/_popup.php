@@ -4,6 +4,8 @@ use common\models\Adjudicator;
 use common\models\Panel;
 
 /* @var $model Adjudicator */
+/* @var $round_id Integer */
+
 $this->context->layout = null;
 ?>
 <div style="float:left; height:80px; margin-right: 10px;">
@@ -11,7 +13,7 @@ $this->context->layout = null;
 </div>
 <table>
     <colgroup>
-        <col width="80"></col>
+        <col width="80"/>
     </colgroup>
     <tr>
         <th><?= Yii::t("app", "Strength") ?></th>
