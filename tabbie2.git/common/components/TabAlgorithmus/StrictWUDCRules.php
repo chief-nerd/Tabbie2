@@ -3,34 +3,47 @@
 namespace common\components\TabAlgorithmus;
 
 use \common\components\TabAlgorithmus;
+use common\models\Team;
+use common\models\Venue;
+use common\models\Adjudicator;
+use yii\base\Exception;
+use \Codeception\Util\Debug;
 
 class StrictWUDCRules extends TabAlgorithmus {
 
-    public function makeDraw($venues, $teams, $adjudicators, $preset_panels) {
+    /**
+     * Function to calculate a draw based on WUDC strict Rules
+     * @param Venue[] $venues
+     * @param Team[] $teams
+     * @param type $adjudicators
+     * @param type $preset_panels
+     * @return type
+     * @throws Exception
+     */
+    public function makeDraw($venues, $teams, $adjudicators, $preset_panels = array()) {
 
+        $active_rooms = (count($teams) / 4);
         if (count($teams) % 4 != 0)
-            throw new Exception("Amount of Teams must be divided by 4 ;)", "500");
-        if ((count($teams) / 4) > count($venues))
-            throw new Exception("Not enough active Rooms", "500");
-        if (count($venues) > count($adjudicators))
-            throw new Exception("Not enough adjudicators", "500");
+            throw new Exception("Amount of active Teams must be divided by 4 ;) - (active: " . count($teams) . ")", "500");
+        if ($active_rooms > count($venues))
+            throw new Exception("Not enough active Rooms (active:" . count($venues) . " required:" . $active_rooms . ")", "500");
+        if ($active_rooms > count($adjudicators))
+            throw new Exception("Not enough adjudicators (active:" . count($adjudicators) . " min-required:" . $active_rooms . ")", "500");
 
-        $draw = [];
-        $iterateAdj = -1; //Because of ++
-        $iterateVenue = 0;
-        $line = 0;
+        Debug::debug("");
+        $this->debug($teams);
 
         /*
           First we need to make the brackets for each debate. This means ordering the teams by the number of points.
          */
-
-        $teams->sort_by_points;
+        $teams = $this->sort_teams($teams);
+        $this->debug($teams);
 
         /*
           Then, within point brackets, we randomise the teams
          */
-
-        $teams->randomise_within_points;
+        $teams = $this->randomise_within_points($teams);
+        $this->debug($teams);
 
         /*
           Then do the first pass of allocations of the teams, which is not used as the draw, only as the seed. Firstly, make a temporary area with no positions.
@@ -302,6 +315,40 @@ class StrictWUDCRules extends TabAlgorithmus {
     }
 
     /**
+     * Sortiert Teams
+     * @param Team[] $teams
+     * @return Team[]
+     */
+    public function sort_teams($teams) {
+        usort($teams, array('common\models\Team', 'sort_points'));
+        return $teams;
+    }
+
+    /**
+     * Randomises the Teams within Teampoints
+     * @param Team[] $teams
+     * @return Team[]
+     */
+    public function randomise_within_points($teams) {
+
+        $saved_points = $teams[0]->getPoints(); //reset to start
+        $last_break = 0;
+
+        for ($i = 0; $i < count($teams); $i++) {
+            $team_points = $teams[$i]->getPoints();
+            if ($team_points != $saved_points) {
+                $bracket = array_slice($teams, $last_break, ($i - $last_break));
+                shuffle($bracket);
+                array_splice($teams, $last_break, ($i - $last_break), $bracket);
+
+                $last_break = $i;
+                $saved_points = $team_points;
+            }
+        }
+        return $teams;
+    }
+
+    /**
      *
      * @param Debate $debate
      * @param type $name Description
@@ -326,6 +373,19 @@ class StrictWUDCRules extends TabAlgorithmus {
         $strike->value = -1000;
         $strike->save();
         return true;
+    }
+
+    /**
+     * Wrapper to produce easier debug infos in codeception
+     * @param type $teams
+     */
+    private function debug($teams) {
+        $output = "";
+        foreach ($teams as $t) {
+            $output .= $t->id . "/" . $t->getPoints() . "\t";
+        }
+
+        Debug::debug($output);
     }
 
 }

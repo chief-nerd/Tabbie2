@@ -16,21 +16,19 @@ use Yii;
  * @property Tournament $tournament
  * @property DrawPosition[] $drawPositions
  */
-class DrawAfterRound extends \yii\db\ActiveRecord
-{
+class DrawAfterRound extends \yii\db\ActiveRecord {
+
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'draw_after_round';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['tournament_id', 'round_id'], 'required'],
             [['tournament_id', 'round_id'], 'integer'],
@@ -41,8 +39,7 @@ class DrawAfterRound extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
             'tournament_id' => Yii::t('app', 'Tournament ID'),
@@ -54,24 +51,30 @@ class DrawAfterRound extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getRound()
-    {
+    public function getRound() {
         return $this->hasOne(Round::className(), ['id' => 'round_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTournament()
-    {
+    public function getTournament() {
         return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getDrawPositions()
-    {
+    public function getDrawPositions() {
         return $this->hasMany(DrawPosition::className(), ['draw_id' => 'id']);
     }
+
+    public function getTeamPoints($teamid) {
+        $drawPos = $this->getDrawPositions()->where(["team_id" => $teamid])->one();
+        if ($drawPos instanceof DrawPosition) {
+            return $drawPos->points;
+        } else
+            throw new \yii\base\Exception("No Draw Position found for team (#$teamid)");
+    }
+
 }

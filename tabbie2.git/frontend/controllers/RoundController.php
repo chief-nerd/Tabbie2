@@ -158,4 +158,17 @@ class RoundController extends BaseController {
         }
     }
 
+    public function actionRedraw($id) {
+        $model = Round::findOne(["id" => $id]);
+
+        if ($model instanceof Round) {
+
+            if (!$model->generateDraw()) {
+                Yii::$app->session->addFlash("error", print_r($model->getErrors(), true));
+            }
+        }
+
+        return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
+    }
+
 }

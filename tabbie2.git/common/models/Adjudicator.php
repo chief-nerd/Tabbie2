@@ -10,7 +10,7 @@ use Yii;
  * @property integer $id
  * @property integer $tournament_id
  * @property integer $user_id
- * @property integer $strength
+ * @property integer $strength 0-9
  * @property integer $society_id
  *
  * @property Tournament $tournament

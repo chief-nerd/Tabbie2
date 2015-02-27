@@ -103,4 +103,57 @@ class Team extends \yii\db\ActiveRecord {
         return $this->hasOne(Society::className(), ['id' => 'society_id']);
     }
 
+    /**
+     * Returns the points the team is on at the CURRENT state of the tournament
+     * @use getPointsAfterRound
+     * @return int
+     */
+    public function getPoints() {
+        $last_round = $this->tournament->getLastRound();
+        return $this->getPointsAfterRound($last_round->number);
+    }
+
+    /*
+     * Get the points the team is on after the specified round.
+     * @param integer $number
+     * @return int
+     */
+
+    public function getPointsAfterRound($number) {
+        $round = Round::find()->where([
+                    "number" => $number,
+                    "tournament_id" => $this->tournament_id
+                ])->one();
+
+        if ($round instanceof Round) {
+            $drawObject = DrawAfterRound::findOne(["round_id" => $round->id]);
+            if ($drawObject instanceof DrawAfterRound)
+                return $drawObject->getTeamPoints($this->id);
+            else
+                return 0; //No Round yet
+        } else {
+            throw new Exception("No Round found when getting Points");
+        }
+    }
+
+    public function getPreviousPositionMatrix() {
+        return [
+            "OG" => 0,
+            "OO" => 0,
+            "CO" => 0,
+            "OO" => 0,
+        ];
+    }
+
+    /**
+     * Sort function based on team points
+     * @param Team $a
+     * @param Team $b
+     */
+    public static function sort_points($a, $b) {
+        $ap = $a->getPoints();
+        $bp = $b->getPoints();
+        return ($ap < $bp) ? 1 : (($ap > $bp) ? -1 : 0);
+    }
+
 }
