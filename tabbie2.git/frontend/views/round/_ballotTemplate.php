@@ -7,16 +7,13 @@
 <div id="logo" >
     <img src="<?= $tournament->logo ?>">
 </div>
+<div id="tournament">
+    <?= $tournament->fullname ?>
+</div>
 <div id="predetails">
     <table>
-        <tr><th>Debate ID</th><td><?= $debate->id ?></td></tr>$model->venue->name
-        <tr><th>Tournament</th><td><?= $tournament->fullname ?></td></tr>
+        <tr><th>Debate ID</th><td><?= $debate->id ?></td></tr>
         <tr><th>Room</th><td><?= $debate->venue->name ?></td></tr>
-    </table>
-</div>
-
-<div id="adjudicators">
-    <table>
         <tr><th>Chair</th><td><?= $debate->getChair()->name ?></td></tr>
         <?
         $panel = "";
@@ -25,7 +22,7 @@
                 $panel .= $adj->name . ", ";
         }
         ?>
-        <tr><th>Adjudicators</th><td><?= $panel ?></td></tr>
+        <tr><th>Adjudicators</th><td><?= substr($panel, 0, -2); ?></td></tr>
     </table>
 </div>
 
