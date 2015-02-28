@@ -15,6 +15,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+    <p>
+        <?=
+        Html::a(Yii::t('app', 'Manually Enter {modelClass}', [
+                    'modelClass' => 'Result',
+                ]), ['manual', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
+        ?>
+    </p>
+
     <?
     echo ListView::widget([
         'dataProvider' => $rounds,

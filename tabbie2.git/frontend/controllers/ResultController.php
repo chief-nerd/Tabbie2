@@ -169,4 +169,30 @@ class ResultController extends BaseController {
         }
     }
 
+    public function actionManual() {
+
+        $model = new Result();
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->confirmed == "true") {
+                $adj = \common\models\Adjudicator::findOne(["user_id" => Yii::$app->user->id]);
+                $model->enteredBy_adjudicator_id = $adj->id;
+                if ($model->save())
+                    return $this->render('thankyou', ["model" => $model]);
+                else {
+                    print_r($model->getErrors());
+                }
+            } else {
+                $model->rankTeams();
+                return $this->render('confirm', [
+                            'model' => $model,
+                ]);
+            }
+        }
+
+        return $this->render('manual', [
+                    'model' => $model,
+        ]);
+    }
+
 }

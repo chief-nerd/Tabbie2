@@ -10,6 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use common\components\filter\TournamentContextFilter;
 use common\models\search\DebateSearch;
+use mPDF;
 
 /**
  * RoundController implements the CRUD actions for Round model.
@@ -169,6 +170,51 @@ class RoundController extends BaseController {
         }
 
         return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
+    }
+
+    public function actionPrintballots($id, $debug = false) {
+        $model = Round::findOne(["id" => $id]);
+
+        $title = 'Ballots Round #' . $model->id . ' of the ' . $model->tournament->fullname;
+
+        $mpdf = new mPDF("", "A4-L");
+        $mpdf->SetDrawColor(255, 0, 0);
+
+        $stylesheet = file_get_contents(Yii::getAlias('@frontend/assets/css/ballot.css'));
+        $mpdf->WriteHTML($stylesheet, 1);
+
+        foreach ($model->debates as $debate) {
+            $mpdf->AddPage();
+            $content = $this->renderPartial('_ballotTemplate', [
+                'tournament' => $model->tournament,
+                'round' => $model,
+                'debate' => $debate,
+            ]);
+            $mpdf->WriteHTML($content);
+
+            $offset = 121;
+            $space = 32;
+            $height = 8;
+
+            $mpdf->Rect(80, ($offset), 20, $height, 'D');
+            $mpdf->Rect(80, ($offset + 8), 20, $height, 'D');
+            $mpdf->Rect(103, ($offset), 20, $height * 2, 'D');
+
+            $mpdf->Rect(210, ($offset), 20, $height, 'D');
+            $mpdf->Rect(210, ($offset + $height), 20, $height, 'D');
+            $mpdf->Rect(233, ($offset), 20, $height * 2, 'D');
+
+            $mpdf->Rect(210, ($offset + $space), 20, $height, 'D');
+            $mpdf->Rect(210, ($offset + $space + $height), 20, $height, 'D');
+            $mpdf->Rect(233, ($offset + $space), 20, $height * 2, 'D');
+
+            $mpdf->Rect(80, ($offset + $space), 20, $height, 'D');
+            $mpdf->Rect(80, ($offset + $space + $height), 20, $height, 'D');
+            $mpdf->Rect(103, ($offset + $space), 20, $height * 2, 'D');
+        }
+        $mpdf->SetTitle($title);
+        $mpdf->Output();
+        exit;
     }
 
 }

@@ -1,0 +1,54 @@
+@page {
+    size: A4;
+    margin: 0;
+}
+@media print {
+    th {
+        text-align: left;
+        width: 30mm;
+    }
+
+    #logo {
+        position: fixed;
+        width: 40mm;
+        height: 40mm;
+        right: 0;
+        top: 0;
+    }
+
+    #adjudicators {
+        position: fixed;
+        width: 80%;
+        left: 0;
+        top: 19mm;
+    }
+
+    #headline {
+        position: fixed;
+        top: 33mm;
+        width: 80%;
+        font-size: 15px;
+    }
+
+    #table
+    {
+        position: fixed;
+        bottom: 20mm;
+        left: 0;
+        width: 90%;
+        padding: 20px;
+        border: 1px solid black;
+    }
+
+    #table table, #table td {
+        width: 100%;
+    }
+
+    #table table > tr {
+        padding: 5mm;
+    }
+
+    #table > table > tr{
+        padding: 10px;
+    }
+}

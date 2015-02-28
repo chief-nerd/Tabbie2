@@ -20,8 +20,8 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <? if (!$model->published): ?>
-        <p>
+    <p>
+        <? if (!$model->published): ?>
             <?= Html::a(Yii::t('app', 'Publish Tab'), ['publish', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success']) ?>
             <?= Html::a(Yii::t('app', 'Update Round Info'), ['update', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-primary']) ?>
             <?=
@@ -33,8 +33,9 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
                 ],
             ])
             ?>
-        </p>
-    <? endif; ?>
+        <? endif; ?>
+        <?= Html::a(Yii::t('app', 'Print Ballots'), ['printballots', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-default']) ?>
+    </p>
     <?
     $attributes = [];
     $attributes[] = [
