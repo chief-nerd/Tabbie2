@@ -14,15 +14,15 @@ use Yii;
  *
  * @property Round $round
  * @property Tournament $tournament
- * @property DrawPosition[] $drawPositions
+ * @property TabPosition[] $drawPositions
  */
-class DrawAfterRound extends \yii\db\ActiveRecord {
+class TabAfterRound extends \yii\db\ActiveRecord {
 
     /**
      * @inheritdoc
      */
     public static function tableName() {
-        return 'draw_after_round';
+        return 'tab_after_round';
     }
 
     /**
@@ -65,16 +65,16 @@ class DrawAfterRound extends \yii\db\ActiveRecord {
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getDrawPositions() {
-        return $this->hasMany(DrawPosition::className(), ['draw_id' => 'id']);
+    public function getTabPositions() {
+        return $this->hasMany(TabPosition::className(), ['tab_id' => 'id']);
     }
 
     public function getTeamPoints($teamid) {
-        $drawPos = $this->getDrawPositions()->where(["team_id" => $teamid])->one();
-        if ($drawPos instanceof DrawPosition) {
-            return $drawPos->points;
+        $drawPos = $this->getTabPositions()->where(["team_id" => $teamid])->one();
+        if ($tabPos instanceof TabPosition) {
+            return $tabPos->points;
         } else
-            throw new \yii\base\Exception("No Draw Position found for team (#$teamid)");
+            throw new \yii\base\Exception("No Tab Position found for team (#$teamid)");
     }
 
 }

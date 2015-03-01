@@ -15,39 +15,36 @@ use Yii;
  * @property integer $speakerA_speaks
  * @property integer $speakerB_speaks
  *
- * @property DrawAfterRound $draw
+ * @property TabAfterRound $draw
  * @property Result $result
  * @property Team $team
  */
-class DrawPosition extends \yii\db\ActiveRecord
-{
+class TabPosition extends \yii\db\ActiveRecord {
+
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
-        return 'draw_position';
+    public static function tableName() {
+        return 'tab_position';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['draw_id', 'team_id', 'result_id', 'points', 'speakerA_speaks', 'speakerB_speaks'], 'required'],
-            [['draw_id', 'team_id', 'result_id', 'points', 'speakerA_speaks', 'speakerB_speaks'], 'integer']
+            [['tab_id', 'team_id', 'result_id', 'points', 'speakerA_speaks', 'speakerB_speaks'], 'required'],
+            [['tab_id', 'team_id', 'result_id', 'points', 'speakerA_speaks', 'speakerB_speaks'], 'integer']
         ];
     }
 
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
-            'draw_id' => Yii::t('app', 'Draw ID'),
+            'tab_id' => Yii::t('app', 'Tab ID'),
             'team_id' => Yii::t('app', 'Team ID'),
             'result_id' => Yii::t('app', 'Result ID'),
             'points' => Yii::t('app', 'Points'),
@@ -59,24 +56,22 @@ class DrawPosition extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getDraw()
-    {
-        return $this->hasOne(DrawAfterRound::className(), ['id' => 'draw_id']);
+    public function getTab() {
+        return $this->hasOne(TabAfterRound::className(), ['id' => 'draw_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getResult()
-    {
+    public function getResult() {
         return $this->hasOne(Result::className(), ['id' => 'result_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTeam()
-    {
+    public function getTeam() {
         return $this->hasOne(Team::className(), ['id' => 'team_id']);
     }
+
 }

@@ -3,19 +3,18 @@
 namespace frontend\controllers;
 
 use Yii;
-use common\models\DrawAfterRound;
-use common\models\search\DrawSearch;
+use common\models\TabAfterRound;
+use common\models\search\TabSearch;
 use frontend\controllers\BaseController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * DrawController implements the CRUD actions for DrawAfterRound model.
+ * TabController implements the CRUD actions for DrawAfterRound model.
  */
-class DrawController extends BaseController
-{
-    public function behaviors()
-    {
+class TabController extends BaseController {
+
+    public function behaviors() {
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -27,17 +26,16 @@ class DrawController extends BaseController
     }
 
     /**
-     * Lists all DrawAfterRound models.
+     * Lists all TabAfterRound models.
      * @return mixed
      */
-    public function actionIndex()
-    {
-        $searchModel = new DrawSearch();
+    public function actionIndex() {
+        $searchModel = new TabSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -46,10 +44,9 @@ class DrawController extends BaseController
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
-    {
+    public function actionView($id) {
         return $this->render('view', [
-            'model' => $this->findModel($id),
+                    'model' => $this->findModel($id),
         ]);
     }
 
@@ -58,15 +55,14 @@ class DrawController extends BaseController
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
-        $model = new DrawAfterRound();
+    public function actionCreate() {
+        $model = new TabAfterRound();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
@@ -77,15 +73,14 @@ class DrawController extends BaseController
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
-    {
+    public function actionUpdate($id) {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
@@ -96,8 +91,7 @@ class DrawController extends BaseController
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
-    {
+    public function actionDelete($id) {
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
@@ -107,15 +101,15 @@ class DrawController extends BaseController
      * Finds the DrawAfterRound model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return DrawAfterRound the loaded model
+     * @return TabAfterRound the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
-    {
-        if (($model = DrawAfterRound::findOne($id)) !== null) {
+    protected function findModel($id) {
+        if (($model = TabAfterRound::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
 }

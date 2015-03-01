@@ -14,7 +14,7 @@ use Yii;
  * @property integer $speakerB_id
  * @property integer $society_id
  *
- * @property DrawPosition[] $drawPositions
+ * @property TabPosition[] $tabPositions
  * @property InSociety $inSocieties
  * @property Adjudicator[] $adjudicators
  * @property Tournament $tournament
@@ -64,8 +64,8 @@ class Team extends \yii\db\ActiveRecord {
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getDrawPositions() {
-        return $this->hasMany(DrawPosition::className(), ['team_id' => 'id']);
+    public function getTabPositions() {
+        return $this->hasMany(TabPosition::className(), ['team_id' => 'id']);
     }
 
     /**
@@ -126,9 +126,9 @@ class Team extends \yii\db\ActiveRecord {
                 ])->one();
 
         if ($round instanceof Round) {
-            $drawObject = DrawAfterRound::findOne(["round_id" => $round->id]);
-            if ($drawObject instanceof DrawAfterRound)
-                return $drawObject->getTeamPoints($this->id);
+            $tabObject = TabAfterRound::findOne(["round_id" => $round->id]);
+            if ($tabObject instanceof TabAfterRound)
+                return $tabObject->getTeamPoints($this->id);
             else
                 return 0; //No Round yet
         } else {

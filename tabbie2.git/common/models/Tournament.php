@@ -19,7 +19,7 @@ use Yii;
  * @property string $tabAlgorithmClass
  *
  * @property Adjudicator[] $adjudicators
- * @property DrawAfterRound[] $drawAfterRounds
+ * @property TabAfterRound[] $tabAfterRounds
  * @property Panel[] $panels
  * @property Round[] $rounds
  * @property Team[] $teams
@@ -132,8 +132,8 @@ class Tournament extends \yii\db\ActiveRecord {
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getDrawAfterRounds() {
-        return $this->hasMany(DrawAfterRound::className(), ['tournament_id' => 'id']);
+    public function getTabAfterRounds() {
+        return $this->hasMany(TabAfterRound::className(), ['tournament_id' => 'id']);
     }
 
     /**

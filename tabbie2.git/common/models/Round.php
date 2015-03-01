@@ -20,7 +20,7 @@ use yii\base\Exception;
  * @property datetime $prep_started
  * @property datetime $finished_time
  *
- * @property DrawAfterRound[] $drawAfterRounds
+ * @property TabAfterRound[] $tabAfterRounds
  * @property Tournament $tournament
  */
 class Round extends \yii\db\ActiveRecord {
@@ -130,7 +130,7 @@ class Round extends \yii\db\ActiveRecord {
      * @return \yii\db\ActiveQuery
      */
     public function getDrawAfterRounds() {
-        return $this->hasMany(DrawAfterRound::className(), ['round_id' => 'id']);
+        return $this->hasMany(TabAfterRound::className(), ['round_id' => 'id']);
     }
 
     /**

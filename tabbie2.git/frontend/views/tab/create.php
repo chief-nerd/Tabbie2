@@ -4,7 +4,7 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model common\models\DrawAfterRound */
+/* @var $model common\models\TabAfterRound */
 
 $this->title = Yii::t('app', 'Create {modelClass}', [
     'modelClass' => 'Draw After Round',

@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\DrawAfterRound */
+/* @var $model common\models\TabAfterRound */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
