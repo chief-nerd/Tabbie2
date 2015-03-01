@@ -28,6 +28,8 @@ class Team extends \yii\db\ActiveRecord {
     const CG = 2;
     const CO = 3;
 
+    public $positionMatrix;
+
     /**
      * @inheritdoc
      */
@@ -115,7 +117,10 @@ class Team extends \yii\db\ActiveRecord {
      */
     public function getPoints() {
         $last_round = $this->tournament->getLastRound();
-        return $this->getPointsAfterRound($last_round->number);
+        if ($last_round instanceof Round)
+            return $this->getPointsAfterRound($last_round->number);
+        else
+            return 0;
     }
 
     /**
@@ -138,6 +143,18 @@ class Team extends \yii\db\ActiveRecord {
         } else {
             throw new Exception("No Round found when getting Points");
         }
+    }
+
+    public function getDebates() {
+        return Debate::findBySql("SELECT * from debate WHERE "
+                        . "(og_team_id = :teamid "
+                        . "OR oo_team_id = :teamid "
+                        . "OR cg_team_id= :teamid "
+                        . "OR co_team_id = :teamid) "
+                        . "AND tournament_id = :tournamentid", [
+                    ":teamid" => $this->id,
+                    ":tournamentid" => $this->tournament_id,
+        ]);
     }
 
     /**
@@ -254,7 +271,7 @@ class Team extends \yii\db\ActiveRecord {
      */
     public function getPositionBadness($pos) {
 
-        $positions = $this->getPastPositionMatrix();
+        $positions = $this->positionMatrix;
         $badness_lookup = Team::PositionBadnessTable();
 
         $positions[$pos] += 1;

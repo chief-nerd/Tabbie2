@@ -9,6 +9,7 @@ use common\models\Adjudicator;
 use yii\base\Exception;
 use \Codeception\Util\Debug;
 use common\models\DrawLine;
+use Yii;
 
 class StrictWUDCRules extends TabAlgorithmus {
 
@@ -52,6 +53,13 @@ class StrictWUDCRules extends TabAlgorithmus {
         $teams = $this->randomise_within_points($teams);
 
         /**
+         * Set Past Position Matrix
+         */
+        for ($i = 0; $i < count($teams); $i++) {
+            $teams[$i]->positionMatrix = $teams[$i]->getPastPositionMatrix();
+        }
+
+        /**
          * Generate a first rough draw by running the teams down from top to bottom and allocate them
          */
         for ($i = 0; $i < $active_rooms; $i++) {
@@ -73,14 +81,18 @@ class StrictWUDCRules extends TabAlgorithmus {
         $stillFoundASwap = true;
         while ($stillFoundASwap) {
             $stillFoundASwap = false; //Assume we are done, prove me wrong
+
             foreach ($this->DRAW as $line) {
                 foreach ($line->teams as $pos => $team) {
                     if ($team->getPositionBadness($pos) > 0) { // Not optimal positioning exists here
                         if ($this->find_best_swap_for($line, $pos)) { //Do we find a swap that makes it better
                             $stillFoundASwap = true; //We found a better swap, do the loop again
+                            break;
                         }
                     }
                 }
+                if ($stillFoundASwap)
+                    break; //Found it already break on!
             }
             //If we havn't found a better swap $stillFoundASwap should be false and the loop breaks
         }
@@ -219,7 +231,7 @@ class StrictWUDCRules extends TabAlgorithmus {
         $best_team_b_pos = false;
 
         foreach ($this->DRAW as $line) {
-            foreach ($line->teams as $pos_b => $team_b) { //this loop especially can be limited
+            foreach ($line->getTeams() as $pos_b => $team_b) { //this loop especially can be limited
                 if ($team_a->is_swappable_with($team_b)) {
 
                     //Get Status Quo Badness

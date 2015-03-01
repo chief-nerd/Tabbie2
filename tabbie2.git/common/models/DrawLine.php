@@ -77,9 +77,9 @@ class DrawLine extends Model {
     public function getTeams() {
         return [
             Team::OG => $this->teams[0],
-            Team::OO => $this->teams[0],
-            Team::CG => $this->teams[0],
-            Team::CO => $this->teams[0],
+            Team::OO => $this->teams[1],
+            Team::CG => $this->teams[2],
+            Team::CO => $this->teams[3],
         ];
     }
 
