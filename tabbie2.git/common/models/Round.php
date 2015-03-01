@@ -158,46 +158,44 @@ class Round extends \yii\db\ActiveRecord {
             $draw = $algo->makeDraw($venues, $this->tournament->teams, $this->tournament->adjudicators);
 
             foreach ($draw as $line) {
+                /* @var $line DrawLine */
 
-                if (!isset($line["panel"]["id"])) {
+                if (!$line->hasPresetPanel) {
                     $panel = new Panel();
                     $panel->tournament_id = $this->tournament_id;
-
-                    //Set Strength if available
-                    if (isset($line["panel"]["strength"])) {
-                        $panel->strength = $line["panel"]["strength"];
-                        unset($line["panel"]["strength"]);
-                    } else {
-                        $panel->strength = 0;
-                    }
+                    $panel->strength = $line->strength;
                     //Save Panel
                     if (!$panel->save())
                         throw new Exception("Can't save Panel " . print_r($panel->getErrors(), true));
 
                     $panelID = $panel->id;
 
-                    foreach ($line["panel"] as $type => $judge) {
+                    $chairSet = false;
+                    foreach ($line->adjudicators as $judge) {
+                        /* @var $judge Adjudicator */
                         $alloc = new AdjudicatorInPanel();
                         $alloc->adjudicator_id = $judge->id;
                         $alloc->panel_id = $panelID;
-                        if ($type === "chair")
+                        if (!$chairSet) {
                             $alloc->function = Panel::FUNCTION_CHAIR;
-                        else
+                            $chairSet = true; //only on first run
+                        } else
                             $alloc->function = Panel::FUNCTION_WING;
+
                         if (!$alloc->save())
                             throw new Exception("Can't save AdjudicatorInPanel " . print_r($alloc->getErrors(), true));
                     }
                 } else
-                    $panelID = $line["panel"]["id"];
+                    $panelID = $line->panelID;
 
                 $debate = new Debate();
                 $debate->round_id = $this->id;
                 $debate->tournament_id = $this->tournament_id;
-                $debate->og_team_id = $line["og"]->id;
-                $debate->oo_team_id = $line["oo"]->id;
-                $debate->cg_team_id = $line["cg"]->id;
-                $debate->co_team_id = $line["co"]->id;
-                $debate->venue_id = $line["venue"]->id;
+                $debate->og_team_id = $line->OG->id;
+                $debate->oo_team_id = $line->OO->id;
+                $debate->cg_team_id = $line->CG->id;
+                $debate->co_team_id = $line->CO->id;
+                $debate->venue_id = $line->venue->id;
                 $debate->panel_id = $panelID;
 
                 $algo->calcEnergyLevel($debate, $this->tournament);

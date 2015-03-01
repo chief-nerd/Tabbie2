@@ -63,7 +63,7 @@ class StrictWUDCRulesTest extends DbTestCase {
         $venues = Venue::findAll(["tournament_id" => 1]);
         $teams = Team::findAll(["tournament_id" => 1]);
         $adjudicators = Adjudicator::findAll(["tournament_id" => 1]);
-        $draw = $this->algo->makeDraw($venues, $teams, $adjudicators);
+        //$draw = $this->algo->makeDraw($venues, $teams, $adjudicators);
     }
 
     /**

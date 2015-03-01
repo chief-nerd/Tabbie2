@@ -8,6 +8,7 @@ use common\models\Venue;
 use common\models\Adjudicator;
 use yii\base\Exception;
 use \Codeception\Util\Debug;
+use common\models\DrawLine;
 
 class StrictWUDCRules extends TabAlgorithmus {
 
@@ -25,7 +26,7 @@ class StrictWUDCRules extends TabAlgorithmus {
         /**
          * The Draw
          */
-        $draw = array();
+        $DRAW = array();
 
         $active_rooms = (count($teams) / 4);
         if (count($teams) % 4 != 0)
@@ -56,18 +57,11 @@ class StrictWUDCRules extends TabAlgorithmus {
          * Generate a first rough draw by running the teams down from top to bottom
          */
         for ($i = 0; $i < $active_rooms; $i++) {
-            $debate = array();
-            $draw[] = [
-                "venue" => $venues[$i],
-                "og" => $teams[$i * 4],
-                "oo" => $teams[$i * 4 + 1],
-                "cg" => $teams[$i * 4 + 2],
-                "co" => $teams[$i * 4 + 3],
-                "panel" => [
-                    "chair" => "",
-                    "strength" => "",
-                ]
-            ];
+            $line = new DrawLine();
+            $line->setTeams($teams[$i * 4], $teams[$i * 4 + 1], $teams[$i * 4 + 2], $teams[$i * 4 + 3]);
+            $line->venue = $venues[$i];
+            $line->setChair($adjudicators[$i]);
+            $DRAW[] = $line;
         }
 
         /*
@@ -252,7 +246,7 @@ class StrictWUDCRules extends TabAlgorithmus {
             return $badness_lookup["{$positions[0]}, {$positions[1]}, {$positions[2]}, {$positions[3]}"];
         }
 
-        return $draw;
+        return $DRAW;
     }
 
     /**
