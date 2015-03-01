@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "draw_after_round".
+ * This is the model class for table "tab_after_round".
  *
  * @property integer $id
  * @property integer $tournament_id

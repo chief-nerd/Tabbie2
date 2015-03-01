@@ -190,4 +190,17 @@ class Debate extends \yii\db\ActiveRecord {
             return false;
     }
 
+    /**
+     * Get the "Debate Level" aka the highest points of team in that debate
+     * @return integer Points
+     */
+    public function getLevel() {
+        return max([
+            $this->og_team->getPoints(),
+            $this->oo_team->getPoints(),
+            $this->cg_team->getPoints(),
+            $this->oo_team->getPoints(),
+        ]);
+    }
+
 }

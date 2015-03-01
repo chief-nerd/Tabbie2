@@ -22,6 +22,11 @@ class StrictWUDCRules extends TabAlgorithmus {
      */
     public function makeDraw($venues, $teams, $adjudicators, $preset_panels = array()) {
 
+        /**
+         * The Draw
+         */
+        $draw = array();
+
         $active_rooms = (count($teams) / 4);
         if (count($teams) % 4 != 0)
             throw new Exception("Amount of active Teams must be divided by 4 ;) - (active: " . count($teams) . ")", "500");
@@ -30,8 +35,10 @@ class StrictWUDCRules extends TabAlgorithmus {
         if ($active_rooms > count($adjudicators))
             throw new Exception("Not enough adjudicators (active:" . count($adjudicators) . " min-required:" . $active_rooms . ")", "500");
 
-        Debug::debug("");
-        $this->debug($teams);
+        /**
+         * Shuffle venues
+         */
+        shuffle($venues);
 
         /*
           First we need to make the brackets for each debate. This means ordering the teams by the number of points.
@@ -45,22 +52,30 @@ class StrictWUDCRules extends TabAlgorithmus {
         $teams = $this->randomise_within_points($teams);
         $this->debug($teams);
 
-        /*
-          Then do the first pass of allocations of the teams, which is not used as the draw, only as the seed. Firstly, make a temporary area with no positions.
+        /**
+         * Generate a first rough draw by running the teams down from top to bottom
          */
-
-        $temp_debates = array();
-
-        for ($i = 0; $i < count($teams) / 4; $i++) {
-            $new_debate = array();
-            for ($j = 0; $j < 4; $j++) {
-                $debate[] = $teams[$i * 4 + $j];
-            }
-            $temp_debates[] = $new_debate;
+        for ($i = 0; $i < $active_rooms; $i++) {
+            $debate = array();
+            $draw[] = [
+                "venue" => $venues[$i],
+                "og" => $teams[$i * 4],
+                "oo" => $teams[$i * 4 + 1],
+                "cg" => $teams[$i * 4 + 2],
+                "co" => $teams[$i * 4 + 3],
+                "panel" => [
+                    "chair" => "",
+                    "strength" => "",
+                ]
+            ];
         }
 
         /*
           Then get the characteristics of the debates for shufflin' purposes.
+         * 3 things
+         * current position OG, OO, CG, CO
+         * Beste team in the Debate - how many points
+         * Value of a Room is classified
          */
 
         function get_debate_characteristics(&$debates) {
@@ -86,63 +101,8 @@ class StrictWUDCRules extends TabAlgorithmus {
         get_debate_characteristics($temp_debates);
 
         /*
-          Now go back to the ordered list, and we can start moving teams around.
-         */
-
-
-        /*
-          Helper function to determine whether teams COULD replace each other in the same bracket (are they in the same bracket, or is one a pull up / down from their bracket?)
-         */
-
-        function is_swappable($team_a, $team_b) {
-            $result = ($team_a["team_id"] != $team_b["team_id"]) &&
-                    (($team_a["points"] == $team_b["points"]) ||
-                    ($team_a["debate_level"] == $team_b["debate_level"]));
-            return $result;
-        }
-
-        /*
-          Helper function to swap two teams
-         */
-
-        function swap_two_teams(&$teams, &$team_a, &$team_b) {
-            $current_position_a = $team_a["current_position"];
-            $debate_level_a = $team_a["debate_level"];
-            $index_a = $team_a["index"];
-
-            $team_a["current_position"] = $team_b["current_position"];
-            $team_a["debate_level"] = $team_b["debate_level"];
-            $team_a["index"] = $team_b["index"];
-
-            $team_b["current_position"] = $current_position_a;
-            $team_b["debate_level"] = $debate_level_a;
-            $team_b["index"] = $index_a;
-
-            $teams[$team_a["index"]] = $team_a;
-            $teams[$team_b["index"]] = $team_b;
-        }
-
-        /*
-          Function to shuffle most of the teams around 50000 times, where applicable. This looks like it's superfluous given the next stage, but it's so we start off with a random distribution of teams.
-         */
-
-        function callard_shuffle(&$teams) {
-            for ($i = 0; $i < 50000; $i++) {
-                $team_a = $teams[array_rand($teams)];
-                $team_b = $teams[array_rand($teams)];
-                if (is_swappable($team_a, $team_b)) {
-                    swap_two_teams($teams, $team_a, $team_b);
-                }
-            }
-        }
-
-        /*
-          Every Day I'm Shufflin' (ELKE DAG IM SHUFFLIN)!
-         */
-        callard_shuffle();
-
-        /*
           Now, we put teams into the positions where they are best suited.
+         * Run through all teams trying to find the best swap that positional rotation
          */
 
         function find_best_swap_for(&$teams, &$team_a) {
@@ -205,7 +165,9 @@ class StrictWUDCRules extends TabAlgorithmus {
 
         /*
           This file is generated automatically by maths. Editing it manually is considered very stupid. Please don't. Especially Calum. Also Molly. Richard, you're okay ;).
-         */
+          Positional rotation
+         *
+         * */
         $badness_lookup = array(
             "0, 0, 0, 0" => 0,
             "0, 0, 0, 1" => 0,
@@ -290,27 +252,6 @@ class StrictWUDCRules extends TabAlgorithmus {
             return $badness_lookup["{$positions[0]}, {$positions[1]}, {$positions[2]}, {$positions[3]}"];
         }
 
-        /*
-          Now, put them all in the structure, as required.
-         */
-
-        $draw = array();
-
-        $draw[$line] = [
-            "venue" => $venues[$iterateVenue],
-            "og" => $teams[$iterateTeam],
-            "oo" => $teams[$iterateTeam + 1],
-            "cg" => $teams[$iterateTeam + 2],
-            "co" => $teams[$iterateTeam + 3],
-            "panel" => [
-                "chair" => "",
-                "strength" => "",
-            ]
-        ];
-
-        $line++;
-        $iterateVenue++;
-
         return $draw;
     }
 
@@ -346,6 +287,24 @@ class StrictWUDCRules extends TabAlgorithmus {
             }
         }
         return $teams;
+    }
+
+    /**
+     * Swapps 2 Teams in the Teams[]
+     * @param Team[] $teams
+     * @param Team $team_a
+     * @param Team $team_b
+     */
+    public function swap_teams(&$teams, $team_a, $team_b) {
+
+        $index_a = array_search($team_a, $teams);
+        $index_b = array_search($team_b, $teams);
+
+        if ($index_a && $index_b) {
+            $teams[$index_a] = $team_b;
+            $teams[$index_b] = $team_a;
+        } else
+            throw new Exception("One of the Team was not found in Teams Array");
     }
 
     /**

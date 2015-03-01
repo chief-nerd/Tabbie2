@@ -156,4 +156,19 @@ class Team extends \yii\db\ActiveRecord {
         return ($ap < $bp) ? 1 : (($ap > $bp) ? -1 : 0);
     }
 
+    /**
+     * Helper function to determine whether teams COULD replace each other in the same bracket (are they in the same bracket, or is one a pull up / down from their bracket?)
+     * Debate level = hightest points of teams
+     * @param Team $other_team
+     * @uses Team::getPoints
+     * @uses Team::getLevel
+     * @return bool
+     */
+    public function is_swappable_with($other_team) {
+        $result = ($this->id != $other_team->id) &&
+                (($this->points == $other_team->points) ||
+                ($this->level == $other_team->level));
+        return $result;
+    }
+
 }
