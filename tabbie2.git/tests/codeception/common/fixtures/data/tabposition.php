@@ -2,7 +2,7 @@
 
 return [
     [
-        'draw_id' => 1,
+        'tab_id' => 1,
         'team_id' => 1,
         'result_id' => 30,
         'points' => 10,
@@ -10,7 +10,7 @@ return [
         'speakerB_speaks' => 73,
     ],
     [
-        'draw_id' => 1,
+        'tab_id' => 1,
         'team_id' => 2,
         'result_id' => 87,
         'points' => 25,
@@ -18,7 +18,7 @@ return [
         'speakerB_speaks' => 67,
     ],
     [
-        'draw_id' => 1,
+        'tab_id' => 1,
         'team_id' => 3,
         'result_id' => 7,
         'points' => 3,
@@ -26,7 +26,7 @@ return [
         'speakerB_speaks' => 60,
     ],
     [
-        'draw_id' => 1,
+        'tab_id' => 1,
         'team_id' => 4,
         'result_id' => 14,
         'points' => 9,
@@ -34,7 +34,7 @@ return [
         'speakerB_speaks' => 60,
     ],
     [
-        'draw_id' => 1,
+        'tab_id' => 1,
         'team_id' => 5,
         'result_id' => 41,
         'points' => 7,
@@ -42,7 +42,7 @@ return [
         'speakerB_speaks' => 63,
     ],
     [
-        'draw_id' => 1,
+        'tab_id' => 1,
         'team_id' => 6,
         'result_id' => 51,
         'points' => 23,
@@ -50,7 +50,7 @@ return [
         'speakerB_speaks' => 63,
     ],
     [
-        'draw_id' => 1,
+        'tab_id' => 1,
         'team_id' => 7,
         'result_id' => 45,
         'points' => 3,
@@ -58,7 +58,7 @@ return [
         'speakerB_speaks' => 77,
     ],
     [
-        'draw_id' => 1,
+        'tab_id' => 1,
         'team_id' => 8,
         'result_id' => 21,
         'points' => 25,
@@ -66,7 +66,7 @@ return [
         'speakerB_speaks' => 62,
     ],
     [
-        'draw_id' => 1,
+        'tab_id' => 1,
         'team_id' => 9,
         'result_id' => 72,
         'points' => 15,
@@ -74,7 +74,7 @@ return [
         'speakerB_speaks' => 84,
     ],
     [
-        'draw_id' => 1,
+        'tab_id' => 1,
         'team_id' => 10,
         'result_id' => 68,
         'points' => 12,
@@ -82,7 +82,7 @@ return [
         'speakerB_speaks' => 50,
     ],
     [
-        'draw_id' => 1,
+        'tab_id' => 1,
         'team_id' => 11,
         'result_id' => 26,
         'points' => 9,
@@ -90,7 +90,7 @@ return [
         'speakerB_speaks' => 61,
     ],
     [
-        'draw_id' => 1,
+        'tab_id' => 1,
         'team_id' => 12,
         'result_id' => 75,
         'points' => 10,
@@ -98,7 +98,7 @@ return [
         'speakerB_speaks' => 84,
     ],
     [
-        'draw_id' => 1,
+        'tab_id' => 1,
         'team_id' => 13,
         'result_id' => 14,
         'points' => 27,
@@ -106,7 +106,7 @@ return [
         'speakerB_speaks' => 67,
     ],
     [
-        'draw_id' => 1,
+        'tab_id' => 1,
         'team_id' => 14,
         'result_id' => 79,
         'points' => 10,
@@ -114,7 +114,7 @@ return [
         'speakerB_speaks' => 56,
     ],
     [
-        'draw_id' => 1,
+        'tab_id' => 1,
         'team_id' => 15,
         'result_id' => 35,
         'points' => 14,
@@ -122,7 +122,7 @@ return [
         'speakerB_speaks' => 84,
     ],
     [
-        'draw_id' => 1,
+        'tab_id' => 1,
         'team_id' => 16,
         'result_id' => 53,
         'points' => 14,

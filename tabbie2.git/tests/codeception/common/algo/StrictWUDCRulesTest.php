@@ -95,13 +95,13 @@ class StrictWUDCRulesTest extends DbTestCase {
                 'class' => \tests\codeception\common\fixtures\RoundFixture::className(),
                 'dataFile' => '@tests/codeception/common/fixtures/data/round.php',
             ],
-            'drawafterround' => [
-                'class' => \tests\codeception\common\fixtures\DrawafterroundFixture::className(),
-                'dataFile' => '@tests/codeception/common/fixtures/data/drawafterround.php',
+            'tabafterround' => [
+                'class' => \tests\codeception\common\fixtures\TabafterroundFixture::className(),
+                'dataFile' => '@tests/codeception/common/fixtures/data/tabafterround.php',
             ],
-            'drawposition' => [
-                'class' => \tests\codeception\common\fixtures\DrawPositionFixture::className(),
-                'dataFile' => '@tests/codeception/common/fixtures/data/drawposition.php',
+            'tabposition' => [
+                'class' => \tests\codeception\common\fixtures\TabPositionFixture::className(),
+                'dataFile' => '@tests/codeception/common/fixtures/data/tabposition.php',
             ],
         ];
     }

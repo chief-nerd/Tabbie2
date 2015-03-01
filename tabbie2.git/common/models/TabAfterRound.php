@@ -70,7 +70,7 @@ class TabAfterRound extends \yii\db\ActiveRecord {
     }
 
     public function getTeamPoints($teamid) {
-        $drawPos = $this->getTabPositions()->where(["team_id" => $teamid])->one();
+        $tabPos = $this->getTabPositions()->where(["team_id" => $teamid])->one();
         if ($tabPos instanceof TabPosition) {
             return $tabPos->points;
         } else

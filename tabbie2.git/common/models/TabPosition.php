@@ -5,10 +5,10 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "draw_position".
+ * This is the model class for table "tab_position".
  *
  * @property integer $id
- * @property integer $draw_id
+ * @property integer $tab_id
  * @property integer $team_id
  * @property integer $result_id
  * @property integer $points
@@ -57,7 +57,7 @@ class TabPosition extends \yii\db\ActiveRecord {
      * @return \yii\db\ActiveQuery
      */
     public function getTab() {
-        return $this->hasOne(TabAfterRound::className(), ['id' => 'draw_id']);
+        return $this->hasOne(TabAfterRound::className(), ['id' => 'tab_id']);
     }
 
     /**

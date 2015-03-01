@@ -7,8 +7,8 @@ use yii\test\ActiveFixture;
 /**
  * User fixture
  */
-class DrawafterroundFixture extends ActiveFixture {
+class TabafterroundFixture extends ActiveFixture {
 
-    public $modelClass = 'common\models\Drawafterround';
+    public $modelClass = 'common\models\Tabafterround';
 
 }

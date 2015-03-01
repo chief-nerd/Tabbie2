@@ -7,8 +7,8 @@ use yii\test\ActiveFixture;
 /**
  * User fixture
  */
-class DrawPositionFixture extends ActiveFixture {
+class TabPositionFixture extends ActiveFixture {
 
-    public $modelClass = 'common\models\DrawPosition';
+    public $modelClass = 'common\models\TabPosition';
 
 }
