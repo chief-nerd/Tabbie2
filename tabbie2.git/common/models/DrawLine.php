@@ -45,20 +45,12 @@ class DrawLine extends Model {
      */
     public $panelID;
 
-    private function team_set($team, $pos) {
-        $this->teams[$pos] = $team;
-    }
-
-    private function team_get($pos) {
-        return $this->teams[$pos];
-    }
-
     /**
      * Get the Strength of the Panel
      * @return int
      */
     public function getStrength() {
-        return 0;
+        return 1;
     }
 
     public function setTeams($og, $oo, $cg, $co) {
@@ -68,36 +60,75 @@ class DrawLine extends Model {
         $this->setCO($co);
     }
 
+    public function setTeamsByArray($teams) {
+        if (count($teams) == 4) {
+            $this->setOG($teams[0]);
+            $this->setOO($teams[1]);
+            $this->setCG($teams[2]);
+            $this->setCO($teams[3]);
+        } else
+            throw new Exception("Paramter has not 4 teams");
+    }
+
+    /**
+     * Return all teams on that line
+     * @return Team[]
+     */
+    public function getTeams() {
+        return [
+            Team::OG => $this->teams[0],
+            Team::OO => $this->teams[0],
+            Team::CG => $this->teams[0],
+            Team::CO => $this->teams[0],
+        ];
+    }
+
+    /**
+     * Return the Team on Position X
+     */
+    public function getTeamOn($pos) {
+        return $this->teams[$pos];
+    }
+
+    /**
+     * Sets a Team to a specific Position
+     * @param integer $pos
+     * @param Team $team
+     */
+    public function setTeamOn($pos, $team) {
+        $this->teams[$pos] = $team;
+    }
+
     public function setOG($team) {
-        return $this->team_set($team, DrawLine::OG);
+        return $this->setTeamOn(Team::OG, $team);
     }
 
     public function getOG() {
-        return $this->team_get(DrawLine::OG);
+        return $this->getTeamOn(Team::OG);
     }
 
     public function setOO($team) {
-        return $this->team_set($team, DrawLine::OO);
+        return $this->setTeamOn(Team::OO, $team);
     }
 
     public function getOO() {
-        return $this->team_get(DrawLine::OO);
+        return $this->getTeamOn(Team::OO);
     }
 
     public function setCG($team) {
-        return $this->team_set($team, DrawLine::CG);
+        return $this->setTeamOn(Team::CG, $team);
     }
 
     public function getCG() {
-        return $this->team_get(DrawLine::CG);
+        return $this->getTeamOn(Team::CG);
     }
 
     public function setCO($team) {
-        return $this->team_set($team, DrawLine::CO);
+        return $this->setTeamOn(Team::CO, $team);
     }
 
     public function getCO() {
-        return $this->team_get(DrawLine::CO);
+        return $this->getTeamOn(Team::CO);
     }
 
     public function setChair($adj) {
@@ -118,6 +149,19 @@ class DrawLine extends Model {
      */
     public function getAdjudicators() {
         return $this->adj;
+    }
+
+    /**
+     * Get the "Debate Level" aka the highest points of team in that debate
+     * @return integer Points
+     */
+    public function getLevel() {
+        return max([
+            $this->getOG()->getPoints(),
+            $this->getOO()->getPoints(),
+            $this->getCO()->getPoints(),
+            $this->getCG()->getPoints(),
+        ]);
     }
 
 }

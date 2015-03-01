@@ -5,6 +5,12 @@ namespace common\components;
 abstract class TabAlgorithmus {
 
     /**
+     * The Draw
+     * @var DrawLine[]
+     */
+    protected $DRAW = array();
+
+    /**
      * Function that calculated the Draw for a round
      * @param \common\models\Venue[] $venues    Array of all active venues
      * @param \common\models\Team[]  $teams     Array of all teams in the tournament in the structur of

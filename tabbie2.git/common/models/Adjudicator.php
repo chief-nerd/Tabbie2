@@ -138,4 +138,15 @@ class Adjudicator extends \yii\db\ActiveRecord {
         return ($id !== null) ? $table[$id] : $table;
     }
 
+    /**
+     * Sort comparison function based on strength
+     * @param Adjudicator $a
+     * @param Adjudicator $b
+     */
+    public static function compare_strength($a, $b) {
+        $as = $a->strength;
+        $bs = $b->strength;
+        return ($as < $bs) ? 1 : (($as > $bs) ? -1 : 0);
+    }
+
 }

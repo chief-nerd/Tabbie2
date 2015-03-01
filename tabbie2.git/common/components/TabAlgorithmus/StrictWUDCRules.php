@@ -23,11 +23,6 @@ class StrictWUDCRules extends TabAlgorithmus {
      */
     public function makeDraw($venues, $teams, $adjudicators, $preset_panels = array()) {
 
-        /**
-         * The Draw
-         */
-        $DRAW = array();
-
         $active_rooms = (count($teams) / 4);
         if (count($teams) % 4 != 0)
             throw new Exception("Amount of active Teams must be divided by 4 ;) - (active: " . count($teams) . ")", "500");
@@ -41,212 +36,74 @@ class StrictWUDCRules extends TabAlgorithmus {
          */
         shuffle($venues);
 
+        /**
+         * Sort Adjudicator at Strength
+         */
+        $adjudicators = $this->sort_adjudicators($adjudicators);
+
         /*
           First we need to make the brackets for each debate. This means ordering the teams by the number of points.
          */
         $teams = $this->sort_teams($teams);
-        $this->debug($teams);
 
         /*
           Then, within point brackets, we randomise the teams
          */
         $teams = $this->randomise_within_points($teams);
-        $this->debug($teams);
 
         /**
-         * Generate a first rough draw by running the teams down from top to bottom
+         * Generate a first rough draw by running the teams down from top to bottom and allocate them
          */
         for ($i = 0; $i < $active_rooms; $i++) {
             $line = new DrawLine();
-            $line->setTeams($teams[$i * 4], $teams[$i * 4 + 1], $teams[$i * 4 + 2], $teams[$i * 4 + 3]);
+
+            $choosen = array_splice($teams, 0, 4);
+            shuffle($choosen);
+            $line->setTeamsByArray($choosen);
+
             $line->venue = $venues[$i];
-            $line->setChair($adjudicators[$i]);
-            $DRAW[] = $line;
+            $this->DRAW[] = $line;
         }
 
-        /*
-          Then get the characteristics of the debates for shufflin' purposes.
-         * 3 things
-         * current position OG, OO, CG, CO
-         * Beste team in the Debate - how many points
-         * Value of a Room is classified
+
+        /**
+         * Now start improving that initial set
+         * Go through the Draw until you can't make any improvements
          */
-
-        function get_debate_characteristics(&$debates) {
-            $result = array();
-            $index = 0;
-            foreach ($debates as $debate) {
-                $current_position = 0;
-                $best_team = $debate[0];
-                $debate_level = $best_team["points"];
-                foreach ($debate as $team) {
-                    $attributed_team = $team;
-                    $attributed_team["current_position"] = $current_position;
-                    $attributed_team["debate_level"] = $debate_level;
-                    $attributed_team["index"] = $index;
-                    $result[] = $attributed_team;
-                    $current_position++;
-                    $index++;
-                }
-            }
-            return $result;
-        }
-
-        get_debate_characteristics($temp_debates);
-
-        /*
-          Now, we put teams into the positions where they are best suited.
-         * Run through all teams trying to find the best swap that positional rotation
-         */
-
-        function find_best_swap_for(&$teams, &$team_a) {
-            $best_effect = 0;
-            $best_team_b = false;
-            foreach ($teams as $team_b) { //this loop especially can be limited
-                if (is_swappable($team_a, $team_b)) {
-                    $current = team_badness($team_a) + team_badness($team_b);
-                    $future = team_badness($team_a, $team_b["current_position"]) + team_badness($team_b, $team_a["current_position"]);
-
-                    $net_effect = $future - $current;
-                    if ($net_effect < $best_effect) {
-                        $best_effect = $net_effect;
-                        $best_team_b = $team_b;
+        $stillFoundASwap = true;
+        while ($stillFoundASwap) {
+            $stillFoundASwap = false; //Assume we are done, prove me wrong
+            foreach ($this->DRAW as $line) {
+                foreach ($line->teams as $pos => $team) {
+                    if ($team->getPositionBadness($pos) > 0) { // Not optimal positioning exists here
+                        if ($this->find_best_swap_for($line, $pos)) { //Do we find a swap that makes it better
+                            $stillFoundASwap = true; //We found a better swap, do the loop again
+                        }
                     }
                 }
             }
-            if ($best_team_b) {
-                swap_two_teams($teams, $team_a, $best_team_b);
-                return true;
-            }
-            return false;
-        }
-
-        function team_badness(&$team, $position = -1) {
-            $result = 0;
-            $positions = $team["positions"];
-            if ($position == -1)
-                $position = $team["current_position"];
-            $positions[position_to_s($position)] += 1;
-            return badness($positions);
-        }
-
-        function position_to_s($i) {
-            if ($i == 0)
-                return "og";
-            if ($i == 1)
-                return "oo";
-            if ($i == 2)
-                return "cg";
-            if ($i == 3)
-                return "co";
-            return "trouble";
+            //If we havn't found a better swap $stillFoundASwap should be false and the loop breaks
         }
 
         /*
-          Then move the teams around in accordance with the randomiser algorithm, to put them all in the most appropriate positions.
+         * Allocate the Adjudicators
          */
-        $previous_solution = 0;
-        while (teams_badness($teams) > 0) {
-            if ($previous_solution == teams_badness($teams))
-                break;
-            $previous_solution = teams_badness($teams);
-            foreach ($teams as $team)
-                if (team_badness($team) > 0)
-                    if (find_best_swap_for($teams, $team))
-                        break;
-        }
+        $lineID = 0;
+        foreach ($adjudicators as $adj) {
+            $this->DRAW[$lineID]->addAdjudicator($adj);
 
+            if (isset($this->DRAW[$lineID + 1])) //Is there a next line
+                $lineID++;
+            else
+                $lineID = 0; //Start at beginning
+        }
 
         /*
-          This file is generated automatically by maths. Editing it manually is considered very stupid. Please don't. Especially Calum. Also Molly. Richard, you're okay ;).
-          Positional rotation
-         *
-         * */
-        $badness_lookup = array(
-            "0, 0, 0, 0" => 0,
-            "0, 0, 0, 1" => 0,
-            "0, 0, 0, 2" => 4,
-            "0, 0, 0, 3" => 36,
-            "0, 0, 0, 4" => 144,
-            "0, 0, 0, 5" => 324,
-            "0, 0, 0, 6" => 676,
-            "0, 0, 0, 7" => 1296,
-            "0, 0, 0, 8" => 2304,
-            "0, 0, 0, 9" => 3600,
-            "0, 0, 1, 1" => 0,
-            "0, 0, 1, 2" => 4,
-            "0, 0, 1, 3" => 36,
-            "0, 0, 1, 4" => 100,
-            "0, 0, 1, 5" => 256,
-            "0, 0, 1, 6" => 576,
-            "0, 0, 1, 7" => 1156,
-            "0, 0, 1, 8" => 1936,
-            "0, 0, 2, 2" => 16,
-            "0, 0, 2, 3" => 36,
-            "0, 0, 2, 4" => 100,
-            "0, 0, 2, 5" => 256,
-            "0, 0, 2, 6" => 576,
-            "0, 0, 2, 7" => 1024,
-            "0, 0, 3, 3" => 64,
-            "0, 0, 3, 4" => 144,
-            "0, 0, 3, 5" => 324,
-            "0, 0, 3, 6" => 576,
-            "0, 0, 4, 4" => 256,
-            "0, 0, 4, 5" => 400,
-            "0, 1, 1, 1" => 0,
-            "0, 1, 1, 2" => 4,
-            "0, 1, 1, 3" => 16,
-            "0, 1, 1, 4" => 64,
-            "0, 1, 1, 5" => 196,
-            "0, 1, 1, 6" => 484,
-            "0, 1, 1, 7" => 900,
-            "0, 1, 2, 2" => 4,
-            "0, 1, 2, 3" => 16,
-            "0, 1, 2, 4" => 64,
-            "0, 1, 2, 5" => 196,
-            "0, 1, 2, 6" => 400,
-            "0, 1, 3, 3" => 36,
-            "0, 1, 3, 4" => 100,
-            "0, 1, 3, 5" => 196,
-            "0, 1, 4, 4" => 144,
-            "0, 2, 2, 2" => 4,
-            "0, 2, 2, 3" => 16,
-            "0, 2, 2, 4" => 64,
-            "0, 2, 2, 5" => 144,
-            "0, 2, 3, 3" => 36,
-            "0, 2, 3, 4" => 64,
-            "0, 3, 3, 3" => 36,
-            "1, 1, 1, 1" => 0,
-            "1, 1, 1, 2" => 0,
-            "1, 1, 1, 3" => 4,
-            "1, 1, 1, 4" => 36,
-            "1, 1, 1, 5" => 144,
-            "1, 1, 1, 6" => 324,
-            "1, 1, 2, 2" => 0,
-            "1, 1, 2, 3" => 4,
-            "1, 1, 2, 4" => 36,
-            "1, 1, 2, 5" => 100,
-            "1, 1, 3, 3" => 16,
-            "1, 1, 3, 4" => 36,
-            "1, 2, 2, 2" => 0,
-            "1, 2, 2, 3" => 4,
-            "1, 2, 2, 4" => 16,
-            "1, 2, 3, 3" => 4,
-            "2, 2, 2, 2" => 0,
-            "2, 2, 2, 3" => 0
-        );
-
-        function badness($positions) {
-            global $badness_lookup;
-            sort($positions);
-            while ($positions[0] + $positions[1] + $positions[2] + $positions[3] >= 10) {
-                for ($i = 0; $i < 4; $i++)
-                    $positions[$i] = max(0, $positions[$i] - 1);
-            }
-            return $badness_lookup["{$positions[0]}, {$positions[1]}, {$positions[2]}, {$positions[3]}"];
-        }
-
-        return $DRAW;
+         * We have found the best possible combination
+         * There is no better swap possible now.
+         * Return der DRAW[] and get ready to debate
+         */
+        return $this->DRAW;
     }
 
     /**
@@ -255,8 +112,18 @@ class StrictWUDCRules extends TabAlgorithmus {
      * @return Team[]
      */
     public function sort_teams($teams) {
-        usort($teams, array('common\models\Team', 'sort_points'));
+        usort($teams, array('common\models\Team', 'compare_points'));
         return $teams;
+    }
+
+    /**
+     * Sortiert Adjudicator
+     * @param Adjudicator[] $adj
+     * @return Adjudicator[]
+     */
+    public function sort_adjudicators($adj) {
+        usort($adj, array('common\models\Adjudicator', 'compare_strength'));
+        return $adj;
     }
 
     /**
@@ -284,21 +151,19 @@ class StrictWUDCRules extends TabAlgorithmus {
     }
 
     /**
-     * Swapps 2 Teams in the Teams[]
-     * @param Team[] $teams
-     * @param Team $team_a
-     * @param Team $team_b
+     * Swapps 2 Teams
+     * @param DrawLine $line_a
+     * @param integer $pos_a
+     * @param DrawLine $line_b
+     * @param integer $pos_b
      */
-    public function swap_teams(&$teams, $team_a, $team_b) {
+    public function swap_teams($line_a, $pos_a, $line_b, $pos_b) {
 
-        $index_a = array_search($team_a, $teams);
-        $index_b = array_search($team_b, $teams);
+        $team_a = $line_a->getTeamOn($pos_a);
+        $team_b = $line_b->getTeamOn($pos_b);
 
-        if ($index_a && $index_b) {
-            $teams[$index_a] = $team_b;
-            $teams[$index_b] = $team_a;
-        } else
-            throw new Exception("One of the Team was not found in Teams Array");
+        $line_a->setTeamOn($pos_a, $team_b);
+        $line_b->setTeamOn($pos_b, $team_a);
     }
 
     /**
@@ -339,6 +204,43 @@ class StrictWUDCRules extends TabAlgorithmus {
         }
 
         Debug::debug($output);
+    }
+
+    /**
+     *
+     * @param integer $line
+     * @param integer $pos_a
+     * @return boolean
+     */
+    public function find_best_swap_for($line_a, $pos_a) {
+        $team_a = $line_a->getTeamOn($pos_a);
+        $best_effect = 0;
+        $best_team_b_line = false;
+        $best_team_b_pos = false;
+
+        foreach ($this->DRAW as $line) {
+            foreach ($line->teams as $pos_b => $team_b) { //this loop especially can be limited
+                if ($team_a->is_swappable_with($team_b)) {
+
+                    //Get Status Quo Badness
+                    $current = $team_a->getPositionBadness($pos_a) + $team_b->getPositionBadness($pos_b);
+                    //How it would look like
+                    $future = $team_a->getPositionBadness($pos_b) + $team_b->getPositionBadness($pos_a);
+
+                    $net_effect = $future - $current;
+                    if ($net_effect < $best_effect) {
+                        $best_effect = $net_effect;
+                        $best_team_b_line = $line;
+                        $best_team_b_pos = $pos_b;
+                    }
+                }
+            }
+        }
+        if ($best_team_b_line && $best_team_b_pos) {
+            $this->swap_teams($line_a, $pos_a, $best_team_b_line, $best_team_b_pos);
+            return true;
+        }
+        return false;
     }
 
 }

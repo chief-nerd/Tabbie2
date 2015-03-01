@@ -23,6 +23,11 @@ use Yii;
  */
 class Team extends \yii\db\ActiveRecord {
 
+    const OG = 0;
+    const OO = 1;
+    const CG = 2;
+    const CO = 3;
+
     /**
      * @inheritdoc
      */
@@ -113,12 +118,11 @@ class Team extends \yii\db\ActiveRecord {
         return $this->getPointsAfterRound($last_round->number);
     }
 
-    /*
+    /**
      * Get the points the team is on after the specified round.
      * @param integer $number
      * @return int
      */
-
     public function getPointsAfterRound($number) {
         $round = Round::find()->where([
                     "number" => $number,
@@ -136,21 +140,12 @@ class Team extends \yii\db\ActiveRecord {
         }
     }
 
-    public function getPreviousPositionMatrix() {
-        return [
-            "OG" => 0,
-            "OO" => 0,
-            "CO" => 0,
-            "OO" => 0,
-        ];
-    }
-
     /**
-     * Sort function based on team points
+     * Sort comparison function based on team points
      * @param Team $a
      * @param Team $b
      */
-    public static function sort_points($a, $b) {
+    public static function compare_points($a, $b) {
         $ap = $a->getPoints();
         $bp = $b->getPoints();
         return ($ap < $bp) ? 1 : (($ap > $bp) ? -1 : 0);
@@ -169,6 +164,125 @@ class Team extends \yii\db\ActiveRecord {
                 (($this->points == $other_team->points) ||
                 ($this->level == $other_team->level));
         return $result;
+    }
+
+    /**
+     * The Position Badness Lookup table
+     * @todo make that dynamic, bitch!
+     * @return array
+     */
+    public static function PositionBadnessTable() {
+        return array(
+            "0, 0, 0, 0" => 0,
+            "0, 0, 0, 1" => 0,
+            "0, 0, 0, 2" => 4,
+            "0, 0, 0, 3" => 36,
+            "0, 0, 0, 4" => 144,
+            "0, 0, 0, 5" => 324,
+            "0, 0, 0, 6" => 676,
+            "0, 0, 0, 7" => 1296,
+            "0, 0, 0, 8" => 2304,
+            "0, 0, 0, 9" => 3600,
+            "0, 0, 1, 1" => 0,
+            "0, 0, 1, 2" => 4,
+            "0, 0, 1, 3" => 36,
+            "0, 0, 1, 4" => 100,
+            "0, 0, 1, 5" => 256,
+            "0, 0, 1, 6" => 576,
+            "0, 0, 1, 7" => 1156,
+            "0, 0, 1, 8" => 1936,
+            "0, 0, 2, 2" => 16,
+            "0, 0, 2, 3" => 36,
+            "0, 0, 2, 4" => 100,
+            "0, 0, 2, 5" => 256,
+            "0, 0, 2, 6" => 576,
+            "0, 0, 2, 7" => 1024,
+            "0, 0, 3, 3" => 64,
+            "0, 0, 3, 4" => 144,
+            "0, 0, 3, 5" => 324,
+            "0, 0, 3, 6" => 576,
+            "0, 0, 4, 4" => 256,
+            "0, 0, 4, 5" => 400,
+            "0, 1, 1, 1" => 0,
+            "0, 1, 1, 2" => 4,
+            "0, 1, 1, 3" => 16,
+            "0, 1, 1, 4" => 64,
+            "0, 1, 1, 5" => 196,
+            "0, 1, 1, 6" => 484,
+            "0, 1, 1, 7" => 900,
+            "0, 1, 2, 2" => 4,
+            "0, 1, 2, 3" => 16,
+            "0, 1, 2, 4" => 64,
+            "0, 1, 2, 5" => 196,
+            "0, 1, 2, 6" => 400,
+            "0, 1, 3, 3" => 36,
+            "0, 1, 3, 4" => 100,
+            "0, 1, 3, 5" => 196,
+            "0, 1, 4, 4" => 144,
+            "0, 2, 2, 2" => 4,
+            "0, 2, 2, 3" => 16,
+            "0, 2, 2, 4" => 64,
+            "0, 2, 2, 5" => 144,
+            "0, 2, 3, 3" => 36,
+            "0, 2, 3, 4" => 64,
+            "0, 3, 3, 3" => 36,
+            "1, 1, 1, 1" => 0,
+            "1, 1, 1, 2" => 0,
+            "1, 1, 1, 3" => 4,
+            "1, 1, 1, 4" => 36,
+            "1, 1, 1, 5" => 144,
+            "1, 1, 1, 6" => 324,
+            "1, 1, 2, 2" => 0,
+            "1, 1, 2, 3" => 4,
+            "1, 1, 2, 4" => 36,
+            "1, 1, 2, 5" => 100,
+            "1, 1, 3, 3" => 16,
+            "1, 1, 3, 4" => 36,
+            "1, 2, 2, 2" => 0,
+            "1, 2, 2, 3" => 4,
+            "1, 2, 2, 4" => 16,
+            "1, 2, 3, 3" => 4,
+            "2, 2, 2, 2" => 0,
+            "2, 2, 2, 3" => 0
+        );
+    }
+
+    /**
+     * Gets an integer value representing how BAD the current position is for the Team
+     * @param integer $pos
+     * @return integer
+     */
+    public function getPositionBadness($pos) {
+
+        $positions = $this->getPastPositionMatrix();
+        $badness_lookup = Team::PositionBadnessTable();
+
+        $positions[$pos] += 1;
+        sort($positions);
+
+        while (($positions[0] + $positions[1] + $positions[2] + $positions[3]) >= 10) {
+            for ($i = 0; $i < 4; $i++)
+                $positions[$i] = max(0, $positions[$i] - 1);
+        }
+        return $badness_lookup["{$positions[0]}, {$positions[1]}, {$positions[2]}, {$positions[3]}"];
+    }
+
+    /**
+     * Return the previous PositionMatrix the Team has been in to
+     * 0 => OG,
+     * 1 => OO,
+     * 2 => CG,
+     * 3 => CO,
+     * @return array[4]
+     */
+    public function getPastPositionMatrix() {
+
+        $og = Debate::find()->where(["tournament_id" => $this->tournament_id, "og_team_id" => $this->id])->count();
+        $oo = Debate::find()->where(["tournament_id" => $this->tournament_id, "oo_team_id" => $this->id])->count();
+        $cg = Debate::find()->where(["tournament_id" => $this->tournament_id, "cg_team_id" => $this->id])->count();
+        $co = Debate::find()->where(["tournament_id" => $this->tournament_id, "co_team_id" => $this->id])->count();
+
+        return [$og, $oo, $cg, $co];
     }
 
 }

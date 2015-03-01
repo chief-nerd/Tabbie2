@@ -29,6 +29,22 @@ class StrictWUDCRulesTest extends DbTestCase {
         parent::tearDown();
     }
 
+    public function testSortAdjudicators() {
+        $adj = \common\models\Adjudicator::findAll(["tournament_id" => 1]);
+        $new_adj = $this->algo->sort_adjudicators($adj);
+
+        expect("Preserve Amount", count($new_adj))->equals(count($adj));
+        for ($i = 0; $i < count($new_adj); $i++) {
+            /* @var $t Team */
+            $a = $new_adj[$i];
+
+            $this->assertInstanceOf(Adjudicator::className(), $a);
+            if ($i > 0) {
+                expect("Sort Order", $a->strength)->lessOrEquals($new_adj[$i - 1]->strength);
+            }
+        }
+    }
+
     public function testSortAndRandomisationOfTeams() {
         $teams = \common\models\Team::findAll(["tournament_id" => 1]);
         $new_teams = $this->algo->sort_teams($teams);
@@ -48,22 +64,28 @@ class StrictWUDCRulesTest extends DbTestCase {
 
     public function testSwap() {
 
-        $team_a = new Team(["id" => 1, "name" => "Team A", "tournament_id" => 1, "speakerA_id" => 1, "speakerB_id" => 2, "society_id" => 1,]);
-        $team_b = new Team(["id" => 2, "name" => "Team B", "tournament_id" => 1, "speakerA_id" => 3, "speakerB_id" => 4, "society_id" => 2,]);
-        $team_c = new Team(["id" => 3, "name" => "Team C", "tournament_id" => 1, "speakerA_id" => 5, "speakerB_id" => 6, "society_id" => 3,]);
-        $teams = [$team_a, $team_b, $team_c];
+        $pos_a = rand(0, 3);
+        $team_a = new Team(["id" => 1]);
+        $line_a = new \common\models\DrawLine();
+        $line_a->setTeamOn($pos_a, $team_a);
+        $team_a = new Team(["id" => 1]);
 
-        $this->algo->swap_teams($teams, $team_b, $team_c);
+        $pos_b = rand(0, 3);
+        $team_b = new Team(["id" => 2]);
+        $line_b = new \common\models\DrawLine();
+        $line_b->setTeamOn($pos_b, $team_b);
 
-        expect($teams[1])->equals($team_c);
-        expect($teams[2])->equals($team_b);
+        $this->algo->swap_teams($line_a, $pos_a, $line_b, $pos_b);
+
+        expect($line_a->getTeamOn($pos_a))->equals($team_b);
+        expect($line_b->getTeamOn($pos_b))->equals($team_a);
     }
 
     public function testRunFullDraw() {
         $venues = Venue::findAll(["tournament_id" => 1]);
         $teams = Team::findAll(["tournament_id" => 1]);
         $adjudicators = Adjudicator::findAll(["tournament_id" => 1]);
-        //$draw = $this->algo->makeDraw($venues, $teams, $adjudicators);
+        $draw = $this->algo->makeDraw($venues, $teams, $adjudicators);
     }
 
     /**
