@@ -163,7 +163,9 @@ class RoundController extends BaseController {
         $model = Round::findOne(["id" => $id]);
 
         if ($model instanceof Round) {
-
+            foreach ($model->debates as $d) {
+                $d->delete();
+            }
             if (!$model->generateDraw()) {
                 Yii::$app->session->addFlash("error", print_r($model->getErrors(), true));
             }
