@@ -120,7 +120,7 @@ class SiteController extends BaseController {
             $user = $model->signup();
             if ($user !== null) {
                 if (Yii::$app->getUser()->login($user)) {
-                    Yii::$app->session->addFlash("success", Yii::t("app", "User registered! Welcome"));
+                    Yii::$app->session->addFlash("success", Yii::t("app", "User registered! Welcome " . $user->name));
                     return $this->goHome();
                 }
             } else
