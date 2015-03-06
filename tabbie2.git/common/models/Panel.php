@@ -93,7 +93,21 @@ class Panel extends \yii\db\ActiveRecord {
     }
 
     public function check() {
-        return true;
+        $amount_chairs = 0;
+        $amount = 0;
+        foreach ($this->adjudicatorInPanels as $adj) {
+            if ($adj->function == 1)
+                $amount_chairs++;
+
+            if ($adj->adjudicator instanceof Adjudicator)
+                $amount++;
+        }
+
+        if ($amount > 0 && $amount_chairs == 1)
+            return true;
+        else
+            echo "ID:" . $this->id . " Amount:" . $amount . " & Chairs:" . $amount_chairs . "<br>\n";
+        return false;
     }
 
     /**
@@ -136,7 +150,10 @@ class Panel extends \yii\db\ActiveRecord {
         $chair = $this->getSpecificAdjudicatorInPanel($id);
         $chair->function = Panel::FUNCTION_CHAIR;
 
-        return ($chair->save());
+        if ($chair->save())
+            return true;
+        else
+            return $chair->getErrors();
     }
 
     /**
@@ -148,13 +165,15 @@ class Panel extends \yii\db\ActiveRecord {
         $adj = $this->getSpecificAdjudicatorInPanel($id);
         if ($adj instanceof AdjudicatorInPanel) {
             $adj->panel_id = $newPanel->id;
-            return $adj->save();
+            if ($adj->save())
+                return true;
+            else
+                return $adj->getErrors();
         } else
             throw new Exception("getSpecificAdjudicatorInPanel with ID " . $id . " NOT found");
     }
 
-    public
-            function setWing($id) {
+    public function setWing($id) {
         $adj = $this->getSpecificAdjudicatorInPanel($id);
 
         if ($adj->function == Panel::FUNCTION_CHAIR) {
@@ -170,6 +189,14 @@ class Panel extends \yii\db\ActiveRecord {
             return true;
         else
             return false;
+    }
+
+    public function setAllWings() {
+        foreach ($this->adjudicatorInPanels as $adj) {
+            $adj->function = Panel::FUNCTION_WING;
+            $adj->save();
+        }
+        return true;
     }
 
 }

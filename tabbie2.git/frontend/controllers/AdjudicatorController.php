@@ -11,6 +11,7 @@ use yii\filters\VerbFilter;
 use common\components\filter\TournamentContextFilter;
 use common\models\AdjudicatorInPanel;
 use \common\models\Panel;
+use yii\base\Exception;
 
 /**
  * AdjudicatorController implements the CRUD actions for Adjudicator model.
@@ -71,6 +72,7 @@ class AdjudicatorController extends BaseController {
                             //Panel has changed
                             $oldPanel->changeTo($newPanel, $ID);
                             $oldPanel->setChair();
+                            $newPanel->setAllWings();
                             $newPanel->setChair($ID);
                         } else {
                             //Same Panel - nothing to do
@@ -101,17 +103,22 @@ class AdjudicatorController extends BaseController {
                     } else {
                         throw new Exception("No condition matched");
                     }
-
+                    // Refresh Values to check
+                    $oldPanel->refresh();
+                    $newPanel->refresh();
                     if ($oldPanel->check() && $newPanel->check())
                         return 1;
+                    else
+                        throw new Exception("Did not pass panel check old:" . (($oldPanel->check()) ? 'true' : 'false') . " new:" . (($newPanel->check()) ? 'true' : 'false'));
                 } else
                     throw new Exception("No Panel");
             }
         } catch (Exception $ex) {
-            return print_r($ex, true);
+            /* @var $ex Exception */
+            return $ex->getMessage();
         }
 
-        return 0;
+        return "run trough";
     }
 
     /**
