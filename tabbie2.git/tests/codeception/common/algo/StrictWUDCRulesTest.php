@@ -88,6 +88,13 @@ class StrictWUDCRulesTest extends DbTestCase {
         $draw = $this->algo->makeDraw($venues, $teams, $adjudicators);
     }
 
+    public function testEnergyCalculation() {
+        $line = new \common\models\DrawLine();
+        $round = \common\models\Round::findOne(1);
+        $line = $this->algo->calcEnergyLevel($line, $round);
+        expect("Energy Level is set", $line->energyLevel)->notEquals(0);
+    }
+
     /**
      * @inheritdoc
      */

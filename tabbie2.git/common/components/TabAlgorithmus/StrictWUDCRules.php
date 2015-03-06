@@ -179,18 +179,6 @@ class StrictWUDCRules extends TabAlgorithmus {
     }
 
     /**
-     *
-     * @param Debate $debate
-     * @param type $name Description
-     * @return boolean
-     */
-    public function calcEnergyLevel($debate) {
-        $tournament = $debate->tournament;
-        $debate->energy = rand(1, 100);
-        return true;
-    }
-
-    /**
      * Sets up the variables in the EnergyConfig
      * @param \common\models\Tournament $tournament
      */
@@ -253,6 +241,44 @@ class StrictWUDCRules extends TabAlgorithmus {
             return true;
         }
         return false;
+    }
+
+    /**
+     *
+     * @param DrawLine $line
+     * @param Round $round
+     * @return DrawLine
+     */
+    public function calcEnergyLevel($line, $round) {
+        $line->energyLevel = 0;
+        foreach (get_class_methods($this) as $function) {
+            if (strpos($function, "energyRule_") === 0) {
+                $line = \call_user_func([StrictWUDCRules::className(), $function], $line, $round);
+            }
+        }
+        return $line;
+    }
+
+    /**
+     *
+     * @param DrawLine $line
+     * @param type $round
+     * @return boolean
+     */
+    public function energyRule_Strikes($line, $round) {
+        $line->energyLevel += 1000;
+        return $line;
+    }
+
+    /**
+     *
+     * @param DrawLine $line
+     * @param type $round
+     * @return boolean
+     */
+    public function energyRule_Random($line, $round) {
+        $line->energyLevel += 0;
+        return $line;
     }
 
 }

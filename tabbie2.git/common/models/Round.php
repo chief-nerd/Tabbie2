@@ -188,6 +188,8 @@ class Round extends \yii\db\ActiveRecord {
                 } else
                     $panelID = $line->panelID;
 
+                $line = $algo->calcEnergyLevel($line, $this);
+
                 $debate = new Debate();
                 $debate->round_id = $this->id;
                 $debate->tournament_id = $this->tournament_id;
@@ -197,8 +199,7 @@ class Round extends \yii\db\ActiveRecord {
                 $debate->co_team_id = $line->CO->id;
                 $debate->venue_id = $line->venue->id;
                 $debate->panel_id = $panelID;
-
-                $algo->calcEnergyLevel($debate, $this->tournament);
+                $debate->energy = $line->energyLevel;
 
                 if (!$debate->save())
                     throw new Exception("Can't save Debate " . print_r($debate->getErrors(), true));

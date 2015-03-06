@@ -46,6 +46,11 @@ class DrawLine extends Model {
     public $panelID;
 
     /**
+     * The Energy Level of the Adjudicator Panel
+     */
+    public $energyLevel = 0;
+
+    /**
      * Get the Strength of the Panel
      * @return int
      */

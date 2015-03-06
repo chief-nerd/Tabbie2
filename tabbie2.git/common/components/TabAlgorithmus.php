@@ -2,7 +2,7 @@
 
 namespace common\components;
 
-abstract class TabAlgorithmus {
+abstract class TabAlgorithmus extends \yii\base\Object {
 
     /**
      * The Draw
@@ -23,9 +23,10 @@ abstract class TabAlgorithmus {
     abstract public function makeDraw($venues, $teams, $adjudicators, $preset_panels);
 
     /**
-     * @param \common\models\Debate $debate The Debate to be calculated
+     * @param \common\models\DrawLine $line The current DrawLine
+     * @param \common\models\Round $round The current reference
      */
-    abstract public function calcEnergyLevel($debate);
+    abstract public function calcEnergyLevel($line, $round);
 
     /**
      * @param \common\models\Debate $debate The Debate to be calculated
