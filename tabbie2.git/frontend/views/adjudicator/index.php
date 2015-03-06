@@ -28,6 +28,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     'modelClass' => 'Adjudicator',
                 ]), ['import', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
         ?>
+        <?=
+        Html::a(Yii::t('app', 'Reset watched', [
+                    'modelClass' => 'Adjudicator',
+                ]), ['resetwatched', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
+        ?>
     </p>
     <?
     $gridColumns = [
@@ -64,16 +69,39 @@ $this->params['breadcrumbs'][] = $this->title;
             'width' => '15%',
         ],
         [
+            'class' => '\kartik\grid\BooleanColumn',
+            'attribute' => 'can_chair',
+            'width' => '5%',
+        ],
+        [
+            'class' => '\kartik\grid\BooleanColumn',
+            'attribute' => 'are_watched',
+            'trueIcon' => '<span class="glyphicon glyphicon-eye-open text-success"></span>',
+            'falseIcon' => '<span class="glyphicon glyphicon-eye-close text-muted"></span>',
+            'vAlign' => 'middle',
+            'width' => '5%',
+        ],
+        [
             'class' => 'kartik\grid\ActionColumn',
-            'template' => '{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}',
+            'template' => '{watch}&nbsp;&nbsp;{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}',
             'dropdown' => false,
             'vAlign' => 'middle',
-            'urlCreator' => function($action, $model, $key, $index) {
+            'buttons' => [
+                "watch" => function ($url, $model) {
+                    return Html::a("<span class='glyphicon glyphicon-screenshot'></span>", $url, [
+                                'title' => Yii::t('app', 'Toogle Watch'),
+                                'data-pjax' => '0',
+                                'data-toggle-active' => $model->id
+                    ]);
+                }
+                    ],
+                    'urlCreator' => function($action, $model, $key, $index) {
                 return \yii\helpers\Url::to(["adjudicator/" . $action, "id" => $model->id, "tournament_id" => $model->tournament->id]);
             },
-                    'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", "View Venue"), 'data-toggle' => 'tooltip'],
+                    'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", "View Adjudicator"), 'data-toggle' => 'tooltip'],
                     'updateOptions' => ['title' => Yii::t("app", "Update team"), 'data-toggle' => 'tooltip'],
                     'deleteOptions' => ['title' => Yii::t("app", "Delete team"), 'data-toggle' => 'tooltip'],
+                    'width' => '10%',
                 ],
             ];
 

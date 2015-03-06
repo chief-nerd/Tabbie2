@@ -37,6 +37,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Strength',
                 'value' => common\models\Adjudicator::translateStrength($model->strength)
             ],
+            'can_chair',
+            'are_watched'
         ],
     ])
     ?>

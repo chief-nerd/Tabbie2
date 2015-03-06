@@ -78,6 +78,13 @@ class Team extends \yii\db\ActiveRecord {
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getStrikedAdjudicators() {
+        return $this->hasMany(Adjudicator::className(), ['id' => 'adjudicator_id'])->viaTable('team_strike', ['team_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getTournament() {
         return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
     }

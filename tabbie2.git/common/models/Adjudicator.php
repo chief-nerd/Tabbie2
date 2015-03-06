@@ -12,6 +12,8 @@ use Yii;
  * @property integer $user_id
  * @property integer $strength 0-9
  * @property integer $society_id
+ * @property integer $can_chair
+ * @property integer $are_watched
  *
  * @property Tournament $tournament
  * @property User $user
@@ -35,7 +37,7 @@ class Adjudicator extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['tournament_id', 'user_id', 'society_id'], 'required'],
-            [['tournament_id', 'user_id', 'strength', 'society_id'], 'integer']
+            [['tournament_id', 'user_id', 'strength', 'can_chair', 'are_watched', 'society_id'], 'integer']
         ];
     }
 
@@ -49,6 +51,8 @@ class Adjudicator extends \yii\db\ActiveRecord {
             'user_id' => Yii::t('app', 'User ID'),
             'strength' => Yii::t('app', 'Strength'),
             'societyName' => Yii::t('app', 'Society Name'),
+            'can_chair' => Yii::t('app', 'can Chair'),
+            'are_watched' => Yii::t('app', 'are Watched'),
             'society_id' => Yii::t('app', 'Society'),
         ];
     }
@@ -80,6 +84,20 @@ class Adjudicator extends \yii\db\ActiveRecord {
      */
     public function getAdjudicatorInPanels() {
         return $this->hasMany(AdjudicatorInPanel::className(), ['adjudicator_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getStrikedTeams() {
+        return $this->hasMany(Team::className(), ['id' => 'team_id'])->viaTable('team_strike', ['adjudicator_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getStrikedAdjudicators() {
+        return $this->hasMany(Adjudicator::className(), ['id' => 'adjudicator_id'])->viaTable('adjudicator_strike', ['adjudicator_id1' => 'id']);
     }
 
     /**

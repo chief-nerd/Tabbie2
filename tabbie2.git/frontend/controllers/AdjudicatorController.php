@@ -160,7 +160,7 @@ class AdjudicatorController extends BaseController {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
+            return $this->redirect(['index', "tournament_id" => $model->tournament_id]);
         } else {
             return $this->render('update', [
                         'model' => $model,
@@ -339,6 +339,27 @@ class AdjudicatorController extends BaseController {
                     "model" => $model,
                     "round_id" => $round_id
         ]);
+    }
+
+    public function actionWatch($id) {
+        $model = $this->findModel($id);
+
+        if ($model->are_watched == 0)
+            $model->are_watched = 1;
+        else {
+            $model->are_watched = 0;
+        }
+
+        if (!$model->save()) {
+            Yii::$app->session->addFlash("error", $model->getErrors("active"));
+        }
+
+        return $this->redirect(['adjudicator/index', 'tournament_id' => $this->_tournament->id]);
+    }
+
+    public function actionResetwatched() {
+        Adjudicator::updateAll(["are_watched" => 0], ["tournament_id" => $this->_tournament->id]);
+        return $this->redirect(['adjudicator/index', 'tournament_id' => $this->_tournament->id]);
     }
 
 }

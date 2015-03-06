@@ -21,7 +21,7 @@ class AdjudicatorSearch extends Adjudicator {
      */
     public function rules() {
         return [
-            ['id', 'integer'],
+            [['id', 'can_chair', 'are_watched'], 'integer'],
             [['societyName', 'strength'], 'safe'],
             ['name', 'string', 'max' => 255]
         ];
@@ -43,7 +43,10 @@ class AdjudicatorSearch extends Adjudicator {
      * @return ActiveDataProvider
      */
     public function search($params) {
-        $query = Adjudicator::find()->where(["tournament_id" => $this->tournament_id]);
+        $query = Adjudicator::find()
+                ->joinWith("user", ["user.id" => "adjudicator.user_id"])
+                ->joinWith("society", ["society.id" => "adjudicator.society_id"])
+                ->where(["adjudicator.tournament_id" => $this->tournament_id]);
 
 
         $dataProvider = new ActiveDataProvider([
@@ -53,6 +56,8 @@ class AdjudicatorSearch extends Adjudicator {
         $dataProvider->setSort([
             'attributes' => [
                 'id',
+                'can_chair',
+                'are_watched',
                 'name' => [
                     'asc' => ['user.surename' => SORT_ASC],
                     'desc' => ['user.surename' => SORT_DESC],
@@ -73,6 +78,8 @@ class AdjudicatorSearch extends Adjudicator {
 
         $query->andFilterWhere([
             'id' => $this->id,
+            'are_watched' => $this->are_watched,
+            'can_chair' => $this->can_chair,
         ]);
 
         switch (substr($this->strength, 0, 1)) {
@@ -88,14 +95,11 @@ class AdjudicatorSearch extends Adjudicator {
         }
 
         // filter by user name
-        $query->joinWith(['user' => function ($q) {
-                $q->where('CONCAT(user.givenname, " ", user.surename) LIKE "%' . $this->name . '%"');
-            }]);
+        if ($this->name)
+            $query->andWhere('CONCAT(user.givenname, " ", user.surename) LIKE "%' . $this->name . '%"');
 
-        // filter by society name
-        $query->joinWith(['society' => function ($q) {
-                $q->where('society.fullname LIKE "%' . $this->societyName . '%"');
-            }]);
+        if ($this->societyName)
+            $query->andWhere('society.fullname LIKE "%' . $this->societyName . '%"');
 
         return $dataProvider;
     }

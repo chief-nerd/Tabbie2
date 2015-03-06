@@ -91,6 +91,14 @@ SCRIPT;
     ?>
 
     <?=
+    $form->field($model, 'can_chair')->checkbox();
+    ?>
+
+    <?=
+    $form->field($model, 'are_watched')->checkbox();
+    ?>
+
+    <?=
     $form->field($model, 'strength')->widget(StarRating::className(), [
         "pluginOptions" => [
             "stars" => 8,
