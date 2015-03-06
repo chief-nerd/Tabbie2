@@ -33,7 +33,7 @@ $(".adj_panel").on("drop", function (event) {
     panel = $(this).data("panel");
     placeholder = $(this).find("li.sortable-placeholder");
     position = $(this).find("li").index(placeholder);
-    //console.log("#", window.dragid, "from Panel", window.panelid, "to", panel, "at pos", position);
+    console.log("#", window.dragid, "from Panel", window.panelid, "to", panel, "at pos", position);
 
     th = $("#w0-container thead th:nth-child(6) i");
     th[0].className = "glyphicon glyphicon-refresh";
@@ -61,6 +61,8 @@ $(".adj_panel").on("drop", function (event) {
             console.log("ERROR Return value", data);
         }
     }).error(function (jqXHR, textStatus, errorThrown) {
+        th = $("#w0-container thead th:nth-child(6) i");
+        th[0].className = "glyphicon glyphicon-remove-circle";
         console.error(textStatus + " : " + errorThrown);
     });
 });

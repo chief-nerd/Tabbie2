@@ -47,35 +47,70 @@ class AdjudicatorController extends BaseController {
 
     public function actionReplace() {
 
-        if (Yii::$app->request->isPost) {
-            $params = Yii::$app->request->post();
-            /* @var $adjInPanel AdjudicatorInPanel */
-            $adjInPanel = AdjudicatorInPanel::find()->where([
-                        "adjudicator_id" => $params["id"],
-                        "panel_id" => $params["old_panel"]
-                    ])->one();
+        try {
+            if (Yii::$app->request->isPost)
+                $params = Yii::$app->request->post();
+            else
+                $params = Yii::$app->request->get();
 
-            if ($adjInPanel->function == Panel::FUNCTION_CHAIR && $params["pos"] > 0) { //Set away from Chair Position, promote next one
-                $newChair = AdjudicatorInPanel::find()->where([
-                            "panel_id" => $params["old_panel"]
-                        ])->joinWith("adjudicator")->orderBy("strength")->one();
-                $newChair->function = Panel::FUNCTION_CHAIR;
-                if ($newChair->save())
-                    $adjInPanel->function = Panel::FUNCTION_WING;
+            if (1 == 1) {
+                $ID = $params["id"];
+                $POS = $params["pos"];
+                $OLD = $params["old_panel"];
+                $NEW = $params["new_panel"];
+
+                /* @var $oldPanel Panel */
+                $oldPanel = Panel::findOne(["id" => $OLD]);
+                /* @var $newPanel Panel */
+                $newPanel = Panel::findOne(["id" => $NEW]);
+
+                if ($oldPanel instanceof Panel && $newPanel instanceof Panel) {
+
+                    if ($POS == 0 && $oldPanel->is_chair($ID)) { // Chair -> Chair
+                        if ($oldPanel != $newPanel) {
+                            //Panel has changed
+                            $oldPanel->changeTo($newPanel, $ID);
+                            $oldPanel->setChair();
+                            $newPanel->setChair($ID);
+                        } else {
+                            //Same Panel - nothing to do
+                        }
+                    } else if ($POS > 0 && $oldPanel->is_chair($ID)) { // Chair -> Wing
+                        if ($OLD != $NEW) {
+                            $oldPanel->changeTo($newPanel, $ID);
+                            $oldPanel->setChair();
+                            $newPanel->setWing($ID);
+                        } else {
+                            $oldPanel->setChair();
+                            $oldPanel->setWing($ID);
+                        }
+                    } else if ($POS == 0 && !$oldPanel->is_chair($ID)) { // Wing -> Chair
+                        if ($OLD != $NEW) {
+                            $oldPanel->changeTo($newPanel, $ID);
+                            $oldPanel->setChair();
+                            $newPanel->setChair($ID);
+                        } else {
+                            $oldPanel->setChair($ID);
+                        }
+                    } else if ($POS > 0 && !$oldPanel->is_chair($ID)) { // Wing -> Wing
+                        if ($OLD != $NEW) {
+                            $oldPanel->changeTo($newPanel, $ID);
+                        } else {
+                            //nothing
+                        }
+                    } else {
+                        throw new Exception("No condition matched");
+                    }
+
+                    if ($oldPanel->check() && $newPanel->check())
+                        return 1;
+                } else
+                    throw new Exception("No Panel");
             }
-            if ($params["pos"] == 0) { //is new Chair -> reset old one
-                $chair = AdjudicatorInPanel::findOne(['panel_id' => $params["new_panel"], "function" => 1]);
-                $chair->function = Panel::FUNCTION_WING;
-                if (!$chair->save())
-                    return print_r($chair->getErrors(), true);
-                else
-                    $adjInPanel->function = Panel::FUNCTION_CHAIR;
-            }
-
-            $adjInPanel->panel_id = $params["new_panel"];
-
-            return ($adjInPanel->save()) ? 1 : print_r($adjInPanel->getErrors(), true);
+        } catch (Exception $ex) {
+            return print_r($ex, true);
         }
+
         return 0;
     }
 
@@ -163,7 +198,7 @@ class AdjudicatorController extends BaseController {
                 $choices = Yii::$app->request->post("field", false);
                 $model->tempImport = unserialize(Yii::$app->request->post("csvFile", false));
 
-                //APPLY CHOICES
+//APPLY CHOICES
                 foreach ($choices as $row => $choice) {
                     foreach ($choice as $id => $value) {
                         $input = $model->tempImport[$row][$id][0];
@@ -173,11 +208,11 @@ class AdjudicatorController extends BaseController {
                     }
                 }
 
-                //INSERT DATA
+//INSERT DATA
                 for ($r = 1; $r <= count($model->tempImport); $r++) {
                     $row = $model->tempImport[$r];
 
-                    //Society
+//Society
                     if (count($row[0]) == 1) { //NEW
                         $society = new \common\models\Society();
                         $society->fullname = $row[0][0];
@@ -188,7 +223,7 @@ class AdjudicatorController extends BaseController {
                         $societyID = $row[0][1]["id"];
                     }
 
-                    //User
+//User
                     if (count($row[1]) == 1) { //NEW
                         $userA = new \common\models\User();
                         $userA->givenname = $row[1][0];
@@ -243,9 +278,9 @@ class AdjudicatorController extends BaseController {
                     }
                     fclose($handle);
 
-                    //Find Matches
+//Find Matches
                     for ($i = 1; $i <= count($model->tempImport); $i++) {
-                        //Debating Society
+//Debating Society
                         $name = $model->tempImport[$i][0][0];
                         $societies = \common\models\Society::find()->where("fullname LIKE '%$name%'")->all();
                         $model->tempImport[$i][0] = array();
@@ -259,7 +294,7 @@ class AdjudicatorController extends BaseController {
                             $a++;
                         }
 
-                        //User A
+//User A
                         $givenname = $model->tempImport[$i][1][0];
                         $surename = $model->tempImport[$i][2][0];
                         $email = $model->tempImport[$i][3][0];
@@ -274,7 +309,7 @@ class AdjudicatorController extends BaseController {
                             $a++;
                         }
 
-                        //Just make sure it is int
+//Just make sure it is int
                         $model->tempImport[$i][4][0] = (int) $model->tempImport[$i][4][0];
                     }
                 } else {

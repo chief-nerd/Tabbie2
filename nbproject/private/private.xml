@@ -3,12 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/controllers/ResultController.php</file>
-            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/views/result/index.php</file>
-            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/controllers/RoundController.php</file>
-            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/views/round/_ballotTemplate.php</file>
-            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/assets/css/ballot.css</file>
-            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/views/result/manual.php</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/assets/js/adjudicatorActions.js</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/views/round/view.php</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/controllers/AdjudicatorController.php</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/common/models/Panel.php</file>
         </group>
     </open-files>
 </project-private>

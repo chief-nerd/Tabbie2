@@ -92,16 +92,11 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
                 $list = array();
                 $panel = common\models\Panel::findOne($model->panel_id);
                 if ($panel) {
-                    $chair = common\models\AdjudicatorInPanel::findOne([
-                                "panel_id" => $panel->id,
-                                "function" => "1",
-                    ]);
-
                     foreach ($panel->adjudicators as $adj) {
 
                         $popcontent = "Loading...";
                         $popup_obj = PopoverX::widget([
-                                    'header' => $adj->user->name,
+                                    'header' => $adj->name,
                                     'size' => 'md',
                                     'placement' => PopoverX::ALIGN_TOP,
                                     'content' => $popcontent,
@@ -115,7 +110,7 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
                                     ],
                         ]);
 
-                        if ($adj->id == $chair->adjudicator_id) {
+                        if ($adj->id == $model->getChair()->id) {
                             array_unshift($list, array('content' => $popup_obj));
                         } else
                             $list[]['content'] = $popup_obj;

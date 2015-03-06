@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use Exception;
 use Yii;
 
 /**
@@ -69,6 +70,15 @@ class Panel extends \yii\db\ActiveRecord {
     }
 
     /**
+     *
+     * @param integer $id
+     * @return AdjudicatorInPanel
+     */
+    public function getSpecificAdjudicatorInPanel($id) {
+        return AdjudicatorInPanel::findByCondition(["panel_id" => $this->id, "adjudicator_id" => $id])->one();
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getDebates() {
@@ -80,6 +90,86 @@ class Panel extends \yii\db\ActiveRecord {
      */
     public function getTournament() {
         return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
+    }
+
+    public function check() {
+        return true;
+    }
+
+    /**
+     * Gets the Chair in the Panel
+     * @return AdjudicatorInPanel
+     */
+    public function getChairInPanel() {
+        return AdjudicatorInPanel::findBySql("SELECT " . AdjudicatorInPanel::tableName() . ".* from " . AdjudicatorInPanel::tableName() . " "
+                        . "LEFT JOIN " . Panel::tableName() . " ON panel_id = " . Panel::tableName() . ".id "
+                        . "WHERE " . Panel::tableName() . ".id = " . $this->id . " AND " . AdjudicatorInPanel::tableName() . ".function = " . Panel::FUNCTION_CHAIR)->one();
+    }
+
+    public function is_chair($id) {
+        if ($this->getChairInPanel()->adjudicator_id == $id) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Sets an ID as Chair in that panel
+     * If null, next strongest Adjudicator will be promoted to Chair
+     * @param integer|null $id
+     */
+    public function setChair($id = null) {
+
+        if ($id == null) {
+            $nextHighestAdj = AdjudicatorInPanel::find()->where([
+                        "panel_id" => $this->id
+                    ])->joinWith("adjudicator")->orderBy("strength")->one();
+            $id = $nextHighestAdj->adjudicator_id;
+        }
+
+        $oldChair = $this->getChairInPanel();
+        if ($oldChair instanceof AdjudicatorInPanel) {
+            $oldChair->function = Panel::FUNCTION_WING;
+            $oldChair->save();
+        }
+        $chair = $this->getSpecificAdjudicatorInPanel($id);
+        $chair->function = Panel::FUNCTION_CHAIR;
+
+        return ($chair->save());
+    }
+
+    /**
+     * Changes the Panel of the ID
+     * @param Panel $newPanel
+     * @param integer $id
+     */
+    public function changeTo($newPanel, $id) {
+        $adj = $this->getSpecificAdjudicatorInPanel($id);
+        if ($adj instanceof AdjudicatorInPanel) {
+            $adj->panel_id = $newPanel->id;
+            return $adj->save();
+        } else
+            throw new Exception("getSpecificAdjudicatorInPanel with ID " . $id . " NOT found");
+    }
+
+    public
+            function setWing($id) {
+        $adj = $this->getSpecificAdjudicatorInPanel($id);
+
+        if ($adj->function == Panel::FUNCTION_CHAIR) {
+            $nextHighestAdjNotID = AdjudicatorInPanel::find()
+                            ->where("panel_id = " . $this->id . " AND adjudicator_id != " . $id)
+                            ->joinWith("adjudicator")->orderBy("strength")->one();
+            $id = $nextHighestAdjNotID->adjudicator_id;
+            $this->setChair($id);
+        }
+        //Read again if save has been done
+        $adj->refresh();
+        if ($adj->function == Panel::FUNCTION_WING)
+            return true;
+        else
+            return false;
     }
 
 }
