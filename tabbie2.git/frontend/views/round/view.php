@@ -156,6 +156,7 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
                         'filterModel' => $debateSearchModel,
                         'columns' => $gridColumns,
                         'showPageSummary' => false,
+                        'layout' => "{items}\n{pager}",
                         'bootstrap' => true,
                         'pjax' => false,
                         'hover' => true,
