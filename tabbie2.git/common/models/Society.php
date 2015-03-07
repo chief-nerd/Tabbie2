@@ -9,7 +9,7 @@ use Yii;
  *
  * @property integer $id
  * @property string $fullname
- * @property string $adr
+ * @property string $abr
  * @property string $city
  * @property string $country
  *
@@ -33,8 +33,8 @@ class Society extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['fullname', 'city', 'country'], 'string', 'max' => 255],
-            [['adr'], 'string', 'max' => 45],
-            [['adr'], 'unique']
+            [['abr'], 'string', 'max' => 45],
+            [['abr'], 'unique']
         ];
     }
 
@@ -45,7 +45,7 @@ class Society extends \yii\db\ActiveRecord {
         return [
             'id' => Yii::t('app', 'ID'),
             'fullname' => Yii::t('app', 'Fullname'),
-            'adr' => Yii::t('app', 'Adr'),
+            'abr' => Yii::t('app', 'Abbrevation'),
             'city' => Yii::t('app', 'City'),
             'country' => Yii::t('app', 'Country'),
         ];
@@ -77,6 +77,15 @@ class Society extends \yii\db\ActiveRecord {
      */
     public function getTeams() {
         return $this->hasMany(Team::className(), ['society_id' => 'id']);
+    }
+
+    public static function generateAbr($name) {
+        $abr = 0;
+        $parts = explode(" ", trim($name));
+        foreach ($parts as $part) {
+            $abr .= $part[0];
+        }
+        return strtoupper($abr);
     }
 
 }

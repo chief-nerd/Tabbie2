@@ -206,12 +206,14 @@ class AdjudicatorController extends BaseController {
                 $model->tempImport = unserialize(Yii::$app->request->post("csvFile", false));
 
 //APPLY CHOICES
-                foreach ($choices as $row => $choice) {
-                    foreach ($choice as $id => $value) {
-                        $input = $model->tempImport[$row][$id][0];
-                        unset($model->tempImport[$row][$id]);
-                        $model->tempImport[$row][$id][0] = $input;
-                        $model->tempImport[$row][$id][1]["id"] = $value;
+                if (is_array($choices)) {
+                    foreach ($choices as $row => $choice) {
+                        foreach ($choice as $id => $value) {
+                            $input = $model->tempImport[$row][$id][0];
+                            unset($model->tempImport[$row][$id]);
+                            $model->tempImport[$row][$id][0] = $input;
+                            $model->tempImport[$row][$id][1]["id"] = $value;
+                        }
                     }
                 }
 
@@ -223,7 +225,7 @@ class AdjudicatorController extends BaseController {
                     if (count($row[0]) == 1) { //NEW
                         $society = new \common\models\Society();
                         $society->fullname = $row[0][0];
-                        $society->adr = strtoupper(substr($society->fullname, 0, 3));
+                        $society->abr = \common\models\Society::generateAbr($society->fullname);
                         $society->save();
                         $societyID = $society->id;
                     } else if (count($row[0]) == 2) {
