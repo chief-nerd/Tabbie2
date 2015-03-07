@@ -142,4 +142,61 @@ class VenueController extends BaseController {
         }
     }
 
+    public function actionImport() {
+        $tournament = $this->_tournament;
+        $model = new \frontend\models\ImportForm();
+
+        if (Yii::$app->request->isPost) {
+            $model->scenario = "screen";
+
+            if (Yii::$app->request->post("makeItSo", false)) { //Everything corrected
+                $model->tempImport = unserialize(Yii::$app->request->post("csvFile", false));
+//INSERT DATA
+                for ($r = 1; $r <= count($model->tempImport); $r++) {
+                    $row = $model->tempImport[$r];
+
+                    $venue = new Venue();
+                    $venue->name = $row[0];
+                    $venue->active = $row[1];
+                    $venue->tournament_id = $this->_tournament->id;
+                    $venue->save();
+                }
+                return $this->redirect(['index', "tournament_id" => $this->_tournament->id]);
+            } else { //FORM UPLOAD
+                $file = \yii\web\UploadedFile::getInstance($model, 'csvFile');
+                $model->load(Yii::$app->request->post());
+
+                $row = 0;
+                if ($file && ($handle = fopen($file->tempName, "r")) !== FALSE) {
+                    while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+
+                        if ($row == 0) { //Don't use first row
+                            $row++;
+                            continue;
+                        }
+
+                        if (($num = count($data)) != 2) {
+                            throw new \yii\base\Exception("500", "File Syntax Wrong");
+                        }
+
+                        for ($c = 0; $c < $num; $c++) {
+                            $model->tempImport[$row][$c] = trim($data[$c]);
+                        }
+                        $row++;
+                    }
+                    fclose($handle);
+                } else {
+                    Yii::$app->session->addFlash("error", "No File available");
+                    print_r($file);
+                }
+            }
+        } else
+            $model->scenario = "upload";
+
+        return $this->render('import', [
+                    "model" => $model,
+                    "tournament" => $tournament
+        ]);
+    }
+
 }
