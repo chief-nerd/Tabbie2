@@ -24,7 +24,7 @@ $(".adj_panel li").on("dragstart", function () {
     window.panelid = $(this.parentNode).data("panel");
 });
 
-th = $("#w0-container thead th:nth-child(6)");
+th = $("#debateDraw-container thead th:nth-child(6)");
 th.html(th.html() + " <i></i>");
 
 $(".adj_panel").on("drop", function (event) {
@@ -35,7 +35,7 @@ $(".adj_panel").on("drop", function (event) {
     position = $(this).find("li").index(placeholder);
     console.log("#", window.dragid, "from Panel", window.panelid, "to", panel, "at pos", position);
 
-    th = $("#w0-container thead th:nth-child(6) i");
+    th = $("#debateDraw-container thead th:nth-child(6) i");
     th[0].className = "glyphicon glyphicon-refresh";
 
     $.ajax({
@@ -51,17 +51,17 @@ $(".adj_panel").on("drop", function (event) {
         if (data == "1")
         {
             //console.log("Saved!");
-            th = $("#w0-container thead th:nth-child(6) i");
+            th = $("#debateDraw-container thead th:nth-child(6) i");
             th[0].className = "glyphicon glyphicon-ok-circle";
         }
         else
         {
-            th = $("#w0-container thead th:nth-child(6) i");
+            th = $("#debateDraw-container thead th:nth-child(6) i");
             th[0].className = "glyphicon glyphicon-remove-circle";
             console.log("ERROR Return value", data);
         }
     }).error(function (jqXHR, textStatus, errorThrown) {
-        th = $("#w0-container thead th:nth-child(6) i");
+        th = $("#debateDraw-container thead th:nth-child(6) i");
         th[0].className = "glyphicon glyphicon-remove-circle";
         console.error(textStatus + " : " + errorThrown);
     });

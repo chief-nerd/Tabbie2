@@ -21,6 +21,10 @@ ul li:first-child .adj
     font-weight: bold;
 }
 
+.sortable {
+    margin: 0;
+}
+
 .sortable.connected {
     min-height: 40px;
     margin-bottom: 0px;
@@ -28,6 +32,7 @@ ul li:first-child .adj
 
 .sortable li {
     border: none;
+    min-height: 25px;
 }
 
 .sortable li:first-child .label {
@@ -51,6 +56,15 @@ ul li:first-child .adj
 #drawdisplay {
     height: 100%;
     position: absolute;
+}
+
+#debateDraw-container tbody{
+    font-size: 80%;
+}
+
+#debateDraw-container tbody tr td:nth-child(6)
+{
+    padding: 0;
 }
 
 #debateDraw-container thead tr{
