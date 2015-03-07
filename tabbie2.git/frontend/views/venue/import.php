@@ -20,11 +20,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
-    <pre>
-        <?
-        print_r($model->tempImport);
-        ?>
-    </pre>
     <? if (isset($model->tempImport)): ?>
 
         <? for ($i = 1; $i <= count($model->tempImport); $i++): ?>

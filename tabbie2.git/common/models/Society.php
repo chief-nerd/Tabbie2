@@ -80,12 +80,22 @@ class Society extends \yii\db\ActiveRecord {
     }
 
     public static function generateAbr($name) {
-        $abr = 0;
+        $abr = "";
         $parts = explode(" ", trim($name));
         foreach ($parts as $part) {
             $abr .= $part[0];
         }
-        return strtoupper($abr);
+        $candidate = strtoupper($abr);
+
+        $count = 1;
+        $i = 1;
+        while ($count != 0) {
+            $count = Society::findByCondition(["abr" => $candidate])->count();
+            if ($count > 0) {
+                $candidate = $candidate . $i;
+                $i++;
+            }
+        }
     }
 
 }

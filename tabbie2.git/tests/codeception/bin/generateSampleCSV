@@ -71,7 +71,7 @@ for ($a = 0; $a < $amount_adj; $a++) {
             addslashes($faker->firstName) . ";" .
             addslashes($faker->lastName) . ";" .
             $faker->email . ";" .
-            $faker->numberBetween(0, 10) . "\n";
+            $faker->numberBetween(0, 9) . "\n";
     //echo $line;
     $output_adjudicator .= $line;
 }

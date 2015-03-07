@@ -143,6 +143,7 @@ class VenueController extends BaseController {
     }
 
     public function actionImport() {
+        set_time_limit(0);
         $tournament = $this->_tournament;
         $model = new \frontend\models\ImportForm();
 

@@ -202,6 +202,7 @@ class AdjudicatorController extends BaseController {
         if (Yii::$app->request->isPost) {
             $model->scenario = "screen";
             if (Yii::$app->request->post("makeItSo", false)) { //Everything corrected
+                set_time_limit(0);
                 $choices = Yii::$app->request->post("field", false);
                 $model->tempImport = unserialize(Yii::$app->request->post("csvFile", false));
 
@@ -263,6 +264,7 @@ class AdjudicatorController extends BaseController {
                     if (!$adj->save())
                         Yii::$app->session->addFlash("error", "Save error: " . print_r($adj->getErrors(), true));
                 }
+                set_time_limit(30);
                 return $this->redirect(['index', "tournament_id" => $this->_tournament->id]);
             } else { //FORM UPLOAD
                 $file = \yii\web\UploadedFile::getInstance($model, 'csvFile');
