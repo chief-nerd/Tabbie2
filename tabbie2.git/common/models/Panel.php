@@ -138,7 +138,7 @@ class Panel extends \yii\db\ActiveRecord {
         if ($id == null) {
             $nextHighestAdj = AdjudicatorInPanel::find()->where([
                         "panel_id" => $this->id
-                    ])->joinWith("adjudicator")->orderBy("strength")->one();
+                    ])->joinWith("adjudicator")->orderBy(["strength" => SORT_DESC])->one();
             $id = $nextHighestAdj->adjudicator_id;
         }
 
