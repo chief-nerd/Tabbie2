@@ -82,3 +82,7 @@ ul li:first-child .adj
 #debateDraw-container tbody tr td:nth-child(1) .btn-sm {
     padding: 2px 10px;
 }
+
+#filterForm label {
+    display: none;
+}

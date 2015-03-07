@@ -69,7 +69,7 @@ class DebateSearch extends Debate {
             'attributes' => [
                 'venue' => [
                     'asc' => ['CHAR_LENGTH(venue.name), venue.name' => SORT_ASC],
-                    'desc' => ['CHAR_LENGTH(venue.name), venue.name' => SORT_DESC],
+                    'desc' => ['CHAR_LENGTH(venue.name) DESC, venue.name' => SORT_DESC],
                     'label' => 'Venue'
                 ],
                 'og_team.name' => [
