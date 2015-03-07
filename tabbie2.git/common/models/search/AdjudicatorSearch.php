@@ -51,6 +51,9 @@ class AdjudicatorSearch extends Adjudicator {
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => Yii::$app->params["adjudicators_per_page"],
+            ],
         ]);
 
         $dataProvider->setSort([

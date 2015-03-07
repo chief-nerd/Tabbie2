@@ -45,6 +45,9 @@ class DebateSearch extends Debate {
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 99999999999,
+            ],
         ]);
 
         if (!($this->load($params) && $this->validate())) {

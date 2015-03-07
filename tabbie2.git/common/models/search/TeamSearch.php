@@ -51,6 +51,9 @@ class TeamSearch extends Team {
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => Yii::$app->params["teams_per_page"],
+            ],
         ]);
 
         $dataProvider->setSort([

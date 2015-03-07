@@ -11,4 +11,6 @@ return [
     ],
     'speaks_max' => 100,
     'speaks_min' => 65,
+    'adjudicators_per_page' => 100,
+    'teams_per_page' => 100,
 ];

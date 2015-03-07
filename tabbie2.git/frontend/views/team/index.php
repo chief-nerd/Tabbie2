@@ -107,7 +107,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ['content' =>
                                         Html::a('<i class="glyphicon glyphicon-plus"></i> ' . Yii::t('app', 'Add Team'), ["team/create", "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
                                     ]
-                                ]
+                                ],
                             ])
                             ?>
                             <?php \yii\widgets\Pjax::end(); ?>
