@@ -59,11 +59,14 @@ class VenueSearch extends Venue {
         return $dataProvider;
     }
 
-    public function getSearchArray($tid) {
+    public function getSearchArray($tid, $keys = false) {
         $venues = Venue::find()->where(["tournament_id" => $tid])->all();
         $filter = [];
         foreach ($venues as $v) {
-            $filter[$v->name] = $v->name;
+            if ($keys)
+                $filter[$v->id] = $v->name;
+            else
+                $filter[$v->name] = $v->name;
         }
         return $filter;
     }

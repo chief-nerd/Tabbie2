@@ -3,9 +3,10 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\widgets\DetailView;
-use common\models\search\DebateSearch;
 use kartik\sortable\Sortable;
 use kartik\popover\PopoverX;
+use kartik\widgets\Select2;
+use yii\bootstrap\Modal;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Round */
@@ -65,102 +66,98 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
             'attribute' => 'venue',
             'label' => 'Venue',
             'width' => '8%',
-            'value' => function ($model, $key, $index, $widget) {
-                return $model->venue->name;
-            },
-            'filterType' => GridView::FILTER_SELECT2,
-            'filter' => \common\models\search\VenueSearch::getSearchArray($tournament->id),
-            'filterWidgetOptions' => [
-                'pluginOptions' => ['allowClear' => true],
-            ],
-            'filterInputOptions' => ['placeholder' => 'Any Venue'],
-        ],
-        [
-            'class' => '\kartik\grid\DataColumn',
-            'attribute' => 'og_team.name',
-            'label' => "OG Team",
-        ],
-        [
-            'class' => '\kartik\grid\DataColumn',
-            'attribute' => 'oo_team.name',
-            'label' => "OO Team",
-        ],
-        [
-            'class' => '\kartik\grid\DataColumn',
-            'attribute' => 'cg_team.name',
-            'label' => 'CG Team',
-        ],
-        [
-            'class' => '\kartik\grid\DataColumn',
-            'attribute' => 'co_team.name',
-            'label' => 'CO Team',
-        ],
-        [
-            'class' => '\kartik\grid\DataColumn',
-            'attribute' => 'panel',
-            'label' => 'Adjudicator',
             'format' => 'raw',
-            'width' => '40%',
             'value' => function ($model, $key, $index, $widget) {
-                $list = array();
-                $panel = common\models\Panel::findOne($model->panel_id);
-                if ($panel) {
-                    foreach ($panel->adjudicators as $adj) {
-
-                        $popcontent = "Loading...";
-                        $popup_obj = PopoverX::widget([
-                                    'header' => $adj->name,
-                                    'size' => 'md',
-                                    'placement' => PopoverX::ALIGN_TOP,
-                                    'content' => $popcontent,
-                                    'footer' =>
-                                    Html::a('Move', ["adjudicator/move", "id" => $adj->id, "debate" => $model->id, "tournament_id" => $model->tournament_id], ['class' => 'moveAdj btn btn-sm btn-primary']) .
-                                    Html::a('View more', ["adjudicator/view", "id" => $adj->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-sm btn-default']),
-                                    'toggleButton' => [
-                                        'label' => $adj->user->name,
-                                        'class' => 'btn btn-sm adj ' . common\models\Adjudicator::starLabels($adj->strength),
-                                        "data-id" => $adj->id,
-                                        "data-strength" => $adj->strength,
-                                        "data-href" => yii\helpers\Url::to(["adjudicator/popup", "id" => $adj->id, "round_id" => $model->round_id, "tournament_id" => $model->tournament_id]),
-                                    ],
-                        ]);
-
-                        if ($adj->id == $model->getChair()->id) {
-                            array_unshift($list, array('content' => $popup_obj));
-                        } else
-                            $list[]['content'] = $popup_obj;
-                    }
-
-                    return Sortable::widget([
-                                'type' => Sortable::TYPE_GRID,
-                                'items' => $list,
-                                'disabled' => $model->round->published,
-                                'handleLabel' => ($model->round->published) ? '' : '<i class="glyphicon glyphicon-move"></i> ',
-                                'connected' => true,
-                                'showHandle' => true,
-                                'options' => [
-                                    "data-panel" => $panel->id,
-                                    "class" => "adj_panel",
-                                ],
-                    ]);
-                }
-                return "";
-            }
+                return $this->render("_changeVenue", ["model" => $model]);
+            },
                 ],
-            ];
+                [
+                    'class' => '\kartik\grid\DataColumn',
+                    'attribute' => 'og_team.name',
+                    'label' => "OG Team",
+                ],
+                [
+                    'class' => '\kartik\grid\DataColumn',
+                    'attribute' => 'oo_team.name',
+                    'label' => "OO Team",
+                ],
+                [
+                    'class' => '\kartik\grid\DataColumn',
+                    'attribute' => 'cg_team.name',
+                    'label' => 'CG Team',
+                ],
+                [
+                    'class' => '\kartik\grid\DataColumn',
+                    'attribute' => 'co_team.name',
+                    'label' => 'CO Team',
+                ],
+                [
+                    'class' => '\kartik\grid\DataColumn',
+                    'attribute' => 'panel',
+                    'label' => 'Adjudicator',
+                    'format' => 'raw',
+                    'width' => '40%',
+                    'value' => function ($model, $key, $index, $widget) {
+                        $list = array();
+                        $panel = common\models\Panel::findOne($model->panel_id);
+                        if ($panel) {
+                            foreach ($panel->adjudicators as $adj) {
 
-            echo GridView::widget([
-                'dataProvider' => $debateDataProvider,
-                'filterModel' => $debateSearchModel,
-                'columns' => $gridColumns,
-                'showPageSummary' => false,
-                'bootstrap' => true,
-                'hover' => true,
-                'responsive' => false,
-                'floatHeader' => true,
-                'floatHeaderOptions' => ['scrollingTop' => 100],
-                'id' => 'debateDraw',
-            ])
-            ?>
+                                $popcontent = "Loading...";
+                                $popup_obj = PopoverX::widget([
+                                            'header' => $adj->name,
+                                            'size' => 'md',
+                                            'placement' => PopoverX::ALIGN_TOP,
+                                            'content' => $popcontent,
+                                            'footer' =>
+                                            Html::a('Move', ["adjudicator/move", "id" => $adj->id, "debate" => $model->id, "tournament_id" => $model->tournament_id], ['class' => 'moveAdj btn btn-sm btn-primary']) .
+                                            Html::a('View more', ["adjudicator/view", "id" => $adj->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-sm btn-default']),
+                                            'toggleButton' => [
+                                                'label' => $adj->user->name,
+                                                'class' => 'btn btn-sm adj ' . common\models\Adjudicator::starLabels($adj->strength),
+                                                "data-id" => $adj->id,
+                                                "data-strength" => $adj->strength,
+                                                "data-href" => yii\helpers\Url::to(["adjudicator/popup", "id" => $adj->id, "round_id" => $model->round_id, "tournament_id" => $model->tournament_id]),
+                                            ],
+                                ]);
+
+                                if ($adj->id == $model->getChair()->id) {
+                                    array_unshift($list, array('content' => $popup_obj));
+                                } else
+                                    $list[]['content'] = $popup_obj;
+                            }
+
+                            return Sortable::widget([
+                                        'type' => Sortable::TYPE_GRID,
+                                        'items' => $list,
+                                        'disabled' => $model->round->published,
+                                        'handleLabel' => ($model->round->published) ? '' : '<i class="glyphicon glyphicon-move"></i> ',
+                                        'connected' => true,
+                                        'showHandle' => true,
+                                        'options' => [
+                                            "data-panel" => $panel->id,
+                                            "class" => "adj_panel",
+                                        ],
+                            ]);
+                        }
+                        return "";
+                    }
+                        ],
+                    ];
+
+                    echo GridView::widget([
+                        'dataProvider' => $debateDataProvider,
+                        'filterModel' => $debateSearchModel,
+                        'columns' => $gridColumns,
+                        'showPageSummary' => false,
+                        'bootstrap' => true,
+                        'pjax' => false,
+                        'hover' => true,
+                        'responsive' => false,
+                        'floatHeader' => true,
+                        'floatHeaderOptions' => ['scrollingTop' => 100],
+                        'id' => 'debateDraw',
+                    ])
+                    ?>
 
 </div>

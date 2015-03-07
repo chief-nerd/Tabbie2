@@ -55,6 +55,19 @@ class RoundController extends BaseController {
         $debateSearchModel = new DebateSearch();
         $debateDataProvider = $debateSearchModel->search(Yii::$app->request->queryParams, $this->_tournament->id, $id);
 
+        // validate if there is a editable input saved via AJAX
+        if (Yii::$app->request->post('hasEditable')) {
+            // instantiate your debate model for saving
+            $debateID = Yii::$app->request->post('editableKey');
+            $debate = \common\models\Debate::findOne($debateID);
+
+            // store a default json response as desired by editable
+            $out = \yii\helpers\Json::encode(['output' => '', 'message' => '']);
+            // return ajax json encoded response and exit
+
+            return $out;
+        }
+
         $publishpath = Yii::$app->assetManager->publish(Yii::getAlias("@frontend/assets/js/adjudicatorActions.js"));
         $this->view->registerJsFile($publishpath[1], [
             "depends" => [
@@ -72,6 +85,28 @@ class RoundController extends BaseController {
                     'debateSearchModel' => $debateSearchModel,
                     'debateDataProvider' => $debateDataProvider,
         ]);
+    }
+
+    /**
+     * Function called when move results are sent
+     */
+    public function actionChangevenue($id, $debateid) {
+        $old_debate = \common\models\Debate::findOne($debateid);
+
+        if ($params = Yii::$app->request->get()) {
+            $used_debate = \common\models\Debate::findOne(["venue_id" => $params["new_venue"]]);
+            if ($used_debate instanceof \common\models\Debate) {
+                $old_debate_venue = $old_debate->venue_id;
+                $old_debate->venue_id = $used_debate->venue_id;
+                $used_debate->venue_id = $old_debate_venue;
+                if ($old_debate->save() && $used_debate->save()) {
+                    Yii::$app->session->setFlash('success', 'Venues switched');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Error while switching');
+                }
+            }
+        }
+        return $this->redirect(["view", "id" => $id, "tournament_id" => $old_debate->tournament_id]);
     }
 
     /**

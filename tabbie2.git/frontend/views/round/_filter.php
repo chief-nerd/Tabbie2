@@ -15,7 +15,9 @@ $form = ActiveForm::begin([
         <?
         echo $form->field($debateSearchModel, 'venue')->widget(Select2::classname(), [
             'data' => \common\models\search\VenueSearch::getSearchArray($model->tournament_id),
-            'options' => ['placeholder' => 'Select a Venue ...'],
+            'options' => [
+                'placeholder' => 'Select a Venue ...'
+            ],
             'pluginOptions' => [
                 'allowClear' => true
             ],
