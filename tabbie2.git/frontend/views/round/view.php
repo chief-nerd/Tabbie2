@@ -55,12 +55,25 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
     ])
     ?>
 
+    <?= $this->render("_filter", ["model" => $model, "debateSearchModel" => $debateSearchModel]) ?>
+    <hr>
+
     <?
     $gridColumns = [
         [
             'class' => '\kartik\grid\DataColumn',
-            'attribute' => 'venue.name',
+            'attribute' => 'venue',
             'label' => 'Venue',
+            'width' => '8%',
+            'value' => function ($model, $key, $index, $widget) {
+                return $model->venue->name;
+            },
+            'filterType' => GridView::FILTER_SELECT2,
+            'filter' => \common\models\search\VenueSearch::getSearchArray($tournament->id),
+            'filterWidgetOptions' => [
+                'pluginOptions' => ['allowClear' => true],
+            ],
+            'filterInputOptions' => ['placeholder' => 'Any Venue'],
         ],
         [
             'class' => '\kartik\grid\DataColumn',
@@ -100,7 +113,9 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
                                     'size' => 'md',
                                     'placement' => PopoverX::ALIGN_TOP,
                                     'content' => $popcontent,
-                                    'footer' => Html::a('View more', ["adjudicator/view", "id" => $adj->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-sm btn-primary']),
+                                    'footer' =>
+                                    Html::a('Move', ["adjudicator/move", "id" => $adj->id, "debate" => $model->id, "tournament_id" => $model->tournament_id], ['class' => 'moveAdj btn btn-sm btn-primary']) .
+                                    Html::a('View more', ["adjudicator/view", "id" => $adj->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-sm btn-default']),
                                     'toggleButton' => [
                                         'label' => $adj->user->name,
                                         'class' => 'btn btn-sm adj ' . common\models\Adjudicator::starLabels($adj->strength),
@@ -144,6 +159,7 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
                 'responsive' => false,
                 'floatHeader' => true,
                 'floatHeaderOptions' => ['scrollingTop' => 100],
+                'id' => 'debateDraw',
             ])
             ?>
 

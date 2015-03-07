@@ -46,6 +46,11 @@ class AdjudicatorController extends BaseController {
         ]);
     }
 
+    /**
+     * Function called by Ajax Dgra ang Drop
+     * @return string|int
+     * @throws Exception
+     */
     public function actionReplace() {
 
         try {
@@ -119,6 +124,13 @@ class AdjudicatorController extends BaseController {
         }
 
         return "run trough";
+    }
+
+    /**
+     * Function called when move results are sent
+     */
+    public function actionMove() {
+
     }
 
     /**

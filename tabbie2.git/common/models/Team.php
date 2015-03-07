@@ -164,6 +164,10 @@ class Team extends \yii\db\ActiveRecord {
         ]);
     }
 
+    public function getDebate($roundid) {
+        return $this->getDebates()->andWhere(["round_id" => $roundid]);
+    }
+
     /**
      * Sort comparison function based on team points
      * @param Team $a

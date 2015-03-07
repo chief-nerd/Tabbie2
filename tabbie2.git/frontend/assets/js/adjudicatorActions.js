@@ -66,3 +66,7 @@ $(".adj_panel").on("drop", function (event) {
         console.error(textStatus + " : " + errorThrown);
     });
 });
+
+$("a.btn.moveAdj").on("click", function () {
+    alert("Move");
+});

@@ -52,3 +52,15 @@ ul li:first-child .adj
     height: 100%;
     position: absolute;
 }
+
+#debateDraw-container thead tr{
+    height: 50px;
+}
+#debateDraw-container thead th{
+    vertical-align: top;
+}
+
+
+#debateDraw-filters {
+    display: none;
+}
