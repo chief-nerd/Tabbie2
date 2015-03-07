@@ -21,6 +21,14 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+    <div class="row">
+        <div class="col-md-6">
+
+        </div>
+        <div class="col-md-6">
+
+        </div>
+    </div>
     <p>
         <? if (!$model->published): ?>
             <?= Html::a(Yii::t('app', 'Publish Tab'), ['publish', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success']) ?>
@@ -55,10 +63,8 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
         'attributes' => $attributes,
     ])
     ?>
-
+    <a name="draw"></a>
     <?= $this->render("_filter", ["model" => $model, "debateSearchModel" => $debateSearchModel]) ?>
-    <hr>
-
     <?
     $gridColumns = [
         [

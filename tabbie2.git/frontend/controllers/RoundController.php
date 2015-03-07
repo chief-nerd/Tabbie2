@@ -106,7 +106,7 @@ class RoundController extends BaseController {
                 }
             }
         }
-        return $this->redirect(["view", "id" => $id, "tournament_id" => $old_debate->tournament_id]);
+        return $this->redirect(["view", "id" => $id, "tournament_id" => $old_debate->tournament_id, "view" => "#draw"]);
     }
 
     /**
