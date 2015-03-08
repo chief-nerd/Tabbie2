@@ -10,6 +10,7 @@ use frontend\controllers\BaseController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use common\components\filter\TournamentContextFilter;
+use yii\filters\AccessControl;
 
 /**
  * VenueController implements the CRUD actions for Venue model.
