@@ -10,6 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use common\components\filter\TournamentContextFilter;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 
 /**
  * TeamController implements the CRUD actions for Team model.
@@ -191,13 +192,18 @@ class TeamController extends BaseController {
                         $userA->setPassword($userA->email);
                         $userA->generateAuthKey();
                         $userA->time = $userA->last_change = date("Y-m-d H:i:s");
-                        if (!$userA->save()) {
+                        if ($userA->save()) {
                             $inSociety = new \common\models\InSociety();
                             $inSociety->user_id = $userA->id;
                             $inSociety->society_id = $societyID;
-                            $inSociety->starting = date("Y-m-d H:i:s");
-                            $inSociety->save();
-                            Yii::$app->session->addFlash("error", "Save error: " . print_r($userA->getErrors(), true));
+                            $inSociety->starting = date("Y-m-d");
+                            if (!$inSociety->save()) {
+                                Yii::error("Import Errors inSocietyA: " . print_r($inSociety->getErrors(), true), __METHOD__);
+                                Yii::$app->session->addFlash("error", "Error saving InSociety Relation for " . $userA->username);
+                            }
+                        } else {
+                            Yii::error("Import Errors userA: " . print_r($userA->getErrors(), true), __METHOD__);
+                            Yii::$app->session->addFlash("error", "Error Saving User " . $userA->username);
                         }
                         $userAID = $userA->id;
                     } else if (count($row[2]) == 2) {
@@ -214,13 +220,18 @@ class TeamController extends BaseController {
                         $userB->setPassword($userB->email);
                         $userB->generateAuthKey();
                         $userB->time = $userB->last_change = date("Y-m-d H:i:s");
-                        if (!$userB->save()) {
+                        if ($userB->save()) {
                             $inSociety = new \common\models\InSociety();
                             $inSociety->user_id = $userB->id;
                             $inSociety->society_id = $societyID;
-                            $inSociety->starting = date("Y-m-d H:i:s");
-                            $inSociety->save();
-                            Yii::$app->session->addFlash("error", "Save error: " . print_r($userB->getErrors(), true));
+                            $inSociety->starting = date("Y-m-d");
+                            if (!$inSociety->save()) {
+                                Yii::error("Import Errors inSocietyB: " . print_r($inSociety->getErrors(), true), __METHOD__);
+                                Yii::$app->session->addFlash("error", "Error saving InSociety Relation for " . $userB->username);
+                            }
+                        } else {
+                            Yii::error("Import Errors userB: " . print_r($userB->getErrors(), true), __METHOD__);
+                            Yii::$app->session->addFlash("error", "Error Saving User " . $userB->username);
                         }
                         $userBID = $userB->id;
                     } else if (count($row[5]) == 2) {
@@ -267,7 +278,7 @@ class TeamController extends BaseController {
                         //
                         //Debating Society
                         $name = $model->tempImport[$i][1][0];
-                        $societies = \common\models\Society::find()->where("fullname LIKE '%$name%'")->all();
+                        $societies = \common\models\Society::find()->where("fullname LIKE '%:name%'", [":name" => $name])->all();
                         $model->tempImport[$i][1] = array();
                         $model->tempImport[$i][1][0] = $name;
                         $a = 1;

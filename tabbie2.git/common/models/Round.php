@@ -154,8 +154,12 @@ class Round extends \yii\db\ActiveRecord {
         try {
 
             $algo = $this->tournament->getTabAlgorithmInstance();
+
             $venues = Venue::find()->active()->tournament($this->tournament->id)->all();
-            $draw = $algo->makeDraw($venues, $this->tournament->teams, $this->tournament->adjudicators);
+            $teams = Team::find()->active()->tournament($this->tournament->id)->all();
+            $adjudicators = Adjudicator::find()->active()->tournament($this->tournament->id)->all();
+
+            $draw = $algo->makeDraw($venues, $teams, $adjudicators);
 
             foreach ($draw as $line) {
                 /* @var $line DrawLine */
@@ -209,6 +213,10 @@ class Round extends \yii\db\ActiveRecord {
             $this->addError("TabAlgorithmus", $ex->getMessage());
         }
         return false;
+    }
+
+    public function getAmountSwingTeams() {
+        return Team::find()->active()->tournament($this->tournament_id)->where(["isSwing" => 1])->count();
     }
 
 }

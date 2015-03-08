@@ -24,11 +24,14 @@ class UserUrlRule extends UrlRule {
 
             if (isset($params['id'])) {
                 $user = User::findOne($params['id']);
-                if ($parts[1] == "view")
-                    $parts[1] = null;
-                $ret = "user/" . $user->username . "/" . $parts[1];
-                //Yii::trace("Returning Base: " . $ret, __METHOD__);
-                return $ret;
+                if ($user instanceof User) {
+                    if ($parts[1] == "view")
+                        $parts[1] = null;
+                    $ret = "user/" . $user->username . "/" . $parts[1];
+                    //Yii::trace("Returning Base: " . $ret, __METHOD__);
+                    return $ret;
+                } else
+                    return "user/#";
             }
         }
 

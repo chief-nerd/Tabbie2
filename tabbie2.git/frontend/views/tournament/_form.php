@@ -17,6 +17,8 @@ use kartik\widgets\DateTimePicker;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => 100, 'placeholder' => 'My super awesome IV']) ?>
 
+    <?= $form->field($model, 'hosted_by_id')->dropDownList($model->getSocietiesOptions()) ?>
+
     <?= $form->field($model, 'tabmaster_user_id')->dropDownList($model->getTabmasterOptions()) ?>
 
     <?=

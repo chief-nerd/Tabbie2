@@ -350,4 +350,18 @@ class User extends ActiveRecord implements IdentityInterface {
         }
     }
 
+    /**
+     *
+     * @return ActiveQuery
+     */
+    public function getCurrentSocieties() {
+        return Society::find()->joinWith("inSocieties")->where(
+                        "user_id = :uid AND in_society.starting < :starting AND (in_society.ending IS NULL OR in_society.ending < :ending) ", [
+                    ":uid" => $this->id,
+                    ":starting" => date("Y-m-d"),
+                    ":ending" => date("Y-m-d", strtotime(Yii::$app->params["time_to_still_consider_active_in_society"]))
+                        ]
+        );
+    }
+
 }

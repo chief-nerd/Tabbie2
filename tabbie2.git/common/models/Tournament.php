@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "tournament".
@@ -11,6 +12,7 @@ use Yii;
  * @property string $url_slug
  * @property integer $convenor_user_id
  * @property integer $tabmaster_user_id
+ * @property integer $hosted_by_id
  * @property string $name
  * @property string $start_date
  * @property string $end_date
@@ -44,7 +46,7 @@ class Tournament extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['url_slug', 'convenor_user_id', 'tabmaster_user_id', 'name', 'start_date', 'end_date'], 'required'],
-            [['convenor_user_id', 'tabmaster_user_id'], 'integer'],
+            [['convenor_user_id', 'tabmaster_user_id', 'hosted_by_id'], 'integer'],
             [['start_date', 'end_date', 'time'], 'safe'],
             [['url_slug', 'name', 'tabAlgorithmClass'], 'string', 'max' => 100],
             [['logo'], 'string', 'max' => 255],
@@ -60,6 +62,7 @@ class Tournament extends \yii\db\ActiveRecord {
             'id' => Yii::t('app', 'Tournament ID'),
             'convenor_user_id' => Yii::t('app', 'Convenor'),
             'tabmaster_user_id' => Yii::t('app', 'Tabmaster'),
+            'hosted_by_id' => Yii::t('app', 'Hosted by'),
             'name' => Yii::t('app', 'Tournament Name'),
             'start_date' => Yii::t('app', 'Start Date'),
             'end_date' => Yii::t('app', 'End Date'),
@@ -121,6 +124,13 @@ class Tournament extends \yii\db\ActiveRecord {
      */
     public function getAdjudicators() {
         return $this->hasMany(Adjudicator::className(), ['tournament_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getHostedby() {
+        return $this->hasOne(Society::className(), ['id' => 'hosted_by_id']);
     }
 
     /**
@@ -231,6 +241,14 @@ class Tournament extends \yii\db\ActiveRecord {
         $algoClass = $this->tabAlgorithmClass;
         $algoName = "common\components\TabAlgorithmus\\" . $algoClass;
         return new $algoName();
+    }
+
+    public function getSocietiesOptions() {
+        $choices = [];
+        /* @var $user User */
+        $user = Yii::$app->user->getModel();
+        $societies = $user->getCurrentSocieties()->asArray()->all();
+        return ArrayHelper::map($societies, "id", "fullname");
     }
 
 }

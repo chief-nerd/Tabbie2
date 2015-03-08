@@ -23,6 +23,17 @@ body.movedown {
     }
 }
 
+.alert {
+    background-image: -webkit-repeating-linear-gradient(-65deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%);
+    background-image: -moz-repeating-linear-gradient(-65deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%);
+    background-image: -ms-repeating-linear-gradient(-65deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%);
+    background-image: -o-repeating-linear-gradient(-65deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%);
+    background-image: repeating-linear-gradient(-65deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%);
+    background-size: 30px 60px;
+}
+
+/***********************/
+
 
 .navbar.tabmaster {
     top: 50px;
@@ -145,7 +156,8 @@ a.desc:after {
 
 .flashes .alert {
     width: 100%;
-    padding: 10px;
+    padding: 14px;
+    margin: 0;
     border-radius: 0px;
     text-align: center;
 }

@@ -13,6 +13,7 @@ use common\models\AdjudicatorInPanel;
 use \common\models\Panel;
 use yii\base\Exception;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 
 /**
  * AdjudicatorController implements the CRUD actions for Adjudicator model.
@@ -296,17 +297,25 @@ class AdjudicatorController extends BaseController {
                         $userA->setPassword($userA->email);
                         $userA->generateAuthKey();
                         $userA->time = $userA->last_change = date("Y-m-d H:i:s");
-                        if (!$userA->save()) {
+                        if ($userA->save()) {
                             $inSociety = new \common\models\InSociety();
                             $inSociety->user_id = $userA->id;
                             $inSociety->society_id = $societyID;
-                            $inSociety->starting = date("Y-m-d H:i:s");
-                            $inSociety->save();
-                            Yii::$app->session->addFlash("error", "Save error: " . print_r($userA->getErrors(), true));
+                            $inSociety->starting = date("Y-m-d");
+                            if (!$inSociety->save()) {
+                                Yii::error("Import Errors inSociety: " . print_r($inSociety->getErrors(), true), __METHOD__);
+                                Yii::$app->session->addFlash("error", "Error saving InSociety Relation for " . $userA->username);
+                            }
+                        } else {
+                            Yii::error("Import Errors userA: " . print_r($userA->getErrors(), true), __METHOD__);
+                            Yii::$app->session->addFlash("error", "Error Saving User " . $userA->username);
                         }
                         $userAID = $userA->id;
-                    } else if (count($row[2]) == 2) {
+                    } else if (count($row[1]) == 2) {
                         $userAID = $row[1][1]["id"];
+                    } else {
+                        print_r($row);
+                        exit();
                     }
 
                     $adj = new Adjudicator();
@@ -346,7 +355,7 @@ class AdjudicatorController extends BaseController {
                     for ($i = 1; $i <= count($model->tempImport); $i++) {
 //Debating Society
                         $name = $model->tempImport[$i][0][0];
-                        $societies = \common\models\Society::find()->where("fullname LIKE '%$name%'")->all();
+                        $societies = \common\models\Society::find()->where("fullname LIKE '%:name%'", [":name" => $name])->all();
                         $model->tempImport[$i][0] = array();
                         $model->tempImport[$i][0][0] = $name;
                         $a = 1;

@@ -68,6 +68,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'model' => $model,
                 'attributes' => [
                     'id',
+                    'hostedby.fullname:text:Hosted By',
                     'convenorUser.name:text:Convenor',
                     'tabmasterUser.name:text:Tabmaster',
                     'start_date',
