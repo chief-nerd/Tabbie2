@@ -12,6 +12,7 @@ use common\components\filter\TournamentContextFilter;
 use common\models\AdjudicatorInPanel;
 use \common\models\Panel;
 use yii\base\Exception;
+use yii\filters\AccessControl;
 
 /**
  * AdjudicatorController implements the CRUD actions for Adjudicator model.
@@ -20,6 +21,25 @@ class AdjudicatorController extends BaseController {
 
     public function behaviors() {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view'],
+                        'matchCallback' => function ($rule, $action) {
+                    return (Yii::$app->user->isTabMaster($this->_tournament) || Yii::$app->user->isConvenor($this->_tournament));
+                }
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create', 'update', 'delete', 'replace', 'move', 'import'],
+                        'matchCallback' => function ($rule, $action) {
+                    return (Yii::$app->user->isTabMaster($this->_tournament));
+                }
+                    ],
+                ],
+            ],
             'tournamentFilter' => [
                 'class' => TournamentContextFilter::className(),
             ],

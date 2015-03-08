@@ -21,7 +21,23 @@ class UserIdentity extends \yii\web\User {
         if ($tournament instanceof Tournament && $tournament->tabmaster_user_id == $this->id) {
             \Yii::trace("User is Tab Master for Tournament #" . $tournament->id, __METHOD__);
             return true;
-        }
+        } else if (\Yii::$app->user->isAdmin()) //Admin secure override
+            return true;
+        else
+            return false;
+    }
+
+    /**
+     * Check if user is the convenor of the torunament
+     * @param int $tournament_id
+     * @return boolean
+     */
+    public function isConvenor($tournament) {
+        if ($tournament instanceof Tournament && $tournament->convenor_user_id == $this->id) {
+            \Yii::trace("User is Convenor for Tournament #" . $tournament->id, __METHOD__);
+            return true;
+        } else if (\Yii::$app->user->isAdmin()) //Admin secure override
+            return true;
         return false;
     }
 
@@ -31,8 +47,7 @@ class UserIdentity extends \yii\web\User {
      */
     public function isAdmin() {
         $user = $this->getModel();
-        \Yii::trace("User has Role: " . $user->role, __METHOD__);
-        if ($user->role == User::ROLE_ADMIN) {
+        if ($user instanceof User && $user->role == User::ROLE_ADMIN) {
             return true;
         }
 

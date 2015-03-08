@@ -9,6 +9,7 @@ use frontend\controllers\BaseController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use common\components\filter\TournamentContextFilter;
+use yii\filters\AccessControl;
 
 /**
  * TeamController implements the CRUD actions for Team model.
@@ -17,6 +18,25 @@ class TeamController extends BaseController {
 
     public function behaviors() {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view'],
+                        'matchCallback' => function ($rule, $action) {
+                    return (Yii::$app->user->isTabMaster($this->_tournament) || Yii::$app->user->isConvenor($this->_tournament));
+                }
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create', 'update', 'delete', 'import'],
+                        'matchCallback' => function ($rule, $action) {
+                    return (Yii::$app->user->isTabMaster($this->_tournament));
+                }
+                    ],
+                ],
+            ],
             'tournamentFilter' => [
                 'class' => TournamentContextFilter::className(),
             ],

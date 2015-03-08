@@ -10,6 +10,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use common\components\filter\TournamentContextFilter;
 use common\models\search\DebateSearch;
+use yii\filters\AccessControl;
 use mPDF;
 
 /**
@@ -19,6 +20,25 @@ class RoundController extends BaseController {
 
     public function behaviors() {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view', 'printballots'],
+                        'matchCallback' => function ($rule, $action) {
+                    return (Yii::$app->user->isTabMaster($this->_tournament) || Yii::$app->user->isConvenor($this->_tournament));
+                }
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create', 'update', 'changevenue', 'publish', 'redraw'],
+                        'matchCallback' => function ($rule, $action) {
+                    return (Yii::$app->user->isTabMaster($this->_tournament));
+                }
+                    ],
+                ],
+            ],
             'tournamentFilter' => [
                 'class' => TournamentContextFilter::className(),
             ],

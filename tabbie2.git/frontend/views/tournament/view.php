@@ -34,9 +34,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 echo Html::a(Yii::t('app', 'Enter Result'), ['result/create', "id" => $debate->id, "tournament_id" => $model->id], ['class' => 'btn btn-success']);
             }
             ?>
-
-            <?= Html::a(Yii::t('app', 'Display Draw'), ['display/index', "tournament_id" => $model->id], ['class' => 'btn btn-default']) ?>
-            <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+            <?
+            if (Yii::$app->user->isTabMaster($model) || Yii::$app->user->isConvenor($model)) {
+                echo Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
+            }
+            ?>
+            <?= Html::a(Yii::t('app', 'Display Draw'), ['display/index', "tournament_id" => $model->id], ['class' => 'btn btn-default']); ?>
         </div>
     </div>
     <div class="row">
@@ -44,7 +47,14 @@ $this->params['breadcrumbs'][] = $this->title;
             <? foreach ($model->getRounds()->where(["displayed" => 1])->all() as $round): ?>
                 <div class="row">
                     <div class="col-md-3">
-                        <?= Html::a("Motion Round #" . $round->id, ["round/view", "id" => $round->id, "tournament_id" => $model->id]); ?>
+                        <?
+                        $linktext = "Motion Round #" . $round->number;
+                        if (Yii::$app->user->isTabMaster($model) || Yii::$app->user->isConvenor($model)):
+                            ?>
+                            <?= Html::a($linktext, ["round/view", "id" => $round->id, "tournament_id" => $model->id]); ?>
+                        <? else: ?>
+                            <?= $linktext ?>
+                        <? endif; ?>
                     </div>
                     <div class="col-md-9">
                         <?= $round->motion ?>

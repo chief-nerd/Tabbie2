@@ -23,7 +23,20 @@ class TournamentController extends BaseController {
                 'rules' => [
                     [
                         'allow' => true,
+                        'actions' => ['index', 'view', 'display'],
+                        'roles' => [],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create'],
                         'roles' => ['@'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['update'],
+                        'matchCallback' => function ($rule, $action) {
+                    return (Yii::$app->user->isTabMaster($this->_tournament) || Yii::$app->user->isConvenor($this->_tournament));
+                }
                     ],
                 ],
             ],
@@ -163,7 +176,7 @@ class TournamentController extends BaseController {
     /**
      *
      * @param Tournament $tournament
-     * @return int|null
+     * @return int|false
      */
     public function activeInputAvailable($tournament) {
         $user_id = Yii::$app->user->id;
