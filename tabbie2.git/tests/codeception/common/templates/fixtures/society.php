@@ -7,10 +7,11 @@ use Faker\Generator;
  * @var $index integer
  */
 $city = $faker->city;
+$name = "University of " . $city;
 return [
     'id' => ($index + 1),
-    'fullname' => "University of " . $city,
-    'abr' => strtoupper($faker->lexify("????")),
+    'fullname' => $name,
+    'abr' => common\models\Society::generateAbr($name) . $i,
     'city' => $city,
     'country' => $faker->country,
 ];
