@@ -85,14 +85,14 @@ class Society extends \yii\db\ActiveRecord {
         foreach ($parts as $part) {
             $abr .= $part[0];
         }
-        $candidate = strtoupper($abr);
-
+        $abr = strtoupper($abr);
+        $candidate = $abr;
         $count = 1;
         $i = 1;
         while ($count != 0) {
             $count = Society::find()->where(["abr" => $candidate])->count();
             if ($count > 0) {
-                $candidate = $candidate . $i;
+                $candidate = $abr . $i;
                 $i++;
             }
         }
