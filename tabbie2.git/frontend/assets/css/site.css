@@ -15,6 +15,15 @@ body.movedown {
     padding-top: 100px;
 }
 
+/** BOOTSTRAP HACKS **/
+// Give me full with!
+@media (min-width: 1300px) {
+    .container{
+        width: 1300px;
+    }
+}
+
+
 .navbar.tabmaster {
     top: 50px;
 }
