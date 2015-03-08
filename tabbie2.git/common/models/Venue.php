@@ -42,7 +42,7 @@ class Venue extends \yii\db\ActiveRecord {
      * @return CommentQuery
      */
     public static function find() {
-        return new VenueQuery(get_called_class());
+        return new VTAQuery(get_called_class());
     }
 
     /**

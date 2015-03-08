@@ -86,3 +86,14 @@ ul li:first-child .adj
 #filterForm label {
     display: none;
 }
+
+#teams-container ul {
+    margin: 0;
+    list-style: none;
+    padding: 0;
+}
+
+#teams-container li {
+    float: left;
+    width: 50%;
+}

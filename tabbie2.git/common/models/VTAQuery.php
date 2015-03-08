@@ -4,7 +4,13 @@ namespace common\models;
 
 use yii\db\ActiveQuery;
 
-class VenueQuery extends ActiveQuery {
+/**
+ * VTAQuery
+ * V ... Venue
+ * T ... Team
+ * A ... Adjudicator
+ */
+class VTAQuery extends ActiveQuery {
 
     public function active($state = true) {
         return $this->andWhere(['active' => $state]);

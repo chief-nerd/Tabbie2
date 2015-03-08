@@ -33,7 +33,7 @@ class AdjudicatorController extends BaseController {
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['create', 'update', 'delete', 'replace', 'move', 'import'],
+                        'actions' => ['create', 'update', 'delete', 'replace', 'move', 'import', 'active'],
                         'matchCallback' => function ($rule, $action) {
                     return (Yii::$app->user->isTabMaster($this->_tournament));
                 }
@@ -162,6 +162,27 @@ class AdjudicatorController extends BaseController {
         return $this->render('view', [
                     'model' => $this->findModel($id),
         ]);
+    }
+
+    /**
+     * Toggle a Adjudicator visability
+     * @param integer $id
+     * @return mixed
+     */
+    public function actionActive($id) {
+        $model = $this->findModel($id);
+
+        if ($model->active == 0)
+            $model->active = 1;
+        else {
+            $model->active = 0;
+        }
+
+        if (!$model->save()) {
+            Yii::$app->session->addFlash("error", $model->getErrors("active"));
+        }
+
+        return $this->redirect(['adjudicator/index', 'tournament_id' => $this->_tournament->id]);
     }
 
     /**

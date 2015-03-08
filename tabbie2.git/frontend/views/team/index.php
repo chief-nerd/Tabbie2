@@ -37,6 +37,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'class' => '\kartik\grid\SerialColumn',
         ],
         [
+            'class' => 'kartik\grid\BooleanColumn',
+            'attribute' => 'active',
+            'vAlign' => 'middle',
+        ],
+        [
             'class' => '\kartik\grid\DataColumn',
             'attribute' => 'name',
             'format' => 'raw',
@@ -80,15 +85,25 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                         [
                             'class' => 'kartik\grid\ActionColumn',
-                            'template' => '{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}',
+                            'template' => '{active}&nbsp;&nbsp;{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}',
                             'dropdown' => false,
                             'vAlign' => 'middle',
-                            'urlCreator' => function($action, $model, $key, $index) {
+                            'buttons' => [
+                                "active" => function ($url, $model) {
+                                    return Html::a("<span class='glyphicon glyphicon-eye-close'></span>", $url, [
+                                                'title' => Yii::t('app', 'Toogle Active'),
+                                                'data-pjax' => '0',
+                                                'data-toggle-active' => $model->id
+                                    ]);
+                                }
+                                    ],
+                                    'urlCreator' => function($action, $model, $key, $index) {
                                 return \yii\helpers\Url::to(["team/" . $action, "id" => $model->id, "tournament_id" => $model->tournament->id]);
                             },
                                     'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", "View team"), 'data-toggle' => 'tooltip'],
                                     'updateOptions' => ['title' => Yii::t("app", "Update team"), 'data-toggle' => 'tooltip'],
                                     'deleteOptions' => ['title' => Yii::t("app", "Delete team"), 'data-toggle' => 'tooltip'],
+                                    'width' => '100px',
                                 ],
                             ];
 

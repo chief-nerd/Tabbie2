@@ -26,7 +26,7 @@ class TeamSearch extends Team {
      */
     public function rules() {
         return [
-            [['id', 'tournament_id', 'speakerA_id', 'speakerB_id'], 'integer'],
+            [['id', 'active', 'tournament_id', 'speakerA_id', 'speakerB_id'], 'integer'],
             [['name', 'speakerName', 'societyName'], 'string', 'max' => 255],
         ];
     }
@@ -59,6 +59,7 @@ class TeamSearch extends Team {
         $dataProvider->setSort([
             'attributes' => [
                 'id',
+                'active',
                 'name',
                 'speakerName',
                 'societyName' => [
@@ -72,6 +73,11 @@ class TeamSearch extends Team {
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
+
+        $query->andFilterWhere([
+            'id' => $this->id,
+            'active' => $this->active,
+        ]);
 
         // filter by user name
         $query->where("(CONCAT(uA.givenname, ' ', uA.surename) LIKE '%" . $this->speakerName . "%') OR (CONCAT(uB.givenname, ' ', uB.surename) LIKE '%" . $this->speakerName . "%')");

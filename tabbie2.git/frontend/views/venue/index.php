@@ -65,6 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", "View Venue"), 'data-toggle' => 'tooltip'],
                     'updateOptions' => ['title' => Yii::t("app", "Update Venue"), 'data-toggle' => 'tooltip'],
                     'deleteOptions' => ['title' => Yii::t("app", "Delete Venue"), 'data-toggle' => 'tooltip'],
+                    'width' => '100px'
                 ],
             ];
 

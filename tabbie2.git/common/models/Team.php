@@ -9,6 +9,7 @@ use Yii;
  *
  * @property integer $id
  * @property string $name
+ * @property integer $active
  * @property integer $tournament_id
  * @property integer $speakerA_id
  * @property integer $speakerB_id
@@ -43,9 +44,17 @@ class Team extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['tournament_id', 'name', 'speakerA_id', 'speakerB_id', 'society_id'], 'required'],
-            [['tournament_id', 'speakerA_id', 'speakerB_id', 'society_id'], 'integer'],
+            [['tournament_id', 'active', 'speakerA_id', 'speakerB_id', 'society_id'], 'integer'],
             [['name'], 'string', 'max' => 255]
         ];
+    }
+
+    /**
+     * @inheritdoc
+     * @return CommentQuery
+     */
+    public static function find() {
+        return new VTAQuery(get_called_class());
     }
 
     /**
@@ -55,6 +64,7 @@ class Team extends \yii\db\ActiveRecord {
         return [
             'id' => Yii::t('app', 'ID'),
             'name' => Yii::t('app', 'Team Name'),
+            'active' => Yii::t('app', 'Active'),
             'tournament_id' => Yii::t('app', 'Tournament ID'),
             'speakerName' => Yii::t('app', 'Speaker Name'),
             'speakerA_id' => Yii::t('app', 'Speaker A'),

@@ -9,6 +9,7 @@ use Yii;
  *
  * @property integer $id
  * @property integer $tournament_id
+ * @property integer $active
  * @property integer $user_id
  * @property integer $strength 0-9
  * @property integer $society_id
@@ -37,8 +38,16 @@ class Adjudicator extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['tournament_id', 'user_id', 'society_id'], 'required'],
-            [['tournament_id', 'user_id', 'strength', 'can_chair', 'are_watched', 'society_id'], 'integer']
+            [['tournament_id', 'active', 'user_id', 'strength', 'can_chair', 'are_watched', 'society_id'], 'integer']
         ];
+    }
+
+    /**
+     * @inheritdoc
+     * @return CommentQuery
+     */
+    public static function find() {
+        return new VTAQuery(get_called_class());
     }
 
     /**
@@ -48,6 +57,7 @@ class Adjudicator extends \yii\db\ActiveRecord {
         return [
             'id' => Yii::t('app', 'ID'),
             'tournament_id' => Yii::t('app', 'Tournament ID'),
+            'active' => Yii::t('app', 'Active'),
             'user_id' => Yii::t('app', 'User ID'),
             'strength' => Yii::t('app', 'Strength'),
             'societyName' => Yii::t('app', 'Society Name'),

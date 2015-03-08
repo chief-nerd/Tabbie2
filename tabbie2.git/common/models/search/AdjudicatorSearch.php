@@ -21,7 +21,7 @@ class AdjudicatorSearch extends Adjudicator {
      */
     public function rules() {
         return [
-            [['id', 'can_chair', 'are_watched'], 'integer'],
+            [['id', 'active', 'can_chair', 'are_watched'], 'integer'],
             [['societyName', 'strength'], 'safe'],
             ['name', 'string', 'max' => 255]
         ];
@@ -59,6 +59,7 @@ class AdjudicatorSearch extends Adjudicator {
         $dataProvider->setSort([
             'attributes' => [
                 'id',
+                'active',
                 'can_chair',
                 'are_watched',
                 'name' => [
@@ -81,6 +82,7 @@ class AdjudicatorSearch extends Adjudicator {
 
         $query->andFilterWhere([
             'id' => $this->id,
+            'active' => $this->active,
             'are_watched' => $this->are_watched,
             'can_chair' => $this->can_chair,
         ]);

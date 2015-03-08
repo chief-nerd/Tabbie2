@@ -127,21 +127,21 @@ class VenueController extends BaseController {
     }
 
     /**
-     * Toggle a page visability
+     * Toggle a Venue visability
      * @param integer $id
      * @return mixed
      */
     public function actionActive($id) {
-        $venue = $this->findModel($id);
+        $model = $this->findModel($id);
 
-        if ($venue->active == 0)
-            $venue->active = 1;
+        if ($model->active == 0)
+            $model->active = 1;
         else {
-            $venue->active = 0;
+            $model->active = 0;
         }
 
-        if (!$venue->save()) {
-            Yii::$app->session->addFlash("error", $venue->getErrors("active"));
+        if (!$model->save()) {
+            Yii::$app->session->addFlash("error", $model->getErrors("active"));
         }
 
         return $this->redirect(['venue/index', 'tournament_id' => $this->_tournament->id]);

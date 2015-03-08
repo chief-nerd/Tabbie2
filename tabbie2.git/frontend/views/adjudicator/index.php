@@ -40,6 +40,16 @@ $this->params['breadcrumbs'][] = $this->title;
             'class' => '\kartik\grid\SerialColumn',
         ],
         [
+            'class' => 'kartik\grid\BooleanColumn',
+            'attribute' => 'active',
+            'vAlign' => 'middle',
+        ],
+        [
+            'class' => '\kartik\grid\BooleanColumn',
+            'attribute' => 'can_chair',
+            'width' => '5%',
+        ],
+        [
             'class' => '\kartik\grid\DataColumn',
             'attribute' => 'name',
             'filterType' => GridView::FILTER_SELECT2,
@@ -70,11 +80,6 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         [
             'class' => '\kartik\grid\BooleanColumn',
-            'attribute' => 'can_chair',
-            'width' => '5%',
-        ],
-        [
-            'class' => '\kartik\grid\BooleanColumn',
             'attribute' => 'are_watched',
             'trueIcon' => '<span class="glyphicon glyphicon-eye-open text-success"></span>',
             'falseIcon' => '<span class="glyphicon glyphicon-eye-close text-muted"></span>',
@@ -83,13 +88,20 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         [
             'class' => 'kartik\grid\ActionColumn',
-            'template' => '{watch}&nbsp;&nbsp;{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}',
+            'template' => '{watch}&nbsp;&nbsp;{active}&nbsp;&nbsp;{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}',
             'dropdown' => false,
             'vAlign' => 'middle',
             'buttons' => [
                 "watch" => function ($url, $model) {
                     return Html::a("<span class='glyphicon glyphicon-screenshot'></span>", $url, [
                                 'title' => Yii::t('app', 'Toogle Watch'),
+                                'data-pjax' => '0',
+                                'data-toggle-active' => $model->id
+                    ]);
+                },
+                        "active" => function ($url, $model) {
+                    return Html::a("<span class='glyphicon glyphicon-eye-close'></span>", $url, [
+                                'title' => Yii::t('app', 'Toogle Active'),
                                 'data-pjax' => '0',
                                 'data-toggle-active' => $model->id
                     ]);
@@ -101,7 +113,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", "View Adjudicator"), 'data-toggle' => 'tooltip'],
                     'updateOptions' => ['title' => Yii::t("app", "Update team"), 'data-toggle' => 'tooltip'],
                     'deleteOptions' => ['title' => Yii::t("app", "Delete team"), 'data-toggle' => 'tooltip'],
-                    'width' => '10%',
+                    'width' => '120px',
                 ],
             ];
 
