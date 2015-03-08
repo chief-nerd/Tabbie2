@@ -90,7 +90,7 @@ class Society extends \yii\db\ActiveRecord {
         $count = 1;
         $i = 1;
         while ($count != 0) {
-            $count = Society::findByCondition(["abr" => $candidate])->count();
+            $count = Society::find()->where(["abr" => $candidate])->count();
             if ($count > 0) {
                 $candidate = $candidate . $i;
                 $i++;
