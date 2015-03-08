@@ -124,7 +124,8 @@ class StrictWUDCRules extends TabAlgorithmus {
      * @return Team[]
      */
     public function sort_teams($teams) {
-        usort($teams, array('common\models\Team', 'compare_points'));
+        //Surpress an error due to a php bug.
+        @usort($teams, array('common\models\Team', 'compare_points'));
         return $teams;
     }
 
