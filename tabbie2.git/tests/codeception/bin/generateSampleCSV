@@ -36,14 +36,16 @@ $output_teams = "Team Name;Society Name;A.Givenname;A.Surename;A.Email;B.Givenna
 $output_adjudicator = "Society;Givenname;Surename;Email;Strength\n";
 $save = [];
 
-echo "\n== Venues ==\n";
+echo "\nVenues:";
 for ($v = 0; $v < $amount_venues; $v++) {
     $line = "Room " . ($v + 1) . ";1\n";
     //echo $line;
     $output_venue .= $line;
+    echo ".";
 }
+echo "\tgenerated\n";
 
-echo "\n== Teams ==\n";
+echo "Teams:";
 for ($t = 0; $t < $amount_teams; $t++) {
     $city = $faker->city;
     $save[] = $city;
@@ -57,9 +59,10 @@ for ($t = 0; $t < $amount_teams; $t++) {
             $faker->email . "\n";
     //echo $line;
     $output_teams .= $line;
+    echo ".";
 }
-
-echo "\n== Judges ==\n";
+echo "\tgenerated\n";
+echo "Adjudicator:";
 for ($a = 0; $a < $amount_adj; $a++) {
 
     if ($faker->numberBetween(0, 100) > 40)
@@ -74,9 +77,11 @@ for ($a = 0; $a < $amount_adj; $a++) {
             $faker->numberBetween(0, 9) . "\n";
     //echo $line;
     $output_adjudicator .= $line;
+    echo ".";
 }
+echo "\tgenerated\n";
 
-$base = "../../../frontend/assets/csv/";
+$base = "../../sampleImports/";
 $handle_venue = fopen($base . "Sample_Venues.csv", "w");
 $handle_teams = fopen($base . "Sample_Teams.csv", "w");
 $handle_adj = fopen($base . "Sample_Adjudicators.csv", "w");
