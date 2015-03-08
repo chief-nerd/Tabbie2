@@ -96,6 +96,8 @@ class Society extends \yii\db\ActiveRecord {
                 $i++;
             }
         }
+
+        return $candidate;
     }
 
 }
