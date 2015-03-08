@@ -74,7 +74,10 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
             'width' => '8%',
             'format' => 'raw',
             'value' => function ($model, $key, $index, $widget) {
-                return $this->render("_changeVenue", ["model" => $model]);
+                if (!$model->round->published)
+                    return $this->render("_changeVenue", ["model" => $model]);
+                else
+                    return $model->venue->name;
             },
                 ],
                 [
