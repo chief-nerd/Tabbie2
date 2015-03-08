@@ -13,6 +13,8 @@ return [
     ],
     'speaks_max' => 100,
     'speaks_min' => 65,
+    'venues_per_page' => 100,
     'adjudicators_per_page' => 100,
     'teams_per_page' => 100,
+    'time_to_still_consider_active_in_society' => "+6 months",
 ];

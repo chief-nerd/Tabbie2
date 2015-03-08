@@ -42,6 +42,9 @@ class VenueSearch extends Venue {
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => Yii::$app->params["venues_per_page"],
+            ],
         ]);
 
         if (!($this->load($params) && $this->validate())) {
