@@ -6,8 +6,10 @@ return [
     'user.passwordResetTokenExpire' => 3600,
     'appName' => 'Tabbie2',
     'slogan' => 'BP Tabbing so easy a fresher can do it',
-    'tabAlgorithmOptions' => [ //Installed Algorythemen Options
-        "DummyTest"
+    'tabAlgorithmOptions' => [
+        //Installed Algorithm Options as class => description
+        "StrictWUDCRules" => "Strict WUDC Consitution",
+        "DummyTest" => "Dummy Algorithm for Software Testing",
     ],
     'speaks_max' => 100,
     'speaks_min' => 65,

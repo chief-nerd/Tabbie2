@@ -66,6 +66,7 @@ class Tournament extends \yii\db\ActiveRecord {
             'logo' => Yii::t('app', 'Logo'),
             'time' => Yii::t('app', 'Time'),
             'url_slug' => Yii::t('app', 'URL Slug'),
+            'tabAlgorithmClass' => Yii::t('app', 'Tab Algorithm'),
         ];
     }
 
@@ -219,11 +220,7 @@ class Tournament extends \yii\db\ActiveRecord {
     }
 
     public static function getTabAlgorithmOptions() {
-        $dropdown = [];
-        foreach (Yii::$app->params["tabAlgorithmOptions"] as $algoOptions) {
-            $dropdown[] = [$algoOptions => $algoOptions];
-        }
-        return $dropdown;
+        return Yii::$app->params["tabAlgorithmOptions"];
     }
 
     /**
