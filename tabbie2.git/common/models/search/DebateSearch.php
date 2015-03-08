@@ -130,7 +130,7 @@ class DebateSearch extends Debate {
 
     public static function getAdjudicatorSearchArray($tournamentid) {
 
-        $adjs = \common\models\Adjudicator::findByCondition(["tournament_id" => $tournamentid])->all();
+        $adjs = \common\models\Adjudicator::find()->where(["tournament_id" => $tournamentid])->all();
         $filter = [];
         foreach ($adjs as $adj) {
             $filter[$adj->name] = $adj->name;
@@ -140,7 +140,7 @@ class DebateSearch extends Debate {
 
     public static function getTeamSearchArray($tournamentid) {
 
-        $teams = \common\models\Team::findByCondition(["tournament_id" => $tournamentid])->all();
+        $teams = \common\models\Team::find()->where(["tournament_id" => $tournamentid])->all();
 
         $filter = [];
         foreach ($teams as $team) {
