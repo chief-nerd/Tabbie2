@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\helpers\ArrayHelper;
 use common\models\Team;
+use yii\widgets\ListView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\search\TeamSearch */
@@ -16,21 +17,41 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="team-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-    <p>
-        <?=
-        Html::a(Yii::t('app', 'Create {modelClass}', [
-                    'modelClass' => 'Team',
-                ]), ['create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
-        ?>
-        <?=
-        Html::a(Yii::t('app', 'Import {modelClass}', [
-                    'modelClass' => 'Team',
-                ]), ['import', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
-        ?>
-    </p>
-
     <?php \yii\widgets\Pjax::begin(); ?>
+    <div class="row">
+        <div class="col-md-8">
+            <h1><?= Html::encode($this->title) ?></h1>
+            <p>
+                <?=
+                Html::a(Yii::t('app', 'Create {modelClass}', [
+                            'modelClass' => 'Team',
+                        ]), ['create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
+                ?>
+                <?=
+                Html::a(Yii::t('app', 'Import {modelClass}', [
+                            'modelClass' => 'Team',
+                        ]), ['import', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
+                ?>
+            </p>
+        </div>
+        <div class="col-md-4">
+            <table class="table">
+                <tr>
+                    <th>Missing Teams</th><th>Inactive Teams</th><th>Swing Teams</th>
+                </tr>
+                <tr>
+                    <td><?
+                        $modolo = $stat["active"] % 4;
+                        $missing = ($modolo == 0) ? 0 : 4 - $modolo;
+
+                        echo "<b class='" . (($modolo == 0) ? "text-success" : "text-danger") . "'>" . $missing . "</b>";
+                        ?></td>
+                    <td><?= $stat["inactive"] ?></td>
+                    <td><?= $stat["swing"] ?></td>
+                </tr>
+            </table>
+        </div>
+    </div>
     <?
     $gridColumns = [
         [

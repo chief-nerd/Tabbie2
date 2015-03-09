@@ -97,3 +97,7 @@ ul li:first-child .adj
     float: left;
     width: 50%;
 }
+
+.team-index h1 {
+    margin-top: 0px;
+}

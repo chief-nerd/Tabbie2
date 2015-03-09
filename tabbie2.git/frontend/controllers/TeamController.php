@@ -58,9 +58,14 @@ class TeamController extends BaseController {
         $searchModel = new TeamSearch(["tournament_id" => $this->_tournament->id]);
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $stat["active"] = Team::find()->active()->tournament($this->_tournament->id)->count();
+        $stat["inactive"] = Team::find()->active(false)->tournament($this->_tournament->id)->count();
+        $stat["swing"] = Team::find()->tournament($this->_tournament->id)->where(["isSwing" => true])->count();
+
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
+                    'stat' => $stat,
         ]);
     }
 
