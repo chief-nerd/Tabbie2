@@ -116,14 +116,16 @@ class DebateSearch extends Debate {
             'time' => $this->time,
         ]);
 
-        $query->andWhere("venue.name LIKE '%" . $params["DebateSearch"]["venue"] . "%'");
+        $query->andWhere(["like", "venue.name", $params["DebateSearch"]["venue"]]);
 
-        $query->andWhere("(ogteam.name LIKE '%" . $params["DebateSearch"]["team"] . "%' OR "
-                . "ooteam.name LIKE '%" . $params["DebateSearch"]["team"] . "%' OR "
-                . "cgteam.name LIKE '%" . $params["DebateSearch"]["team"] . "%' OR "
-                . "coteam.name LIKE '%" . $params["DebateSearch"]["team"] . "%' )");
+        $query->andWhere(["like", "ogteam.name", $params["DebateSearch"]["team"]]);
+        $query->orWhere(["like", "ooteam.name", $params["DebateSearch"]["team"]]);
+        $query->orWhere(["like", "cgteam.name", $params["DebateSearch"]["team"]]);
+        $query->orWhere(["like", "coteam.name", $params["DebateSearch"]["team"]]);
 
-        $query->andWhere("CONCAT(user.givenname, ' ', user.surename) LIKE '%" . $params["DebateSearch"]["adjudicator"] . "%'");
+        $query->andWhere(["like", "CONCAT(user.givenname, ' ', user.surename)", $params["DebateSearch"]["adjudicator"]]);
+
+        $query->andWhere(["round_id" => $rid]);
 
         return $dataProvider;
     }

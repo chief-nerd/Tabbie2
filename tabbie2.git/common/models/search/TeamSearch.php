@@ -80,41 +80,43 @@ class TeamSearch extends Team {
         ]);
 
         // filter by user name
-        $query->where("(CONCAT(uA.givenname, ' ', uA.surename) LIKE '%" . $this->speakerName . "%') OR (CONCAT(uB.givenname, ' ', uB.surename) LIKE '%" . $this->speakerName . "%')");
+        $query->andWhere(["like", "CONCAT(uA.givenname, ' ', uA.surename)", $this->speakerName]);
+        $query->orWhere(["like", "CONCAT(uB.givenname, ' ', uB.surename)", $this->speakerName]);
+
         // filter by society name
         $query->joinWith(['society' => function ($q) {
-                $q->where('society.fullname LIKE "%' . $this->societyName . '%"');
+                $q->where(['like', 'society.fullname', $this->societyName]);
             }]);
 
-        $query->andFilterWhere(['id' => $this->id]);
-        $query->andFilterWhere(['like', 'name', $this->name]);
+                $query->andFilterWhere(['id' => $this->id]);
+                $query->andFilterWhere(['like', 'name', $this->name]);
 
-        //Filter for Tournament scope
-        //@todo Unknow why this line is neccessary -> siehe self:50
-        $query->andWhere(["tournament_id" => $this->tournament_id]);
-        //echo $query->createCommand()->sql;
+                //Filter for Tournament scope
+                //@todo Unknow why this line is neccessary -> siehe self:50
+                $query->andWhere(["tournament_id" => $this->tournament_id]);
+                //echo $query->createCommand()->sql;
 
-        return $dataProvider;
-    }
+                return $dataProvider;
+            }
 
-    public static function getSearchArray($tid) {
-        $teams = Team::find()->where(["tournament_id" => $tid])->asArray()->all();
+            public static function getSearchArray($tid) {
+                $teams = Team::find()->where(["tournament_id" => $tid])->asArray()->all();
 
-        return ArrayHelper::map($teams, "name", "name");
-    }
+                return ArrayHelper::map($teams, "name", "name");
+            }
 
-    public static function getSpeakerSearchArray($tid) {
-        $users = \common\models\User::find()
-                ->select(["user.id", "CONCAT(user.givenname, ' ', user.surename) as username"])
-                ->join("INNER JOIN", "team tA", "tA.speakerA_id = user.id")
-                ->where(["tA.tournament_id" => $tid])
-                ->union(
-                \common\models\User::find()
-                ->select(["user.id", "CONCAT(user.givenname, ' ', user.surename) as username"])
-                ->join("INNER JOIN", "team tB", "tB.speakerB_id = user.id")
-                ->where(["tB.tournament_id" => $tid])
-        );
-        return ArrayHelper::map($users->asArray()->all(), "username", "username");
-    }
+            public static function getSpeakerSearchArray($tid) {
+                $users = \common\models\User::find()
+                        ->select(["user.id", "CONCAT(user.givenname, ' ', user.surename) as username"])
+                        ->join("INNER JOIN", "team tA", "tA.speakerA_id = user.id")
+                        ->where(["tA.tournament_id" => $tid])
+                        ->union(
+                        \common\models\User::find()
+                        ->select(["user.id", "CONCAT(user.givenname, ' ', user.surename) as username"])
+                        ->join("INNER JOIN", "team tB", "tB.speakerB_id = user.id")
+                        ->where(["tB.tournament_id" => $tid])
+                );
+                return ArrayHelper::map($users->asArray()->all(), "username", "username");
+            }
 
-}
+        }
