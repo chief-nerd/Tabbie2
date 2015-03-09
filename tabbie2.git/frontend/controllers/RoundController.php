@@ -114,7 +114,7 @@ class RoundController extends BaseController {
         $old_debate = \common\models\Debate::findOne($debateid);
 
         if ($params = Yii::$app->request->get()) {
-            $used_debate = \common\models\Debate::findOne(["venue_id" => $params["new_venue"]]);
+            $used_debate = \common\models\Debate::findOne(["venue_id" => $params["new_venue"], "round_id" => $old_debate->round_id]);
             if ($used_debate instanceof \common\models\Debate) {
                 $old_debate_venue = $old_debate->venue_id;
                 $old_debate->venue_id = $used_debate->venue_id;
