@@ -39,8 +39,9 @@ class ResultController extends BaseController {
         $rounds = new ActiveDataProvider([
             'query' => \common\models\Round::findBySql("SELECT round.* from round "
                     . "LEFT JOIN debate ON round.id = debate.round_id "
-                    . "RIGHT JOIN result ON result.debate_id = debate.id "
-                    . "GROUP BY round.id"),
+                    . "LEFT JOIN result ON result.debate_id = debate.id "
+                    . "WHERE round.tournament_id = " . $this->_tournament->id . " "
+                    . "GROUP BY round.id")
         ]);
 
         return $this->render('index', [
@@ -52,7 +53,7 @@ class ResultController extends BaseController {
      * Lists all Result models.
      * @return mixed
      */
-    public function actionRound($id, $view = "overview") {
+    public function actionRound($id, $view = "venue") {
         $searchModel = new ResultSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->_tournament->id, $id);
 
@@ -64,12 +65,14 @@ class ResultController extends BaseController {
             ],
         ]);
 
+        $number = $dataProvider->getModels()[0]->round->number;
+
         switch ($view) {
-            case "overview":
-                $view = "overview";
+            case "venue":
+                $view = "venueview";
                 break;
-            case "full":
-                $view = "round";
+            case "table":
+                $view = "tableview";
                 break;
             default:
                 throw new Exception("View does not exist", 404);
@@ -77,6 +80,7 @@ class ResultController extends BaseController {
 
         return $this->render($view, [
                     'round_id' => $id,
+                    'round_number' => $number,
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
         ]);

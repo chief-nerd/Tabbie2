@@ -21,7 +21,6 @@ use yii\helpers\ArrayHelper;
  * @property string $tabAlgorithmClass
  *
  * @property Adjudicator[] $adjudicators
- * @property TabAfterRound[] $tabAfterRounds
  * @property Panel[] $panels
  * @property Round[] $rounds
  * @property Team[] $teams
@@ -138,13 +137,6 @@ class Tournament extends \yii\db\ActiveRecord {
      */
     public function getEnergyConfigs() {
         return $this->hasMany(EnergyConfig::className(), ['tournament_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTabAfterRounds() {
-        return $this->hasMany(TabAfterRound::className(), ['tournament_id' => 'id']);
     }
 
     /**

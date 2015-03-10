@@ -87,6 +87,7 @@ AppAsset::register($this);
                     $rounds = array();
                     foreach ($tournament->rounds as $r) {
                         $rounds[] = ['label' => "Round #$r->number", 'url' => ['round/view', "id" => $r->id, "tournament_id" => $tournament->id]];
+                        $results[] = ['label' => "Result Round #$r->number", 'url' => ['result/round', "id" => $r->id, "tournament_id" => $tournament->id]];
                     }
                     $menuItems = [
                         ['label' => 'Venues', 'url' => '#',
@@ -120,7 +121,18 @@ AppAsset::register($this);
                                 '<li class="divider"></li>',
                                     ], $rounds),
                         ],
-                        ['label' => 'Results', 'url' => ['result/index', "tournament_id" => $tournament->id]],
+                        ['label' => 'Results', 'url' => '#',
+                            "items" => array_merge_recursive([
+                                ['label' => 'List Results', 'url' => ['result/index', "tournament_id" => $tournament->id]],
+                                '<li class="divider"></li>',
+                                    ], $results),
+                        ],
+                        ['label' => 'Current Tab', 'url' => "#",
+                            "items" => [
+                                ['label' => 'Team Tab', 'url' => ['tab/team', "tournament_id" => $tournament->id]],
+                                ['label' => 'Speaker Tab', 'url' => ['tab/speaker', "tournament_id" => $tournament->id]]
+                            ]
+                        ],
                         ['label' => 'Feedback', 'url' => '#',
                             "items" => [
                                 ['label' => 'Every Feedback', 'url' => ['feedback/index', "tournament_id" => $tournament->id]],

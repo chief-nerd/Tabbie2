@@ -11,11 +11,13 @@ use kartik\widgets\SwitchInput;
 
 $this->title = Yii::t('app', 'Results');
 $tournament = $this->context->_getContext();
+$this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
 $this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = "Table View";
 ?>
 <div class="result-index">
 
-    <h1><?= Html::encode($this->title) ?> for Round <?= $round_id ?></h1>
+    <h1><?= Html::encode($this->title) ?> for Round #<?= $round_number ?></h1>
     <p class="text-right">
         <?=
         Html::checkbox("autoupdate", false, [
@@ -28,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
         Html::a("Switch to Venue View", ["round",
             "id" => $round_id,
             "tournament_id" => $tournament->id,
-            "view" => "overview",
+            "view" => "venue",
                 ], ["class" => "btn btn-default"]);
         ?>
     </p>

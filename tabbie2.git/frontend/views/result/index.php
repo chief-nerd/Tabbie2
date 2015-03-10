@@ -9,6 +9,7 @@ use yii\widgets\ListView;
 
 $this->title = Yii::t('app', 'Results');
 $tournament = $this->context->_getContext();
+$this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="result-index">
@@ -27,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
     echo ListView::widget([
         'dataProvider' => $rounds,
         'itemView' => function ($model, $key, $index, $widget) {
-            return Html::a("Round " . $model->id, ['round', "id" => $model->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-default']);
+            return Html::a("Round " . $model->number, ['round', "id" => $model->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-default']);
         },
             ]);
             ?>

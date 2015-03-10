@@ -24,7 +24,6 @@ use Yii;
  * @property string $time
  * @property integer $enteredBy_adjudicator_id
  *
- * @property TabPosition[] $tabPositions
  * @property Debate $debate
  * @property Adjudicator $enteredByAdjudicator
  */
@@ -75,13 +74,6 @@ class Result extends \yii\db\ActiveRecord {
             'time' => Yii::t('app', 'Time'),
             'enteredBy_adjudicator_id' => Yii::t('app', 'Entered By Adjudicator ID'),
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTabPositions() {
-        return $this->hasMany(TabPosition::className(), ['result_id' => 'id']);
     }
 
     public function getOg_speaks() {
