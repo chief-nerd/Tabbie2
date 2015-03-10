@@ -110,13 +110,34 @@ class TeamController extends BaseController {
         $model = new Team();
         $model->tournament_id = $this->_tournament->id;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id, 'tournament_id' => $model->tournament_id]);
-        } else {
-            return $this->render('create', [
-                        'model' => $model,
-            ]);
+        if ($model->load(Yii::$app->request->post())) {
+
+            if ($model->isSwing == 1) {
+                if (empty($model->speakerA_id))
+                    $model->speakerA_id = \common\models\User::generatePlaceholder("A")->id;
+                if (empty($model->speakerB_id))
+                    $model->speakerB_id = \common\models\User::generatePlaceholder("B")->id;
+            }
+
+            if ($model->save())
+                return $this->redirect(['view', 'id' => $model->id, 'tournament_id' => $model->tournament_id]);
+            else {
+                \Yii::error("Error saving Team: " . print_r($model->getErrors(), true), __METHOD__);
+                \Yii::$app->session->addFlash("error", "Couldn't create Team.");
+            }
         }
+
+        $publishpath = Yii::$app->assetManager->publish(Yii::getAlias("@frontend/assets/js/createTeam.js"));
+        $this->view->registerJsFile($publishpath[1], [
+            "depends" => [
+                \yii\web\JqueryAsset::className(),
+            ],
+        ]);
+
+        $model->active = 1; //Set default;
+        return $this->render('create', [
+                    'model' => $model,
+        ]);
     }
 
     /**
@@ -128,13 +149,21 @@ class TeamController extends BaseController {
     public function actionUpdate($id) {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index', 'tournament_id' => $model->tournament_id]);
-        } else {
-            return $this->render('update', [
-                        'model' => $model,
-            ]);
+        if ($model->load(Yii::$app->request->post())) {
+
+            if ($model->isSwing == 1) {
+                if (empty($model->speakerA_id))
+                    $model->speakerA_id = \common\models\User::generatePlaceholder("A")->id;
+                if (empty($model->speakerB_id))
+                    $model->speakerB_id = \common\models\User::generatePlaceholder("B")->id;
+            }
+            if ($model->save())
+                return $this->redirect(['index', 'tournament_id' => $model->tournament_id]);
         }
+
+        return $this->render('update', [
+                    'model' => $model,
+        ]);
     }
 
     /**
@@ -144,9 +173,14 @@ class TeamController extends BaseController {
      * @return mixed
      */
     public function actionDelete($id) {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
 
-        return $this->redirect(['tournament/view', 'id' => $this->_tournament->id]);
+        if ($model->isSwing) { //isSwing -> clean up Placeholder
+            $model->speakerA->delete();
+            $model->speakerB->delete();
+        }
+        $model->delete();
+        return $this->redirect(['team/index', 'tournament_id' => $this->_tournament->id]);
     }
 
     public function actionImport() {

@@ -11,11 +11,12 @@ use Yii;
  * @property string $fullname
  * @property string $abr
  * @property string $city
- * @property string $country
+ * @property integer $country_id
  *
  * @property Adjudicator[] $adjudicators
  * @property InSociety[] $inSocieties
- * @property User[] $usernames
+ * @property Country $country
+ * @property User[] $users
  * @property Team[] $teams
  */
 class Society extends \yii\db\ActiveRecord {
@@ -32,7 +33,9 @@ class Society extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['fullname', 'city', 'country'], 'string', 'max' => 255],
+            [['country_id'], 'required'],
+            [['country_id'], 'integer'],
+            [['fullname', 'city'], 'string', 'max' => 255],
             [['abr'], 'string', 'max' => 45],
             [['abr'], 'unique']
         ];
@@ -68,8 +71,22 @@ class Society extends \yii\db\ActiveRecord {
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUsernames() {
+    public function getUsers() {
         return $this->hasMany(User::className(), ['id' => 'username_id'])->viaTable('in_society', ['society_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCountry() {
+        return $this->hasOne(Country::className(), ['id' => 'country_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTournaments() {
+        return $this->hasMany(Tournament::className(), ['hosted_by_id' => 'id']);
     }
 
     /**

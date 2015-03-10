@@ -3,7 +3,17 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/views/round/view.php</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/common/models/Round.php</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/common/models/search/DebateSearch.php</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/common/models/Team.php</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/assets/js/question_setup.js</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/assets/js/site.js</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/assets/css/tournament.css</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/common/models/User.php</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/views/team/create.php</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/views/layouts/main.php</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/views/team/index.php</file>
+            <file>file:/Users/jareiter/Tabbie2/tabbie2.git/frontend/controllers/TeamController.php</file>
         </group>
     </open-files>
 </project-private>

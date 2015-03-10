@@ -25,6 +25,7 @@ use yii\web\IdentityInterface;
  * @property integer $last_change
  * @property string $givenname
  * @property string $surename
+ * @property integer $gender
  * @property string $picture
  * @property string $time
  *
@@ -38,9 +39,14 @@ class User extends ActiveRecord implements IdentityInterface {
 
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
+    const ROLE_PLACEHOLDER = 9;
     const ROLE_USER = 10;
     const ROLE_TABMASTER = 11;
     const ROLE_ADMIN = 12;
+    const GENDER_NOTREVEALING = 0;
+    const GENDER_MALE = 1;
+    const GENDER_FEMALE = 2;
+    const GENDER_UNDECIDED = 3;
 
     public $societies_id;
 
@@ -78,7 +84,9 @@ class User extends ActiveRecord implements IdentityInterface {
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
             ['username', 'validateIsUrlAllowed'],
             ['role', 'default', 'value' => self::ROLE_USER],
-            ['role', 'in', 'range' => [self::ROLE_USER, self::ROLE_TABMASTER, self::ROLE_ADMIN]],
+            ['role', 'in', 'range' => [self::ROLE_PLACEHOLDER, self::ROLE_USER, self::ROLE_TABMASTER, self::ROLE_ADMIN]],
+            ['gender', 'default', 'value' => self::GENDER_NOTREVEALING],
+            ['gender', 'in', 'range' => [self::GENDER_MALE, self::GENDER_FEMALE, self::GENDER_UNDECIDED, self::GENDER_NOTREVEALING]],
             [['username', 'auth_key', 'password_hash', 'email'], 'required'],
             [['role', 'status'], 'integer'],
             [['picture'], 'string'],
@@ -339,6 +347,26 @@ class User extends ActiveRecord implements IdentityInterface {
             case self::STATUS_DELETED:
                 return Yii::t("app", "Deleted");
         }
+    }
+
+    public static function generatePlaceholder($letter) {
+        $letter = strtoupper($letter);
+        $user = new User([
+            "username" => "Speaker " . $letter,
+            "givenname" => "Speaker",
+            "surename" => $letter,
+            "email" => "speaker." . $letter . "@tabbie.com",
+            "role" => User::ROLE_PLACEHOLDER,
+            "status" => User::STATUS_ACTIVE,
+            "last_change" => date("Y-m-d H:i:s"),
+            "time" => date("Y-m-d H:i:s"),
+        ]);
+        $user->setPassword($letter . $letter . $letter);
+        $user->generateAuthKey();
+        if (!$user->save())
+            \Yii::error("Placeholder create failed: " . print_r($user->getErrors(), true));
+        else
+            return $user;
     }
 
     public function getPicture() {

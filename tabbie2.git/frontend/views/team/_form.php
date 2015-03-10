@@ -17,6 +17,10 @@ use yii\web\JsExpression;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => 255]) ?>
 
+    <?= $form->field($model, 'active')->checkbox() ?>
+
+    <?= $form->field($model, 'isSwing')->checkbox() ?>
+
     <?
     $urlUserList = Url::to(['user/list']);
 
@@ -113,10 +117,6 @@ SCRIPT;
         ],
     ]);
     ?>
-
-    <?= $form->field($model, 'active')->checkbox() ?>
-
-    <?= $form->field($model, 'isSwing')->checkbox() ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
