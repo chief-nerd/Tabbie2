@@ -6,7 +6,10 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model common\models\Result */
 /* @var $form yii\widgets\ActiveForm */
-$this->title = "Confirm Data";
+$this->title = Yii::t('app', 'Confirm Data for') . " " . $model->debate->venue->name;
+$tournament = $this->context->_getContext();
+$this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="result-confirm">
@@ -53,10 +56,16 @@ $this->title = "Confirm Data";
         </div>
     </div>
 
-    <div class="form-group">
-        <?= Html::activeHiddenInput($model, "confirmed", ["value" => "true"]); ?>
-        <?= Html::submitButton(Yii::t('app', 'Make it so!'), ['class' => 'btn btn-success']) ?>
-        <?= Html::a(Yii::t('app', 'Nope, go back'), ["create", "id" => $debate->id, "tournament_id" => $debate->tournament_id], ['class' => 'btn btn-default']) ?>
+    <?= Html::activeHiddenInput($model, "confirmed", ["value" => "true"]); ?>
+    <hr>
+
+    <div class="row">
+        <div class="col-xs-4">
+            <?= Html::a(Yii::t('app', 'Go back'), ["create", "id" => $debate->id, "tournament_id" => $debate->tournament_id], ['class' => 'btn btn-default btn-block']) ?>
+        </div>
+        <div class="col-xs-8">
+            <?= Html::submitButton(Yii::t('app', 'Make it so!'), ['class' => 'btn btn-success btn-block']) ?>
+        </div>
     </div>
 
     <?php ActiveForm::end(); ?>

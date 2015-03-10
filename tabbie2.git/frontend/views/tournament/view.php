@@ -13,14 +13,15 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="tournament-view">
 
     <div class="row">
-        <div class="col-sm-8">
-            <div class="col-sm-2">
-                <img class="img-rounded img-responsive" src="<?= $model["logo"] ?>" alt="<?= $model["fullname"] ?> Logo"></div>
-            <div class="col-sm-10">
+        <div class="col-sm-8 col-xs-12">
+            <div class="col-xs-12 col-sm-2 block-center">
+                <img class="img-rounded img-responsive" src="<?= $model["logo"] ?>" alt="<?= $model["fullname"] ?> Logo">
+            </div>
+            <div class="col-xs-12 col-sm-10">
                 <h1><?= Html::encode($this->title) ?></h1>
             </div>
         </div>
-        <div class="col-sm-4 text-right">
+        <div class="col-xs-12 col-sm-4 text-right">
 
             <?
             $debate = Yii::$app->user->hasOpenFeedback($model);
@@ -43,26 +44,30 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
     <div class="row">
-        <div class="col-md-8 leftcolumn">
-            <? foreach ($model->getRounds()->where(["displayed" => 1])->all() as $round): ?>
-                <div class="row">
-                    <div class="col-md-3">
-                        <?
-                        $linktext = "Motion Round #" . $round->number;
-                        if (Yii::$app->user->isTabMaster($model) || Yii::$app->user->isConvenor($model)):
-                            ?>
-                            <?= Html::a($linktext, ["round/view", "id" => $round->id, "tournament_id" => $model->id]); ?>
-                        <? else: ?>
-                            <?= $linktext ?>
-                        <? endif; ?>
-                    </div>
-                    <div class="col-md-9">
-                        <?= $round->motion ?>
-                    </div>
-                </div>
-            <? endforeach; ?>
+        <div class="col-xs-12 col-md-8 leftcolumn">
+            <ul class="list-group">
+                <? foreach ($model->getRounds()->where(["displayed" => 1])->all() as $round): ?>
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-3">
+                                <?
+                                $linktext = "Motion Round #" . $round->number . ":";
+                                if (Yii::$app->user->isTabMaster($model) || Yii::$app->user->isConvenor($model)):
+                                    ?>
+                                    <?= Html::a($linktext, ["round/view", "id" => $round->id, "tournament_id" => $model->id]); ?>
+                                <? else: ?>
+                                    <?= $linktext ?>
+                                <? endif; ?>
+                            </div>
+                            <div class="col-xs-12 col-md-9">
+                                <?= $round->motion ?>
+                            </div>
+                        </div>
+                    </li>
+                <? endforeach; ?>
+            </ul>
         </div>
-        <div class="col-md-4 rightcolumn">
+        <div class="col-xs-12 col-md-4 rightcolumn">
             <?=
             DetailView::widget([
                 'model' => $model,

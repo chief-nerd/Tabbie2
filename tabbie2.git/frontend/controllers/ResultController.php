@@ -103,29 +103,33 @@ class ResultController extends BaseController {
      * @return mixed
      */
     public function actionCreate($id) {
-        $model = new Result();
-        $model->debate_id = $id;
 
-        if ($model->load(Yii::$app->request->post())) {
-            if ($model->confirmed == "true") {
-                $adj = \common\models\Adjudicator::findOne(["user_id" => Yii::$app->user->id]);
-                $model->enteredBy_adjudicator_id = $adj->id;
-                if ($model->save())
-                    return $this->render('thankyou', ["model" => $model]);
-                else {
-                    print_r($model->getErrors());
+        $result = Result::find()->where(["debate_id" => $id])->one();
+        if (!$result instanceof Result) {
+            $model = new Result();
+            $model->debate_id = $id;
+
+            if ($model->load(Yii::$app->request->post())) {
+                if ($model->confirmed == "true") {
+                    $adj = \common\models\Adjudicator::findOne(["user_id" => Yii::$app->user->id]);
+                    $model->enteredBy_adjudicator_id = $adj->id;
+                    if ($model->save())
+                        return $this->render('thankyou', ["model" => $model]);
+                    else
+                        print_r($model->getErrors());
+                } else {
+                    $model->rankTeams();
+                    return $this->render('confirm', [
+                                'model' => $model,
+                    ]);
                 }
-            } else {
-                $model->rankTeams();
-                return $this->render('confirm', [
-                            'model' => $model,
-                ]);
             }
-        }
 
-        return $this->render('create', [
-                    'model' => $model,
-        ]);
+            return $this->render('create', [
+                        'model' => $model,
+            ]);
+        } else
+            return $this->render('thankyou', ["model" => $result]);
     }
 
     /**

@@ -13,18 +13,15 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="tournament-index">
 
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-xs-12">
             <h1><?= Html::encode($this->title) ?></h1>
         </div>
     </div>
-    <div class="row">
-        <?php echo $this->render('_search', ['model' => $searchModel]); ?>
-    </div>
+    <?php echo $this->render('_search', ['model' => $searchModel]); ?>
+
     <div class="tournaments">
         <? foreach ($dataProvider->getModels() as $tournament): ?>
-            <div class="row">
-                <?= $this->render('_item', compact("tournament")); ?>
-            </div>
+            <?= $this->render('_item', compact("tournament")); ?>
         <? endforeach; ?>
     </div>
 </div>

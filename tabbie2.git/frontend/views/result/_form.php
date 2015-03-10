@@ -52,8 +52,12 @@ use yii\widgets\ActiveForm;
         </div>
     </div>
 
-    <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+    <hr>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <?= Html::submitButton(Yii::t('app', 'Enter Speaks and continue'), ['class' => 'btn btn-success btn-block']) ?>
+        </div>
     </div>
 
     <?php ActiveForm::end(); ?>

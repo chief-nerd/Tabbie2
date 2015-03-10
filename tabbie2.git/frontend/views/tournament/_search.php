@@ -16,10 +16,9 @@ use yii\widgets\ActiveForm;
     ]);
     ?>
     <div class="row">
-        <div class="col-xs-5"><?= $form->field($model, 'name') ?></div>
-        <div class="col-xs-2"><?= $form->field($model, 'start_date') ?></div>
-        <div class="col-xs-2"><?= $form->field($model, 'end_date') ?></div>
-        <div class="form-group col-xs-3 text-right">
+        <div class="col-xs-6"><?= $form->field($model, 'name') ?></div>
+        <div class="col-xs-6"><?= $form->field($model, 'start_date') ?></div>
+        <div class="form-group col-xs-12 text-right btn-group">
             <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>
             <?= Html::resetButton(Yii::t('app', 'Reset'), ['class' => 'btn btn-default']) ?>
         </div>
