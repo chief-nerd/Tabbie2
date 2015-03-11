@@ -4,10 +4,12 @@ namespace frontend\controllers;
 
 use Yii;
 use common\models\TabAfterRound;
-use common\models\search\TabSearch;
+use common\models\search\TabTeamSearch;
 use frontend\controllers\BaseController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use \common\components\filter\TournamentContextFilter;
+use yii\data\ArrayDataProvider;
 
 /**
  * TabController implements the CRUD actions for DrawAfterRound model.
@@ -16,6 +18,9 @@ class TabController extends BaseController {
 
     public function behaviors() {
         return [
+            'tournamentFilter' => [
+                'class' => TournamentContextFilter::className(),
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -26,90 +31,79 @@ class TabController extends BaseController {
     }
 
     /**
-     * Lists all TabAfterRound models.
+     * Lists all Team models.
      * @return mixed
      */
-    public function actionIndex() {
-        $searchModel = new TabSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    public function actionTeam() {
 
-        return $this->render('index', [
-                    'searchModel' => $searchModel,
+        $results = \common\models\Result::find()->leftJoin("debate", "debate.id = result.debate_id")->where([
+                    "debate.tournament_id" => $this->_tournament->id,
+                ])->all();
+
+        $teams = \common\models\Team::find()->where(["tournament_id" => $this->_tournament->id])->all();
+
+        $lines = [];
+
+        foreach ($teams as $team) {
+            $lines[$team->id] = new \common\models\TabLine([
+                "team" => $team,
+                "points" => 0,
+                "speaks" => 0,
+            ]);
+        }
+
+        foreach ($results as $result) {
+            /* @var $result \common\models\Result */
+            foreach (\common\models\Debate::positions() as $p) {
+                $line = $lines[$result->debate->{$p . "_team_id"}];
+                $line->points = $line->points + (4 - $result->{$p . "_place"});
+                $line->results_array[$result->debate->round->number] = $result->{$p . "_place"};
+                $line->speaks = $line->speaks + $result->{$p . "_A_speaks"} + $result->{$p . "_B_speaks"};
+                $lines[$result->debate->{$p . "_team_id"}] = $line;
+            }
+        }
+
+        usort($lines, "frontend\controllers\TabController::rankTeamsWithSpeaks");
+
+        $i = 1;
+        $jumpover = 0;
+        foreach ($lines as $index => $line) {
+            if (isset($lines[$index - 1]))
+                if (!($lines[$index - 1]->points == $lines[$index]->points && $lines[$index - 1]->speaks == $lines[$index]->speaks)) {
+                    $i++;
+                    if ($jumpover > 0) {
+                        $i = $i + $jumpover;
+                        $jumpover = 0;
+                    }
+                } else {
+                    $jumpover++;
+                }
+            $line->enl_place = $i;
+            $lines[$index] = $line;
+        }
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $lines,
+            'sort' => [
+                'attributes' => ['enl_place'],
+            ],
+            'pagination' => [
+                'pageSize' => 99999,
+            ],
+        ]);
+
+        return $this->render('team', [
+                    'lines' => $lines,
                     'dataProvider' => $dataProvider,
         ]);
     }
 
-    /**
-     * Displays a single DrawAfterRound model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id) {
-        return $this->render('view', [
-                    'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
-     * Creates a new DrawAfterRound model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate() {
-        $model = new TabAfterRound();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                        'model' => $model,
-            ]);
-        }
-    }
-
-    /**
-     * Updates an existing DrawAfterRound model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionUpdate($id) {
-        $model = $this->findModel($id);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('update', [
-                        'model' => $model,
-            ]);
-        }
-    }
-
-    /**
-     * Deletes an existing DrawAfterRound model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionDelete($id) {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
-    }
-
-    /**
-     * Finds the DrawAfterRound model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return TabAfterRound the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id) {
-        if (($model = TabAfterRound::findOne($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
+    public function rankTeamsWithSpeaks($a, $b) {
+        $ap = $a["points"];
+        $as = $a["speaks"];
+        $bp = $b["points"];
+        $bs = $b["speaks"];
+        return ($ap < $bp) ? 1 : (($ap > $bp) ? -1 : (($as < $bs) ? 1 : (($as > $bs) ? -1 : 0)));
     }
 
 }

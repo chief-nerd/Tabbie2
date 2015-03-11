@@ -22,7 +22,7 @@ use Yii;
  * @property integer $co_B_speaks
  * @property integer $co_place
  * @property string $time
- * @property integer $enteredBy_adjudicator_id
+ * @property integer $entered_by_id
  *
  * @property Debate $debate
  * @property Adjudicator $enteredByAdjudicator
@@ -43,8 +43,8 @@ class Result extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['debate_id', 'og_A_speaks', 'og_B_speaks', 'og_place', 'oo_A_speaks', 'oo_B_speaks', 'oo_place', 'cg_A_speaks', 'cg_B_speaks', 'cg_place', 'co_A_speaks', 'co_B_speaks', 'co_place', 'enteredBy_adjudicator_id'], 'required'],
-            [['debate_id', 'og_place', 'oo_place', 'cg_place', 'co_place', 'enteredBy_adjudicator_id'], 'integer'],
+            [['debate_id', 'og_A_speaks', 'og_B_speaks', 'og_place', 'oo_A_speaks', 'oo_B_speaks', 'oo_place', 'cg_A_speaks', 'cg_B_speaks', 'cg_place', 'co_A_speaks', 'co_B_speaks', 'co_place', 'entered_by_id'], 'required'],
+            [['debate_id', 'og_place', 'oo_place', 'cg_place', 'co_place', 'entered_by_id'], 'integer'],
             [['og_A_speaks', 'og_B_speaks', 'oo_A_speaks', 'oo_B_speaks', 'cg_A_speaks', 'cg_B_speaks', 'co_A_speaks', 'co_B_speaks'],
                 "integer", "max" => Yii::$app->params["speaks_max"], "min" => Yii::$app->params["speaks_min"]],
             ['debate_id', 'unique'],
@@ -72,7 +72,7 @@ class Result extends \yii\db\ActiveRecord {
             'co_B_speaks' => Yii::t('app', 'CO B Speaks'),
             'co_place' => Yii::t('app', 'CO Place'),
             'time' => Yii::t('app', 'Time'),
-            'enteredBy_adjudicator_id' => Yii::t('app', 'Entered By Adjudicator ID'),
+            'entered_by_id' => Yii::t('app', 'Entered by User ID'),
         ];
     }
 
@@ -117,8 +117,8 @@ class Result extends \yii\db\ActiveRecord {
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getEnteredByAdjudicator() {
-        return $this->hasOne(Adjudicator::className(), ['id' => 'enteredBy_adjudicator_id']);
+    public function getEnteredByUser() {
+        return $this->hasOne(User::className(), ['id' => 'entered_by_id']);
     }
 
 }

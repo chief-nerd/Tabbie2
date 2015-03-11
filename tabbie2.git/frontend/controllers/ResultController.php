@@ -111,12 +111,14 @@ class ResultController extends BaseController {
 
             if ($model->load(Yii::$app->request->post())) {
                 if ($model->confirmed == "true") {
-                    $adj = \common\models\Adjudicator::findOne(["user_id" => Yii::$app->user->id]);
-                    $model->enteredBy_adjudicator_id = $adj->id;
+
+                    $model->entered_by_id = Yii::$app->user->id;
                     if ($model->save())
                         return $this->render('thankyou', ["model" => $model]);
-                    else
-                        print_r($model->getErrors());
+                    else {
+                        Yii::error("Save Results: " . print_r($model->getErrors(), true), __METHOD__);
+                        Yii::$app->session->addFlash("error", "Error saving Results.<br>Please request a paper ballot!");
+                    }
                 } else {
                     $model->rankTeams();
                     return $this->render('confirm', [

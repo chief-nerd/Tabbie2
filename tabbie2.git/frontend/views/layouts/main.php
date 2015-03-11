@@ -6,6 +6,7 @@ use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use frontend\assets\AppAsset;
 use frontend\widgets\Alert;
+use common\models\Tournament;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
@@ -13,23 +14,30 @@ use frontend\widgets\Alert;
 AppAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
+<?
+if ($this->context->hasMethod("_getContext")) {
+    $tournament = $this->context->_getContext();
+    if ($tournament instanceof Tournament && (Yii::$app->user->isTabMaster($tournament) || Yii::$app->user->isAdmin())) {
+        $addclass = "movedown";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
     <head>
         <meta charset="<?= Yii::$app->charset ?>"/>
         <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <?
+        if ($tournament instanceof Tournament) {
+            echo '<link rel = "apple-touch-icon" href = "' . $tournament->icon . '"/>';
+        }
+        ?>
+
         <?= Html::csrfMetaTags() ?>
         <title><?= Html::encode($this->title) ?> :: <?= Html::encode(Yii::$app->params["appName"]) ?></title>
         <?php $this->head() ?>
     </head>
-    <?
-    if ($this->context->hasMethod("_getContext")) {
-        $tournament = $this->context->_getContext();
-        if ($tournament instanceof \common\models\Tournament && (Yii::$app->user->isTabMaster($tournament) || Yii::$app->user->isAdmin())) {
-            $addclass = "movedown";
-        }
-    }
-    ?>
     <body class="<?= isset($addclass) ? $addclass : "" ?>">
         <?php $this->beginBody() ?>
         <div class="flashes">

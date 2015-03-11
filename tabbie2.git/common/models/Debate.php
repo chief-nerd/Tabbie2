@@ -38,6 +38,10 @@ class Debate extends \yii\db\ActiveRecord {
         return 'debate';
     }
 
+    public static function positions() {
+        return ["og", "oo", "cg", "co"];
+    }
+
     /**
      * @inheritdoc
      */

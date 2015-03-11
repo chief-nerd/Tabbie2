@@ -129,8 +129,9 @@ $this->params['breadcrumbs'][] = "Table View";
                 'urlCreator' => function($action, $model, $key, $index) {
                     if ($model->result instanceof Result)
                         return \yii\helpers\Url::to(["result/" . $action, "id" => $model->result->id, "tournament_id" => $model->tournament_id]);
-                    else
-                        return \yii\helpers\Url::to(["result/" . $action, "id" => $model->id, "tournament_id" => $model->tournament_id]);
+                    else {
+                        return \yii\helpers\Url::to(["result/create", "id" => $model->id, "tournament_id" => $model->tournament_id]);
+                    }
                     ;
                 },
                         'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", "View Result Details"), 'data-toggle' => 'tooltip'],
