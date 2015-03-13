@@ -19,6 +19,12 @@ use yii\helpers\ArrayHelper;
  * @property string $logo
  * @property string $time
  * @property string $tabAlgorithmClass
+ * @property integer $expected_rounds
+ * @property integer $has_esl
+ * @property integer $has_final
+ * @property integer $has_semifinal
+ * @property integer $has_quarterfinal
+ * @property integer $has_octofinal
  *
  * @property Adjudicator[] $adjudicators
  * @property Panel[] $panels
@@ -45,8 +51,8 @@ class Tournament extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['url_slug', 'convenor_user_id', 'tabmaster_user_id', 'name', 'start_date', 'end_date'], 'required'],
-            [['convenor_user_id', 'tabmaster_user_id', 'hosted_by_id'], 'integer'],
-            [['start_date', 'end_date', 'time'], 'safe'],
+	        [['convenor_user_id', 'tabmaster_user_id', 'hosted_by_id', 'expected_rounds'], 'integer'],
+	        [['start_date', 'end_date', 'time', 'has_esl', 'has_final', 'has_semifinal', 'has_octofinal', 'has_quarterfinal'], 'safe'],
             [['url_slug', 'name', 'tabAlgorithmClass'], 'string', 'max' => 100],
             [['logo'], 'string', 'max' => 255],
             [['url_slug'], 'unique']
@@ -69,6 +75,12 @@ class Tournament extends \yii\db\ActiveRecord {
             'time' => Yii::t('app', 'Time'),
             'url_slug' => Yii::t('app', 'URL Slug'),
             'tabAlgorithmClass' => Yii::t('app', 'Tab Algorithm'),
+	        'expected_rounds' => Yii::t("app", "Expected number of rounds"),
+	        'has_esl' => Yii::t("app", "Show ESL Ranking"),
+	        'has_final' => Yii::t("app", 'Is there a grand final'),
+	        'has_semifinal' => Yii::t("app", 'Is there a semifinal'),
+	        'has_quarterfinal' => Yii::t("app", 'Is there a quarterfinal'),
+	        'has_octofinal' => Yii::t("app", 'Is there a octofinal'),
         ];
     }
 

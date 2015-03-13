@@ -41,7 +41,17 @@ use kartik\widgets\DateTimePicker;
     ]);
     ?>
 
+	<?= $form->field($model, 'expected_rounds')
+	         ->dropDownList([1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9]) ?>
+
     <?= $form->field($model, 'tabAlgorithmClass')->dropDownList($model->getTabAlgorithmOptions()) ?>
+
+	<?= $form->field($model, 'has_esl')->checkbox() ?>
+	<?= $form->field($model, 'has_final')->checkbox() ?>
+	<?= $form->field($model, 'has_semifinal')->checkbox() ?>
+	<?= $form->field($model, 'has_quarterfinal')->checkbox() ?>
+	<?= $form->field($model, 'has_octofinal')->checkbox() ?>
+
 
     <div class="row">
         <div class="col-sm-2">
