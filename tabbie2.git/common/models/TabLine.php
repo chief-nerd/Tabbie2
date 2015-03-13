@@ -10,7 +10,7 @@ use yii\base\Model;
  */
 class TabLine extends Model {
 
-    public $team;
+	public $object;
     public $points;
     public $speaks;
     public $enl_place;

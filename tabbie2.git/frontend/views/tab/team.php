@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         [
             'class' => '\kartik\grid\DataColumn',
-            'attribute' => 'team.name',
+	        'attribute' => 'object.name',
             'label' => 'Team',
         ],
         [
