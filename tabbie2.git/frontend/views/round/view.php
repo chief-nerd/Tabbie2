@@ -107,12 +107,18 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
                     'format' => 'raw',
                     'width' => '40%',
                     'value' => function ($model, $key, $index, $widget) {
+	                    /** @var Debate $model */
                         $list = array();
                         $panel = common\models\Panel::findOne($model->panel_id);
                         if ($panel) {
                             foreach ($panel->adjudicators as $adj) {
 
                                 $popcontent = "Loading...";
+
+	                            $class = common\models\Adjudicator::starLabels($adj->strength);
+	                            if (isset($adj->society->country->region_id))
+		                            $class .= " " . \common\models\Country::getCSSLabel($adj->society->country->region_id);
+
                                 $popup_obj = PopoverX::widget([
                                             'header' => $adj->name,
                                             'size' => 'md',
@@ -123,7 +129,7 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
                                             Html::a('View more', ["adjudicator/view", "id" => $adj->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-sm btn-default']),
                                             'toggleButton' => [
                                                 'label' => $adj->user->name,
-                                                'class' => 'btn btn-sm adj ' . common\models\Adjudicator::starLabels($adj->strength),
+	                                            'class' => 'btn btn-sm adj ' . $class,
                                                 "data-id" => $adj->id,
                                                 "data-strength" => $adj->strength,
                                                 "data-href" => yii\helpers\Url::to(["adjudicator/popup", "id" => $adj->id, "round_id" => $model->round_id, "tournament_id" => $model->tournament_id]),

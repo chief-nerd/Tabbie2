@@ -1,0 +1,121 @@
+/**
+ * Regions
+ */
+
+/* Europe */
+.region .NOEU {
+    background-color: #28334C;
+}
+
+.region .WEEU {
+    background-color: #4B6FC8;
+}
+
+.region .SOEU {
+    background-color: #47689B;
+}
+
+.region .EAEU {
+    background-color: #616B7F;
+}
+
+/* Asia */
+.region .CEAS {
+    background-color: #DE9079;
+}
+
+.region .EAAS {
+    background-color: #C0334F;
+}
+
+.region .WEAS {
+    background-color: #DA4A2F;
+}
+
+.region .SOAS {
+    background-color: #AB5C4F;
+}
+
+.region .SEAS {
+    background-color: #EC4F66;
+}
+
+/* Oceanien */
+.region .AUZE {
+    background-color: #CE50E1;
+}
+
+.region .MICR {
+    background-color: #8B5EA4;
+}
+
+.region .MELA {
+    background-color: #8E64DA;
+}
+
+.region .POLY {
+    background-color: #C884DC;
+}
+
+/* Africa */
+.region .NOAF {
+    background-color: #638853;
+}
+
+.region .WEAF {
+    background-color: #75DE3B;
+}
+
+.region .CEAF {
+    background-color: #99D995;
+}
+
+.region .EAAF {
+    background-color: #5C9D34;
+}
+
+.region .SOAF {
+    background-color: #88E070;
+}
+
+/* Americas */
+.region .NOAM {
+    background-color: #D6CA73;
+}
+
+.region .CEAM {
+    background-color: #D3D239;
+}
+
+.region .CARI {
+    background-color: #878033;
+}
+
+/* South America */
+.region .SOAM {
+    background-color: #42DDBB;
+}
+
+/* Antarktica */
+.region .ANTA {
+    background-color: #ffffff;
+}
+
+/**
+ * Gender
+ */
+.gender .MALE {
+    background-color: #7E9A99;
+}
+
+.gender .FEMA {
+    background-color: #9F5EAB;
+}
+
+.gender .UNDE {
+    background-color: #95BD56;
+}
+
+.gender .NORE {
+    background-color: #A35540;
+}
