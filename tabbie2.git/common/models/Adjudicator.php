@@ -166,10 +166,17 @@ class Adjudicator extends \yii\db\ActiveRecord {
         return ($id !== null) ? $table[$id] : $table;
     }
 
+	public static function getCSSStrength($id = null) {
+		return "st" . $id;
+	}
+
     /**
      * Sort comparison function based on strength
-     * @param Adjudicator $a
+     *
+*@param Adjudicator $a
      * @param Adjudicator $b
+     *
+     * @return boolean
      */
     public static function compare_strength($a, $b) {
         $as = $a->strength;

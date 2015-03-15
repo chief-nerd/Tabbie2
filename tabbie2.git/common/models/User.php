@@ -51,7 +51,7 @@
 		const GENDER_NOTREVEALING = 0;
 		const GENDER_MALE         = 1;
 		const GENDER_FEMALE       = 2;
-		const GENDER_UNDECIDED    = 3;
+		const GENDER_TRANSGENDER = 3;
 
 		const LANGUAGE_NONE = 0;
 		const LANGUAGE_ENL  = 1;
@@ -96,7 +96,7 @@
 				['role', 'default', 'value' => self::ROLE_USER],
 				['role', 'in', 'range' => [self::ROLE_PLACEHOLDER, self::ROLE_USER, self::ROLE_TABMASTER, self::ROLE_ADMIN]],
 				['gender', 'default', 'value' => self::GENDER_NOTREVEALING],
-				['gender', 'in', 'range' => [self::GENDER_MALE, self::GENDER_FEMALE, self::GENDER_UNDECIDED, self::GENDER_NOTREVEALING]],
+				['gender', 'in', 'range' => [self::GENDER_MALE, self::GENDER_FEMALE, self::GENDER_TRANSGENDER, self::GENDER_NOTREVEALING]],
 				[['username', 'auth_key', 'password_hash', 'email'], 'required'],
 				[['role', 'status', 'language_status', 'language_status_by_id'], 'integer'],
 				['language_status', 'default', 'value' => self::LANGUAGE_NONE],
@@ -421,6 +421,25 @@
 			];
 
 			return (isset($status[$id])) ? $status[$id] : $status;
+		}
+
+		public function getGenderIcon() {
+			switch ($this->gender) {
+				case static::GENDER_MALE:
+					$class = "fa fa-mars";
+					break;
+				case static::GENDER_FEMALE:
+					$class = "fa fa-venus";
+					break;
+				case static::GENDER_TRANSGENDER:
+					$class = "fa fa-transgender";
+					break;
+				case static::GENDER_NOTREVEALING:
+					$class = "";
+					break;
+			}
+
+			return "<i class='" . $class . "'></i>";
 		}
 
 		public function getPicture() {

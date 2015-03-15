@@ -2,6 +2,7 @@
 
 use common\models\Adjudicator;
 use common\models\Panel;
+	use common\models\Country;
 
 /* @var $model Adjudicator */
 /* @var $round_id Integer */
@@ -17,8 +18,12 @@ $this->context->layout = null;
     </colgroup>
     <tr>
         <th><?= Yii::t("app", "Strength") ?></th>
-        <td><?= Adjudicator::translateStrength($model->strength) ?> (<?= $model->strength ?>)</td>
+	    <td><?= $model->strength ?> (<?= Adjudicator::translateStrength($model->strength) ?>)</td>
     </tr>
+	<tr>
+		<th><?= Yii::t("app", "Region") ?></th>
+		<td><?= Country::getRegionLabel($model->society->country->region_id) ?></td>
+	</tr>
     <tr>
         <th><?= Yii::t("app", "Chaired") ?></th>
         <?

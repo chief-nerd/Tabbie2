@@ -102,6 +102,53 @@
 }
 
 /**
+ * Strength
+ */
+.strength .adj {
+    color: #444;
+}
+
+.strength .st0 {
+    background-color: #FF0000;
+}
+
+.strength .st1 {
+    background-color: #FF3400;
+}
+
+.strength .st2 {
+    background-color: #FF6900;
+}
+
+.strength .st3 {
+    background-color: #FF9E00;
+}
+
+.strength .st4 {
+    background-color: #FF9E00;
+}
+
+.strength .st5 {
+    background-color: #F7FF00;
+}
+
+.strength .st6 {
+    background-color: #C2FF00;
+}
+
+.strength .st7 {
+    background-color: #8DFF00;
+}
+
+.strength .st8 {
+    background-color: #58FF00;
+}
+
+.strength .st9 {
+    background-color: #24FF00;
+}
+
+/**
  * Gender
  */
 .gender .MALE {

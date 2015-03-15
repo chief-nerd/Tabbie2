@@ -34,7 +34,7 @@ class AdjudicatorController extends BaseController {
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['create', 'update', 'delete', 'replace', 'move', 'import', 'active'],
+	                    'actions' => ['create', 'update', 'delete', 'replace', 'move', 'import', 'active', 'popup', 'watch'],
                         'matchCallback' => function ($rule, $action) {
                     return (Yii::$app->user->isTabMaster($this->_tournament));
                 }

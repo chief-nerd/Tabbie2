@@ -1,0 +1,95 @@
+/*
+ * ROUND VIEW
+*/
+.landingZone {
+    height: 20px;
+    border: 1px red dotted;
+}
+
+/
+/
+CHAIR Bold
+ul li:first-child .adj {
+    font-weight: bold;
+}
+
+.sortable {
+    margin: 0;
+    border: none;
+}
+
+.sortable.connected {
+    min-height: 40px;
+    margin-bottom: 0px;
+}
+
+.sortable li {
+    border: none;
+    min-height: 25px;
+}
+
+.sortable li:first-child .label {
+    box-shadow: 0px 0px 5px black;
+    text-decoration: underline;
+}
+
+.sortable.grid li {
+    padding: 5px 5px;
+    min-height: 30px;
+}
+
+.sortable li .label {
+    font-size: 95%;
+}
+
+#drawdisplay #motionContent h1 {
+    margin-top: 80px;
+}
+
+#drawdisplay {
+    height: 100%;
+    position: absolute;
+}
+
+#debateDraw-container tbody {
+    font-size: 80%;
+}
+
+#debateDraw-container tbody tr td:nth-child(6) {
+    padding: 0;
+}
+
+#debateDraw-container thead tr {
+    height: 50px;
+}
+
+#debateDraw-container thead th {
+    vertical-align: top;
+}
+
+#debateDraw-filters {
+    display: none;
+}
+
+#debateDraw-container tbody tr td:nth-child(1) .btn-sm {
+    padding: 2px 10px;
+}
+
+#filterForm label {
+    display: none;
+}
+
+#teams-container ul {
+    margin: 0;
+    list-style: none;
+    padding: 0;
+}
+
+#teams-container li {
+    float: left;
+    width: 50%;
+}
+
+.team-index h1 {
+    margin-top: 0px;
+}
