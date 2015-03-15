@@ -42,7 +42,8 @@ CREATE TABLE `country` (
 LOCK TABLES `country` WRITE;
 /*!40000 ALTER TABLE `country` DISABLE KEYS */;
 INSERT INTO `country`
-VALUES (1, 'Afghanistan', 'af', 'afg', 24), (2, 'Aland Islands', 'ax', 'ala', 11), (3, 'Albania', 'al', 'alb', 13),
+VALUES (0, 'Unknown', '', '', 0), (1, 'Afghanistan', 'af', 'afg', 24), (2, 'Aland Islands', 'ax', 'ala', 11),
+  (3, 'Albania', 'al', 'alb', 13),
   (4, 'Algeria', 'dz', 'dza', 41), (5, 'American Samoa', 'as', 'asm', 34), (6, 'Andorra', 'ad', 'and', 13),
   (7, 'Angola', 'ao', 'ago', 43), (8, 'Anguilla', 'ai', 'aia', 53), (9, 'Antarctica', 'aq', NULL, 71),
   (10, 'Antigua and Barbuda', 'ag', 'atg', 53), (11, 'Argentina', 'ar', 'arg', 61), (12, 'Armenia', 'am', 'arm', 23),
