@@ -276,11 +276,13 @@ class AdjudicatorController extends BaseController {
                 for ($r = 1; $r <= count($model->tempImport); $r++) {
                     $row = $model->tempImport[$r];
 
+	                $societyID = null;
 //Society
                     if (count($row[0]) == 1) { //NEW
                         $society = new \common\models\Society();
                         $society->fullname = $row[0][0];
                         $society->abr = \common\models\Society::generateAbr($society->fullname);
+	                    $society->country_id = 0;
                         $society->save();
                         $societyID = $society->id;
                     } else if (count($row[0]) == 2) {

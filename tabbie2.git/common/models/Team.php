@@ -69,8 +69,13 @@ class Team extends \yii\db\ActiveRecord {
 		if (parent::beforeSave($insert)) {
 			if ($insert === true) //Do only on new Record
 			{
-				if ($this->speakerA->isESL && $this->speakerB->isESL)
-					$this->isESL = true;
+				if ($this->speakerA->language_status == User::LANGUAGE_ENL && $this->speakerB->language_status == User::LANGUAGE_ENL)
+					$this->language_status = User::LANGUAGE_ENL;
+				else if ($this->speakerA->language_status == User::LANGUAGE_ESL && $this->speakerB->language_status == User::LANGUAGE_ESL)
+					$this->language_status = User::LANGUAGE_ESL;
+				else if ($this->speakerA->language_status == User::LANGUAGE_EFL && $this->speakerB->language_status == User::LANGUAGE_EFL)
+					$this->language_status = User::LANGUAGE_EFL;
+				else $this->language_status = User::LANGUAGE_NONE;
 			}
 			return true;
 		}

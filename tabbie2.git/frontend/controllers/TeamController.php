@@ -210,11 +210,14 @@ class TeamController extends BaseController {
                 for ($r = 1; $r <= count($model->tempImport); $r++) {
                     $row = $model->tempImport[$r];
 
+	                $societyID = null;
+
                     //Society
                     if (count($row[1]) == 1) { //NEW
                         $society = new \common\models\Society();
                         $society->fullname = $row[1][0];
                         $society->abr = \common\models\Society::generateAbr($society->fullname);
+	                    $society->country_id = 0;
                         $society->save();
                         $societyID = $society->id;
                     } else if (count($row[1]) == 2) {
@@ -240,6 +243,8 @@ class TeamController extends BaseController {
                                 Yii::error("Import Errors inSocietyA: " . print_r($inSociety->getErrors(), true), __METHOD__);
                                 Yii::$app->session->addFlash("error", "Error saving InSociety Relation for " . $userA->username);
                             }
+                            else
+	                            Yii::trace("In Society A created" . print_r($inSociety->getErrors(), true));
                         } else {
                             Yii::error("Import Errors userA: " . print_r($userA->getErrors(), true), __METHOD__);
                             Yii::$app->session->addFlash("error", "Error Saving User " . $userA->username);
@@ -268,6 +273,9 @@ class TeamController extends BaseController {
                                 Yii::error("Import Errors inSocietyB: " . print_r($inSociety->getErrors(), true), __METHOD__);
                                 Yii::$app->session->addFlash("error", "Error saving InSociety Relation for " . $userB->username);
                             }
+                            else
+	                            Yii::trace("In Society A created" . print_r($inSociety->getErrors(), true));
+
                         } else {
                             Yii::error("Import Errors userB: " . print_r($userB->getErrors(), true), __METHOD__);
                             Yii::$app->session->addFlash("error", "Error Saving User " . $userB->username);
@@ -283,8 +291,10 @@ class TeamController extends BaseController {
                     $team->speakerA_id = $userAID;
                     $team->speakerB_id = $userBID;
                     $team->society_id = $societyID;
-                    if (!$team->save())
-                        Yii::$app->session->addFlash("error", "Save error: " . print_r($team->getErrors(), true));
+	                if (!$team->save()) {
+		                Yii::$app->session->addFlash("error", Yii::t("app", "Error saving team {name}!", ["{name}" => $team->name]));
+		                Yii::error("Import Errors userB: " . print_r($team->getErrors(), true) . "Attributes:" . print_r($team->attributes, true), __METHOD__);
+	                }
                 }
                 set_time_limit(30);
                 return $this->redirect(['index', "tournament_id" => $this->_tournament->id]);
