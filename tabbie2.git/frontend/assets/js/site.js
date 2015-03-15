@@ -17,6 +17,5 @@ function triggerFlash() {
 }
 
 $(document).ready(function () {
-    console.log("trigger");
     triggerFlash();
 });

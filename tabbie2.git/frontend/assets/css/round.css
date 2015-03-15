@@ -6,9 +6,7 @@
     border: 1px red dotted;
 }
 
-/
-/
-CHAIR Bold
+/* CHAIR Bold */
 ul li:first-child .adj {
     font-weight: bold;
 }

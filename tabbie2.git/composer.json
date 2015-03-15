@@ -23,7 +23,8 @@
         "kartik-v/yii2-grid": "*",
         "kartik-v/yii2-mpdf": "*",
         "kartik-v/yii2-sortable": "*",
-        "kartik-v/yii2-popover-x": "*"
+      "kartik-v/yii2-popover-x": "*",
+      "kartik-v/yii2-checkbox-x": "*"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "*",

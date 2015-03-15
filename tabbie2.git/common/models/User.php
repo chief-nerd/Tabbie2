@@ -442,6 +442,16 @@
 			return "<i class='" . $class . "'></i>";
 		}
 
+		public static function getCSSGender($id) {
+			$genders = [
+				static::GENDER_MALE => "MALE",
+				static::GENDER_FEMALE => "FEMA",
+				static::GENDER_TRANSGENDER => "TRAN",
+				static::GENDER_NOTREVEALING => "NORE",
+			];
+			return $genders[$id];
+		}
+
 		public function getPicture() {
 			if (file_exists(($this->picture)))
 				return $this->picture;

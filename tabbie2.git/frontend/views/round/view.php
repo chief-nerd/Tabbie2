@@ -3,8 +3,10 @@
 	use kartik\grid\GridView;
 	use kartik\popover\PopoverX;
 	use kartik\sortable\Sortable;
+	use kartik\widgets\SwitchInput;
 	use yii\helpers\Html;
 	use yii\widgets\DetailView;
+
 
 	/* @var $this yii\web\View */
 	/* @var $model common\models\Round */
@@ -22,47 +24,71 @@
 	<h1><?= Html::encode($this->title) ?></h1>
 
 	<div class="row">
-		<div class="col-md-6">
-
-		</div>
-		<div class="col-md-6">
+		<div class="col-md-12">
+			<? if (!$model->published): ?>
+				<?= Html::a(Yii::t('app', 'Publish Tab'), ['publish', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success']) ?>
+				<?= Html::a(Yii::t('app', 'Update Round Info'), ['update', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-primary']) ?>
+				<?=
+				Html::a(Yii::t('app', 'ReDraw Round'), ['redraw', 'id' => $model->id, "tournament_id" => $tournament->id], [
+					'class' => 'btn btn-default',
+					'data' => [
+						'confirm' => Yii::t('app', 'Are you sure you want to re-draw the round? All information will be lost!'),
+						'method' => 'post',
+					],
+				])
+				?>
+			<? endif; ?>
+			<?= Html::a(Yii::t('app', 'Print Ballots'), ['printballots', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-default']) ?>
 
 		</div>
 	</div>
-	<p>
-		<? if (!$model->published): ?>
-			<?= Html::a(Yii::t('app', 'Publish Tab'), ['publish', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success']) ?>
-			<?= Html::a(Yii::t('app', 'Update Round Info'), ['update', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-primary']) ?>
-			<?=
-			Html::a(Yii::t('app', 'ReDraw Round'), ['redraw', 'id' => $model->id, "tournament_id" => $tournament->id], [
-				'class' => 'btn btn-default',
-				'data' => [
-					'confirm' => Yii::t('app', 'Are you sure you want to re-draw the round? All information will be lost!'),
-					'method' => 'post',
-				],
-			])
-			?>
-		<? endif; ?>
-		<?= Html::a(Yii::t('app', 'Print Ballots'), ['printballots', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-default']) ?>
-	</p>
-	<?
-		$attributes = [];
-		$attributes[] = [
-			"label" => 'Round Status',
-			'value' => common\models\Round::statusLabel($model->status),
-		];
-		$attributes[] = 'motion:ntext';
-		if ($model->infoslide)
-			$attributes[] = 'infoslide:ntext';
-		if ($model->displayed)
-			$attributes[] = 'prep_started';
-		$attributes[] = 'time:text:Creation Time';
+	<div class="row">
+		<div class="col-md-8 text-middle">
+			<?
+				$attributes = [];
+				$attributes[] = [
+					"label" => 'Round Status',
+					'value' => common\models\Round::statusLabel($model->status),
+				];
+				$attributes[] = 'motion:ntext';
+				if ($model->infoslide)
+					$attributes[] = 'infoslide:ntext';
+				if ($model->displayed)
+					$attributes[] = 'prep_started';
+				$attributes[] = 'time:text:Creation Time';
 
-		echo DetailView::widget([
-			'model' => $model,
-			'attributes' => $attributes,
-		])
-	?>
+				echo DetailView::widget([
+					'model' => $model,
+					'attributes' => $attributes,
+				])
+			?>
+		</div>
+		<div class="col-md-4 text-center">
+			<h3 style="margin-top:0; margin-bottom:20px;">Color Palette</h3>
+
+			<?= SwitchInput::widget([
+				'name' => 'colorpattern',
+				'type' => SwitchInput::RADIO,
+				'value' => "strength",
+				'items' => [
+					['label' => Yii::t("app", "Strength"), 'value' => "strength"],
+					['label' => Yii::t("app", "Gender"), 'value' => "gender"],
+					['label' => Yii::t("app", "Regions"), 'value' => "region"],
+				],
+				'pluginOptions' => ['size' => 'medium'],
+				'labelOptions' => ["style" => "width: 80px"],
+				'separator' => "<br/>",
+				'pluginEvents' => [
+					"switchChange.bootstrapSwitch" => "function() { $('#debateDraw')[0].className = this.value; }",
+				],
+			]);
+				/**
+				 * @TODO: Save setting while filtering and reload
+				 */
+			?>
+		</div>
+	</div>
+
 	<a name="draw"></a>
 	<?= $this->render("_filter", ["model" => $model, "debateSearchModel" => $debateSearchModel]) ?>
 	<?
@@ -119,7 +145,8 @@
 							$class .= " " . common\models\Adjudicator::getCSSStrength($adj->strength);
 							if (isset($adj->society->country->region_id))
 								$class .= " " . \common\models\Country::getCSSLabel($adj->society->country->region_id);
-
+							if (isset($adj->user->gender))
+								$class .= " " . \common\models\User::getCSSGender($adj->user->gender);
 
 							$popup_obj = PopoverX::widget([
 								'header' => $adj->name . " " . $adj->user->getGenderIcon(),
