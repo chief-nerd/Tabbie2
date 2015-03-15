@@ -46,6 +46,8 @@ class Country extends \yii\db\ActiveRecord
 
 	const REGION_SOUTH_AMERICA = 61;
 
+	const REGION_ANTARCTIC = 71;
+
     /**
      * @inheritdoc
      */
@@ -115,6 +117,7 @@ class Country extends \yii\db\ActiveRecord
 			self::REGION_CENTRAL_AMERICA => Yii::t("country", "Central Africa"),
 			self::REGION_CARIBBEAN => Yii::t("country", "Caribbean"),
 			self::REGION_SOUTH_AMERICA => Yii::t("country", "South America"),
+			self::REGION_SOUTH_AMERICA => Yii::t("country", "Antarctic"),
 		];
 
 		return (isset($regions[$region_id])) ? $regions[$region_id] : $regions;
