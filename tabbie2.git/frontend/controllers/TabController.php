@@ -2,6 +2,7 @@
 
 	namespace frontend\controllers;
 
+	use common\models\User;
 	use Yii;
 	use common\models\TabAfterRound;
 	use common\models\search\TabTeamSearch;
@@ -81,6 +82,31 @@
 					}
 				$line->enl_place = $i;
 				$lines[$index] = $line;
+			}
+
+			if ($this->_tournament->has_esl) {
+				$i = 0;
+				$jumpover = 0;
+				foreach ($lines as $index => $line) {
+					if ($line->object->language_status >= User::LANGUAGE_ESL) {
+						if (isset($lines[$index - 1])) {
+							if (!($lines[$index - 1]->points == $lines[$index]->points && $lines[$index - 1]->speaks == $lines[$index]->speaks)) {
+								$i++;
+								if ($jumpover > 0) {
+									$i = $i + $jumpover;
+									$jumpover = 0;
+								}
+							}
+							else {
+								$jumpover++;
+							}
+						}
+						else $i++;
+
+						$line->esl_place = $i;
+						$lines[$index] = $line;
+					}
+				}
 			}
 
 			$dataProvider = new ArrayDataProvider([
@@ -163,6 +189,33 @@
 					}
 				$line->enl_place = $i;
 				$lines[$index] = $line;
+			}
+
+			if ($this->_tournament->has_esl) {
+				$i = 0;
+				$jumpover = 0;
+				foreach ($lines as $index => $line) {
+					if ($line->object->language_status >= User::LANGUAGE_ESL) {
+						if ($line->object->id) {
+							if (isset($lines[$index - 1])) {
+								if (!($lines[$index - 1]->points == $lines[$index]->points && $lines[$index - 1]->speaks == $lines[$index]->speaks)) {
+									$i++;
+									if ($jumpover > 0) {
+										$i = $i + $jumpover;
+										$jumpover = 0;
+									}
+								}
+								else {
+									$jumpover++;
+								}
+							}
+							else $i++;
+
+							$line->esl_place = $i;
+							$lines[$index] = $line;
+						}
+					}
+				}
 			}
 
 			$dataProvider = new ArrayDataProvider([

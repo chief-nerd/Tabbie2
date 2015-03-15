@@ -15,6 +15,7 @@ use Yii;
  * @property integer $speakerB_id
  * @property integer $society_id
  * @property integer $isSwing
+ * @property integer $language_status
  *
  * @property TabPosition[] $tabPositions
  * @property InSociety $inSocieties
@@ -52,10 +53,30 @@ class Team extends \yii\db\ActiveRecord {
         return $('#team-isswing')[0].checked == false;
     }"],
             [['speakerA_id', 'speakerB_id'], 'default'],
-            [['tournament_id', 'active', 'society_id', 'isSwing'], 'integer'],
+	        [['tournament_id', 'active', 'society_id', 'isSwing', 'language_status'], 'integer'],
             [['name'], 'string', 'max' => 255]
         ];
     }
+
+	/**
+	 * Call before model save
+	 *
+	 * @param type $insert
+	 *
+	 * @return boolean
+	 */
+	public function beforeSave($insert) {
+		if (parent::beforeSave($insert)) {
+			if ($insert === true) //Do only on new Record
+			{
+				if ($this->speakerA->isESL && $this->speakerB->isESL)
+					$this->isESL = true;
+			}
+			return true;
+		}
+
+		return false;
+	}
 
     /**
      * @inheritdoc
@@ -80,6 +101,7 @@ class Team extends \yii\db\ActiveRecord {
             'societyName' => Yii::t('app', 'Society Name'),
             'society_id' => Yii::t('app', 'Society'),
             'isSwing' => Yii::t('app', 'Swing Team'),
+	        'language_status' => Yii::t('app', 'Language Status'),
         ];
     }
 

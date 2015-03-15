@@ -30,13 +30,13 @@ class VenueController extends BaseController {
                     return (Yii::$app->user->isTabMaster($this->_tournament) || Yii::$app->user->isConvenor($this->_tournament));
                 }
                     ],
-                    [
-                        'allow' => true,
-                        'actions' => ['create', 'update', 'delete', 'active', 'import'],
-                        'matchCallback' => function ($rule, $action) {
-                    return (Yii::$app->user->isTabMaster($this->_tournament));
-                }
-                    ],
+	                [
+		                'allow' => true,
+		                'actions' => ['create', 'update', 'delete', 'active', 'import'],
+		                'matchCallback' => function ($rule, $action) {
+			                return (Yii::$app->user->isTabMaster($this->_tournament));
+		                }
+	                ],
                 ],
             ],
             'tournamentFilter' => [

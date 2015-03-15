@@ -18,7 +18,7 @@ class SocietySearch extends Society {
     public function rules() {
         return [
             [['id'], 'integer'],
-            [['fullname', 'adr', 'city', 'country'], 'safe'],
+	        [['fullname', 'abr', 'city', 'country'], 'safe'],
         ];
     }
 
@@ -53,7 +53,7 @@ class SocietySearch extends Society {
         ]);
 
         $query->andFilterWhere(['like', 'fullname', $this->fullname])
-                ->andFilterWhere(['like', 'adr', $this->adr])
+	        ->andFilterWhere(['like', 'abr', $this->abr])
                 ->andFilterWhere(['like', 'city', $this->city])
                 ->andFilterWhere(['like', 'country', $this->country]);
 

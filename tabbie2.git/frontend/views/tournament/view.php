@@ -13,7 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="tournament-view">
 
     <div class="row">
-        <div class="col-sm-8 col-xs-12">
+	    <div class="col-xs-12 col-sm-8">
             <div class="col-xs-12 col-sm-2 block-center">
                 <img class="img-rounded img-responsive" src="<?= $model["logo"] ?>" alt="<?= $model["fullname"] ?> Logo">
             </div>
@@ -22,7 +22,6 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
         <div class="col-xs-12 col-sm-4 text-right">
-
             <?
             $debate = Yii::$app->user->hasOpenFeedback($model);
             if ($debate instanceof common\models\Debate) {
@@ -40,7 +39,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 echo Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
             }
             ?>
-            <?= Html::a(Yii::t('app', 'Display Draw'), ['display/index', "tournament_id" => $model->id], ['class' => 'btn btn-default']); ?>
+            <?
+	            if (Yii::$app->user->isLanguageOfficer($model)) {
+		            echo Html::a(Yii::t('app', 'Language Officer'), ['tournament/language', 'id' => $model->id], ['class' => 'btn btn-primary']);
+	            }
+            ?>
+            <?
+	            if (Yii::$app->user->isConvenor($model))
+		            echo Html::a(Yii::t('app', 'Display Draw'), ['display/index', "tournament_id" => $model->id], ['class' => 'btn btn-default']);
+            ?>
         </div>
     </div>
     <div class="row">

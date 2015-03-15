@@ -23,13 +23,24 @@
 			[
 				'class' => '\kartik\grid\DataColumn',
 				'attribute' => 'enl_place',
-				'label' => 'Place',
+				'label' => 'ENL Place',
 				'width' => '80px',
+			],
+			[
+				'class' => '\kartik\grid\DataColumn',
+				'attribute' => 'esl_place',
+				'label' => 'ESL Place',
+				'width' => '80px',
+				'visible' => $tournament->has_esl,
 			],
 			[
 				'class' => '\kartik\grid\DataColumn',
 				'attribute' => 'object.name',
 				'label' => 'Speaker',
+				'format' => 'raw',
+				'value' => function ($model, $key, $index, $widget) {
+					return Html::a($model->object->name, ["user/view", "id" => $model->object->id]);
+				},
 			],
 			[
 				'class' => '\kartik\grid\DataColumn',

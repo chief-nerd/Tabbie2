@@ -6,6 +6,7 @@ use Yii;
 use common\models\search\DebateSearch;
 use common\components\filter\TournamentContextFilter;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * TournamentController implements the CRUD actions for Tournament model.
@@ -19,6 +20,18 @@ class DisplayController extends BaseController {
 
     public function behaviors() {
         return [
+	        'access' => [
+		        'class' => AccessControl::className(),
+		        'rules' => [
+			        [
+				        'allow' => true,
+				        'actions' => ['index', 'view', 'start'],
+				        'matchCallback' => function ($rule, $action) {
+					        return (Yii::$app->user->isTabMaster($this->_tournament) || Yii::$app->user->isConvenor($this->_tournament));
+				        }
+			        ],
+		        ],
+	        ],
             'tournamentFilter' => [
                 'class' => TournamentContextFilter::className(),
             ],

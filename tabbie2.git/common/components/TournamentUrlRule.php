@@ -26,7 +26,11 @@ class TournamentUrlRule extends UrlRule {
                 $tournament = Tournament::findByPk($params['id']);
                 if ($parts[1] == "view")
                     $parts[1] = null;
+
                 $ret = $tournament->url_slug . "/" . $parts[1];
+
+	            if ($parts[1] == "language")
+		            $ret .= "/";
                 //Yii::trace("Returning Base: " . $ret, __METHOD__);
                 return $ret;
             }

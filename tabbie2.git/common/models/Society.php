@@ -50,7 +50,7 @@ class Society extends \yii\db\ActiveRecord {
             'fullname' => Yii::t('app', 'Fullname'),
             'abr' => Yii::t('app', 'Abbrevation'),
             'city' => Yii::t('app', 'City'),
-            'country' => Yii::t('app', 'Country'),
+	        'country_id' => Yii::t('app', 'Country'),
         ];
     }
 

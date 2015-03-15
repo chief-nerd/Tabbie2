@@ -29,7 +29,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<?
-		if ($tournament instanceof Tournament) {
+		if (isset($tournament) && $tournament instanceof Tournament) {
 			echo '<link rel = "apple-touch-icon" href = "' . $tournament->logo . '"/>';
 		}
 	?>

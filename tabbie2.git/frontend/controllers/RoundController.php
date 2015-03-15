@@ -5,7 +5,6 @@ namespace frontend\controllers;
 use Yii;
 use common\models\Round;
 use yii\data\ActiveDataProvider;
-use frontend\controllers\BaseController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use common\components\filter\TournamentContextFilter;

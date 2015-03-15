@@ -5,9 +5,11 @@ namespace backend\controllers;
 use Yii;
 use common\models\Society;
 use common\models\search\SocietySearch;
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use common\models\Country;
 
 /**
  * SocietyController implements the CRUD actions for Society model.
@@ -111,5 +113,32 @@ class SocietyController extends Controller {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+	/**
+	 * Returns 20 countries in an JSON List
+	 *
+	 * @param type $search
+	 * @param type $id
+	 */
+	public function actionCountries($search = null, $id = null) {
+		$out = ['more' => false];
+		if (!is_null($search)) {
+			$query = new \yii\db\Query;
+			$query->select(["id", "name as text"])
+			      ->from('country')
+			      ->where('name LIKE "%' . $search . '%"')
+			      ->limit(20);
+			$command = $query->createCommand();
+			$data = $command->queryAll();
+			$out['results'] = array_values($data);
+		}
+		elseif ($id > 0) {
+			$out['results'] = ['id' => $id, 'text' => Country::findOne($id)->name];
+		}
+		else {
+			$out['results'] = ['id' => 0, 'text' => 'No matching records found'];
+		}
+		echo Json::encode($out);
+	}
 
 }

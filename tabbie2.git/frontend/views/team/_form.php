@@ -21,6 +21,8 @@ use yii\web\JsExpression;
 
     <?= $form->field($model, 'isSwing')->checkbox() ?>
 
+	<?= $form->field($model, 'language_status')->dropDownList(\common\models\User::getLanguageStatusLabel()) ?>
+
     <?
     $urlUserList = Url::to(['user/list']);
 

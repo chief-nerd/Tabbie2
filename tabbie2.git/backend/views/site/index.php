@@ -8,7 +8,7 @@ $this->title = 'Welcome Tab Master';
 <div class="site-index">
 
     <div class="jumbotron">
-        <h1>Welcome Tab-Master!</h1>
+	    <h1>Welcome Tabbie2-Master!</h1>
 
         <p class="lead">Are you ready? Wanna tab a tournament like-a pro?</p>
 
