@@ -103,7 +103,7 @@ SCRIPT;
         'options' => ['placeholder' => 'Search for a society ...'],
         'addon' => [
             "prepend" => [
-                "content" => '<i class="glyphicon glyphicon-tower"></i>'
+	            "content" => '<i class="glyphicon glyphicon-education"></i>'
             ],
         ],
         'pluginOptions' => [

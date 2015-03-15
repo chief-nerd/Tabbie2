@@ -88,19 +88,19 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         [
             'class' => 'kartik\grid\ActionColumn',
-            'template' => '{watch}&nbsp;&nbsp;{active}&nbsp;&nbsp;{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}',
+	        'template' => '{active}&nbsp;&nbsp;{watch}&nbsp;&nbsp;{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}',
             'dropdown' => false,
             'vAlign' => 'middle',
             'buttons' => [
                 "watch" => function ($url, $model) {
-                    return Html::a("<span class='glyphicon glyphicon-screenshot'></span>", $url, [
+	                return Html::a("<span class='glyphicon glyphicon-eye-open'></span>", $url, [
                                 'title' => Yii::t('app', 'Toogle Watch'),
                                 'data-pjax' => '0',
                                 'data-toggle-active' => $model->id
                     ]);
                 },
                         "active" => function ($url, $model) {
-                    return Html::a("<span class='glyphicon glyphicon-eye-close'></span>", $url, [
+	                        return Html::a("<span class='fa fa-user-times'></span>", $url, [
                                 'title' => Yii::t('app', 'Toogle Active'),
                                 'data-pjax' => '0',
                                 'data-toggle-active' => $model->id
@@ -111,9 +111,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 return \yii\helpers\Url::to(["adjudicator/" . $action, "id" => $model->id, "tournament_id" => $model->tournament->id]);
             },
                     'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", "View Adjudicator"), 'data-toggle' => 'tooltip'],
-                    'updateOptions' => ['title' => Yii::t("app", "Update team"), 'data-toggle' => 'tooltip'],
-                    'deleteOptions' => ['title' => Yii::t("app", "Delete team"), 'data-toggle' => 'tooltip'],
-                    'width' => '120px',
+	        'updateOptions' => ['title' => Yii::t("app", "Update Adjudicator"), 'data-toggle' => 'tooltip'],
+	        'deleteOptions' => ['title' => Yii::t("app", "Delete Adjudicator"), 'data-toggle' => 'tooltip'],
+	        'width' => '122px',
                 ],
             ];
 
