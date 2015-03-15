@@ -11,16 +11,47 @@ function panel_diversity(){
 }
 
 $energy_functions[] = 'university_conflict';
-function university_conflict(){
+function university_conflict($adjudicator_id_lookup){
 	/* Get the university of the adjudicators, and see if they match the teams in the debate. If they do, then add this (arbitrarily large) number to the energy level for the debate.  
 	*/
+	$adjudicator_check = new Adjudicator;
+	$adjudicator_institutions = array();
 
+	$adjudicator_institutions = $adjudicator_check->society_id;
+
+	/* Get the institutions of the teams in the debate */
+
+	/* Is there a clash? If so */
+	foreach($institution)
+	if(in_array($adjudicator_institutions)){
+		$university_conflict_energy += $university_conflict_penalty;
+	}
 }
 
 $energy_functions[] = 'team_conflict';
 function team_conflict(){
-	/* Get the clashed teams of the adjudicators, and see if they match the teams in the debate. If they do, then add this (arbitrarily large) number to the energy level for the debate.  
+	/* Get the clashed teams of the adjudicators */ /*see if they match the teams in the debate. If they do, then add this (arbitrarily large) number to the energy level for the debate.  
 	*/
+	$adjudicator_check = new Adjudicator;
+	$adjudicator_team_clashes = array();
+
+	$adjudicator_clashes = /* Get clashes from database */
+
+	/* Get the institutions of the teams in the debate */
+
+	/* Is there a clash? If so */
+	foreach($team_clash)
+	if(in_array($adjudicator_team_clashes)){
+		$university_conflict_energy += $university_conflict_penalty;
+	}
+}
+
+$energy_functions[] = 'adjudicator_conflict';
+function adjudicator_conflict(){
+	/* Get the clashed adjudicators of the adjudicators, and see if they match the other adjudicators in the debate. If they do, then add this (arbitrarily large) number to the energy level for the debate.  
+	*/
+ 
+/*See above.*/
 
 }
 
@@ -28,6 +59,11 @@ $energy_functions[] = 'chair_not_chair';
 function chair_not_chair(){
 	/* Gets the chair_id, and checks whether they have the 'can chair' tag. If they don't, add this number to the energy level for the debate.
 	*/
+	$can_chair = $adjudicator->chair_tag;
+
+	if(!$can_chair){
+		$chair_not_chair += $chair_not_chair_penalty;
+	}
 }
 
 $energy_functions[] = 'watcher_not_watched';
@@ -35,12 +71,32 @@ function watcher_not_watched(){
 	/* Gets the ids of each of the panel (including the chair) and checks whether they're watched. If they 
 	are, check whether there are any watchers. If not, then add this number to the energy level for the debate.
 	*/
+
+	//Get all of the adjudicators in the debate.
+	foreach($adjudicator){
+		if($adjudicator->watchee){
+			foreach($adjudicator){
+				if($adjudicator->watcher){
+					$watchee_watched = true;
+					break;
+				}
+			}
+			if($watchee_watched){
+				break;
+			}
+			else{
+				$watcher_not_watched += $watcher_not_watched_penalty;
+			}
+		}
+	}
 }
 
 $energy_functions[] = 'chair_not_perfect';
 function chair_not_perfect(){
-	/* Gets the score of the chair, and subtracts their ranking from 100. Then, it multiplies this by the weighting for this, and adds this number to the energy level for the debate.
-	*/
+	foreach($adjudicator){
+		$adjudicator_ranking = $adjudicator->ranking;
+		$penalty = 100 - $adjudicator_ranking;
+	}
 }
 
 $energy_functions[] = 'panel_strength_not_perfect';
