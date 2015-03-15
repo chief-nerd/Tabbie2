@@ -94,6 +94,7 @@
 				]);
 
 				$rounds = array();
+				$results = array();
 				foreach ($tournament->rounds as $r) {
 					$rounds[] = ['label' => "Round #$r->number", 'url' => ['round/view', "id" => $r->id, "tournament_id" => $tournament->id]];
 					$results[] = ['label' => "Result Round #$r->number", 'url' => ['result/round', "id" => $r->id, "tournament_id" => $tournament->id]];
