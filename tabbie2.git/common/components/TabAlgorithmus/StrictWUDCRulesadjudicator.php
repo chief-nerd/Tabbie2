@@ -7,7 +7,15 @@ function panel_diversity(){
 	/*	Get the regions of each of the judges on the panel, and then for each region, subtract 1 from the frequency of it, and then sum them and add the result to the energy level for the debate.
 		Thus, if there is perfect diversity, the score is zero. If it's worse than that, it'll be 4,9,16 etc
 	*/
-
+		foreach ($adjudicator){
+        $regions[] = $adjudicator->region;
+        }
+    $region_diversity = array_count_values($regions);
+    $panel_homogeneity = '0';
+    foreach ($region_diversity as $region => $adjud_count){
+        $panel_homogeneity += (pow($adjud_count,2) - 1);
+        }
+    $panel_homogeneity_energy += $panel_homogeneity_penalty;
 }
 
 $energy_functions[] = 'university_conflict';
@@ -144,4 +152,4 @@ foreach($energy_functions as $energy_check){
 function switch_two_people(){
 	/*Get the energy levels of their two debates, and then work out the energy levels if they were to switch. If it would be better to have them switch, do it.
 	 */
-}
+}z
