@@ -98,7 +98,13 @@
 		 * @return null|static
 		 */
 		public static function findByPk($id) {
-			return Tournament::findOne(["id" => $id]);
+			$tournament = Yii::$app->cache->get("tournament" . $id);
+			if ($tournament == false) {
+				$tournament = Tournament::findOne(["id" => $id]);
+				Yii::$app->cache->set("tournament" . $id, $tournament, 120);
+			}
+
+			return $tournament;
 		}
 
 		/**

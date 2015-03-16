@@ -87,10 +87,11 @@
 				$count++;
 				$stillFoundASwap = false; //Assume we are done, prove me wrong
 
-				foreach ($this->DRAW as $line) {
-					foreach ($line->teams as $pos => $team) {
-						if ($team->getPositionBadness($pos) > 0) { // Not optimal positioning exists here
-							if ($this->find_best_swap_for($line, $pos)) { //Do we find a swap that makes it better
+				$maxIterations = count($this->DRAW);
+				for ($lineIterator = 0; $lineIterator < $maxIterations; $lineIterator++) {
+					for ($teamIterator = 0; $teamIterator < 4; $teamIterator++) {
+						if ($this->DRAW[$lineIterator]->teams[$teamIterator]->getPositionBadness($teamIterator) > 0) { // Not optimal positioning exists here
+							if ($this->find_best_swap_for($this->DRAW[$lineIterator], $teamIterator)) { //Do we find a swap that makes it better
 								$stillFoundASwap = true; //We found a better swap, do the loop again
 								break;
 							}
@@ -220,30 +221,33 @@
 			$best_team_b_line = false;
 			$best_team_b_pos = false;
 
-			foreach ($this->DRAW as $line) {
-				foreach ($line->getTeams() as $pos_b => $team_b) { //this loop especially can be limited
-					if ($team_a->is_swappable_with($team_b, $line_a->level, $line->level)) {
-						Yii::trace("Found swappable A: $team_a->id, B:$team_b->id", __METHOD__);
+			$maxIterations = count($this->DRAW);
+			for ($lineIterator = 0; $lineIterator < $maxIterations; $lineIterator++) {
+				for ($teamIterator = 0; $teamIterator < 4; $teamIterator++) {
+					//foreach ($this->DRAW as $line) {
+					//foreach ($line->getTeams() as $pos_b => $team_b) { //this loop especially can be limited
+					if ($team_a->is_swappable_with(
+						$this->DRAW[$lineIterator]->teams[$teamIterator],
+						$line_a->level,
+						$this->DRAW[$lineIterator]->level)
+					) {
 
 						//Get Status Quo Badness
-						$current = $team_a->getPositionBadness($pos_a) + $team_b->getPositionBadness($pos_b);
+						$current = $team_a->getPositionBadness($pos_a) + $this->DRAW[$lineIterator]->teams[$teamIterator]->getPositionBadness($teamIterator);
 						//How it would look like
-						$future = $team_a->getPositionBadness($pos_b) + $team_b->getPositionBadness($pos_a);
+						$future = $team_a->getPositionBadness($teamIterator) + $this->DRAW[$lineIterator]->teams[$teamIterator]->getPositionBadness($pos_a);
 
 						$net_effect = $future - $current;
-						Yii::trace("Algo Swappable\n Net Effect: $net_effect\n BestEffect: $best_effect", __METHOD__);
 						if ($net_effect < $best_effect) {
 							$best_effect = $net_effect;
-							$best_team_b_line = $line;
-							$best_team_b_pos = $pos_b;
+							$best_team_b_line = $this->DRAW[$lineIterator];
+							$best_team_b_pos = $teamIterator;
 						}
 					}
 				}
 			}
-			Yii::trace("Finished Draw", __METHOD__);
 
 			if ($best_team_b_line && $best_team_b_pos) {
-				Yii::trace("Finished draw\n Best Effect: $best_effect\nBest Team B: " . $best_team_b_line->getTeamOn($best_team_b_pos)->id, __METHOD__);
 				$this->swap_teams($line_a, $pos_a, $best_team_b_line, $best_team_b_pos);
 				return true;
 			}
@@ -305,7 +309,7 @@
 		 *
 		 * @return DrawLine
 		 */
-		public function energyRule_UniversityStrikes($line, $round) {
+		public function energyRule_SameSocietyStrikes($line, $round) {
 
 			$penalty = EnergyConfig::get("society_strike", $round->tournament_id);
 			foreach ($line->getAdjudicators() as $adjudicator) {

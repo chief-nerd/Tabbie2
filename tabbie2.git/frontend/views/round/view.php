@@ -137,6 +137,7 @@
 					$list = array();
 					$panel = common\models\Panel::findOne($model->panel_id);
 					if ($panel) {
+						$panel_chair_id = $model->getChair()->id;
 						foreach ($panel->adjudicators as $adj) {
 
 							$popcontent = "Loading...";
@@ -165,7 +166,7 @@
 								],
 							]);
 
-							if ($adj->id == $model->getChair()->id) {
+							if ($adj->id == $panel_chair_id) {
 								array_unshift($list, array('content' => $popup_obj));
 							}
 							else

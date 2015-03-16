@@ -161,7 +161,7 @@
 		 * @throws NotFoundHttpException if the model cannot be found
 		 */
 		protected function findModel($id) {
-			if (($model = Tournament::findOne(["id" => $id])) !== null) {
+			if (($model = Tournament::findByPk(["id" => $id])) !== null) {
 				return $model;
 			}
 			else {

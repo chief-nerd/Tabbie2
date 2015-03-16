@@ -138,12 +138,14 @@ class Debate extends \yii\db\ActiveRecord {
                         . "WHERE " . Debate::tableName() . ".id = " . $this->id);
     }
 
-    public function getChair() {
-        return Adjudicator::findBySql("SELECT adjudicator.* from " . Adjudicator::tableName() . " "
-                        . "LEFT JOIN " . AdjudicatorInPanel::tableName() . " on " . Adjudicator::tableName() . ".id = " . AdjudicatorInPanel::tableName() . ".adjudicator_id "
-                        . "LEFT JOIN " . Panel::tableName() . " ON panel_id = " . Panel::tableName() . ".id "
-                        . "LEFT JOIN " . Debate::tableName() . " ON " . Debate::tableName() . ".panel_id = " . Panel::tableName() . ".id "
-                        . "WHERE " . Debate::tableName() . ".id = " . $this->id . " AND " . AdjudicatorInPanel::tableName() . ".function = " . Panel::FUNCTION_CHAIR)->one();
+	/**
+	 * @return mixed
+	 */
+	public function getChair() {
+		return Adjudicator::find()->joinWith("panels")->leftJoin("debate", "debate.panel_id = panel.id")->where([
+			"debate.id" => $this->id,
+			"adjudicator_in_panel.function" => Panel::FUNCTION_CHAIR,
+		])->one();
     }
 
     public static function findOneByChair($user_id, $tournament_id, $round_id) {

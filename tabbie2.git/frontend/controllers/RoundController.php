@@ -2,6 +2,9 @@
 
 namespace frontend\controllers;
 
+use common\models\AdjudicatorInPanel;
+use common\models\Debate;
+use common\models\Panel;
 use Yii;
 use common\models\Round;
 use yii\data\ActiveDataProvider;
@@ -223,14 +226,24 @@ class RoundController extends BaseController {
         $model = Round::findOne(["id" => $id]);
 
         if ($model instanceof Round) {
-            foreach ($model->debates as $d) {
-                $d->delete();
-            }
+
+	        foreach ($model->debates as $debate) {
+		        /** @var Debate $debate * */
+		        foreach ($debate->panel->adjudicatorInPanels as $aj)
+			        $aj->delete();
+
+		        $panelid = $debate->panel_id;
+		        $debate->delete();
+		        Panel::deleteAll(["id" => $panelid]);
+	        }
+
+
             if (!$model->generateDraw()) {
                 Yii::$app->session->addFlash("error", print_r($model->getErrors(), true));
             }
         }
 
+	    //return $this->render("debug");
         return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
     }
 

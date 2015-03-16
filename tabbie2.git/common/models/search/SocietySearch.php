@@ -61,7 +61,7 @@ class SocietySearch extends Society {
     }
 
     public static function getSearchArray($tid) {
-        $tournament = \common\models\Tournament::findOne($tid);
+	    $tournament = \common\models\Tournament::findByPk($tid);
         return \yii\helpers\ArrayHelper::map($tournament->societies, "fullname", "fullname");
     }
 
