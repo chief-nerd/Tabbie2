@@ -2,6 +2,7 @@
     size: A4;
     margin: 0;
 }
+
 @media print {
     th {
         text-align: left;
@@ -40,8 +41,7 @@
         font-size: 15px;
     }
 
-    #table
-    {
+    #table {
         position: fixed;
         bottom: 20mm;
         left: 0;
@@ -58,7 +58,7 @@
         padding: 5mm;
     }
 
-    #table > table > tr{
+    #table > table > tr {
         padding: 10px;
     }
 }

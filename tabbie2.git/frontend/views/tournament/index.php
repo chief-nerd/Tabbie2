@@ -12,16 +12,16 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tournament-index">
 
-    <div class="row">
-        <div class="col-xs-12">
-            <h1><?= Html::encode($this->title) ?></h1>
-        </div>
-    </div>
-    <?php echo $this->render('_search', ['model' => $searchModel]); ?>
+	<div class="row">
+		<div class="col-xs-12">
+			<h1><?= Html::encode($this->title) ?></h1>
+		</div>
+	</div>
+	<?php echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <div class="tournaments">
-        <? foreach ($dataProvider->getModels() as $tournament): ?>
-            <?= $this->render('_item', compact("tournament")); ?>
-        <? endforeach; ?>
-    </div>
+	<div class="tournaments">
+		<? foreach ($dataProvider->getModels() as $tournament): ?>
+			<?= $this->render('_item', compact("tournament")); ?>
+		<? endforeach; ?>
+	</div>
 </div>

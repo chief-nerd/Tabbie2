@@ -14,46 +14,46 @@ use common\models\PublishTabTeam;
  */
 class TabTeamSearch extends Tab {
 
-    /**
-     * @inheritdoc
-     */
-    public function rules() {
-        return [
-            [['tournament_id'], 'integer'],
-        ];
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function rules() {
+		return [
+			[['tournament_id'], 'integer'],
+		];
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function scenarios() {
-        // bypass scenarios() implementation in the parent class
-        return Model::scenarios();
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function scenarios() {
+		// bypass scenarios() implementation in the parent class
+		return Model::scenarios();
+	}
 
-    /**
-     * Creates data provider instance with search query applied
-     *
-     * @param array $params
-     *
-     * @return ActiveDataProvider
-     */
-    public function search($tournament_id, $params) {
-        $query = Debate::find()->where(["tournament_id" => $tournament_id]);
+	/**
+	 * Creates data provider instance with search query applied
+	 *
+	 * @param array $params
+	 *
+	 * @return ActiveDataProvider
+	 */
+	public function search($tournament_id, $params) {
+		$query = Debate::find()->where(["tournament_id" => $tournament_id]);
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
+		$dataProvider = new ActiveDataProvider([
+			'query' => $query,
+		]);
 
-        if (!($this->load($params) && $this->validate())) {
-            return $dataProvider;
-        }
+		if (!($this->load($params) && $this->validate())) {
+			return $dataProvider;
+		}
 
-        $query->andFilterWhere([
-            'id' => $this->id,
-        ]);
+		$query->andFilterWhere([
+			'id' => $this->id,
+		]);
 
-        return $dataProvider;
-    }
+		return $dataProvider;
+	}
 
 }

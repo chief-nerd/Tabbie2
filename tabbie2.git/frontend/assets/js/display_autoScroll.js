@@ -5,17 +5,14 @@ notEnd = true;
 
 function pageScroll() {
     window.scrollBy(0, 1); // horizontal and vertical scroll increments
-    if (window.pageYOffset <= window.ScrollUntil)
-    {
+    if (window.pageYOffset <= window.ScrollUntil) {
         notEnd = true;
     }
-    else
-    {
+    else {
         notEnd = false;
         if ($("#infoslide").length > 0)
             $("#infoslide").removeAttr("disabled");
-        else
-        {
+        else {
             if ($("#motion").length > 0)
                 $("#motion").removeAttr("disabled");
         }
@@ -34,13 +31,10 @@ $(document).on("ready", function () {
     setTimeout('startScroll()', 8000);
 });
 
-function startScroll()
-{
-    if (!window.DoScroll)
-    {
+function startScroll() {
+    if (!window.DoScroll) {
         $("a.run").html("Pause");
-        if ($("li > a.reduce").length == 0)
-        {
+        if ($("li > a.reduce").length == 0) {
             Minus = "<li><a class='reduce btn'><i class='glyphicon glyphicon-minus-sign'></i> Reduce</a></li>";
             Plus = "<li><a class='add btn'><i class='glyphicon glyphicon-plus-sign'></i> Add</a></li>";
             Speed = "<li class='speed'><a>Speed: <span>" + window.ScrollSpeed + "</span></a></li>";
@@ -51,8 +45,7 @@ function startScroll()
         window.DoScroll = true;
         pageScroll();
     }
-    else
-    {
+    else {
         $("a.run").html("Run");
         window.DoScroll = false;
     }
@@ -80,8 +73,7 @@ $(document).on("click", "#infoslide", function (e) {
     $("#motion").removeAttr("disabled");
 });
 
-function confirm()
-{
+function confirm() {
     href = $("#motionContent").data("href");
     $.ajax({
         type: "GET",
@@ -98,8 +90,7 @@ function confirm()
 
 $(document).on("click", "#motion", function (e) {
     e.preventDefault();
-    if ($("#infoslideContent").length > 0)
-    {
+    if ($("#infoslideContent").length > 0) {
         $("#infoslideContent").fadeOut(500, function () {
             $("#motionContent").fadeIn(500, confirm);
         });

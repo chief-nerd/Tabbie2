@@ -10,8 +10,8 @@ use yii\helpers\Html;
 ?>
 
 <div class="col-sm-1">
-    <?= Html::encode("#" . $model->number) ?>
+	<?= Html::encode("#" . $model->number) ?>
 </div>
 <div class="col-sm-8">
-    <?= Html::a(Html::encode($model->motion), ['view', 'id' => $model->id, "tournament_id" => $model->tournament->id], ["class" => "btn btn-default"]); ?>
+	<?= Html::a(Html::encode($model->motion), ['view', 'id' => $model->id, "tournament_id" => $model->tournament->id], ["class" => "btn btn-default"]); ?>
 </div>

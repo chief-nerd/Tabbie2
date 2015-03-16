@@ -17,32 +17,33 @@ $this->params['breadcrumbs'][] = "Venue View";
 ?>
 <div class="result-index">
 
-    <h1><?= Html::encode($this->title) ?> for Round #<?= $round_number ?></h1>
-    <p class="text-right">
-        <?=
-        Html::checkbox("autoupdate", false, [
-            'label' => "Auto Update <i id='pjax-status' class=''></i>",
-            "data-pjax" => 0,
-        ]);
-        ?>
-        &nbsp;|&nbsp;
-        <?=
-        Html::a("Switch to Tableview", ["round",
-            "id" => $round_id,
-            "tournament_id" => $tournament->id,
-            "view" => "table",
-                ], ["class" => "btn btn-default"]);
-        ?>
-    </p>
-    <!-- AJAX -->
-    <? \yii\widgets\Pjax::begin(["id" => "debates-pjax"]) ?>
-    <?=
-    \yii\widgets\ListView::widget([
-        "dataProvider" => $dataProvider,
-        "itemOptions" => ["class" => "venue col-xs-2"],
-        "itemView" => "_venue",
-        "id" => "debates",
-    ]);
-    ?>
-    <? \yii\widgets\Pjax::end(); ?>
+	<h1><?= Html::encode($this->title) ?> for Round #<?= $round_number ?></h1>
+
+	<p class="text-right">
+		<?=
+		Html::checkbox("autoupdate", false, [
+			'label' => "Auto Update <i id='pjax-status' class=''></i>",
+			"data-pjax" => 0,
+		]);
+		?>
+		&nbsp;|&nbsp;
+		<?=
+		Html::a("Switch to Tableview", ["round",
+			"id" => $round_id,
+			"tournament_id" => $tournament->id,
+			"view" => "table",
+		], ["class" => "btn btn-default"]);
+		?>
+	</p>
+	<!-- AJAX -->
+	<? \yii\widgets\Pjax::begin(["id" => "debates-pjax"]) ?>
+	<?=
+	\yii\widgets\ListView::widget([
+		"dataProvider" => $dataProvider,
+		"itemOptions" => ["class" => "venue col-xs-2"],
+		"itemView" => "_venue",
+		"id" => "debates",
+	]);
+	?>
+	<? \yii\widgets\Pjax::end(); ?>
 </div>

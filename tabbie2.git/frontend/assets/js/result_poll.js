@@ -2,21 +2,18 @@
 // I highly recommend that you setup the id of your PJax widget
 
 $("input[name='autoupdate']").on('change', function () {
-    if ($("input[name='autoupdate']").prop('checked'))
-    {
+    if ($("input[name='autoupdate']").prop('checked')) {
         window.StopPoll = false;
         poll();
     }
-    else
-    {
+    else {
         $('#pjax-status')[0].className = "";
         window.StopPoll = true;
     }
 });
 
 function poll() {
-    if (!window.StopPoll)
-    {
+    if (!window.StopPoll) {
         $.pjax.reload({container: '#debates-pjax'});
         setTimeout(function () {
             poll();
@@ -24,8 +21,6 @@ function poll() {
     }
 
 }
-;
-
 $(document).on('pjax:send', function () {
     $('#pjax-status')[0].className = "glyphicon glyphicon-refresh";
 });

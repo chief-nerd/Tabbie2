@@ -12,12 +12,12 @@ use yii\db\ActiveQuery;
  */
 class VTAQuery extends ActiveQuery {
 
-    public function active($state = true) {
-        return $this->andWhere(['active' => $state]);
-    }
+	public function active($state = true) {
+		return $this->andWhere(['active' => $state]);
+	}
 
-    public function tournament($id) {
-        return $this->andWhere(["tournament_id" => $id]);
-    }
+	public function tournament($id) {
+		return $this->andWhere(["tournament_id" => $id]);
+	}
 
 }

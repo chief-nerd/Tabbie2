@@ -12,21 +12,21 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php echo $this->render('_search', ['model' => $searchModel]); ?>
+	<h1><?= Html::encode($this->title) ?></h1>
+	<?php echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <p>
-        <?= Html::a(Yii::t('app', 'Create {modelClass}', [
-    'modelClass' => 'User',
-]), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+	<p>
+		<?= Html::a(Yii::t('app', 'Create {modelClass}', [
+			'modelClass' => 'User',
+		]), ['create'], ['class' => 'btn btn-success']) ?>
+	</p>
 
-    <?= ListView::widget([
-        'dataProvider' => $dataProvider,
-        'itemOptions' => ['class' => 'item'],
-        'itemView' => function ($model, $key, $index, $widget) {
-            return Html::a(Html::encode($model->id), ['view', 'id' => $model->id]);
-        },
-    ]) ?>
+	<?= ListView::widget([
+		'dataProvider' => $dataProvider,
+		'itemOptions' => ['class' => 'item'],
+		'itemView' => function ($model, $key, $index, $widget) {
+			return Html::a(Html::encode($model->id), ['view', 'id' => $model->id]);
+		},
+	]) ?>
 
 </div>

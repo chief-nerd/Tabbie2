@@ -7,125 +7,134 @@ use yii\widgets\ActiveForm;
 /* @var $model common\models\Team */
 
 $this->title = Yii::t('app', 'Import {modelClass}', [
-            'modelClass' => 'Team',
-        ]);
+	'modelClass' => 'Team',
+]);
 $tournament = $this->context->_getContext();
 $this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Teams'), 'url' => ['index', 'tournament_id' => $tournament->id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="team-import">
+	<div class="team-import">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+	<h1><?= Html::encode($this->title) ?></h1>
 
-    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+<?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
-    <? if (isset($model->tempImport)): ?>
-        <? for ($i = 1; $i <= count($model->tempImport); $i++): ?>
-            <div class="row">
-                <div class="col-sm-2">
+<? if (isset($model->tempImport)): ?>
+	<? for ($i = 1; $i <= count($model->tempImport); $i++): ?>
+		<div class="row">
+			<div class="col-sm-2">
 
-                    <? echo $model->tempImport[$i][0][0] //Team name - never a problem           ?>
-                </div>
-                <?
-                $societyField = $model->tempImport[$i][1];
-                if (count($societyField) == 1) { //NEW
-                    $class = "new";
-                    $value = $societyField[0];
-                } else if (count($societyField) == 2) { //Found 1 - easy
-                    $class = "green";
-                    $value = Html::a($societyField[1]["name"], ["society/view", "id" => $societyField[1]["id"]]);
-                } else { //Ups found multiple
-                    $class = "yellow";
-                    for ($a = 1; $a < count($societyField); $a++) {
-                        $options[$societyField[$a]["id"]] = $societyField[$a]["name"];
-                    }
-                }
-                ?>
-                <div class="col-sm-2 <?= $class ?>">
-                    <?
-                    if ($class == "green" OR $class == "new") {
-                        echo $value;
-                    } else {
-                        echo Html::dropDownList("field[$i][1]", $societyField[0], $options);
-                    }
-                    ?>
-                </div>
+				<? echo $model->tempImport[$i][0][0] //Team name - never a problem           ?>
+			</div>
+			<?
+			$societyField = $model->tempImport[$i][1];
+			if (count($societyField) == 1) { //NEW
+				$class = "new";
+				$value = $societyField[0];
+			}
+			else if (count($societyField) == 2) { //Found 1 - easy
+				$class = "green";
+				$value = Html::a($societyField[1]["name"], ["society/view", "id" => $societyField[1]["id"]]);
+			}
+			else { //Ups found multiple
+				$class = "yellow";
+				for ($a = 1; $a < count($societyField); $a++) {
+					$options[$societyField[$a]["id"]] = $societyField[$a]["name"];
+				}
+			}
+			?>
+			<div class="col-sm-2 <?= $class ?>">
+				<?
+				if ($class == "green" OR $class == "new") {
+					echo $value;
+				}
+				else {
+					echo Html::dropDownList("field[$i][1]", $societyField[0], $options);
+				}
+				?>
+			</div>
 
-                <?
-                $userField = $model->tempImport[$i][2];
-                $class = "";
-                if (count($userField) == 1) { //NEW
-                    $class = "new";
-                    $value = $userField[0];
-                } else if (count($userField) == 2) { //Found 1 - easy
-                    $class = "green";
-                    $value = Html::a($userField[1]["name"], ["user/view", "id" => $userField[1]["id"]]);
-                } else { //Ups found multiple
-                    $class = "yellow";
-                    for ($a = 1; $a < count($userField); $a++) {
-                        $options[$userField[$a]["id"]] = $userField[$a]["name"];
-                    }
-                }
-                ?>
-                <div class="col-sm-3 <?= $class ?>">
-                    <?
-                    if ($class == "green" OR $class == "new") {
-                        echo $value;
-                    } else {
-                        echo Html::dropDownList("field[$i][2]", $userField[0], $options);
-                    }
-                    ?>
-                </div>
+			<?
+			$userField = $model->tempImport[$i][2];
+			$class = "";
+			if (count($userField) == 1) { //NEW
+				$class = "new";
+				$value = $userField[0];
+			}
+			else if (count($userField) == 2) { //Found 1 - easy
+				$class = "green";
+				$value = Html::a($userField[1]["name"], ["user/view", "id" => $userField[1]["id"]]);
+			}
+			else { //Ups found multiple
+				$class = "yellow";
+				for ($a = 1; $a < count($userField); $a++) {
+					$options[$userField[$a]["id"]] = $userField[$a]["name"];
+				}
+			}
+			?>
+			<div class="col-sm-3 <?= $class ?>">
+				<?
+				if ($class == "green" OR $class == "new") {
+					echo $value;
+				}
+				else {
+					echo Html::dropDownList("field[$i][2]", $userField[0], $options);
+				}
+				?>
+			</div>
 
-                <?
-                $userField = $model->tempImport[$i][5];
-                $class = "";
-                if (count($userField) == 1) { //NEW
-                    $class = "new";
-                    $value = $userField[0];
-                } else if (count($userField) == 2) { //Found 1 - easy
-                    $class = "green";
-                    $value = Html::a($userField[1]["name"], ["user/view", "id" => $userField[1]["id"]]);
-                } else { //Ups found multiple
-                    $class = "yellow";
-                    for ($a = 1; $a < count($userField); $a++) {
-                        $options[$userField[$a]["id"]] = $userField[$a]["name"];
-                    }
-                }
-                ?>
-                <div class="col-sm-3 <?= $class ?>">
-                    <?
-                    if ($class == "green" OR $class == "new") {
-                        echo $value;
-                    } else {
-                        echo Html::dropDownList("field[$i][5]", $userField[0], $options);
-                    }
-                    ?>
-                </div>
-            </div>
-        <? endfor; ?>
-        <div class="form-group">
-            <?= Html::hiddenInput("csvFile", serialize($model->tempImport)); ?>
-            <?= Html::hiddenInput("makeItSo", "true"); ?>
-            <?= Html::submitButton(Yii::t('app', 'Make it so'), ['class' => 'btn btn-success'])
-            ?>
-        </div>
+			<?
+			$userField = $model->tempImport[$i][5];
+			$class = "";
+			if (count($userField) == 1) { //NEW
+				$class = "new";
+				$value = $userField[0];
+			}
+			else if (count($userField) == 2) { //Found 1 - easy
+				$class = "green";
+				$value = Html::a($userField[1]["name"], ["user/view", "id" => $userField[1]["id"]]);
+			}
+			else { //Ups found multiple
+				$class = "yellow";
+				for ($a = 1; $a < count($userField); $a++) {
+					$options[$userField[$a]["id"]] = $userField[$a]["name"];
+				}
+			}
+			?>
+			<div class="col-sm-3 <?= $class ?>">
+				<?
+				if ($class == "green" OR $class == "new") {
+					echo $value;
+				}
+				else {
+					echo Html::dropDownList("field[$i][5]", $userField[0], $options);
+				}
+				?>
+			</div>
+		</div>
+	<? endfor; ?>
+	<div class="form-group">
+		<?= Html::hiddenInput("csvFile", serialize($model->tempImport)); ?>
+		<?= Html::hiddenInput("makeItSo", "true"); ?>
+		<?= Html::submitButton(Yii::t('app', 'Make it so'), ['class' => 'btn btn-success'])
+		?>
+	</div>
 
-    <? else: ?>
-        <div class="team-form">
-            <?=
-            $form->field($model, 'csvFile')->fileInput([
-                'accept' => '.csv'
-            ])
-            ?>
+<? else: ?>
+	<div class="team-form">
+		<?=
+		$form->field($model, 'csvFile')->fileInput([
+			'accept' => '.csv'
+		])
+		?>
 
-            <div class="form-group">
-                <?= Html::submitButton(Yii::t('app', 'Import'), ['class' => 'btn btn-success']) ?>
-            </div>
+		<div class="form-group">
+			<?= Html::submitButton(Yii::t('app', 'Import'), ['class' => 'btn btn-success']) ?>
+		</div>
 
 
-        </div>
-    <? endif; ?>
+	</div>
+<? endif; ?>
 
-    <?php ActiveForm::end(); ?>
+<?php ActiveForm::end(); ?>

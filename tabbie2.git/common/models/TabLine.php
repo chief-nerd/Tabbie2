@@ -11,10 +11,10 @@ use yii\base\Model;
 class TabLine extends Model {
 
 	public $object;
-    public $points;
-    public $speaks;
-    public $enl_place;
-    public $esl_place;
-    public $results_array = [];
+	public $points;
+	public $speaks;
+	public $enl_place;
+	public $esl_place;
+	public $results_array = [];
 
 }

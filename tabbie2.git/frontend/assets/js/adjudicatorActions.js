@@ -1,4 +1,3 @@
-
 function init() {
     th = $("#debateDraw-container thead th:nth-child(6)");
     th.html(th.html() + " <i></i>");
@@ -10,8 +9,7 @@ function init() {
         href = $(this).data("href");
         root = document.querySelector($(this).data("target"));
         contentdiv = $(root).find(".popover-content");
-        if (contentdiv[0].innerHTML.length <= 13)
-        {
+        if (contentdiv[0].innerHTML.length <= 13) {
             $.ajax({
                 type: "GET",
                 url: href,
@@ -50,14 +48,12 @@ function init() {
                 pos: position
             },
         }).success(function (data) {
-            if (data == "1")
-            {
+            if (data == "1") {
                 //console.log("Saved!");
                 th = $("#debateDraw-container thead th:nth-child(6) i");
                 th[0].className = "glyphicon glyphicon-ok-circle text-success";
             }
-            else
-            {
+            else {
                 th = $("#debateDraw-container thead th:nth-child(6) i");
                 th[0].className = "glyphicon glyphicon-remove-circle text-error";
                 console.log("ERROR Return value", data);

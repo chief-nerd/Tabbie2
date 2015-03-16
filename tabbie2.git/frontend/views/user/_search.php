@@ -10,23 +10,24 @@ use yii\widgets\ActiveForm;
 
 <div class="user-search">
 
-    <?php
-    $form = ActiveForm::begin([
-                'action' => ['index'],
-                'method' => 'get',
-    ]);
-    ?>
+	<?php
+	$form = ActiveForm::begin([
+		'action' => ['index'],
+		'method' => 'get',
+	]);
+	?>
 
-    <div class="row">
-        <div class="col-xs-1"><?= $form->field($model, 'id') ?></div>
-        <div class="col-xs-5"><?= $form->field($model, 'name') ?></div>
-        <div class="col-xs-2"><?= $form->field($model, 'role')->dropDownList(\common\models\User::getRoleOptions(true)) ?></div>
-        <div class="form-group col-xs-4 text-right">
-            <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>
-            <?= Html::resetButton(Yii::t('app', 'Reset'), ['class' => 'btn btn-default']) ?>
-        </div>
-    </div>
+	<div class="row">
+		<div class="col-xs-1"><?= $form->field($model, 'id') ?></div>
+		<div class="col-xs-5"><?= $form->field($model, 'name') ?></div>
+		<div class="col-xs-2"><?= $form->field($model, 'role')
+		                               ->dropDownList(\common\models\User::getRoleOptions(true)) ?></div>
+		<div class="form-group col-xs-4 text-right">
+			<?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>
+			<?= Html::resetButton(Yii::t('app', 'Reset'), ['class' => 'btn btn-default']) ?>
+		</div>
+	</div>
 
-    <?php ActiveForm::end(); ?>
+	<?php ActiveForm::end(); ?>
 
 </div>

@@ -10,20 +10,20 @@ use yii\widgets\ActiveForm;
 
 <div class="energy-config-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+	<?php $form = ActiveForm::begin(); ?>
 
-    <?= Html::hiddenInput('tournament_id', $model->tournament_id); ?>
+	<?= Html::hiddenInput('tournament_id', $model->tournament_id); ?>
 
-    <?= $form->field($model, 'key')->textInput(['maxlength' => 100]) ?>
+	<?= $form->field($model, 'key')->textInput(['maxlength' => 100]) ?>
 
-    <?= $form->field($model, 'label')->textInput(['maxlength' => 45]) ?>
+	<?= $form->field($model, 'label')->textInput(['maxlength' => 45]) ?>
 
-    <?= $form->field($model, 'value')->textInput() ?>
+	<?= $form->field($model, 'value')->textInput() ?>
 
-    <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-    </div>
+	<div class="form-group">
+		<?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+	</div>
 
-    <?php ActiveForm::end(); ?>
+	<?php ActiveForm::end(); ?>
 
 </div>

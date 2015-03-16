@@ -14,28 +14,28 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="question-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+	<h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?=
-        Html::a(Yii::t('app', 'Create new {modelClass}', [
-                    'modelClass' => 'Question',
-                ]), ['create', 'tournament_id' => $tournament->id], ['class' => 'btn btn-success'])
-        ?>
-    </p>
+	<p>
+		<?=
+		Html::a(Yii::t('app', 'Create new {modelClass}', [
+			'modelClass' => 'Question',
+		]), ['create', 'tournament_id' => $tournament->id], ['class' => 'btn btn-success'])
+		?>
+	</p>
 
-    <?=
-    ListView::widget([
-        'dataProvider' => $dataProvider,
-        'itemOptions' => ['class' => 'item'],
-        'itemView' => function ($model, $key, $index, $widget) {
-    return Html::a(Html::encode($model->text), [
-                'view',
-                'id' => $model->id,
-                'tournament_id' => $model->tournamentHasQuestion[0]->tournament_id,
-    ]);
-},
-    ])
-    ?>
+	<?=
+	ListView::widget([
+		'dataProvider' => $dataProvider,
+		'itemOptions' => ['class' => 'item'],
+		'itemView' => function ($model, $key, $index, $widget) {
+			return Html::a(Html::encode($model->text), [
+				'view',
+				'id' => $model->id,
+				'tournament_id' => $model->tournamentHasQuestion[0]->tournament_id,
+			]);
+		},
+	])
+	?>
 
 </div>

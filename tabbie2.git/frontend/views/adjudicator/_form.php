@@ -14,13 +14,13 @@ use kartik\widgets\StarRating;
 
 <div class="adjudicator-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+	<?php $form = ActiveForm::begin(); ?>
 
-    <?
-    $url = Url::to(['user/list']);
+	<?
+	$url = Url::to(['user/list']);
 
-    // Script to initialize the selection based on the value of the select2 element
-    $initScript = <<< SCRIPT
+	// Script to initialize the selection based on the value of the select2 element
+	$initScript = <<< SCRIPT
 function (element, callback) {
     var id=\$(element).val();
     if (id !== "") {
@@ -31,10 +31,10 @@ function (element, callback) {
 }
 SCRIPT;
 
-    $Societyurl = Url::to(['user/societies']);
+	$Societyurl = Url::to(['user/societies']);
 
-    // Script to initialize the selection based on the value of the select2 element
-    $initSocietyScript = <<< SCRIPT
+	// Script to initialize the selection based on the value of the select2 element
+	$initSocietyScript = <<< SCRIPT
 function (element, callback) {
     var id=\$(element).val();
     if (id !== "") {
@@ -45,77 +45,77 @@ function (element, callback) {
 }
 SCRIPT;
 
-    echo $form->field($model, 'user_id')->widget(Select2::classname(), [
-        'options' => ['placeholder' => 'Search for a user ...'],
-        'addon' => [
-            "prepend" => [
-                "content" => '<i class="glyphicon glyphicon-user"></i>'
-            ],
-        ],
-        'pluginOptions' => [
-            'allowClear' => true,
-            'minimumInputLength' => 3,
-            'ajax' => [
-                'url' => $url,
-                'dataType' => 'json',
-                'data' => new JsExpression('function(term,page) { return {search:term}; }'),
-                'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
-            ],
-            'initSelection' => new JsExpression($initScript)
-        ],
-    ]);
-    ?>
-    <?
-    echo $form->field($model, 'society_id')->widget(Select2::classname(), [
-        'options' => [
-            'placeholder' => 'Search for a societies ...',
-            'multiple' => true,
-        ],
-        'addon' => [
-            "prepend" => [
-                "content" => '<i class="glyphicon glyphicon-tower"></i>'
-            ],
-        ],
-        'pluginOptions' => [
-            'allowClear' => true,
-            'minimumInputLength' => 3,
-            'ajax' => [
-                'url' => $Societyurl,
-                'dataType' => 'json',
-                'data' => new JsExpression('function(term,page) { return {search:term}; }'),
-                'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
-            ],
-            'initSelection' => new JsExpression($initSocietyScript)
-        ],
-    ]);
-    ?>
+	echo $form->field($model, 'user_id')->widget(Select2::classname(), [
+		'options' => ['placeholder' => 'Search for a user ...'],
+		'addon' => [
+			"prepend" => [
+				"content" => '<i class="glyphicon glyphicon-user"></i>'
+			],
+		],
+		'pluginOptions' => [
+			'allowClear' => true,
+			'minimumInputLength' => 3,
+			'ajax' => [
+				'url' => $url,
+				'dataType' => 'json',
+				'data' => new JsExpression('function(term,page) { return {search:term}; }'),
+				'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
+			],
+			'initSelection' => new JsExpression($initScript)
+		],
+	]);
+	?>
+	<?
+	echo $form->field($model, 'society_id')->widget(Select2::classname(), [
+		'options' => [
+			'placeholder' => 'Search for a societies ...',
+			'multiple' => true,
+		],
+		'addon' => [
+			"prepend" => [
+				"content" => '<i class="glyphicon glyphicon-tower"></i>'
+			],
+		],
+		'pluginOptions' => [
+			'allowClear' => true,
+			'minimumInputLength' => 3,
+			'ajax' => [
+				'url' => $Societyurl,
+				'dataType' => 'json',
+				'data' => new JsExpression('function(term,page) { return {search:term}; }'),
+				'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
+			],
+			'initSelection' => new JsExpression($initSocietyScript)
+		],
+	]);
+	?>
 
-    <?=
-    $form->field($model, 'can_chair')->checkbox();
-    ?>
+	<?=
+	$form->field($model, 'can_chair')->checkbox();
+	?>
 
-    <?=
-    $form->field($model, 'are_watched')->checkbox();
-    ?>
+	<?=
+	$form->field($model, 'are_watched')->checkbox();
+	?>
 
-    <?=
-    $form->field($model, 'strength')->widget(StarRating::className(), [
-        "pluginOptions" => [
-            "stars" => 8,
-            "min" => 0,
-            "max" => 9,
-            "step" => 1,
-            "size" => "md",
-            "starCaptions" => common\models\Adjudicator::translateStrength(),
-            "starCaptionClasses" => common\models\Adjudicator::starLabels(),
-        ],
-    ])
-    ?>
+	<?=
+	$form->field($model, 'strength')->widget(StarRating::className(), [
+		"pluginOptions" => [
+			"stars" => 8,
+			"min" => 0,
+			"max" => 9,
+			"step" => 1,
+			"size" => "md",
+			"starCaptions" => common\models\Adjudicator::translateStrength(),
+			"starCaptionClasses" => common\models\Adjudicator::starLabels(),
+		],
+	])
+	?>
 
-    <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-    </div>
+	<div class="form-group">
+		<?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+	</div>
 
-    <?php ActiveForm::end(); ?>
+	<?php ActiveForm::end(); ?>
 
 </div>

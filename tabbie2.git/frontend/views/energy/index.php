@@ -13,29 +13,29 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="energy-config-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+	<h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?=
-        Html::a(Yii::t('app', 'Create {modelClass}', [
-                    'modelClass' => 'Energy Config',
-                ]), ['create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
-        ?>
-    </p>
+	<p>
+		<?=
+		Html::a(Yii::t('app', 'Create {modelClass}', [
+			'modelClass' => 'Energy Config',
+		]), ['create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
+		?>
+	</p>
 
-    <?=
-    GridView::widget([
-        'dataProvider' => $dataProvider,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-            'id',
-            'key',
-            'tournament_id',
-            'label',
-            'value',
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]);
-    ?>
+	<?=
+	GridView::widget([
+		'dataProvider' => $dataProvider,
+		'columns' => [
+			['class' => 'yii\grid\SerialColumn'],
+			'id',
+			'key',
+			'tournament_id',
+			'label',
+			'value',
+			['class' => 'yii\grid\ActionColumn'],
+		],
+	]);
+	?>
 
 </div>

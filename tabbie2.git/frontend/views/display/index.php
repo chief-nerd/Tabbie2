@@ -10,12 +10,13 @@ use yii\helpers\Html;
 $this->title = "Rounds";
 ?>
 <div class="text-center">
-    <?= Html::img($tournament->logo, ["width" => "200px", "style" => "margin-top: 40px;"]); ?>
+	<?= Html::img($tournament->logo, ["width" => "200px", "style" => "margin-top: 40px;"]); ?>
 </div>
 <br>
 <div class="row">
-    <div class="col-xs-12 text-center rounds" data-href="<?= yii\helpers\Url::to(["display/index", "tournament_id" => $tournament->id]); ?>">
-        <?= $already ?>
-    </div>
+	<div class="col-xs-12 text-center rounds"
+	     data-href="<?= yii\helpers\Url::to(["display/index", "tournament_id" => $tournament->id]); ?>">
+		<?= $already ?>
+	</div>
 </div>
 

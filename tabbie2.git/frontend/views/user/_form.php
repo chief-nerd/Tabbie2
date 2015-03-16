@@ -1,23 +1,22 @@
 <?php
 
-	use common\models\User;
-	use kartik\widgets\Select2;
-	use yii\helpers\Html;
-	use yii\helpers\Url;
-	use yii\web\JsExpression;
-	use kartik\widgets\ActiveForm;
-	use kartik\form\ActiveField;
+use common\models\User;
+use kartik\widgets\ActiveForm;
+use kartik\widgets\Select2;
+use yii\helpers\Html;
+use yii\helpers\Url;
+use yii\web\JsExpression;
 
-	/* @var $this yii\web\View */
-	/* @var $model common\models\User */
-	/* @var $form yii\widgets\ActiveForm */
+/* @var $this yii\web\View */
+/* @var $model common\models\User */
+/* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="user-form">
 
 	<?php $form = ActiveForm::begin(); ?>
 	<?=
-		$form->field($model, 'status')->dropDownList(User::getStatusOptions());
+	$form->field($model, 'status')->dropDownList(User::getStatusOptions());
 	?>
 	<?= $form->field($model, 'username')->textInput(['maxlength' => 255]) ?>
 
@@ -29,10 +28,10 @@
 	         ->textInput(['maxlength' => 255]) ?>
 
 	<?
-		$urlUserList = Url::to(['user/societies']);
+	$urlUserList = Url::to(['user/societies']);
 
-		// Script to initialize the selection based on the value of the select2 element
-		$initUserScript = <<< SCRIPT
+	// Script to initialize the selection based on the value of the select2 element
+	$initUserScript = <<< SCRIPT
 function (element, callback) {
     var id=\$(element).val();
     if (id !== "") {
@@ -43,32 +42,32 @@ function (element, callback) {
 }
 SCRIPT;
 
-		echo $form->field($model, 'societies_id')->widget(Select2::classname(), [
-			'options' => [
-				'placeholder' => 'Search for a societies ...',
-				'multiple' => true,
+	echo $form->field($model, 'societies_id')->widget(Select2::classname(), [
+		'options' => [
+			'placeholder' => 'Search for a societies ...',
+			'multiple' => true,
+		],
+		'addon' => [
+			"prepend" => [
+				"content" => '<i class="glyphicon glyphicon-education"></i>'
 			],
-			'addon' => [
-				"prepend" => [
-					"content" => '<i class="glyphicon glyphicon-education"></i>'
-				],
+		],
+		'pluginOptions' => [
+			'allowClear' => true,
+			'minimumInputLength' => 3,
+			'ajax' => [
+				'url' => $urlUserList,
+				'dataType' => 'json',
+				'data' => new JsExpression('function(term,page) { return {search:term}; }'),
+				'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
 			],
-			'pluginOptions' => [
-				'allowClear' => true,
-				'minimumInputLength' => 3,
-				'ajax' => [
-					'url' => $urlUserList,
-					'dataType' => 'json',
-					'data' => new JsExpression('function(term,page) { return {search:term}; }'),
-					'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
-				],
-				'initSelection' => new JsExpression($initUserScript)
-			],
-		]);
+			'initSelection' => new JsExpression($initUserScript)
+		],
+	]);
 	?>
 
 	<?=
-		$form->field($model, 'role')->dropDownList(User::getRoleOptions());
+	$form->field($model, 'role')->dropDownList(User::getRoleOptions());
 	?>
 
 	<?= $form->field($model, 'picture')->fileInput() ?>

@@ -12,27 +12,27 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="feedback-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+	<h1><?= Html::encode($this->title) ?></h1>
+	<?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <p>
-        <?= Html::a(Yii::t('app', 'Create {modelClass}', [
-    'modelClass' => 'Feedback',
-]), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+	<p>
+		<?= Html::a(Yii::t('app', 'Create {modelClass}', [
+			'modelClass' => 'Feedback',
+		]), ['create'], ['class' => 'btn btn-success']) ?>
+	</p>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+	<?= GridView::widget([
+		'dataProvider' => $dataProvider,
+		'filterModel' => $searchModel,
+		'columns' => [
+			['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'debate_id',
-            'time',
+			'id',
+			'debate_id',
+			'time',
 
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
+			['class' => 'yii\grid\ActionColumn'],
+		],
+	]); ?>
 
 </div>

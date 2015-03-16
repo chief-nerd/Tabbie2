@@ -10,38 +10,38 @@ use yii\widgets\ActiveForm;
 
 <div class="result-search">
 
-    <?php $form = ActiveForm::begin([
-        'action' => ['index'],
-        'method' => 'get',
-    ]); ?>
+	<?php $form = ActiveForm::begin([
+		'action' => ['index'],
+		'method' => 'get',
+	]); ?>
 
-    <?= $form->field($model, 'id') ?>
+	<?= $form->field($model, 'id') ?>
 
-    <?= $form->field($model, 'debate_id') ?>
+	<?= $form->field($model, 'debate_id') ?>
 
-    <?= $form->field($model, 'og_speaks') ?>
+	<?= $form->field($model, 'og_speaks') ?>
 
-    <?= $form->field($model, 'og_place') ?>
+	<?= $form->field($model, 'og_place') ?>
 
-    <?= $form->field($model, 'oo_speaks') ?>
+	<?= $form->field($model, 'oo_speaks') ?>
 
-    <?php // echo $form->field($model, 'oo_place') ?>
+	<?php // echo $form->field($model, 'oo_place') ?>
 
-    <?php // echo $form->field($model, 'cg_speaks') ?>
+	<?php // echo $form->field($model, 'cg_speaks') ?>
 
-    <?php // echo $form->field($model, 'cg_place') ?>
+	<?php // echo $form->field($model, 'cg_place') ?>
 
-    <?php // echo $form->field($model, 'co_speaks') ?>
+	<?php // echo $form->field($model, 'co_speaks') ?>
 
-    <?php // echo $form->field($model, 'co_place') ?>
+	<?php // echo $form->field($model, 'co_place') ?>
 
-    <?php // echo $form->field($model, 'time') ?>
+	<?php // echo $form->field($model, 'time') ?>
 
-    <div class="form-group">
-        <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton(Yii::t('app', 'Reset'), ['class' => 'btn btn-default']) ?>
-    </div>
+	<div class="form-group">
+		<?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>
+		<?= Html::resetButton(Yii::t('app', 'Reset'), ['class' => 'btn btn-default']) ?>
+	</div>
 
-    <?php ActiveForm::end(); ?>
+	<?php ActiveForm::end(); ?>
 
 </div>

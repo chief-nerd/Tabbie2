@@ -1,12 +1,12 @@
 <?php
 
-	use kartik\widgets\ActiveForm;
-	use kartik\widgets\DateTimePicker;
-	use yii\helpers\Html;
+use kartik\widgets\ActiveForm;
+use kartik\widgets\DateTimePicker;
+use yii\helpers\Html;
 
-	/* @var $this yii\web\View */
-	/* @var $model common\models\Tournament */
-	/* @var $form yii\widgets\ActiveForm */
+/* @var $this yii\web\View */
+/* @var $model common\models\Tournament */
+/* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="tournament-form">
@@ -26,27 +26,27 @@
 	])->dropDownList($model->getTabmasterOptions()) ?>
 
 	<?=
-		$form->field($model, 'start_date', [
-			'addon' => ['prepend' => ['content' => "<i class=\"glyphicon glyphicon-calendar\"></i>"]]
-		])->widget(DateTimePicker::classname(), [
-			'type' => DateTimePicker::TYPE_INPUT,
-			'options' => ['placeholder' => 'Enter start date / time ...'],
-			'pluginOptions' => [
-				'autoclose' => true
-			]
-		]);
+	$form->field($model, 'start_date', [
+		'addon' => ['prepend' => ['content' => "<i class=\"glyphicon glyphicon-calendar\"></i>"]]
+	])->widget(DateTimePicker::classname(), [
+		'type' => DateTimePicker::TYPE_INPUT,
+		'options' => ['placeholder' => 'Enter start date / time ...'],
+		'pluginOptions' => [
+			'autoclose' => true
+		]
+	]);
 	?>
 
 	<?=
-		$form->field($model, 'end_date', [
-			'addon' => ['prepend' => ['content' => "<i class=\"glyphicon glyphicon-calendar\"></i>"]]
-		])->widget(DateTimePicker::classname(), [
-			'type' => DateTimePicker::TYPE_INPUT,
-			'options' => ['placeholder' => 'Enter the end date / time ...'],
-			'pluginOptions' => [
-				'autoclose' => true
-			]
-		]);
+	$form->field($model, 'end_date', [
+		'addon' => ['prepend' => ['content' => "<i class=\"glyphicon glyphicon-calendar\"></i>"]]
+	])->widget(DateTimePicker::classname(), [
+		'type' => DateTimePicker::TYPE_INPUT,
+		'options' => ['placeholder' => 'Enter the end date / time ...'],
+		'pluginOptions' => [
+			'autoclose' => true
+		]
+	]);
 	?>
 
 	<?= $form->field($model, 'expected_rounds')

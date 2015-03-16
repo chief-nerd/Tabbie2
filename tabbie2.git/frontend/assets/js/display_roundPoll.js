@@ -6,8 +6,7 @@ href = $(".rounds").data("href");
             type: "GET",
             url: href,
         }).success(function (data) {
-            if (data.length > 0)
-            {
+            if (data.length > 0) {
                 $(".rounds").html(data);
             }
             else

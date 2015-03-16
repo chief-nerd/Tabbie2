@@ -7,17 +7,17 @@ use yii\helpers\Html;
 /* @var $model common\models\Strikes */
 
 $this->title = Yii::t('app', 'Create {modelClass}', [
-    'modelClass' => 'Strikes',
+	'modelClass' => 'Strikes',
 ]);
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Strikes'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="strikes-create">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+	<h1><?= Html::encode($this->title) ?></h1>
 
-    <?= $this->render('_form', [
-        'model' => $model,
-    ]) ?>
+	<?= $this->render('_form', [
+		'model' => $model,
+	]) ?>
 
 </div>

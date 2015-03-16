@@ -13,22 +13,22 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="round-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+	<h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?=
-        Html::a(Yii::t('app', 'Create {modelClass}', [
-                    'modelClass' => 'Round',
-                ]), ['create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
-        ?>
-    </p>
+	<p>
+		<?=
+		Html::a(Yii::t('app', 'Create {modelClass}', [
+			'modelClass' => 'Round',
+		]), ['create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
+		?>
+	</p>
 
-    <?=
-    ListView::widget([
-        'dataProvider' => $dataProvider,
-        'itemOptions' => ['class' => 'item row'],
-        'itemView' => "_item",
-    ])
-    ?>
+	<?=
+	ListView::widget([
+		'dataProvider' => $dataProvider,
+		'itemOptions' => ['class' => 'item row'],
+		'itemView' => "_item",
+	])
+	?>
 
 </div>

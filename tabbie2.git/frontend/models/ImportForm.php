@@ -10,26 +10,26 @@ use yii\base\Model;
  */
 class ImportForm extends Model {
 
-    public $csvFile;
-    public $tempImport;
+	public $csvFile;
+	public $tempImport;
 
-    /**
-     * @inheritdoc
-     */
-    public function rules() {
-        return [
-            // name, email, subject and body are required
-            [['csvFile'], 'required'],
-        ];
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function rules() {
+		return [
+			// name, email, subject and body are required
+			[['csvFile'], 'required'],
+		];
+	}
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels() {
-        return [
-            'csvFile' => '*.csv File',
-        ];
-    }
+	/**
+	 * @inheritdoc
+	 */
+	public function attributeLabels() {
+		return [
+			'csvFile' => '*.csv File',
+		];
+	}
 
 }

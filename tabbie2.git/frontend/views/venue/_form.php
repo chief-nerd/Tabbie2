@@ -10,18 +10,18 @@ use yii\widgets\ActiveForm;
 
 <div class="venue-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+	<?php $form = ActiveForm::begin(); ?>
 
-    <?= Html::activeHiddenInput($model, "tournament_id") ?>
+	<?= Html::activeHiddenInput($model, "tournament_id") ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => 100]) ?>
+	<?= $form->field($model, 'name')->textInput(['maxlength' => 100]) ?>
 
-    <?= $form->field($model, 'active')->checkbox() ?>
+	<?= $form->field($model, 'active')->checkbox() ?>
 
-    <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-    </div>
+	<div class="form-group">
+		<?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+	</div>
 
-    <?php ActiveForm::end(); ?>
+	<?php ActiveForm::end(); ?>
 
 </div>

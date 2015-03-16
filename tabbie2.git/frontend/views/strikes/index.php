@@ -11,25 +11,25 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="strikes-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+	<h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a(Yii::t('app', 'Create {modelClass}', [
-    'modelClass' => 'Strikes',
-]), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+	<p>
+		<?= Html::a(Yii::t('app', 'Create {modelClass}', [
+			'modelClass' => 'Strikes',
+		]), ['create'], ['class' => 'btn btn-success']) ?>
+	</p>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+	<?= GridView::widget([
+		'dataProvider' => $dataProvider,
+		'columns' => [
+			['class' => 'yii\grid\SerialColumn'],
 
-            'team_id',
-            'adjudicator_id',
-            'approved',
+			'team_id',
+			'adjudicator_id',
+			'approved',
 
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
+			['class' => 'yii\grid\ActionColumn'],
+		],
+	]); ?>
 
 </div>
