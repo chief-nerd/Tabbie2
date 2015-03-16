@@ -7,7 +7,15 @@ function panel_diversity(){
 	/*	Get the regions of each of the judges on the panel, and then for each region, subtract 1 from the frequency of it, and then sum them and add the result to the energy level for the debate.
 		Thus, if there is perfect diversity, the score is zero. If it's worse than that, it'll be 4,9,16 etc
 	*/
-
+		foreach ($adjudicator){
+        $regions[] = $adjudicator->region;
+        }
+    $region_diversity = array_count_values($regions);
+    $panel_homogeneity = '0';
+    foreach ($region_diversity as $region => $adjud_count){
+        $panel_homogeneity += (pow($adjud_count,2) - 1);
+        }
+    $panel_homogeneity_energy += $panel_homogeneity_penalty;
 }
 
 $energy_functions[] = 'university_conflict';
@@ -113,24 +121,67 @@ function chair_not_ciaran_perfect(){
 	The 5 judges are ranked 100,80,60,40,20
 	The judges in each room should be 100/80, 100/80, 60/40, 60/40, 20. Penalty for each point outside those bounds.
 	*/
+
+	//Get the number of rooms in each point bracket, and then look up the ranking of the n'th active judge
+
+	//SORT ROOMS BY POTENTIAL
+	//SORT ACTIVE JUDGES
+	//GET NUMBER OF ROOMS ON EACH POTENTIAL:
+
+		//THIS IS SOMETHING WE NEED TO TALK ABOUT
+
+	//For each of those numbers, return the rank of that judge
+	//MAKE EACH OF THOSE RANKS A SPREAD, with a $high_boundary and a $low_boundary
+
+	foreach($adjudicator){
+		if($adjudicator->ranking > $high_boundary || $adjudicator->ranking > $low_boundary)
+	}
+
+
 }
 
 $energy_functions[] = 'rotation_not_applied';
 function rotation_not_applied(){
 	/* Maybe this should just be a tie-breaker, but I'm not sure. Where this is on, penalty for each time that this (chair?) judge has judged a room of this potential / points bracket?
 	*/
+	foreach($adjudicator){
+		$adjudicator_rotation = array();
+		$adjudicator_rotation = $adjudicator->room_levels;
+		$adjudicator_rotation_energy = pow($adjudicator_rotation_penalty, $adjudicator_rotation[/*level of the current debate*/]
+			//This is meant to penalise allocations that have the same judge always judging the same quality of rooms. Ideally, you want some level of adjudicator rotation.
+	}
 }
 
 $energy_functions[] = 'judge_met_team';
 function judge_met_team(){
 	/* Check each of the judges' history, and check whether they've judged this team before. If they have, add this penalty to the energy level for the debate.
 	*/
+	foreach($adjudicator){
+		$team_history = array();
+		$team_history = $adjudicator->history;
+		foreach($team){
+			$team_id = $team->id;
+			if ($team_history[$team_id]){
+				$adjudicator_met_team += pow($adjudicator_met_team_penalty,$team_history[$team_id]);
+			}
+		}
+	}
 }
 
 $energy_functions = 'judge_met_judge'
 function judge_met_judge(){
 	/* Check each of the judges' history, and check whether they've judged with each other judge before. If they have, add this penalty to the energy level for the debate.
 	*/
+		foreach($adjudicator){
+		$adjudicator_history = array();
+		$adjudicator_history = $adjudicator->history;
+		foreach($adjudiator){
+			$adjudiator = $adjudiator->id;
+			if ($adjudicator_history[$adjudicator_id]){
+				$adjudicator_met_team += pow($team_$adjudicator_met_adjudicator_penalty,$adjudicator_history[$adjudicator_id]);
+			}
+		}
+	}
 }
 
 function get_energy_total(){
@@ -144,4 +195,4 @@ foreach($energy_functions as $energy_check){
 function switch_two_people(){
 	/*Get the energy levels of their two debates, and then work out the energy levels if they were to switch. If it would be better to have them switch, do it.
 	 */
-}
+}z
