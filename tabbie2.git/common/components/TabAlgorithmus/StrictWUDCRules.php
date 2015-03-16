@@ -262,8 +262,8 @@
 
 			$config = [
 				[
-					"label" => "University Strike Penalty",
-					"key" => "university_strike",
+					"label" => "Team and adjudicator in same society penalty",
+					"key" => "society_strike",
 					"value" => -1000,
 				]
 			];
@@ -298,14 +298,16 @@
 
 		/**
 		 *
+		 * Adds the society strike penalty
+		 *
 		 * @param DrawLine $line
 		 * @param Round $round
 		 *
-		 * @return boolean
+		 * @return DrawLine
 		 */
 		public function energyRule_UniversityStrikes($line, $round) {
 
-			$penalty = EnergyConfig::get("university_strike", $round->tournament_id);
+			$penalty = EnergyConfig::get("society_strike", $round->tournament_id);
 			foreach ($line->getAdjudicators() as $adjudicator) {
 				foreach ($line->getTeams() as $team) {
 					if ($team->society_id == $adjudicator->society_id) {
