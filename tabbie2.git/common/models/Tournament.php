@@ -99,7 +99,7 @@
 		 */
 		public static function findByPk($id) {
 			$tournament = Yii::$app->cache->get("tournament" . $id);
-			if ($tournament == false) {
+			if (!$tournament instanceof Tournament) {
 				$tournament = Tournament::findOne(["id" => $id]);
 				Yii::$app->cache->set("tournament" . $id, $tournament, 120);
 			}
