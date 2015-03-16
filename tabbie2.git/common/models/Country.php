@@ -82,7 +82,7 @@
 				self::REGION_CENTRAL_AFRICA => Yii::t("country", "Central Africa"),
 				self::REGION_EASTERN_AFTRICA => Yii::t("country", "Eastern Africa"),
 				self::REGION_SOUTHERN_AFRICA => Yii::t("country", "Southern Africa"),
-				self::REGION_NORTHERN_AMERICA => Yii::t("country", "Northern Africa"),
+				self::REGION_NORTHERN_AMERICA => Yii::t("country", "Northern America"),
 				self::REGION_CENTRAL_AMERICA => Yii::t("country", "Central America"),
 				self::REGION_CARIBBEAN => Yii::t("country", "Caribbean"),
 				self::REGION_SOUTH_AMERICA => Yii::t("country", "South America"),
