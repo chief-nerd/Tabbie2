@@ -42,7 +42,14 @@ class ResultSearch extends Result {
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+	        'pagination' => [
+		        'pageSize' => Yii::$app->params["results_per_page"],
+	        ],
         ]);
+
+	    $dataProvider->setSort([
+		    'defaultOrder' => ['venue_id' => SORT_ASC],
+	    ]);
 
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
