@@ -26,7 +26,7 @@ use Yii;
  * @property Panel $panel
  * @property Venue $venue
  * @property Feedback[] $feedbacks
- * @property Result[] $results
+ * @property Result $result
  * @property Tournament $tournament
  */
 class Debate extends \yii\db\ActiveRecord {
@@ -193,5 +193,14 @@ class Debate extends \yii\db\ActiveRecord {
         else
             return false;
     }
+
+	public function getTeams($onlyKeys = false) {
+		return [
+			"og" => ($onlyKeys) ? $this->og_team_id : $this->og_team,
+			"oo" => ($onlyKeys) ? $this->oo_team_id : $this->oo_team,
+			"cg" => ($onlyKeys) ? $this->cg_team_id : $this->cg_team,
+			"co" => ($onlyKeys) ? $this->co_team_id : $this->co_team,
+		];
+	}
 
 }

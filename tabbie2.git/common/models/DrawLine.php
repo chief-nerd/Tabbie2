@@ -162,10 +162,10 @@ class DrawLine extends Model {
      */
     public function getLevel() {
         return max([
-            $this->getOG()->getPoints(),
-            $this->getOO()->getPoints(),
-            $this->getCO()->getPoints(),
-            $this->getCG()->getPoints(),
+	        $this->getOG()->points,
+	        $this->getOO()->points,
+	        $this->getCO()->points,
+	        $this->getCG()->points,
         ]);
     }
 

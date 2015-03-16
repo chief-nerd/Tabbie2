@@ -121,4 +121,14 @@ class Result extends \yii\db\ActiveRecord {
         return $this->hasOne(User::className(), ['id' => 'entered_by_id']);
     }
 
+	public function updateTeamCache() {
+		foreach ($this->debate->getTeams() as $pos => $team) {
+			/** @var Team $team */
+			$team->points += (4 - $this->{$pos . "_place"});
+			$team->speakerA_speaks += $this->{$pos . "_A_speaks"};
+			$team->speakerB_speaks += $this->{$pos . "_B_speaks"};
+			$team->save();
+		}
+	}
+
 }

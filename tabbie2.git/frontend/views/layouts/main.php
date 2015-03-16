@@ -134,6 +134,7 @@
 					['label' => 'Results', 'url' => '#',
 						"items" => array_merge_recursive([
 							['label' => 'List Results', 'url' => ['result/index', "tournament_id" => $tournament->id]],
+							['label' => 'Correct Cache', 'url' => ['result/correctcache', "tournament_id" => $tournament->id]],
 							'<li class="divider"></li>',
 						], $results),
 					],

@@ -124,14 +124,6 @@ class StrictWUDCRulesTest extends DbTestCase {
                 'class' => \tests\codeception\common\fixtures\RoundFixture::className(),
                 'dataFile' => '@tests/codeception/common/fixtures/data/round.php',
             ],
-            'tabafterround' => [
-                'class' => \tests\codeception\common\fixtures\TabafterroundFixture::className(),
-                'dataFile' => '@tests/codeception/common/fixtures/data/tabafterround.php',
-            ],
-            'tabposition' => [
-                'class' => \tests\codeception\common\fixtures\TabPositionFixture::className(),
-                'dataFile' => '@tests/codeception/common/fixtures/data/tabposition.php',
-            ],
         ];
     }
 

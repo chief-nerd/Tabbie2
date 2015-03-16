@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Debate;
 use Yii;
 use common\models\Result;
 use common\models\search\ResultSearch;
@@ -113,8 +114,10 @@ class ResultController extends BaseController {
                 if ($model->confirmed == "true") {
 
                     $model->entered_by_id = Yii::$app->user->id;
-                    if ($model->save())
-                        return $this->render('thankyou', ["model" => $model]);
+	                if ($model->save()) {
+		                $model->updateTeamCache();
+		                return $this->render('thankyou', ["model" => $model]);
+	                }
                     else {
                         Yii::error("Save Results: " . print_r($model->getErrors(), true), __METHOD__);
                         Yii::$app->session->addFlash("error", "Error saving Results.<br>Please request a paper ballot!");
@@ -204,5 +207,66 @@ class ResultController extends BaseController {
                     'model' => $model,
         ]);
     }
+
+	public function actionCorrectcache() {
+		$results = \common\models\Result::find()->leftJoin("debate", "debate.id = result.debate_id")->where([
+			"debate.tournament_id" => $this->_tournament->id,
+		])->all();
+
+		$teams = \common\models\Team::find()->where(["tournament_id" => $this->_tournament->id])->all();
+
+		$found = false;
+
+		foreach ($teams as $team) {
+			$calculated_points = 0;
+			$calculated_A_speaks = 0;
+			$calculated_B_speaks = 0;
+			foreach (Debate::positions() as $pos) {
+
+				$results = \common\models\Result::find()
+				                                ->leftJoin("debate", "debate.id = result.debate_id")
+				                                ->where([
+					                                "debate.tournament_id" => $this->_tournament->id,
+					                                "debate." . $pos . "_team_id" => $team->id,
+				                                ])->all();
+				if (is_array($results)) {
+					foreach ($results as $res) {
+						/**
+						 * @var Result $res
+						 */
+						$calculated_points += (4 - $res->{$pos . "_place"});
+						$calculated_A_speaks += $res->{$pos . "_A_speaks"};
+						$calculated_B_speaks += $res->{$pos . "_B_speaks"};
+					}
+				}
+			}
+
+			if ($calculated_points != $team->points) {
+				Yii::$app->session->addFlash("info", "Correct Points for " . $team->name . " from " . $team->points . " to " . $calculated_points);
+				$team->points = $calculated_points;
+				$team->save();
+				$found = true;
+			}
+
+			if ($calculated_A_speaks != $team->speakerA_speaks) {
+				Yii::$app->session->addFlash("info", "Correct SpeakerA Speaks for " . $team->name . " from " . $team->speakerA_speaks . " to " . $calculated_A_speaks);
+				$team->speakerA_speaks = $calculated_A_speaks;
+				$team->save();
+				$found = true;
+			}
+
+			if ($calculated_B_speaks != $team->speakerB_speaks) {
+				Yii::$app->session->addFlash("info", "Correct SpeakerB Speaks for " . $team->name . " from " . $team->speakerB_speaks . " to " . $calculated_B_speaks);
+				$team->speakerB_speaks = $calculated_B_speaks;
+				$team->save();
+				$found = true;
+			}
+		}
+
+		if ($found == false)
+			Yii::$app->session->addFlash("success", Yii::t("app", "Cache in perfect shape. No change needed!"));
+
+		return $this->redirect(['result/index', "tournament_id" => $this->_tournament->id]);
+	}
 
 }

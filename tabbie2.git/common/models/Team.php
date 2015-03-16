@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\base\Exception;
 
 /**
  * This is the model class for table "team".
@@ -16,6 +17,9 @@ use Yii;
  * @property integer $society_id
  * @property integer $isSwing
  * @property integer $language_status
+ * @property integer $points
+ * @property integer $speakerA_speaks
+ * @property integer $speakerB_speaks
  *
  * @property TabPosition[] $tabPositions
  * @property InSociety $inSocieties
@@ -53,7 +57,7 @@ class Team extends \yii\db\ActiveRecord {
         return $('#team-isswing')[0].checked == false;
     }"],
             [['speakerA_id', 'speakerB_id'], 'default'],
-	        [['tournament_id', 'active', 'society_id', 'isSwing', 'language_status'], 'integer'],
+	        [['tournament_id', 'active', 'society_id', 'isSwing', 'language_status', 'points', 'speakerA_speaks', 'speakerB_speaks'], 'integer'],
             [['name'], 'string', 'max' => 255]
         ];
     }
@@ -164,38 +168,39 @@ class Team extends \yii\db\ActiveRecord {
     }
 
     /**
-     * Returns the points the team is on at the CURRENT state of the tournament
-     * @use getPointsAfterRound
-     * @return int
-     */
-    public function getPoints() {
-        $last_round = $this->tournament->getLastRound();
-        if ($last_round instanceof Round)
-            return $this->getPointsAfterRound($last_round->number);
-        else
-            return 0;
-    }
-
-    /**
      * Get the points the team is on after the specified round.
      * @param integer $number
      * @return int
      */
     public function getPointsAfterRound($number) {
-        $round = Round::find()->where([
-                    "number" => $number,
-                    "tournament_id" => $this->tournament_id
-                ])->one();
 
-        if ($round instanceof Round) {
-            $tabObject = TabAfterRound::findOne(["round_id" => $round->id]);
-            if ($tabObject instanceof TabAfterRound)
-                return $tabObject->getTeamPoints($this->id);
-            else
-                return 0; //No Round yet
-        } else {
-            throw new Exception("No Round found when getting Points");
-        }
+	    $points = 0;
+
+	    for ($i = 1; $i <= $number; $i++) {
+		    $debateQuery = Debate::find()->leftJoin("round", "round.id = debate.round_id")->where([
+			    "round.number" => $i,
+			    "round.tournament_id" => $this->tournament_id
+		    ]);
+
+		    $debateQuery->andWhere(["og_team_id" => $this->id]);
+		    $debateQuery->orWhere(["oo_team_id" => $this->id]);
+		    $debateQuery->orWhere(["cg_team_id" => $this->id]);
+		    $debateQuery->orWhere(["co_team_id" => $this->id]);
+
+		    $debate = $debateQuery->one();
+
+
+		    if ($debate instanceof Debate && $debate->result instanceof Result) {
+			    foreach (Debate::positions() as $p) {
+				    if ($debate->{$p . "_team_id"} == $this->id)
+					    $position = $p;
+			    }
+
+			    $points += (4 - $debate->result->{$position . "_place"});
+
+		    }
+	    }
+	    return $points;
     }
 
     public function getDebates() {
@@ -220,8 +225,8 @@ class Team extends \yii\db\ActiveRecord {
      * @param Team $b
      */
     public static function compare_points($a, $b) {
-        $ap = $a->getPoints();
-        $bp = $b->getPoints();
+	    $ap = $a->points;
+	    $bp = $b->points;
         return ($ap < $bp) ? 1 : (($ap > $bp) ? -1 : 0);
     }
 
@@ -233,10 +238,10 @@ class Team extends \yii\db\ActiveRecord {
      * @uses Team::getLevel
      * @return bool
      */
-    public function is_swappable_with($other_team) {
+	public function is_swappable_with($other_team, $line_a_level, $line_b_level) {
         $result = ($this->id != $other_team->id) &&
                 (($this->points == $other_team->points) ||
-                ($this->level == $other_team->level));
+	                ($line_a_level == $line_b_level));
         return $result;
     }
 

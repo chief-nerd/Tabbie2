@@ -3,11 +3,11 @@
 namespace common\components\TabAlgorithmus;
 
 use \common\components\TabAlgorithmus;
+use common\models\EnergyConfig;
 use common\models\Team;
 use common\models\Venue;
 use common\models\Adjudicator;
 use yii\base\Exception;
-use \Codeception\Util\Debug;
 use common\models\DrawLine;
 use Yii;
 
@@ -79,7 +79,9 @@ class StrictWUDCRules extends TabAlgorithmus {
          * Go through the Draw until you can't make any improvements
          */
         $stillFoundASwap = true;
+	    $count = 0;
         while ($stillFoundASwap) {
+	        $count++;
             $stillFoundASwap = false; //Assume we are done, prove me wrong
 
             foreach ($this->DRAW as $line) {
@@ -96,6 +98,7 @@ class StrictWUDCRules extends TabAlgorithmus {
             }
             //If we havn't found a better swap $stillFoundASwap should be false and the loop breaks
         }
+	    Yii::trace("Finished Loop with count: $count", __METHOD__);
 
         /*
          * Allocate the Adjudicators
@@ -146,11 +149,11 @@ class StrictWUDCRules extends TabAlgorithmus {
      */
     public function randomise_within_points($teams) {
 
-        $saved_points = $teams[0]->getPoints(); //reset to start
+	    $saved_points = $teams[0]->points; //reset to start
         $last_break = 0;
 
         for ($i = 0; $i < count($teams); $i++) {
-            $team_points = $teams[$i]->getPoints();
+	        $team_points = $teams[$i]->points;
             if ($team_points != $saved_points) {
                 $bracket = array_slice($teams, $last_break, ($i - $last_break));
                 shuffle($bracket);
@@ -185,10 +188,10 @@ class StrictWUDCRules extends TabAlgorithmus {
      */
     public function setup($tournament) {
         $tid = $tournament->id;
-        $strike = new \common\models\EnergyConfig();
+	    $strike = new EnergyConfig();
         $strike->tournament_id = $tid;
-        $strike->label = "Strike Penalty";
-        $strike->key = "strike";
+	    $strike->label = "University Strike Penalty";
+	    $strike->key = "university_strike";
         $strike->value = -1000;
         $strike->save();
         return true;
@@ -209,11 +212,13 @@ class StrictWUDCRules extends TabAlgorithmus {
 
     /**
      *
-     * @param integer $line
+     * @param DrawLine $line_a
      * @param integer $pos_a
-     * @return boolean
+     *
+*@return boolean
      */
     public function find_best_swap_for($line_a, $pos_a) {
+	    /** @var Team $team_a */
         $team_a = $line_a->getTeamOn($pos_a);
         $best_effect = 0;
         $best_team_b_line = false;
@@ -221,7 +226,8 @@ class StrictWUDCRules extends TabAlgorithmus {
 
         foreach ($this->DRAW as $line) {
             foreach ($line->getTeams() as $pos_b => $team_b) { //this loop especially can be limited
-                if ($team_a->is_swappable_with($team_b)) {
+	            if ($team_a->is_swappable_with($team_b, $line_a->level, $line->level)) {
+		            Yii::trace("Found swappable A: $team_a->id, B:$team_b->id", __METHOD__);
 
                     //Get Status Quo Badness
                     $current = $team_a->getPositionBadness($pos_a) + $team_b->getPositionBadness($pos_b);
@@ -229,6 +235,7 @@ class StrictWUDCRules extends TabAlgorithmus {
                     $future = $team_a->getPositionBadness($pos_b) + $team_b->getPositionBadness($pos_a);
 
                     $net_effect = $future - $current;
+		            Yii::trace("Algo Swappable\n Net Effect: $net_effect\n BestEffect: $best_effect", __METHOD__);
                     if ($net_effect < $best_effect) {
                         $best_effect = $net_effect;
                         $best_team_b_line = $line;
@@ -237,8 +244,11 @@ class StrictWUDCRules extends TabAlgorithmus {
                 }
             }
         }
+	    Yii::trace("Finished Draw", __METHOD__);
+
         if ($best_team_b_line && $best_team_b_pos) {
-            $this->swap_teams($line_a, $pos_a, $best_team_b_line, $best_team_b_pos);
+	        Yii::trace("Finished draw\n Best Effect: $best_effect\nBest Team B: " . $best_team_b_line->getTeamOn($best_team_b_pos)->id, __METHOD__);
+	        $this->swap_teams($line_a, $pos_a, $best_team_b_line, $best_team_b_pos);
             return true;
         }
         return false;
@@ -266,8 +276,11 @@ class StrictWUDCRules extends TabAlgorithmus {
      * @param type $round
      * @return boolean
      */
-    public function energyRule_Strikes($line, $round) {
+	public function energyRule_UniversityStrikes($line, $round) {
+
+
         $line->energyLevel += 1000;
+
         return $line;
     }
 
