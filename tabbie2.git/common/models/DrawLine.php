@@ -50,6 +50,12 @@ class DrawLine extends Model {
      */
     public $energyLevel = 0;
 
+	/**
+	 * Messages for that line to show to user
+	 * @var array
+	 */
+	public $messages = [];
+
     /**
      * Get the Strength of the Panel
      * @return int
@@ -57,6 +63,13 @@ class DrawLine extends Model {
     public function getStrength() {
         return 1;
     }
+
+	public function addMessage($key, $msg) {
+		$this->messages[] = [
+			"key" => $key,
+			"msg" => $msg,
+		];
+	}
 
     public function setTeams($og, $oo, $cg, $co) {
         $this->setOG($og);
