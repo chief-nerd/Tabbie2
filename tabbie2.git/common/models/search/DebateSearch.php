@@ -44,7 +44,7 @@ class DebateSearch extends Debate {
      */
     public function search($params, $tid, $rid, $displayed = true) {
         $query = Debate::find()
-                ->joinWith("venue")
+	        ->leftJoin("venue", "venue.id = debate.venue_id")
                 ->leftJoin("team as ogteam", "ogteam.id = debate.og_team_id")
                 ->leftJoin("team as ooteam", "ooteam.id = debate.oo_team_id")
                 ->leftJoin("team as cgteam", "cgteam.id = debate.cg_team_id")
@@ -116,14 +116,18 @@ class DebateSearch extends Debate {
             'time' => $this->time,
         ]);
 
-        $query->andWhere(["like", "venue.name", $params["DebateSearch"]["venue"]]);
+	    $query->andWhere("ogteam.name LIKE '%" . $params["DebateSearch"]["team"] . "%' OR " .
+		    "ooteam.name LIKE '%" . $params["DebateSearch"]["team"] . "%' OR " .
+		    "cgteam.name LIKE '%" . $params["DebateSearch"]["team"] . "%' OR " .
+		    "coteam.name LIKE '%" . $params["DebateSearch"]["team"] . "%'"
+	    );
 
-        $query->andWhere(["like", "ogteam.name", $params["DebateSearch"]["team"]]);
-        $query->orWhere(["like", "ooteam.name", $params["DebateSearch"]["team"]]);
-        $query->orWhere(["like", "cgteam.name", $params["DebateSearch"]["team"]]);
-        $query->orWhere(["like", "coteam.name", $params["DebateSearch"]["team"]]);
+	    /*$query->orWhere(["like", "ooteam.name", $params["DebateSearch"]["team"]]);
+	$query->orWhere(["like", "cgteam.name", $params["DebateSearch"]["team"]]);
+	$query->orWhere(["like", "coteam.name", $params["DebateSearch"]["team"]]);*/
 
         $query->andWhere(["like", "CONCAT(user.givenname, ' ', user.surename)", $params["DebateSearch"]["adjudicator"]]);
+	    $query->andWhere(["like", "venue.name", $params["DebateSearch"]["venue"]]);
 
         $query->andWhere(["round_id" => $rid]);
 

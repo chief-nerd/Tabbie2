@@ -63,12 +63,8 @@ class VenueSearch extends Venue {
     }
 
     public function getSearchArray($tid, $keys = false) {
-	    if (!Yii::$app->cache->get("venue_t_" . $tid)) {
-		    $venues = Venue::find()->where(["tournament_id" => $tid])->asArray()->all();
-		    Yii::$app->cache->set("venue_t_" . $tid, $venues, 180);
-	    }
-	    else
-		    $venues = Yii::$app->cache->get("venue_t_" . $tid);
+
+	    $venues = Venue::find()->where(["tournament_id" => $tid])->asArray()->all();
 
         $filter = [];
         foreach ($venues as $v) {
