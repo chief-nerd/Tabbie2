@@ -22,6 +22,7 @@
 /* Asia */
 .region .CEAS {
     background-color: #DE9079;
+    color: #333333;
 }
 
 .region .EAAS {
@@ -64,10 +65,12 @@
 
 .region .WEAF {
     background-color: #75DE3B;
+    color: #333;
 }
 
 .region .CEAF {
     background-color: #99D995;
+    color: #333;
 }
 
 .region .EAAF {
@@ -76,15 +79,18 @@
 
 .region .SOAF {
     background-color: #88E070;
+    color: #333;
 }
 
 /* Americas */
 .region .NOAM {
     background-color: #D6CA73;
+    color: #333333;
 }
 
 .region .CEAM {
     background-color: #D3D239;
+    color: #333;
 }
 
 .region .CARI {
@@ -94,11 +100,14 @@
 /* South America */
 .region .SOAM {
     background-color: #42DDBB;
+    color: #333;
 }
 
 /* Antarktica */
 .region .ANTA {
     background-color: #ffffff;
+    color: #333333;
+    border: 1px solid #AAA;
 }
 
 /**
