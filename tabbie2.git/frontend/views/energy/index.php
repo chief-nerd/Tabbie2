@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -15,25 +15,20 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<h1><?= Html::encode($this->title) ?></h1>
 
-	<p>
-		<?=
-		Html::a(Yii::t('app', 'Create {modelClass}', [
-			'modelClass' => 'Energy Config',
-		]), ['create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
-		?>
-	</p>
-
 	<?=
 	GridView::widget([
 		'dataProvider' => $dataProvider,
 		'columns' => [
-			['class' => 'yii\grid\SerialColumn'],
-			'id',
-			'key',
-			'tournament_id',
 			'label',
 			'value',
-			['class' => 'yii\grid\ActionColumn'],
+			[
+				'class' => 'kartik\grid\ActionColumn',
+				'template' => '{update}',
+				'urlCreator' => function ($action, $model, $key, $index) {
+					return \yii\helpers\Url::to(["energy/" . $action, "id" => $model->id, "tournament_id" => $model->tournament->id]);
+				},
+				'updateOptions' => ['title' => Yii::t("app", "Update Energy Value"), 'data-toggle' => 'tooltip'],
+			],
 		],
 	]);
 	?>

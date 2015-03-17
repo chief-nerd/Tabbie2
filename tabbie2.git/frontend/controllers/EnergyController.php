@@ -35,7 +35,7 @@ class EnergyController extends BaseController {
 	 */
 	public function actionIndex() {
 		$dataProvider = new ActiveDataProvider([
-			'query' => EnergyConfig::find(),
+			'query' => EnergyConfig::find()->where(["tournament_id" => $this->_tournament->id]),
 		]);
 
 		return $this->render('index', [
@@ -87,7 +87,7 @@ class EnergyController extends BaseController {
 		$model = $this->findModel($id);
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
-			return $this->redirect(['view', 'id' => $model->id]);
+			return $this->redirect(['index', 'tournament_id' => $this->_tournament->id]);
 		}
 		else {
 			return $this->render('update', [
