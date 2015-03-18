@@ -6,9 +6,11 @@ use Yii;
 
 /**
  * This is the model class for table "adjudicator_strike".
+
  *
- * @property integer     $adjudicator_id
+*@property integer     $adjudicator_id
  * @property integer     $adjudicator_id1
+ * @property integer     $tournament_id
  * @property Adjudicator $adjudicator
  * @property Adjudicator $adjudicatorId1
  */
@@ -25,8 +27,9 @@ class AdjudicatorStrike extends \yii\db\ActiveRecord {
 	 */
 	public function rules() {
 		return [
-			[['adjudicator_id', 'adjudicator_id1'], 'required'],
-			[['adjudicator_id', 'adjudicator_id1'], 'integer']
+			[['adjudicator_to_id', 'adjudicator_from_id'], 'required'],
+			[['adjudicator_to_id', 'adjudicator_from_id'], 'integer'],
+			['tournament_id', 'safe']
 		];
 	}
 
@@ -35,22 +38,22 @@ class AdjudicatorStrike extends \yii\db\ActiveRecord {
 	 */
 	public function attributeLabels() {
 		return [
-			'adjudicator_id' => Yii::t('app', 'Adjudicator ID'),
-			'adjudicator_id1' => Yii::t('app', 'Adjudicator Id1'),
+			'adjudicator_from_id' => Yii::t('app', 'Adjudicator From ID'),
+			'adjudicator_to_id' => Yii::t('app', 'Adjudicator To ID'),
 		];
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getAdjudicator() {
-		return $this->hasOne(Adjudicator::className(), ['id' => 'adjudicator_id']);
+	public function getAdjudicatorFrom() {
+		return $this->hasOne(Adjudicator::className(), ['id' => 'adjudicator_from_id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getAdjudicatorId1() {
-		return $this->hasOne(Adjudicator::className(), ['id' => 'adjudicator_id1']);
+	public function getAdjudicatorTo() {
+		return $this->hasOne(Adjudicator::className(), ['id' => 'adjudicator_to_id']);
 	}
 }

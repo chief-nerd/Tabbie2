@@ -31,7 +31,7 @@ class AdjudicatorController extends BaseController {
 					],
 					[
 						'allow' => true,
-						'actions' => ['create', 'update', 'delete', 'replace', 'move', 'import', 'active', 'popup', 'watch'],
+						'actions' => ['create', 'update', 'delete', 'replace', 'move', 'import', 'active', 'popup', 'watch', 'list'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->isTabMaster($this->_tournament));
 						}
@@ -461,6 +461,34 @@ class AdjudicatorController extends BaseController {
 	public function actionResetwatched() {
 		Adjudicator::updateAll(["are_watched" => 0], ["tournament_id" => $this->_tournament->id]);
 		return $this->redirect(['adjudicator/index', 'tournament_id' => $this->_tournament->id]);
+	}
+
+	/**
+	 * Returns 20 Adjudicators in an JSON List
+	 *
+	 * @param type $search
+	 * @param type $id
+	 */
+	public function actionList($search = null, $id = null, $tournament_id) {
+		$out = ['more' => false];
+		if (!is_null($search)) {
+			$query = new \yii\db\Query;
+			$query->select(["adjudicator.id", "CONCAT(user.givenname, ' ', user.surename) as text"])
+			      ->from('adjudicator')
+			      ->leftJoin("user", "adjudicator.user_id = user.id")
+			      ->where('tournament_id = "' . $tournament_id . '" AND CONCAT(user.givenname, " ", user.surename) LIKE "%' . $search . '%"')
+			      ->limit(20);
+			$command = $query->createCommand();
+			$data = $command->queryAll();
+			$out['results'] = array_values($data);
+		}
+		elseif ($id > 0) {
+			$out['results'] = ['id' => $id, 'text' => Adjudicator::findOne($id)->name];
+		}
+		else {
+			$out['results'] = ['id' => 0, 'text' => 'No matching records found'];
+		}
+		echo \yii\helpers\Json::encode($out);
 	}
 
 }

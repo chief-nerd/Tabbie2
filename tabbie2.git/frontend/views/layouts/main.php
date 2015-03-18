@@ -111,6 +111,8 @@ if ($this->context->hasMethod("_getContext")) {
 						['label' => 'List Teams', 'url' => ['team/index', "tournament_id" => $tournament->id]],
 						['label' => 'Create Team', 'url' => ['team/create', "tournament_id" => $tournament->id]],
 						['label' => 'Import Team', 'url' => ['team/import', "tournament_id" => $tournament->id]],
+						'<li class="divider"></li>',
+						['label' => 'Strike Team', 'url' => ['strike/team_index', "tournament_id" => $tournament->id]],
 					]
 				],
 				['label' => 'Adjudicators', 'url' => '#',
@@ -120,6 +122,8 @@ if ($this->context->hasMethod("_getContext")) {
 						['label' => 'Import Adjudicator', 'url' => ['adjudicator/import', "tournament_id" => $tournament->id]],
 						'<li class="divider"></li>',
 						['label' => 'Preset Adj. Panels', 'url' => ["panel/create", "tournament_id" => $tournament->id]],
+						'<li class="divider"></li>',
+						['label' => 'Strike Adjudicator', 'url' => ['strike/adjudicator_index', "tournament_id" => $tournament->id]],
 					]
 				],
 				['label' => 'Rounds', 'url' => '#',

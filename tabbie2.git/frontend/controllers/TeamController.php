@@ -29,7 +29,7 @@ class TeamController extends BaseController {
 					],
 					[
 						'allow' => true,
-						'actions' => ['create', 'update', 'delete', 'import', 'active'],
+						'actions' => ['create', 'update', 'delete', 'import', 'active', 'list'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->isTabMaster($this->_tournament));
 						}
@@ -421,6 +421,33 @@ class TeamController extends BaseController {
 		else {
 			throw new NotFoundHttpException('The requested page does not exist.');
 		}
+	}
+
+	/**
+	 * Returns 20 Teams in an JSON List
+	 *
+	 * @param type $search
+	 * @param type $id
+	 */
+	public function actionList($search = null, $id = null, $tournament_id) {
+		$out = ['more' => false];
+		if (!is_null($search)) {
+			$query = new \yii\db\Query;
+			$query->select(["id", "name as text"])
+			      ->from('team')
+			      ->where('tournament_id = "' . $tournament_id . '" AND name LIKE "%' . $search . '%"')
+			      ->limit(20);
+			$command = $query->createCommand();
+			$data = $command->queryAll();
+			$out['results'] = array_values($data);
+		}
+		elseif ($id > 0) {
+			$out['results'] = ['id' => $id, 'text' => Team::findOne($id)->name];
+		}
+		else {
+			$out['results'] = ['id' => 0, 'text' => 'No matching records found'];
+		}
+		echo \yii\helpers\Json::encode($out);
 	}
 
 }

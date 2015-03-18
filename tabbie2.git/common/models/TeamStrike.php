@@ -6,10 +6,12 @@ use Yii;
 
 /**
  * This is the model class for table "team_strike".
+
  *
- * @property integer     $id
+*@property integer     $id
  * @property integer     $team_id
  * @property integer     $adjudicator_id
+ * @property integer     $tournament_id
  * @property Team        $team
  * @property Adjudicator $adjudicator
  */
@@ -27,7 +29,8 @@ class TeamStrike extends \yii\db\ActiveRecord {
 	public function rules() {
 		return [
 			[['team_id', 'adjudicator_id'], 'required'],
-			[['team_id', 'adjudicator_id'], 'integer']
+			[['team_id', 'adjudicator_id'], 'integer'],
+			['tournament_id', 'safe']
 		];
 	}
 
@@ -37,8 +40,8 @@ class TeamStrike extends \yii\db\ActiveRecord {
 	public function attributeLabels() {
 		return [
 			'id' => Yii::t('app', 'ID'),
-			'team_id' => Yii::t('app', 'Team ID'),
-			'adjudicator_id' => Yii::t('app', 'Adjudicator ID'),
+			'team_id' => Yii::t('app', 'Team'),
+			'adjudicator_id' => Yii::t('app', 'Adjudicator'),
 		];
 	}
 
