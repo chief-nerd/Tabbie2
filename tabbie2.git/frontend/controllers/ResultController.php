@@ -10,6 +10,7 @@ use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
+use yii\filters\AccessControl;
 
 /**
  * ResultController implements the CRUD actions for Result model.
@@ -20,6 +21,18 @@ class ResultController extends BaseController {
 		return [
 			'tournamentFilter' => [
 				'class' => TournamentContextFilter::className(),
+			],
+			'access' => [
+				'class' => AccessControl::className(),
+				'rules' => [
+					[
+						'allow' => true,
+						'actions' => ['index', 'round', 'view', 'create', 'update', 'manual', 'correctcache'],
+						'matchCallback' => function ($rule, $action) {
+							return (Yii::$app->user->isTabMaster($this->_tournament));
+						}
+					],
+				],
 			],
 			'verbs' => [
 				'class' => VerbFilter::className(),
