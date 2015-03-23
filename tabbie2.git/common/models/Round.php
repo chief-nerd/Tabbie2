@@ -31,6 +31,14 @@ class Round extends \yii\db\ActiveRecord {
 	const STATUS_JUDGING   = 4;
 	const STATUS_CLOSED    = 5;
 
+	/**
+	 * @inheritdoc
+	 * @return TournamentQuery
+	 */
+	public static function find() {
+		return new TournamentQuery(get_called_class());
+	}
+
 	static function statusLabel($code = null) {
 
 		$labels = [

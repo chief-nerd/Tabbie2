@@ -35,7 +35,7 @@ class EnergyController extends BaseController {
 	 */
 	public function actionIndex() {
 		$dataProvider = new ActiveDataProvider([
-			'query' => EnergyConfig::find()->where(["tournament_id" => $this->_tournament->id]),
+			'query' => EnergyConfig::find()->tournament($this->_tournament->id),
 		]);
 
 		return $this->render('index', [

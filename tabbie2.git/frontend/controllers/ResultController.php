@@ -133,7 +133,10 @@ class ResultController extends BaseController {
 					$model->entered_by_id = Yii::$app->user->id;
 					if ($model->save()) {
 						$model->updateTeamCache();
-						return $this->render('thankyou', ["model" => $model]);
+
+						return $this->render('thankyou', [
+							"model" => $model,
+						]);
 					}
 					else {
 						Yii::error("Save Results: " . print_r($model->getErrors(), true), __METHOD__);
@@ -152,7 +155,7 @@ class ResultController extends BaseController {
 				'model' => $model,
 			]);
 		}
-		else
+		else //Already entered - prevent reload
 			return $this->render('thankyou', ["model" => $result]);
 	}
 
@@ -241,7 +244,7 @@ class ResultController extends BaseController {
 			"debate.tournament_id" => $this->_tournament->id,
 		])->all();
 
-		$teams = \common\models\Team::find()->where(["tournament_id" => $this->_tournament->id])->all();
+		$teams = \common\models\Team::find()->tournament($this->_tournament->id)->all();
 
 		$found = false;
 
