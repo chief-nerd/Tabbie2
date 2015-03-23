@@ -24,6 +24,9 @@ use Yii;
  */
 class Adjudicator extends \yii\db\ActiveRecord {
 
+
+	const MAX_RATING = 10;
+
 	/**
 	 * @inheritdoc
 	 */

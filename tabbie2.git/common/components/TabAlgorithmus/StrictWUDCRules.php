@@ -334,7 +334,7 @@ class StrictWUDCRules extends TabAlgorithmus {
 		$penalty = EnergyConfig::get("adjudicator_strike", $round->tournament_id);
 		foreach ($line->getAdjudicators() as $adjudicator) {
 			foreach ($line->getAdjudicators() as $adjudicator_match) {
-				foreach($adjudicator->getStrikedAdjudicators as $adjudicator_check{
+				foreach ($adjudicator->getStrikedAdjudicators() as $adjudicator_check) {
 					if($adjudicator_check->id == $adjudicator_match->id){
 					$line->addMessage("error", "Adjudicator " . $adjudicator->name . " and " . $adjudicator_match->name . " are clashed");
 					$line->energyLevel += $penalty;
@@ -357,10 +357,10 @@ class StrictWUDCRules extends TabAlgorithmus {
 	public function energyRule_NonChair($line, $round) {
 
 		$penalty = EnergyConfig::get("non_chair", $round->tournament_id);
-		foreach ($line->getchair() as $chair) {
+		foreach ($line->getChair() as $chair) {
 				//This relies on there being a 'can_chair' tag
 				if ($chair->can_chair == 0) {
-					$line->addMessage("error", "Adjudicator " . $adjudicator->name . " has been labelled a non-chair");
+					$line->addMessage("error", "Adjudicator " . $chair->name . " has been labelled a non-chair");
 					$line->energyLevel += $penalty;
 				}
 		}
@@ -379,9 +379,9 @@ class StrictWUDCRules extends TabAlgorithmus {
 	public function energyRule_NotPerfect($line, $round) {
 
 		$penalty = EnergyConfig::get("chair_not_perfect", $round->tournament_id);
-		foreach ($line->getchair() as $chair) {
+		foreach ($line->getChair() as $chair) {
 				//This basically adds a penalty for each point away from the maximum the chair's ranking is
-				$penalty_mod = $penalty * (100 /* (or whatever the max ranking is) */ - $chair->$strength);
+			$penalty_mod = $penalty * (Adjudicator::MAX_RATING - $chair->$strength);
 				$line->energyLevel += $penalty_mod;
 		}
 
@@ -401,7 +401,7 @@ class StrictWUDCRules extends TabAlgorithmus {
 		$penalty = EnergyConfig::get("judge_met_judge", $round->tournament_id);
 		foreach ($line->getAdjudicators() as $adjudicator){
 			foreach ($line->getAdjudicators() as $adjudicator_match) {
-					foreach ($adjudicator->getPanels->getAdjudicators() as $match_id) {
+				foreach ($adjudicator->getPanels()->getAdjudicators() as $match_id) {
 						if($match_id->id == $adjudicator_match->id)
 						$line->addMessage("error", "Adjudicator " . $adjudicator->name . " and " . $adjudicator_match->name . " have judged together before");
 						$line->energyLevel += $penalty;
@@ -428,25 +428,10 @@ class StrictWUDCRules extends TabAlgorithmus {
 					if($previous_team->id == $current_team->id)
 					$line->addMessage("error", "Adjudicator " . $adjudicator->name . " has judged " . $adjudicator_match->name . " before");
 					$line->energyLevel += $penalty;
-					//I'd like this to add additional penalties for EACH time that an adjudicator has judged a team. Does this do that? I think so.
 					}
 				}
 			}
 
 		return $line;
-	}	
-
-
-
-	/**
-	 * @param DrawLine $line
-	 * @param type     $round
-	 *
-	 * @return boolean
-	 */
-	public function energyRule_Random($line, $round) {
-		$line->energyLevel += 0;
-		return $line;
 	}
-
 }
