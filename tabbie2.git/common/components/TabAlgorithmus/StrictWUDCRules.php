@@ -268,6 +268,31 @@ class StrictWUDCRules extends TabAlgorithmus {
 				"label" => "Team and adjudicator in same society penalty",
 				"key" => "society_strike",
 				"value" => -1000,
+			],
+			[
+				"label" => "Adjudicator is Clashed",
+				"key" => "adjudicator_strike",
+				"value" => -1000,
+			],
+			[
+				"label" => "Adjudicator is not allowed to chair",
+				"key" => "non_chair",
+				"value" => -1000,
+			],
+			[
+				"label" => "Chair is not perfect at the current situation",
+				"key" => "chair_not_perfect",
+				"value" => -100,
+			],
+			[
+				"label" => "Adjudicator has already judged in this combination",
+				"key" => "judge_met_judge",
+				"value" => -100,
+			],
+			[
+				"label" => "Adjudicator has seen the team already",
+				"key" => "judge_met_team",
+				"value" => -20,
 			]
 		];
 
