@@ -11,8 +11,6 @@ namespace frontend\assets;
 use yii\web\AssetBundle;
 
 /**
- * Round View Asset Group
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since  2.0
  */
