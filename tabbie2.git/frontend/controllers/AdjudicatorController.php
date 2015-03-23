@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use common\components\filter\TournamentContextFilter;
 use common\models\Adjudicator;
+use common\models\Country;
 use common\models\Panel;
 use common\models\search\AdjudicatorSearch;
 use Yii;
@@ -304,7 +305,7 @@ class AdjudicatorController extends BaseController {
 						$society = new \common\models\Society();
 						$society->fullname = $row[0][0];
 						$society->abr = \common\models\Society::generateAbr($society->fullname);
-						$society->country_id = 0;
+						$society->country_id = Country::COUNTRY_UNKNOWN_ID;
 						$society->save();
 						$societyID = $society->id;
 					}

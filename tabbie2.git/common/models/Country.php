@@ -16,6 +16,9 @@ use Yii;
  */
 class Country extends \yii\db\ActiveRecord {
 
+	//Key of an Unknown Country
+	const COUNTRY_UNKNOWN_ID = 250;
+
 	//Blue
 	const REGION_NORTHERN_EUROPE = 11; //#28334C
 	const REGION_WESTERN_EUROPE  = 12; //#4B6FC8

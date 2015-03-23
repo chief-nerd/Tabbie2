@@ -42,7 +42,7 @@ CREATE TABLE `country` (
 LOCK TABLES `country` WRITE;
 /*!40000 ALTER TABLE `country` DISABLE KEYS */;
 INSERT INTO `country`
-VALUES (0, 'Unknown', '', '', 0), (1, 'Afghanistan', 'af', 'afg', 24), (2, 'Aland Islands', 'ax', 'ala', 11),
+VALUES (1, 'Afghanistan', 'af', 'afg', 24), (2, 'Aland Islands', 'ax', 'ala', 11),
   (3, 'Albania', 'al', 'alb', 13),
   (4, 'Algeria', 'dz', 'dza', 41), (5, 'American Samoa', 'as', 'asm', 34), (6, 'Andorra', 'ad', 'and', 13),
   (7, 'Angola', 'ao', 'ago', 43), (8, 'Anguilla', 'ai', 'aia', 53), (9, 'Antarctica', 'aq', NULL, 71),
@@ -139,7 +139,8 @@ VALUES (0, 'Unknown', '', '', 0), (1, 'Afghanistan', 'af', 'afg', 24), (2, 'Alan
   (241, 'Venezuela, Bolivarian Republic of', 've', 'ven', 61), (242, 'Viet Nam', 'vn', 'vnm', 25),
   (243, 'Virgin Islands, British', 'vg', 'vgb', 53), (244, 'Virgin Islands, U.S.', 'vi', 'vir', 53),
   (245, 'Wallis and Futuna', 'wf', 'wlf', 34), (246, 'Western Sahara', 'eh', 'esh', 41),
-  (247, 'Yemen', 'ye', 'yem', 23), (248, 'Zambia', 'zm', 'zmb', 44), (249, 'Zimbabwe', 'zw', 'zwe', 44);
+  (247, 'Yemen', 'ye', 'yem', 23), (248, 'Zambia', 'zm', 'zmb', 44), (249, 'Zimbabwe', 'zw', 'zwe', 44),
+  (250, 'Unknown', '', '', 0);
 /*!40000 ALTER TABLE `country` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE = @OLD_TIME_ZONE */;
