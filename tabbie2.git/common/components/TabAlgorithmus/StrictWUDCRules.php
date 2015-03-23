@@ -322,6 +322,123 @@ class StrictWUDCRules extends TabAlgorithmus {
 	}
 
 	/**
+	 * Adds the adjudicator strike penalty
+	 *
+	 * @param DrawLine $line
+	 * @param Round    $round
+	 *
+	 * @return DrawLine
+	 */
+	public function energyRule_AdjudicatorStrikes($line, $round) {
+
+		$penalty = EnergyConfig::get("adjudicator_strike", $round->tournament_id);
+		foreach ($line->getAdjudicators() as $adjudicator) {
+			foreach ($line->getAdjudicators() as $adjudicator_match) {
+				foreach($adjudicator->getStrikedAdjudicators as $adjudicator_check{
+					if($adjudicator_check->id == $adjudicator_match->id){
+					$line->addMessage("error", "Adjudicator " . $adjudicator->name . " and " . $adjudicator_match->name . " are clashed");
+					$line->energyLevel += $penalty;
+					}
+				}
+			}
+		}
+
+		return $line;
+	}
+
+	/**
+	 * Adds the non-chair in the chair penalty
+	 *
+	 * @param DrawLine $line
+	 * @param Round    $round
+	 *
+	 * @return DrawLine
+	 */
+	public function energyRule_NonChair($line, $round) {
+
+		$penalty = EnergyConfig::get("non_chair", $round->tournament_id);
+		foreach ($line->getchair() as $chair) {
+				//This relies on there being a 'can_chair' tag
+				if ($chair->can_chair == 0) {
+					$line->addMessage("error", "Adjudicator " . $adjudicator->name . " has been labelled a non-chair");
+					$line->energyLevel += $penalty;
+				}
+		}
+
+		return $line;
+	}
+
+	/**
+	 * Adds the chair not perfect penalty
+	 *
+	 * @param DrawLine $line
+	 * @param Round    $round
+	 *
+	 * @return DrawLine
+	 */
+	public function energyRule_NotPerfect($line, $round) {
+
+		$penalty = EnergyConfig::get("chair_not_perfect", $round->tournament_id);
+		foreach ($line->getchair() as $chair) {
+				//This basically adds a penalty for each point away from the maximum the chair's ranking is
+				$penalty_mod = $penalty * (100 /* (or whatever the max ranking is) */ - $chair->$strength);
+				$line->energyLevel += $penalty_mod;
+		}
+
+		return $line;
+	}
+
+	/**
+	 * Adds the judge met judge penalty
+	 *
+	 * @param DrawLine $line
+	 * @param Round    $round
+	 *
+	 * @return DrawLine
+	 */
+	public function energyRule_JudgeMetJudge($line, $round) {
+
+		$penalty = EnergyConfig::get("judge_met_judge", $round->tournament_id);
+		foreach ($line->getAdjudicators() as $adjudicator){
+			foreach ($line->getAdjudicators() as $adjudicator_match) {
+					foreach ($adjudicator->getPanels->getAdjudicators() as $match_id) {
+						if($match_id->id == $adjudicator_match->id)
+						$line->addMessage("error", "Adjudicator " . $adjudicator->name . " and " . $adjudicator_match->name . " have judged together before");
+						$line->energyLevel += $penalty;
+					}
+				}
+			}
+		return $line;
+	}	
+
+	/**
+	 * Adds the judge met team penalty
+	 *
+	 * @param DrawLine $line
+	 * @param Round    $round
+	 *
+	 * @return DrawLine
+	 */
+	public function energyRule_JudgeMetTeam($line, $round) {
+
+		$penalty = EnergyConfig::get("judge_met_team", $round->tournament_id);
+		foreach ($line->getAdjudicators() as $adjudicator) {
+				foreach ($adjudicator->getPanels->getDebates->getTeams() as $previous_team) {
+					foreach($line->getTeams() as $current_team){
+					if($previous_team->id == $current_team->id)
+					$line->addMessage("error", "Adjudicator " . $adjudicator->name . " has judged " . $adjudicator_match->name . " before");
+					$line->energyLevel += $penalty;
+					//I'd like this to add additional penalties for EACH time that an adjudicator has judged a team. Does this do that? I think so.
+					}
+				}
+			}
+
+		return $line;
+	}	
+
+
+
+	/**
 	 * @param DrawLine $line
 	 * @param type     $round
 	 *

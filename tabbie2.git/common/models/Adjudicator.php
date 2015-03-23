@@ -131,6 +131,13 @@ class Adjudicator extends \yii\db\ActiveRecord {
 	}
 
 	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getChair() {
+		return $this->can_chair;
+	}
+
+	/**
 	 * @param type $id
 	 *
 	 * @return type
