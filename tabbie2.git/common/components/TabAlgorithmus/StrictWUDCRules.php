@@ -405,9 +405,10 @@ class StrictWUDCRules extends TabAlgorithmus {
 		//This basically adds a penalty for each point away from the maximum the chair's ranking is
 		$diffPerfect = (Adjudicator::MAX_RATING - $line->getChair()->strength);
 
-		$line->addMessage("warning", "Chair not perfect by " . $diffPerfect);
-		$line->energyLevel += ($penalty * $diffPerfect);
-
+		if ($diffPerfect > 0) {
+			$line->addMessage("warning", "Chair not perfect by " . $diffPerfect);
+			$line->energyLevel += ($penalty * $diffPerfect);
+		}
 		return $line;
 	}
 
@@ -422,14 +423,18 @@ class StrictWUDCRules extends TabAlgorithmus {
 	public function energyRule_JudgeMetJudge($line, $round) {
 
 		$penalty = EnergyConfig::get("judge_met_judge", $round->tournament_id);
+		$found = [];
 		foreach ($line->getAdjudicators() as $adjudicator) {
 			$pastAdjudicatorIDS = $adjudicator->getPastAdjudicatorIDs();
 
 			foreach ($line->getAdjudicators() as $adjudicator_match) {
 				if ($adjudicator_match->id != $adjudicator->id) {
 					if (in_array($adjudicator_match->id, $pastAdjudicatorIDS)) {
-						$line->addMessage("warning", "Adjudicator " . $adjudicator->name . " and " . $adjudicator_match->name . " have judged together before");
-						$line->energyLevel += $penalty;
+						if (!in_array($adjudicator_match->id, $found)) {
+							$found[] = $adjudicator_match->id;
+							$line->addMessage("warning", "Adjudicator " . $adjudicator->name . " and " . $adjudicator_match->name . " have judged together before");
+							$line->energyLevel += $penalty;
+						}
 					}
 				}
 

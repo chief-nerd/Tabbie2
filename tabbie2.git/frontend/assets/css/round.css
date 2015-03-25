@@ -53,7 +53,7 @@ ul li:first-child .adj {
     font-size: 80%;
 }
 
-#debateDraw-container tbody tr td:nth-child(6) {
+#debateDraw-container tbody tr td:nth-child(7) {
     padding: 0;
 }
 
@@ -90,4 +90,13 @@ ul li:first-child .adj {
 
 .team-index h1 {
     margin-top: 0px;
+}
+
+.messages {
+    max-height: 100px;
+    overflow: scroll;
+}
+
+.messages table {
+    width: 100%;
 }

@@ -94,6 +94,18 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 	<?
 	$gridColumns = [
 		[
+			'class' => 'kartik\grid\ExpandRowColumn',
+			'width' => '30px',
+			'value' => function ($model, $key, $index, $column) {
+				return GridView::ROW_COLLAPSED;
+			},
+			/*'detail'=>function ($model, $key, $index, $column) {
+				return Yii::$app->controller->renderPartial('_debate_details', ['model'=>$model]);
+			},*/
+			'headerOptions' => ['class' => 'kartik-sheet-style'],
+			'detailUrl' => \yii\helpers\Url::to(['round/debatedetails', "tournament_id" => $model->tournament_id]),
+		],
+		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'venue',
 			'label' => 'Venue',

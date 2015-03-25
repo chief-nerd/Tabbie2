@@ -89,8 +89,8 @@ class Panel extends \yii\db\ActiveRecord {
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getDebates() {
-		return $this->hasMany(Debate::className(), ['panel_id' => 'id']);
+	public function getDebate() {
+		return $this->hasOne(Debate::className(), ['panel_id' => 'id']);
 	}
 
 	/**

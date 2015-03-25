@@ -6,8 +6,9 @@ use Yii;
 
 /**
  * This is the model class for table "debate".
+
  *
- * @property integer    $id
+*@property integer    $id
  * @property integer    $round_id
  * @property integer    $tournament_id
  * @property integer    $og_team_id
@@ -22,6 +23,7 @@ use Yii;
  * @property integer    $cg_feedback
  * @property integer    $co_feedback
  * @property string     $time
+ * @property string     $messages
  * @property Panel      $panel
  * @property Venue      $venue
  * @property Feedback[] $feedbacks
@@ -56,6 +58,7 @@ class Debate extends \yii\db\ActiveRecord {
 		return [
 			[['round_id', 'tournament_id', 'og_team_id', 'oo_team_id', 'cg_team_id', 'co_team_id', 'panel_id', 'venue_id'], 'required'],
 			[['round_id', 'tournament_id', 'og_team_id', 'oo_team_id', 'cg_team_id', 'co_team_id', 'panel_id', 'venue_id', 'energy', 'og_feedback', 'oo_feedback', 'cg_feedback', 'co_feedback'], 'integer'],
+			['messages', "string"],
 			[['time'], 'safe']
 		];
 	}
@@ -79,6 +82,7 @@ class Debate extends \yii\db\ActiveRecord {
 			'cg_feedback' => Yii::t('app', 'Cg Feedback'),
 			'co_feedback' => Yii::t('app', 'Co Feedback'),
 			'time' => Yii::t('app', 'Time'),
+			'messages' => Yii::t('app', 'Messages')
 		];
 	}
 
@@ -210,6 +214,14 @@ class Debate extends \yii\db\ActiveRecord {
 			"cg" => ($onlyKeys) ? $this->cg_team_id : $this->cg_team,
 			"co" => ($onlyKeys) ? $this->co_team_id : $this->co_team,
 		];
+	}
+
+	public function setMessages($array) {
+		$this->messages = json_encode($array);
+	}
+
+	public function getMessages() {
+		return ($this->messages) ? json_decode($this->messages) : [];
 	}
 
 }

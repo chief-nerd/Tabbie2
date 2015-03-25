@@ -26,7 +26,7 @@ class RoundController extends BaseController {
 				'rules' => [
 					[
 						'allow' => true,
-						'actions' => ['index', 'view', 'printballots'],
+						'actions' => ['index', 'view', 'printballots', 'debatedetails'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->isTabMaster($this->_tournament) || Yii::$app->user->isConvenor($this->_tournament));
 						}
@@ -306,6 +306,18 @@ class RoundController extends BaseController {
 		$mpdf->SetTitle($title);
 		$mpdf->Output();
 		exit;
+	}
+
+	public function actionDebatedetails() {
+		try {
+			$id = Yii::$app->request->post("expandRowKey", 0);
+			$debate = Debate::findOne($id);
+			if ($debate instanceof Debate)
+				return $this->renderAjax("_debate_details", ["model" => $debate]);
+		} catch (Exception $ex) {
+			return $ex->getMessage();
+		}
+		return "Error";
 	}
 
 }

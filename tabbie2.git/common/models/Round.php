@@ -213,6 +213,7 @@ class Round extends \yii\db\ActiveRecord {
 				$debate->venue_id = $line->venue->id;
 				$debate->panel_id = $panelID;
 				$debate->energy = $line->energyLevel;
+				$debate->setMessages($line->messages);
 
 				if (!$debate->save())
 					throw new Exception("Can't save Debate " . print_r($debate->getErrors(), true));
