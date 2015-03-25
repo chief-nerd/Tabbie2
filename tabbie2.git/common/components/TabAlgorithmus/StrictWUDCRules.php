@@ -270,8 +270,13 @@ class StrictWUDCRules extends TabAlgorithmus {
 				"value" => -1000,
 			],
 			[
-				"label" => "Adjudicator is Clashed",
+				"label" => "Adjudicators are clashed",
 				"key" => "adjudicator_strike",
+				"value" => -1000,
+			],
+			[
+				"label" => "Team with Adjudicator is clashed",
+				"key" => "team_strike",
 				"value" => -1000,
 			],
 			[
@@ -361,8 +366,34 @@ class StrictWUDCRules extends TabAlgorithmus {
 		foreach ($line->getAdjudicators() as $adjudicator) {
 			foreach ($adjudicator->getStrikedAdjudicators()->all() as $adjudicator_check) {
 				if ($adjudicator_check->id == $adjudicator->id) {
-					$line->addMessage("error", "Adjudicator " . $adjudicator->name . " and " . $adjudicator_check->name . " are clashed");
+					$line->addMessage("error", "Adjudicator " . $adjudicator->name . " and " . $adjudicator_check->name . " are manually clashed");
 					$line->energyLevel += $penalty;
+				}
+			}
+		}
+
+		return $line;
+	}
+
+	/**
+	 * Adds the adjudicator <-> team strike penalty
+	 *
+	 * @param DrawLine $line
+	 * @param Round    $round
+	 *
+	 * @return DrawLine
+	 */
+	public function energyRule_TeamAdjStrikes($line, $round) {
+
+		$penalty = EnergyConfig::get("team_strike", $round->tournament_id);
+
+		foreach ($line->getAdjudicators() as $adjudicator) {
+			foreach ($adjudicator->getStrikedTeams()->all() as $team_check) {
+				foreach ($line->getTeams() as $team) {
+					if ($team->id == $team_check->id) {
+						$line->addMessage("error", "Adjudicator " . $adjudicator->name . " and Team " . $team->name . " are manually clashed");
+						$line->energyLevel += $penalty;
+					}
 				}
 			}
 		}

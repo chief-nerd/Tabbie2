@@ -217,6 +217,7 @@ class Debate extends \yii\db\ActiveRecord {
 	}
 
 	public function setMessages($array) {
+		ksort($array);
 		$this->messages = json_encode($array);
 	}
 
