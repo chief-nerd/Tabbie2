@@ -191,5 +191,4 @@ class DrawLine extends Model {
 			$this->getCG()->points,
 		]);
 	}
-
 }

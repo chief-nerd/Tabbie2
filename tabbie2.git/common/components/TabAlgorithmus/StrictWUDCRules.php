@@ -357,13 +357,12 @@ class StrictWUDCRules extends TabAlgorithmus {
 	public function energyRule_AdjudicatorStrikes($line, $round) {
 
 		$penalty = EnergyConfig::get("adjudicator_strike", $round->tournament_id);
+
 		foreach ($line->getAdjudicators() as $adjudicator) {
-			foreach ($line->getAdjudicators() as $adjudicator_match) {
-				foreach ($adjudicator->getStrikedAdjudicators() as $adjudicator_check) {
-					if($adjudicator_check->id == $adjudicator_match->id){
-					$line->addMessage("error", "Adjudicator " . $adjudicator->name . " and " . $adjudicator_match->name . " are clashed");
+			foreach ($adjudicator->getStrikedAdjudicators()->all() as $adjudicator_check) {
+				if ($adjudicator_check->id == $adjudicator->id) {
+					$line->addMessage("error", "Adjudicator " . $adjudicator->name . " and " . $adjudicator_check->name . " are clashed");
 					$line->energyLevel += $penalty;
-					}
 				}
 			}
 		}
@@ -382,12 +381,10 @@ class StrictWUDCRules extends TabAlgorithmus {
 	public function energyRule_NonChair($line, $round) {
 
 		$penalty = EnergyConfig::get("non_chair", $round->tournament_id);
-		foreach ($line->getChair() as $chair) {
-				//This relies on there being a 'can_chair' tag
-				if ($chair->can_chair == 0) {
-					$line->addMessage("error", "Adjudicator " . $chair->name . " has been labelled a non-chair");
-					$line->energyLevel += $penalty;
-				}
+		//This relies on there being a 'can_chair' tag
+		if ($line->getChair()->can_chair == 0) {
+			$line->addMessage("error", "Adjudicator " . $line->getChair()->name . " has been labelled a non-chair");
+			$line->energyLevel += $penalty;
 		}
 
 		return $line;
@@ -404,11 +401,12 @@ class StrictWUDCRules extends TabAlgorithmus {
 	public function energyRule_NotPerfect($line, $round) {
 
 		$penalty = EnergyConfig::get("chair_not_perfect", $round->tournament_id);
-		foreach ($line->getChair() as $chair) {
-				//This basically adds a penalty for each point away from the maximum the chair's ranking is
-			$penalty_mod = $penalty * (Adjudicator::MAX_RATING - $chair->$strength);
-				$line->energyLevel += $penalty_mod;
-		}
+
+		//This basically adds a penalty for each point away from the maximum the chair's ranking is
+		$diffPerfect = (Adjudicator::MAX_RATING - $line->getChair()->strength);
+
+		$line->addMessage("warning", "Chair not perfect by " . $diffPerfect);
+		$line->energyLevel += ($penalty * $diffPerfect);
 
 		return $line;
 	}
@@ -424,17 +422,22 @@ class StrictWUDCRules extends TabAlgorithmus {
 	public function energyRule_JudgeMetJudge($line, $round) {
 
 		$penalty = EnergyConfig::get("judge_met_judge", $round->tournament_id);
-		foreach ($line->getAdjudicators() as $adjudicator){
+		foreach ($line->getAdjudicators() as $adjudicator) {
+			$pastAdjudicatorIDS = $adjudicator->getPastAdjudicatorIDs();
+
 			foreach ($line->getAdjudicators() as $adjudicator_match) {
-				foreach ($adjudicator->getPanels()->getAdjudicators() as $match_id) {
-						if($match_id->id == $adjudicator_match->id)
-						$line->addMessage("error", "Adjudicator " . $adjudicator->name . " and " . $adjudicator_match->name . " have judged together before");
+				if ($adjudicator_match->id != $adjudicator->id) {
+					if (in_array($adjudicator_match->id, $pastAdjudicatorIDS)) {
+						$line->addMessage("warning", "Adjudicator " . $adjudicator->name . " and " . $adjudicator_match->name . " have judged together before");
 						$line->energyLevel += $penalty;
 					}
 				}
+
 			}
+
+		}
 		return $line;
-	}	
+	}
 
 	/**
 	 * Adds the judge met team penalty
@@ -448,14 +451,15 @@ class StrictWUDCRules extends TabAlgorithmus {
 
 		$penalty = EnergyConfig::get("judge_met_team", $round->tournament_id);
 		foreach ($line->getAdjudicators() as $adjudicator) {
-				foreach ($adjudicator->getPanels->getDebates->getTeams() as $previous_team) {
-					foreach($line->getTeams() as $current_team){
-					if($previous_team->id == $current_team->id)
-					$line->addMessage("error", "Adjudicator " . $adjudicator->name . " has judged " . $adjudicator_match->name . " before");
+			$pastTeamIDs = $adjudicator->getPastTeamIDs();
+
+			foreach ($line->getTeams() as $team) {
+				if (in_array($team->id, $pastTeamIDs)) {
+					$line->addMessage("warning", "Adjudicator " . $adjudicator->name . " has judged Team " . $team->name . " before");
 					$line->energyLevel += $penalty;
-					}
 				}
 			}
+		}
 
 		return $line;
 	}

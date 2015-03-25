@@ -46,18 +46,15 @@ class StrictWUDCRulesTest extends DbTestCase {
     }
 
     public function testSortAndRandomisationOfTeams() {
-        $teams = \common\models\Team::findAll(["tournament_id" => 1]);
+	    $teams = \common\models\Team::find()->tournament(1)->all();
         $new_teams = $this->algo->sort_teams($teams);
         $new_teams = $this->algo->randomise_within_points($new_teams);
 
         expect("Preserve Amount", count($new_teams))->equals(count($teams));
         for ($i = 0; $i < count($new_teams); $i++) {
-            /* @var $t Team */
-            $t = $new_teams[$i];
-
-            $this->assertInstanceOf(Team::className(), $t);
+	        $this->assertInstanceOf(Team::className(), $new_teams[$i]);
             if ($i > 0) {
-                expect("Sort Order", $t->getPoints())->lessOrEquals($new_teams[$i - 1]->getPoints());
+	            expect("Sort Order", $new_teams[$i]->points)->lessOrEquals($new_teams[$i - 1]->points);
             }
         }
     }
