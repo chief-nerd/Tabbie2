@@ -31,6 +31,9 @@ $this->params['breadcrumbs'][] = $this->title;
 			'label' => 'ESL Place',
 			'width' => '80px',
 			'visible' => $tournament->has_esl,
+			'value' => function ($model, $key, $index, $widget) {
+				return ($model->esl_place) ? $model->esl_place : "";
+			},
 		],
 		[
 			'class' => '\kartik\grid\DataColumn',
