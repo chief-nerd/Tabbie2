@@ -25,7 +25,7 @@ if ($model->result instanceof Result) {
 		. "</tr><tr>"
 		. "<td>" . $model->cg_team->speakerA->name . ": " . $result->cg_A_speaks . "<br/>"
 		. $model->cg_team->speakerB->name . ": " . $result->cg_B_speaks . "</td>"
-		. "<td>" . $model->oo_team->speakerA->name . ": " . $result->oo_A_speaks . "<br/>"
+		. "<td>" . $model->co_team->speakerA->name . ": " . $result->co_A_speaks . "<br/>"
 		. $model->co_team->speakerB->name . ": " . $result->co_B_speaks . "</td>"
 		. "</tr>"
 		. "</table>";

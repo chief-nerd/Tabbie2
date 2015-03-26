@@ -39,14 +39,6 @@ class Result extends \yii\db\ActiveRecord {
 
 	/**
 	 * @inheritdoc
-	 * @return TournamentQuery
-	 */
-	public static function find() {
-		return new TournamentQuery(get_called_class());
-	}
-
-	/**
-	 * @inheritdoc
 	 */
 	public function rules() {
 		return [

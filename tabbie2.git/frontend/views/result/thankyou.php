@@ -1,7 +1,6 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Result */
@@ -20,6 +19,25 @@ $this->params['breadcrumbs'][] = $this->title;
 				<h1><?= Yii::t("app", "Thank you!") ?></h1>
 
 				<h2 class="text-success"><?= Yii::t("app", "Results successfully saved") ?></h2>
+				<?
+				if ($place > 0) {
+					$class = "";
+					$pre = "";
+					if ($place <= ($max / 4)) {
+						$class = "success";
+						$pre = '<i class="glyphicon glyphicon-star"></i> ' . Yii::t("app", "Speeeed Bonus!");
+					}
+					if ($place >= floor(($max / 4 * 3))) {
+						$class = "danger";
+						$pre = '<i class="glyphicon glyphicon-alert"></i> ' . Yii::t("app", "Hurry up! Chop Chop!");
+					}
+					if ($place == $max) {
+						$class = "danger";
+						$pre = '<i class="glyphicon glyphicon-alert"></i> ' . Yii::t("app", "Bummer! Last one!");
+					}
+					echo '<h3 class="text-' . $class . '">' . $pre . ' You are <b>#' . $place . '</b> from ' . $max . '</h3>';
+				}
+				?>
 			</center>
 		</div>
 	</div>

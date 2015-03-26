@@ -123,6 +123,7 @@ class ResultController extends BaseController {
 	public function actionCreate($id) {
 
 		$result = Result::find()->where(["debate_id" => $id])->one();
+
 		if (!$result instanceof Result) {
 			$model = new Result();
 			$model->debate_id = $id;
@@ -134,8 +135,20 @@ class ResultController extends BaseController {
 					if ($model->save()) {
 						$model->updateTeamCache();
 
+						$roundid = Debate::findOne($id)->round_id;
+						$place = Result::find()->joinWith("debate")->where([
+							"debate.tournament_id" => $this->_tournament->id,
+							"round_id" => $roundid
+						])->count();
+						$max = Debate::find()
+						             ->tournament($this->_tournament->id)
+						             ->where(["round_id" => $roundid])
+						             ->count();
+
 						return $this->render('thankyou', [
 							"model" => $model,
+							"place" => $place,
+							"max" => $max,
 						]);
 					}
 					else {
@@ -156,7 +169,13 @@ class ResultController extends BaseController {
 			]);
 		}
 		else //Already entered - prevent reload
-			return $this->render('thankyou', ["model" => $result]);
+		{
+			return $this->render('thankyou', [
+				"model" => $result,
+				"place" => 0,
+				"max" => 0,
+			]);
+		}
 	}
 
 	/**
@@ -170,8 +189,27 @@ class ResultController extends BaseController {
 	public function actionUpdate($id) {
 		$model = $this->findModel($id);
 
-		if ($model->load(Yii::$app->request->post()) && $model->save()) {
-			return $this->redirect(['view', 'id' => $model->id]);
+		if ($model->load(Yii::$app->request->post())) {
+			if ($model->confirmed == "true") {
+
+				$model->entered_by_id = Yii::$app->user->id;
+				if ($model->save()) {
+					$model->updateTeamCache();
+
+					Yii::$app->session->addFlash("success", "Result updated");
+					return $this->redirect(['result/round', 'id' => $model->debate->round_id, "tournament_id" => $this->_tournament->id]);
+				}
+				else {
+					Yii::error("Save Results: " . print_r($model->getErrors(), true), __METHOD__);
+					Yii::$app->session->addFlash("error", "Error saving Results.<br>Please request a paper ballot!");
+				}
+			}
+			else {
+				$model->rankTeams();
+				return $this->render('confirm', [
+					'model' => $model,
+				]);
+			}
 		}
 		else {
 			return $this->render('update', [
