@@ -59,7 +59,7 @@ class TeamController extends BaseController {
 
 		$stat["active"] = Team::find()->active()->tournament($this->_tournament->id)->count();
 		$stat["inactive"] = Team::find()->active(false)->tournament($this->_tournament->id)->count();
-		$stat["swing"] = Team::find()->tournament($this->_tournament->id)->where(["isSwing" => true])->count();
+		$stat["swing"] = Team::find()->tournament($this->_tournament->id)->andWhere(["isSwing" => true])->count();
 
 		return $this->render('index', [
 			'searchModel' => $searchModel,

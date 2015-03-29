@@ -7,6 +7,8 @@ use common\models\search\DebateSearch;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use common\models\Adjudicator;
+use common\models\Team;
 
 /**
  * TournamentController implements the CRUD actions for Tournament model.
@@ -25,9 +27,16 @@ class DisplayController extends BaseController {
 				'rules' => [
 					[
 						'allow' => true,
-						'actions' => ['index', 'view', 'start'],
+						'actions' => ['index', 'view', 'start', 'missinguser'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->isTabMaster($this->_tournament) || Yii::$app->user->isConvenor($this->_tournament));
+						}
+					],
+					[
+						'allow' => true,
+						'actions' => ['markmissing'],
+						'matchCallback' => function ($rule, $action) {
+							return (Yii::$app->user->isTabMaster($this->_tournament));
 						}
 					],
 				],
@@ -106,6 +115,43 @@ class DisplayController extends BaseController {
 				return "1";
 		}
 		return "0";
+	}
+
+	/**
+	 * Show checkin form.
+	 *
+	 * @return mixed
+	 */
+	public function actionMissinguser() {
+
+		$teams = Team::find()
+		             ->tournament($this->_tournament->id)
+		             ->andWhere("speakerA_checkedin = 0 OR speakerB_checkedin = 0")
+		             ->all();
+		$adjudicators = Adjudicator::find()->tournament($this->_tournament->id)->andWhere(["checkedin" => 0])->all();
+
+		return $this->render('missing', [
+			"teams" => $teams,
+			"adjudicators" => $adjudicators,
+		]);
+	}
+
+	/**
+	 * Show checkin form.
+	 *
+	 * @return mixed
+	 */
+	public function actionMarkmissing() {
+
+		$team = Team::updateAll(["active" => 0],
+			"tournament_id = :tid AND ( speakerA_checkedin = 0 OR speakerB_checkedin = 0 )",
+			[":tid" => $this->_tournament->id]
+		);
+		$adju = Adjudicator::updateAll(["active" => 0], ["tournament_id" => $this->_tournament->id, "checkedin" => 0]);
+
+		Yii::$app->session->addFlash("info", $team . " Teams and " . $adju . " Adjudicators set as inactive");
+
+		return $this->redirect(["tournament/view", "id" => $this->_tournament->id]);
 	}
 
 }

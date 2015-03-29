@@ -128,10 +128,10 @@ if ($this->context->hasMethod("_getContext")) {
 				],
 				['label' => 'Rounds', 'url' => '#',
 					"items" => array_merge_recursive([
-						['label' => 'Energy Options', 'url' => ['energy/index', "tournament_id" => $tournament->id]],
-						'<li class="divider"></li>',
 						['label' => 'List Rounds', 'url' => ['round/index', "tournament_id" => $tournament->id]],
 						['label' => 'Create Round', 'url' => ['round/create', "tournament_id" => $tournament->id]],
+						'<li class="divider"></li>',
+						['label' => 'Energy Options', 'url' => ['energy/index', "tournament_id" => $tournament->id]],
 						'<li class="divider"></li>',
 					], $rounds),
 				],
@@ -145,7 +145,11 @@ if ($this->context->hasMethod("_getContext")) {
 				['label' => 'Current Tab', 'url' => "#",
 					"items" => [
 						['label' => 'Team Tab', 'url' => ['tab/team', "tournament_id" => $tournament->id]],
-						['label' => 'Speaker Tab', 'url' => ['tab/speaker', "tournament_id" => $tournament->id]]
+						['label' => 'Speaker Tab', 'url' => ['tab/speaker', "tournament_id" => $tournament->id]],
+						'<li class="divider"></li>',
+						['label' => 'Missing User', 'url' => ['display/missinguser', "tournament_id" => $tournament->id]],
+						['label' => 'Checkin Form', 'url' => ['tournament/checkin', "id" => $tournament->id]],
+						['label' => 'Reset Checkin', 'url' => ['tournament/checkinreset', "id" => $tournament->id]],
 					]
 				],
 				['label' => 'Feedback', 'url' => '#',

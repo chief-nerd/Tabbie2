@@ -6,8 +6,9 @@ use Yii;
 
 /**
  * This is the model class for table "adjudicator".
+
  *
- * @property integer              $id
+*@property integer              $id
  * @property integer              $tournament_id
  * @property integer              $active
  * @property integer              $user_id
@@ -15,6 +16,7 @@ use Yii;
  * @property integer              $society_id
  * @property integer              $can_chair
  * @property integer              $are_watched
+ * @property integer              $checkedin
  * @property Tournament           $tournament
  * @property User                 $user
  * @property Society              $society

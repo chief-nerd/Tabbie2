@@ -6,6 +6,7 @@ use common\components\filter\TournamentContextFilter;
 use common\models;
 use common\models\search\TournamentSearch;
 use common\models\Tournament;
+use frontend\models\CheckinForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -23,7 +24,7 @@ class TournamentController extends BaseController {
 				'rules' => [
 					[
 						'allow' => true,
-						'actions' => ['index', 'view'],
+						'actions' => ['index', 'view', 'checkin'],
 						'roles' => [],
 					],
 					[
@@ -33,7 +34,7 @@ class TournamentController extends BaseController {
 					],
 					[
 						'allow' => true,
-						'actions' => ['update'],
+						'actions' => ['update', 'checkinreset', 'missinguser'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->isTabMaster($this->_tournament) || Yii::$app->user->isConvenor($this->_tournament));
 						}
@@ -188,6 +189,49 @@ class TournamentController extends BaseController {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Show checkin form.
+	 *
+	 * @return mixed
+	 */
+	public function actionCheckin() {
+
+		$messages = [];
+		$model = new CheckinForm();
+
+		if (Yii::$app->request->isPost) {
+
+			$model->load(Yii::$app->request->post());
+
+			$messages = $model->save();
+			$model->number = null;
+		}
+
+
+		return $this->render('checkin', [
+			"model" => $model,
+			"messages" => $messages
+		]);
+	}
+
+	/**
+	 * Show checkin form.
+	 *
+	 * @return mixed
+	 */
+	public function actionCheckinreset() {
+
+		$rows = models\Team::updateAll(["speakerA_checkedin" => 0, "speakerB_checkedin" => 0], ["tournament_id" => $this->_tournament->id]);
+		$rows += models\Adjudicator::updateAll(["checkedin" => 0], ["tournament_id" => $this->_tournament->id]);
+
+		if ($rows > 0)
+			Yii::$app->session->addFlash("success", "Checking Data reseted");
+		else
+			Yii::$app->session->addFlash("info", "Already clean");
+
+		return $this->redirect(["tournament/view", "id" => $this->_tournament->id]);
 	}
 
 }

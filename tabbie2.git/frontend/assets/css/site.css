@@ -165,3 +165,12 @@ a.desc:after {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
+
+.site-checkin .msg {
+    padding: 30px;
+    font-size: 25px;
+}
+
+#tournament-missing .table td {
+    padding: 3px;
+}

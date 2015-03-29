@@ -226,7 +226,7 @@ class Round extends \yii\db\ActiveRecord {
 	}
 
 	public function getAmountSwingTeams() {
-		return Team::find()->active()->tournament($this->tournament_id)->where(["isSwing" => 1])->count();
+		return Team::find()->active()->tournament($this->tournament_id)->andWhere(["isSwing" => 1])->count();
 	}
 
 }

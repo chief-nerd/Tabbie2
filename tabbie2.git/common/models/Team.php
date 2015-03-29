@@ -7,8 +7,9 @@ use yii\base\Exception;
 
 /**
  * This is the model class for table "team".
+
  *
- * @property integer       $id
+*@property integer       $id
  * @property string        $name
  * @property integer       $active
  * @property integer       $tournament_id
@@ -20,6 +21,8 @@ use yii\base\Exception;
  * @property integer       $points
  * @property integer       $speakerA_speaks
  * @property integer       $speakerB_speaks
+ * @property integer       $speakerA_checkedin
+ * @property integer       $speakerB_checkedin
  * @property TabPosition[] $tabPositions
  * @property InSociety     $inSocieties
  * @property Adjudicator[] $adjudicators
