@@ -179,6 +179,19 @@ class DrawLine extends Model {
 	}
 
 	/**
+	 * @param $i
+	 *
+	 * @return \common\models\Adjudicator
+	 */
+	public function getAdjudicator($i) {
+		return $this->adj[$i];
+	}
+
+	public function setAdjudicator($i, $adjudicator) {
+		$this->adj[$i] = $adjudicator;
+	}
+
+	/**
 	 * Get the "Debate Level" aka the highest points of team in that debate
 	 *
 	 * @return integer Points
