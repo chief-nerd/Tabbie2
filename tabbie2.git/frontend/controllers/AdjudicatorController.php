@@ -33,7 +33,7 @@ class AdjudicatorController extends BaseController {
 					],
 					[
 						'allow' => true,
-						'actions' => ['create', 'update', 'delete', 'replace', 'move', 'import', 'active', 'popup', 'watch', 'list'],
+						'actions' => ['create', 'update', 'delete', 'replace', 'move', 'import', 'active', 'popup', 'watch', 'list', 'resetwatched'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->isTabMaster($this->_tournament));
 						}
@@ -466,7 +466,8 @@ class AdjudicatorController extends BaseController {
 	}
 
 	public function actionResetwatched() {
-		Adjudicator::updateAll(["are_watched" => 0], ["tournament_id" => $this->_tournament->id]);
+		$adju = Adjudicator::updateAll(["are_watched" => 0], ["tournament_id" => $this->_tournament->id]);
+		Yii::$app->session->addFlash("info", $adju . " Adjudicators reseted");
 		return $this->redirect(['adjudicator/index', 'tournament_id' => $this->_tournament->id]);
 	}
 
