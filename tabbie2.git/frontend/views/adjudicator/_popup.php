@@ -27,7 +27,7 @@ $this->context->layout = null;
 	<tr>
 		<th><?= Yii::t("app", "Chaired") ?></th>
 		<?
-		$chaired = Panel::find()->joinWith("adjudicatorInPanels")->joinWith("debates")->where([
+		$chaired = Panel::find()->joinWith("adjudicatorInPanels")->joinWith("debate")->where([
 			"panel.tournament_id" => $model->tournament_id,
 			"adjudicator_id" => $model->id,
 			"function" => Panel::FUNCTION_CHAIR,

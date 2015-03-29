@@ -140,7 +140,7 @@ VALUES (1, 'Afghanistan', 'af', 'afg', 24), (2, 'Aland Islands', 'ax', 'ala', 11
   (243, 'Virgin Islands, British', 'vg', 'vgb', 53), (244, 'Virgin Islands, U.S.', 'vi', 'vir', 53),
   (245, 'Wallis and Futuna', 'wf', 'wlf', 34), (246, 'Western Sahara', 'eh', 'esh', 41),
   (247, 'Yemen', 'ye', 'yem', 23), (248, 'Zambia', 'zm', 'zmb', 44), (249, 'Zimbabwe', 'zw', 'zwe', 44),
-  (250, 'Unknown', '', '', 0);
+  (250, 'Unknown', 'un', 'unk', 0);
 /*!40000 ALTER TABLE `country` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE = @OLD_TIME_ZONE */;
