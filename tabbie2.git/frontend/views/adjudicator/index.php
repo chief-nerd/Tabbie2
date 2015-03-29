@@ -16,25 +16,49 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="adjudicator-index">
 
-	<h1><?= Html::encode($this->title) ?></h1>
+	<?php \yii\widgets\Pjax::begin(); ?>
+	<div class="row">
+		<div class="col-md-8">
+			<h1><?= Html::encode($this->title) ?></h1>
 
-	<p>
-		<?=
-		Html::a(Yii::t('app', 'Create {modelClass}', [
-			'modelClass' => 'Adjudicator',
-		]), ['create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
-		?>
-		<?=
-		Html::a(Yii::t('app', 'Import {modelClass}', [
-			'modelClass' => 'Adjudicator',
-		]), ['import', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
-		?>
-		<?=
-		Html::a(Yii::t('app', 'Reset watched', [
-			'modelClass' => 'Adjudicator',
-		]), ['resetwatched', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
-		?>
-	</p>
+			<p>
+				<?=
+				Html::a(Yii::t('app', 'Create {modelClass}', [
+					'modelClass' => 'Adjudicator',
+				]), ['create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
+				?>
+				<?=
+				Html::a(Yii::t('app', 'Import {modelClass}', [
+					'modelClass' => 'Adjudicator',
+				]), ['import', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
+				?>
+				<?=
+				Html::a(Yii::t('app', 'Reset watched', [
+					'modelClass' => 'Adjudicator',
+				]), ['resetwatched', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
+				?>
+			</p>
+		</div>
+
+		<div class="col-md-4">
+			<table class="table">
+				<tr>
+					<th>Average Adjudicator per Room</th>
+					<th>Active</th>
+					<th>Inactive</th>
+				</tr>
+				<tr>
+					<td><?
+						$average = ($stat["venues"] != 0) ? $stat["amount"] / $stat["venues"] : 0;
+
+						echo "<b class='" . (($average >= 2) ? "text-success" : "text-danger") . "'>" . $average . "</b>";
+						?></td>
+					<td><?= $stat["amount"] ?></td>
+					<td><?= $stat["inactive"] ?></td>
+				</tr>
+			</table>
+		</div>
+	</div>
 	<?
 	$gridColumns = [
 		[
@@ -136,5 +160,5 @@ $this->params['breadcrumbs'][] = $this->title;
 		]
 	])
 	?>
-
+	<?php \yii\widgets\Pjax::end(); ?>
 </div>

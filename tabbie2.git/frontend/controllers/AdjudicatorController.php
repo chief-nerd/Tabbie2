@@ -7,6 +7,7 @@ use common\models\Adjudicator;
 use common\models\Country;
 use common\models\Panel;
 use common\models\search\AdjudicatorSearch;
+use common\models\Venue;
 use Yii;
 use yii\base\Exception;
 use yii\filters\AccessControl;
@@ -60,9 +61,14 @@ class AdjudicatorController extends BaseController {
 		$searchModel = new AdjudicatorSearch(["tournament_id" => $this->_tournament->id]);
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+		$stat["amount"] = Adjudicator::find()->active()->tournament($this->_tournament->id)->count();
+		$stat["venues"] = Venue::find()->active()->tournament($this->_tournament->id)->count();
+		$stat["inactive"] = Adjudicator::find()->active(false)->tournament($this->_tournament->id)->count();
+
 		return $this->render('index', [
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
+			'stat' => $stat,
 		]);
 	}
 
