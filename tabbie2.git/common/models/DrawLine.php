@@ -42,9 +42,9 @@ class DrawLine extends Model {
 	public $hasPresetPanel = false;
 
 	/**
-	 * If $hasPresetPanel == true then this holds the Panel ID
+	 * Holds the Panel ID
 	 *
-	 * @var integer
+*@var integer
 	 */
 	public $panelID;
 

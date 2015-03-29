@@ -179,14 +179,14 @@ class Round extends \yii\db\ActiveRecord {
 					if (!$panel->save())
 						throw new Exception("Can't save Panel " . print_r($panel->getErrors(), true));
 
-					$panelID = $panel->id;
+					$line->panelID = $panel->id;
 
 					$chairSet = false;
 					foreach ($line->adjudicators as $judge) {
 						/* @var $judge Adjudicator */
 						$alloc = new AdjudicatorInPanel();
 						$alloc->adjudicator_id = $judge->id;
-						$alloc->panel_id = $panelID;
+						$alloc->panel_id = $line->panelID;
 						if (!$chairSet) {
 							$alloc->function = Panel::FUNCTION_CHAIR;
 							$chairSet = true; //only on first run
@@ -198,9 +198,6 @@ class Round extends \yii\db\ActiveRecord {
 							throw new Exception("Can't save AdjudicatorInPanel " . print_r($alloc->getErrors(), true));
 					}
 				}
-				else
-					$panelID = $line->panelID;
-
 				$line = $algo->calcEnergyLevel($line, $this);
 
 				$debate = new Debate();
@@ -211,7 +208,7 @@ class Round extends \yii\db\ActiveRecord {
 				$debate->cg_team_id = $line->CG->id;
 				$debate->co_team_id = $line->CO->id;
 				$debate->venue_id = $line->venue->id;
-				$debate->panel_id = $panelID;
+				$debate->panel_id = $line->panelID;
 				$debate->energy = $line->energyLevel;
 				$debate->setMessages($line->messages);
 

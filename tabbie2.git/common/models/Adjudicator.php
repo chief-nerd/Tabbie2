@@ -198,10 +198,10 @@ class Adjudicator extends \yii\db\ActiveRecord {
 		return ($as < $bs) ? 1 : (($as > $bs) ? -1 : 0);
 	}
 
-	public function getPastAdjudicatorIDs() {
+	public function getPastAdjudicatorIDs($line) {
 		//Works without tournament_id because adjudicator is only valid in tournament scope
 		$model = \Yii::$app->db->createCommand("SELECT a.adjudicator_id AS aid, b.adjudicator_id AS bid, a.panel_id AS pid FROM adjudicator_in_panel AS a LEFT JOIN adjudicator_in_panel AS b ON a.panel_id = b.panel_id
-		WHERE a.adjudicator_id = " . $this->id . " GROUP BY bid");
+		WHERE a.adjudicator_id = " . $this->id . " AND a.panel_id != " . $line->panelID . " GROUP BY bid");
 
 		$past = $model->queryAll();
 		$pastIDs = [];

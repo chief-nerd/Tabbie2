@@ -456,7 +456,7 @@ class StrictWUDCRules extends TabAlgorithmus {
 		$penalty = EnergyConfig::get("judge_met_judge", $round->tournament_id);
 		$found = [];
 		foreach ($line->getAdjudicators() as $adjudicator) {
-			$pastAdjudicatorIDS = $adjudicator->getPastAdjudicatorIDs();
+			$pastAdjudicatorIDS = $adjudicator->getPastAdjudicatorIDs($line);
 
 			foreach ($line->getAdjudicators() as $adjudicator_match) {
 				if ($adjudicator_match->id != $adjudicator->id) {
