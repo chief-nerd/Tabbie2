@@ -256,13 +256,12 @@ class StrictWUDCRules extends TabAlgorithmus {
 	/**
 	 * Sets up the variables in the EnergyConfig
 	 *
-	 * @param \common\models\Tournament $tournament
+	 * @param Tournament $tournament
 	 *
-	 * @return boolean
+*@return boolean
 	 */
 	public function setup($tournament) {
 		$tid = $tournament->id;
-
 		$config = [
 			[
 				"label" => "Team and adjudicator in same society penalty",
@@ -307,7 +306,8 @@ class StrictWUDCRules extends TabAlgorithmus {
 			$strike->label = $c["label"];
 			$strike->key = $c["key"];
 			$strike->value = $c["value"];
-			$strike->save();
+			if (!$strike->save())
+				throw new Exception("Error saving EnergyConfig " . print_r($strike->getErrors(), true));
 		}
 		return true;
 	}

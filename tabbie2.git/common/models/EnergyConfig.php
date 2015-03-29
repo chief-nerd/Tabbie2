@@ -39,7 +39,7 @@ class EnergyConfig extends \yii\db\ActiveRecord {
 			[['key', 'tournament_id', 'label'], 'required'],
 			[['tournament_id', 'value'], 'integer'],
 			[['key'], 'string', 'max' => 100],
-			[['label'], 'string', 'max' => 45]
+			[['label'], 'string', 'max' => 255]
 		];
 	}
 
@@ -63,9 +63,14 @@ class EnergyConfig extends \yii\db\ActiveRecord {
 		return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
 	}
 
+	/**
+	 * @param Tournament $tournament
+	 *
+	 * @return bool
+	 */
 	public function setup($tournament) {
 		$algo = $tournament->getTabAlgorithmInstance();
-		if ($algo->setup($this))
+		if ($algo->setup($tournament))
 			return true;
 		else
 			return false;

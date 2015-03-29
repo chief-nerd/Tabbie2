@@ -93,7 +93,10 @@ class TournamentController extends BaseController {
 
 			if ($model->save()) {
 				$energyConf = new models\EnergyConfig();
-				$energyConf->setup($model);
+				if ($energyConf->setup($model))
+					Yii::$app->session->addFlash("success", "Tournament successfully created");
+				else
+					Yii::$app->session->addFlash("warning", "Tournament created but Energy config failed!" . print_r($energyConf->getErrors(), true));
 
 				return $this->redirect(['view', 'id' => $model->id]);
 			}

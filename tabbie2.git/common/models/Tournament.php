@@ -259,7 +259,7 @@ class Tournament extends \yii\db\ActiveRecord {
 	/**
 	 * Get a new Instance of the Tab Algorithm
 	 *
-	 * @return \common\models\algoName
+	 * @return \common\components\TabAlgorithmus
 	 */
 	public function getTabAlgorithmInstance() {
 		$algoClass = $this->tabAlgorithmClass;
