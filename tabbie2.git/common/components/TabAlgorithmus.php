@@ -12,6 +12,13 @@ abstract class TabAlgorithmus extends \yii\base\Object {
 	protected $DRAW = array();
 
 	/**
+	 * Tournament ID
+	 *
+	 * @var integer
+	 */
+	public $tournament_id;
+
+	/**
 	 * Function that calculated the Draw for a round
 	 *
 	 * @param \common\models\Venue[]       $venues       Array of all active venues
@@ -22,13 +29,12 @@ abstract class TabAlgorithmus extends \yii\base\Object {
 	 *                                                   )
 	 * @param \common\models\Adjudicator[] $adjudicators Array of all active adujicators
 	 */
-	abstract public function makeDraw($venues, $teams, $adjudicators, $preset_panels);
+	abstract public function makeDraw($venues, $teams, $adjudicators, $preset_panels = array());
 
 	/**
 	 * @param \common\models\DrawLine $line  The current DrawLine
-	 * @param \common\models\Round    $round The current reference
 	 */
-	abstract public function calcEnergyLevel($line, $round);
+	abstract public function calcEnergyLevel($line);
 
 	/**
 	 * @param \common\models\Debate $debate The Debate to be calculated

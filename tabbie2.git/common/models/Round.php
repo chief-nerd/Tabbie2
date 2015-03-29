@@ -161,6 +161,7 @@ class Round extends \yii\db\ActiveRecord {
 		try {
 
 			$algo = $this->tournament->getTabAlgorithmInstance();
+			$algo->tournament_id = $this->tournament->id;
 
 			$venues = Venue::find()->active()->tournament($this->tournament->id)->all();
 			$teams = Team::find()->active()->tournament($this->tournament->id)->all();
@@ -198,7 +199,6 @@ class Round extends \yii\db\ActiveRecord {
 							throw new Exception("Can't save AdjudicatorInPanel " . print_r($alloc->getErrors(), true));
 					}
 				}
-				$line = $algo->calcEnergyLevel($line, $this);
 
 				$debate = new Debate();
 				$debate->round_id = $this->id;

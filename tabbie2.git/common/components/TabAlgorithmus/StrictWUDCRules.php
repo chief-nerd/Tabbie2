@@ -17,12 +17,13 @@ class StrictWUDCRules extends TabAlgorithmus {
 	/**
 	 * Function to calculate a draw based on WUDC strict Rules
 	 *
-	 * @param Venue[] $venues
-	 * @param Team[]  $teams
-	 * @param type    $adjudicators
+	 * @param Venue[]        $venues
+	 * @param Team[]         $teams
+	 * @param Adjudicators[] $adjudicators
 	 * @param type    $preset_panels
+
 	 *
-	 * @return type
+*@return type
 	 * @throws Exception
 	 */
 	public function makeDraw($venues, $teams, $adjudicators, $preset_panels = array()) {
@@ -73,6 +74,7 @@ class StrictWUDCRules extends TabAlgorithmus {
 			$line->setTeamsByArray($choosen);
 
 			$line->venue = $venues[$i];
+			$this->tournament_id = $venues[$i]->tournament_id;
 			$this->DRAW[] = $line;
 		}
 
@@ -82,9 +84,7 @@ class StrictWUDCRules extends TabAlgorithmus {
 		 * Go through the Draw until you can't make any improvements
 		 */
 		$stillFoundASwap = true;
-		$count = 0;
 		while ($stillFoundASwap) {
-			$count++;
 			$stillFoundASwap = false; //Assume we are done, prove me wrong
 
 			$maxIterations = count($this->DRAW);
@@ -102,7 +102,6 @@ class StrictWUDCRules extends TabAlgorithmus {
 			}
 			//If we havn't found a better swap $stillFoundASwap should be false and the loop breaks
 		}
-		Yii::trace("Finished Loop with count: $count", __METHOD__);
 
 		/*
 		 * Allocate the Adjudicators
@@ -114,8 +113,14 @@ class StrictWUDCRules extends TabAlgorithmus {
 			if (isset($this->DRAW[$lineID + 1])) //Is there a next line
 				$lineID++;
 			else
-				$lineID = 0; //Start at beginning
+				$lineID = 0; //Start again at beginning
 		}
+
+		$maxIterations = count($this->DRAW);
+		for ($lineIterator = 0; $lineIterator < $maxIterations; $lineIterator++) {
+			$this->DRAW[$lineIterator] = $this->calcEnergyLevel($this->DRAW[$lineIterator]);
+		}
+
 
 		/*
 		 * We have found the best possible combination
@@ -191,20 +196,6 @@ class StrictWUDCRules extends TabAlgorithmus {
 
 		$line_a->setTeamOn($pos_a, $team_b);
 		$line_b->setTeamOn($pos_b, $team_a);
-	}
-
-	/**
-	 * Wrapper to produce easier debug infos in codeception
-	 *
-	 * @param type $teams
-	 */
-	private function debug($teams) {
-		$output = "";
-		foreach ($teams as $t) {
-			$output .= $t->id . "/" . $t->getPoints() . "\t";
-		}
-
-		Debug::debug($output);
 	}
 
 	/**
@@ -314,15 +305,16 @@ class StrictWUDCRules extends TabAlgorithmus {
 
 	/**
 	 * @param DrawLine $line
-	 * @param Round    $round
+	 * @param integer  $tournament_id
 	 *
-	 * @return DrawLine
+*@return DrawLine
 	 */
-	public function calcEnergyLevel($line, $round) {
+	public function calcEnergyLevel($line) {
 		$line->energyLevel = 0;
+		$line->messages = [];
 		foreach (get_class_methods($this) as $function) {
 			if (strpos($function, "energyRule_") === 0) {
-				$line = \call_user_func([StrictWUDCRules::className(), $function], $line, $round);
+				$line = \call_user_func([StrictWUDCRules::className(), $function], $line);
 			}
 		}
 		return $line;
@@ -336,9 +328,9 @@ class StrictWUDCRules extends TabAlgorithmus {
 	 *
 	 * @return DrawLine
 	 */
-	public function energyRule_SameSocietyStrikes($line, $round) {
+	public function energyRule_SameSocietyStrikes($line) {
 
-		$penalty = EnergyConfig::get("society_strike", $round->tournament_id);
+		$penalty = EnergyConfig::get("society_strike", $this->tournament_id);
 		foreach ($line->getAdjudicators() as $adjudicator) {
 			foreach ($line->getTeams() as $team) {
 				if ($team->society_id == $adjudicator->society_id) {
@@ -359,9 +351,9 @@ class StrictWUDCRules extends TabAlgorithmus {
 	 *
 	 * @return DrawLine
 	 */
-	public function energyRule_AdjudicatorStrikes($line, $round) {
+	public function energyRule_AdjudicatorStrikes($line) {
 
-		$penalty = EnergyConfig::get("adjudicator_strike", $round->tournament_id);
+		$penalty = EnergyConfig::get("adjudicator_strike", $this->tournament_id);
 
 		foreach ($line->getAdjudicators() as $adjudicator) {
 			foreach ($adjudicator->getStrikedAdjudicators()->all() as $adjudicator_check) {
@@ -383,9 +375,9 @@ class StrictWUDCRules extends TabAlgorithmus {
 	 *
 	 * @return DrawLine
 	 */
-	public function energyRule_TeamAdjStrikes($line, $round) {
+	public function energyRule_TeamAdjStrikes($line) {
 
-		$penalty = EnergyConfig::get("team_strike", $round->tournament_id);
+		$penalty = EnergyConfig::get("team_strike", $this->tournament_id);
 
 		foreach ($line->getAdjudicators() as $adjudicator) {
 			foreach ($adjudicator->getStrikedTeams()->all() as $team_check) {
@@ -409,9 +401,9 @@ class StrictWUDCRules extends TabAlgorithmus {
 	 *
 	 * @return DrawLine
 	 */
-	public function energyRule_NonChair($line, $round) {
+	public function energyRule_NonChair($line) {
 
-		$penalty = EnergyConfig::get("non_chair", $round->tournament_id);
+		$penalty = EnergyConfig::get("non_chair", $this->tournament_id);
 		//This relies on there being a 'can_chair' tag
 		if ($line->getChair()->can_chair == 0) {
 			$line->addMessage("error", "Adjudicator " . $line->getChair()->name . " has been labelled a non-chair");
@@ -429,9 +421,9 @@ class StrictWUDCRules extends TabAlgorithmus {
 	 *
 	 * @return DrawLine
 	 */
-	public function energyRule_NotPerfect($line, $round) {
+	public function energyRule_NotPerfect($line) {
 
-		$penalty = EnergyConfig::get("chair_not_perfect", $round->tournament_id);
+		$penalty = EnergyConfig::get("chair_not_perfect", $this->tournament_id);
 
 		//This basically adds a penalty for each point away from the maximum the chair's ranking is
 		$diffPerfect = (Adjudicator::MAX_RATING - $line->getChair()->strength);
@@ -451,9 +443,9 @@ class StrictWUDCRules extends TabAlgorithmus {
 	 *
 	 * @return DrawLine
 	 */
-	public function energyRule_JudgeMetJudge($line, $round) {
+	public function energyRule_JudgeMetJudge($line) {
 
-		$penalty = EnergyConfig::get("judge_met_judge", $round->tournament_id);
+		$penalty = EnergyConfig::get("judge_met_judge", $this->tournament_id);
 		$found = [];
 		foreach ($line->getAdjudicators() as $adjudicator) {
 			$pastAdjudicatorIDS = $adjudicator->getPastAdjudicatorIDs($line);
@@ -483,9 +475,9 @@ class StrictWUDCRules extends TabAlgorithmus {
 	 *
 	 * @return DrawLine
 	 */
-	public function energyRule_JudgeMetTeam($line, $round) {
+	public function energyRule_JudgeMetTeam($line) {
 
-		$penalty = EnergyConfig::get("judge_met_team", $round->tournament_id);
+		$penalty = EnergyConfig::get("judge_met_team", $this->tournament_id);
 		foreach ($line->getAdjudicators() as $adjudicator) {
 			$pastTeamIDs = $adjudicator->getPastTeamIDs();
 
