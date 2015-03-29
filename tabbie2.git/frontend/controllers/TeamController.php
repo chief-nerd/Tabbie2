@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\components\filter\TournamentContextFilter;
+use common\models\Country;
 use common\models\search\TeamSearch;
 use common\models\Team;
 use Yii;
@@ -225,7 +226,7 @@ class TeamController extends BaseController {
 						$society = new \common\models\Society();
 						$society->fullname = $row[1][0];
 						$society->abr = \common\models\Society::generateAbr($society->fullname);
-						$society->country_id = Country::COUNTRY_UNKNOWN_ID;
+						$society->country_id = \common\models\Country::COUNTRY_UNKNOWN_ID;
 						$society->save();
 						$societyID = $society->id;
 					}
