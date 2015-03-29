@@ -25,9 +25,9 @@ $this->title = Yii::$app->params["slogan"];
 					$cols = "col-xs-12 col-sm-6 col-md-5 col-lg-4";
 					$posCorrect = "col-md-offset-1 col-lg-offset-2";
 					break;
-				case 2:
+				case 0:
 					$cols = "col-md-4";
-					$posCorrect = "col-md-offset-1";
+					$posCorrect = "";
 					break;
 			}
 
