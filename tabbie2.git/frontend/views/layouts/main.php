@@ -68,8 +68,12 @@ if ($this->context->hasMethod("_getContext")) {
 	}
 	else {
 		$menuItems[] = [
-			'label' => Yii::$app->user->getModel()->name . "'s Profile",
+			'label' => Yii::$app->user->getModel()->surename . "'s Profile",
 			'url' => ['user/view', 'id' => Yii::$app->user->id],
+		];
+		$menuItems[] = [
+			'label' => Yii::$app->user->getModel()->surename . "'s History",
+			'url' => ['user/history', 'id' => Yii::$app->user->id],
 		];
 		$menuItems[] = [
 			'label' => 'Logout',
