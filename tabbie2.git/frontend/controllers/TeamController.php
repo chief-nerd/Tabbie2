@@ -14,7 +14,7 @@ use yii\web\NotFoundHttpException;
 /**
  * TeamController implements the CRUD actions for Team model.
  */
-class TeamController extends BaseController {
+class TeamController extends BaseTournamentController {
 
 	public function behaviors() {
 		return [

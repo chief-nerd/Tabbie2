@@ -56,8 +56,12 @@ if ($this->context->hasMethod("_getContext")) {
 		['label' => 'Home', 'url' => ['/site/index']],
 		['label' => 'About', 'url' => ['/site/about']],
 		['label' => 'Tournaments', 'url' => ['tournament/index']],
-		['label' => 'Contact', 'url' => ['/site/contact']],
 	];
+
+	if (Yii::$app->user->isAdmin()) {
+		$menuItems[] = ['label' => 'Users', 'url' => ['user/index']];
+	}
+
 	if (Yii::$app->user->isGuest) {
 		$menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
 		$menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];

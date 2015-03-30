@@ -13,7 +13,7 @@ use common\models\Team;
 /**
  * TournamentController implements the CRUD actions for Tournament model.
  */
-class DisplayController extends BaseController {
+class DisplayController extends BaseTournamentController {
 
 	//Override Layout
 	public $layout = "public";

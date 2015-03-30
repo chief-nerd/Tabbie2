@@ -17,7 +17,7 @@ use yii\web\NotFoundHttpException;
 /**
  * AdjudicatorController implements the CRUD actions for Adjudicator model.
  */
-class AdjudicatorController extends BaseController {
+class AdjudicatorController extends BaseTournamentController {
 
 	public function behaviors() {
 		return [

@@ -293,4 +293,14 @@ class Tournament extends \yii\db\ActiveRecord {
 		return 0;
 	}
 
+	/**
+	 * Save a Tournament Logo
+	 *
+	 * @param \yii\web\UploadedFile $file
+	 */
+	public function saveLogo($file) {
+		$path = "/uploads/tournaments/TournamentLogo-" . $this->url_slug . "." . $file->extension;
+		$this->logo = $file && $file->saveAs(Yii::getAlias("@frontend/web") . $path) ? $path : null;
+	}
+
 }

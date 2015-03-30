@@ -8,14 +8,16 @@ use common\models\Society;
 use common\models\Tournament;
 use common\models\User;
 use Yii;
+use yii\data\ArrayDataProvider;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 /**
  * UserController implements the CRUD actions for User model.
  */
-class UserController extends \yii\web\Controller {
+class UserController extends BaseUserController {
 
 	public function behaviors() {
 		return [
@@ -92,11 +94,20 @@ class UserController extends \yii\web\Controller {
 	 */
 	public function actionView($id) {
 		$model = $this->findModel($id);
+
 		if ($society = $model->getInSocieties()->where(["ending" => null])->one())
 			$model->societies_id = $society->society->fullname;
 
+		$dataSocietyProvider = new ArrayDataProvider([
+			'allModels' => InSociety::find()->where(["user_id" => $id])->all(),
+			'sort' => [
+				//'attributes' => ['id', 'username', 'email'],
+			],
+		]);
+
 		return $this->render('view', [
 			'model' => $model,
+			'dataSocietyProvider' => $dataSocietyProvider,
 		]);
 	}
 
@@ -179,7 +190,16 @@ class UserController extends \yii\web\Controller {
 		if ($society = $model->getInSocieties()->where(["ending" => null])->one())
 			$model->societies_id = $society->society->id;
 
-		if ($model->load(Yii::$app->request->post())) {
+		if (Yii::$app->request->isPost) {
+
+			$file = UploadedFile::getInstance($model, 'picture');
+			$oldpic = $model->picture;
+
+			$model->load(Yii::$app->request->post());
+			if ($file instanceof UploadedFile)
+				$model->savePicture($file);
+			else
+				$model->picture = $oldpic;
 
 			$new_pass = Yii::$app->request->post()["User"]["password"];
 			if (is_string($new_pass) && $new_pass !== "")

@@ -463,8 +463,19 @@ class User extends ActiveRecord implements IdentityInterface {
 		return $genders[$id];
 	}
 
+	/**
+	 * Save a User Picture
+	 *
+	 * @param \yii\web\UploadedFile $file
+	 */
+	public function savePicture($file) {
+		$path = "/uploads/users/User-" . $this->username . "." . $file->extension;
+		$this->picture = $file->saveAs(Yii::getAlias("@frontend/web") . $path) ? $path : null;
+	}
+
+
 	public function getPicture() {
-		if (file_exists(($this->picture)))
+		if (file_exists(Yii::getAlias("@frontend/web") . ($this->picture)))
 			return $this->picture;
 		else {
 			$defaultPath = Yii::getAlias("@frontend/assets/images/") . "default-avatar.png";

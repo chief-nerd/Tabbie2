@@ -17,7 +17,7 @@ use yii\web\NotFoundHttpException;
 /**
  * RoundController implements the CRUD actions for Round model.
  */
-class RoundController extends BaseController {
+class RoundController extends BaseTournamentController {
 
 	public function behaviors() {
 		return [

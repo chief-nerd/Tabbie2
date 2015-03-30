@@ -12,7 +12,7 @@ use yii\web\NotFoundHttpException;
 /**
  * FeedbackController implements the CRUD actions for feedback model.
  */
-class FeedbackController extends BaseController {
+class FeedbackController extends BaseTournamentController {
 
 	public function behaviors() {
 		return [

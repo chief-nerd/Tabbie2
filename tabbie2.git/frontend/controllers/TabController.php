@@ -12,7 +12,7 @@ use yii\filters\VerbFilter;
 /**
  * TabController implements the CRUD actions for DrawAfterRound model.
  */
-class TabController extends BaseController {
+class TabController extends BaseTournamentController {
 
 	public function behaviors() {
 		return [

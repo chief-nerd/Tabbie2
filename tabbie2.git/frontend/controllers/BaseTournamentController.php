@@ -6,7 +6,7 @@ use common\models\Tournament;
 use Yii;
 use yii\web\Controller;
 
-class BaseController extends Controller {
+class BaseTournamentController extends Controller {
 
 	/**
 	 * Current Tournament Scope

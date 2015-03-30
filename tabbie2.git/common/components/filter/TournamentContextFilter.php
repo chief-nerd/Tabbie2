@@ -11,7 +11,6 @@ class TournamentContextFilter extends ActionFilter {
 		$tournament = null;
 		$tournamnet_id = null;
 		if (isset($_GET["tournament_id"]) || (isset($_GET["id"]))) {
-
 			$tournamnet_identifier = (int)Yii::$app->getRequest()->getQueryParam("tournament_id", null);
 			if ($tournamnet_identifier == null && $action->controller->id == "tournament")
 				$tournamnet_identifier = (int)Yii::$app->getRequest()->getQueryParam("id", null);

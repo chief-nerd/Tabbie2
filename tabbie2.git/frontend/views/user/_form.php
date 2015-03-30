@@ -14,11 +14,9 @@ use yii\web\JsExpression;
 
 <div class="user-form">
 
-	<?php $form = ActiveForm::begin(); ?>
-	<?=
-	$form->field($model, 'status')->dropDownList(User::getStatusOptions());
-	?>
-	<?= $form->field($model, 'username')->textInput(['maxlength' => 255]) ?>
+	<?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+
+	<? $form->field($model, 'username')->textInput(['maxlength' => 255]) ?>
 
 	<?= $form->field($model, 'givenname')->textInput(['maxlength' => 255]) ?>
 
@@ -30,52 +28,10 @@ use yii\web\JsExpression;
 	<?= $form->field($model, 'password', ['addon' => ['prepend' => ['content' => "<span class='glyphicon glyphicon-lock'></span>"]]])
 	         ->passwordInput(['maxlength' => 255]) ?>
 
-	<?
-	$urlUserList = Url::to(['user/societies']);
-
-	// Script to initialize the selection based on the value of the select2 element
-	$initUserScript = <<< SCRIPT
-function (element, callback) {
-    var id=\$(element).val();
-    if (id !== "") {
-        \$.ajax("{$urlUserList}?id=" + id, {
-        dataType: "json"
-        }).done(function(data) { callback(data.results);});
-    }
-}
-SCRIPT;
-
-	echo $form->field($model, 'societies_id')->widget(Select2::classname(), [
-		'options' => [
-			'placeholder' => 'Search for a societies ...',
-			'multiple' => true,
-		],
-		'addon' => [
-			"prepend" => [
-				"content" => '<i class="glyphicon glyphicon-education"></i>'
-			],
-		],
-		'pluginOptions' => [
-			'allowClear' => true,
-			'minimumInputLength' => 3,
-			'ajax' => [
-				'url' => $urlUserList,
-				'dataType' => 'json',
-				'data' => new JsExpression('function(term,page) { return {search:term}; }'),
-				'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
-			],
-			'initSelection' => new JsExpression($initUserScript)
-		],
-	]);
-	?>
-
-	<?=
-	$form->field($model, 'role')->dropDownList(User::getRoleOptions());
-	?>
-
 	<?= $form->field($model, 'picture')->fileInput() ?>
 
 	<div class="form-group">
+		<?= Html::a(Yii::t('app', 'Cancel'), ["view", "id" => $model->id], ["class" => "btn btn-default"]) ?>
 		<?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
 	</div>
 

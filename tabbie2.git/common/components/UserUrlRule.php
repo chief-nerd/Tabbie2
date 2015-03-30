@@ -49,6 +49,43 @@ class UserUrlRule extends UrlRule {
 			}
 		}
 
+		//Manuel Set
+		if (isset($params['user_id'])) {
+			$user = User::findOne($params['user_id']);
+			if (isset($params['id'])) {
+				switch ($parts[1]) {
+					case "view":
+						$parts[1] = $params['id'];
+						unset($params['id']);
+						break;
+					default:
+						$parts[] = $params['id'];
+						unset($params['id']);
+				}
+			}
+			else {
+				if ($parts[1] == "index") {
+					//index Case
+					//don't unset, end / needed
+					$parts[1] = null;
+				}
+			}
+			unset($params['user_id']);
+			$paramsString = "";
+			foreach ($params as $key => $value) {
+				if (is_array($value)) {
+					foreach ($value as $k => $v) {
+						$paramsString .= "/" . $key . "[" . $k . "]/" . $v;
+					}
+				}
+				else
+					$paramsString .= "/" . $key . "/" . $value;
+			}
+			$ret = "user/" . $user->username . "/" . implode("/", $parts) . $paramsString;
+			//Yii::trace("Returning Sub: " . $ret, __METHOD__);
+			return $ret;
+		}
+
 		//Yii::trace("Returnning: FALSE", __METHOD__);
 		return false;  // this rule does not apply
 	}
@@ -56,6 +93,7 @@ class UserUrlRule extends UrlRule {
 	public function parseRequest($manager, $request) {
 		$pathInfo = $request->getPathInfo();
 		$params = [];
+
 		if ($pathInfo == "user")
 			return ["user/index", $params];
 
@@ -75,10 +113,23 @@ class UserUrlRule extends UrlRule {
 							$params['id'] = $parts[3];
 							$parts[3] = "view";
 						}
-						$route = implode("/", array_slice($parts, 0, 2));
-						$params["id"] = $user->id;
-						for ($i = 3; $i <= count($parts); $i = $i + 2)
-							$params[$parts[$i]] = $parts[$i + 1];
+
+						if (count($parts) > 2) {
+							$route = implode("/", array_slice($parts, 1, 2));
+							$params["user_id"] = $user->id;
+							if (isset($parts[4]) && is_numeric($parts[4]))
+								$params["id"] = $parts[4];
+							else
+								for ($i = 4; $i <= count($parts); $i = $i + 2)
+									$params[$parts[$i]] = $parts[$i + 1];
+						}
+						else {
+							$route = implode("/", array_slice($parts, 0, 2));
+							$params["id"] = $user->id;
+
+							for ($i = 3; $i <= count($parts); $i = $i + 2)
+								$params[$parts[$i]] = $parts[$i + 1];
+						}
 					}
 					else {
 						$params['id'] = $user->id;

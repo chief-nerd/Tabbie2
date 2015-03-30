@@ -15,7 +15,7 @@ use yii\web\NotFoundHttpException;
 /**
  * TournamentController implements the CRUD actions for Tournament model.
  */
-class TournamentController extends BaseController {
+class TournamentController extends BaseTournamentController {
 
 	public function behaviors() {
 		return [
@@ -85,11 +85,10 @@ class TournamentController extends BaseController {
 		$model = new Tournament();
 
 		if (Yii::$app->request->isPost) {
-			$file = \yii\web\UploadedFile::getInstance($model, 'logo');
+			$file = UploadedFile::getInstance($model, 'logo');
 			$model->load(Yii::$app->request->post());
 			$model->generateUrlSlug();
-			$path = "/uploads/TournamentLogo-" . $model->url_slug . ".jpg";
-			$model->logo = $file && $file->saveAs(Yii::getAlias("@frontend/web") . $path) ? $path : null;
+			$model->saveLogo($file);
 
 			if ($model->save()) {
 				$energyConf = new models\EnergyConfig();
@@ -127,11 +126,10 @@ class TournamentController extends BaseController {
 			$oldFile = $model->logo;
 			//Load new values
 			$model->load(Yii::$app->request->post());
-			$path = "/uploads/TournamentLogo-" . $model->url_slug . ".jpg";
 
 			if ($file !== null) {
 				//Save new File
-				if ($file->saveAs(Yii::getAlias("@frontend/web") . $path)) $model->logo = $path;
+				$model->saveLogo($file);
 			}
 			else
 				$model->logo = $oldFile;

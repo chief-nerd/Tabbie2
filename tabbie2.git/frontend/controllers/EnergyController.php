@@ -12,7 +12,7 @@ use yii\web\NotFoundHttpException;
 /**
  * EnergyController implements the CRUD actions for EnergyConfig model.
  */
-class EnergyController extends BaseController {
+class EnergyController extends BaseTournamentController {
 
 	public function behaviors() {
 		return [

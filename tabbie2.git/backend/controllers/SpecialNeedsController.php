@@ -5,14 +5,14 @@ namespace backend\controllers;
 use Yii;
 use backend\models\SpecialNeeds;
 use yii\data\ActiveDataProvider;
-use frontend\controllers\BaseController;
+use frontend\controllers\BasetournamentController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
  * SpecialNeedsController implements the CRUD actions for SpecialNeeds model.
  */
-class SpecialNeedsController extends BaseController
+class SpecialNeedsController extends BasetournamentController
 {
     public function behaviors()
     {
