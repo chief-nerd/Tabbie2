@@ -52,7 +52,7 @@ class UserController extends \yii\web\Controller {
 					],
 					[
 						'allow' => true,
-						'actions' => ['index', 'delete'],
+						'actions' => ['index', 'delete', 'forcepass'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->isAdmin());
 						}
@@ -101,6 +101,33 @@ class UserController extends \yii\web\Controller {
 	}
 
 	/**
+	 * Forces a Password Change
+	 *
+	 * @param integer $id
+	 *
+	 * @return mixed
+	 */
+	public function actionForcepass($id) {
+		$model = $this->findModel($id);
+
+		if ($model->load(Yii::$app->request->post())) {
+			$model->setPassword(Yii::$app->request->post()["User"]["password"]);
+
+			if ($model->save() && $model->validatePassword(Yii::$app->request->post()["User"]["password"])) {
+				Yii::$app->session->addFlash("success", Yii::t("app", "New Passwort set"));
+				return $this->redirect(['index']);
+			}
+			else {
+				Yii::$app->session->addFlash("success", Yii::t("app", "Error saving new password"));
+			}
+		}
+
+		return $this->render('forcepass', [
+			'model' => $model,
+		]);
+	}
+
+	/**
 	 * Creates a new User model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 *
@@ -113,7 +140,6 @@ class UserController extends \yii\web\Controller {
 			$model->setPassword($model->email);
 			$model->generateAuthKey();
 			if ($model->save()) {
-				print_r($model->attributes);
 				if ($model->societies_id > 0) {
 					$inSociety = new InSociety();
 					$inSociety->user_id = $model->id;

@@ -113,6 +113,11 @@ class UserSearch extends User {
 		$query->andFilterWhere(['like', "CONCAT(givenname, ' ', surename)", $this->name]);
 	}
 
+	public static function getArray() {
+		$user = User::find()->all();
+		return ArrayHelper::map($user, "name", "name");
+	}
+
 	public function getSearchTournamentArray($tournamentid) {
 		$user = User::findByTournament($tournamentid)->all();
 		return ArrayHelper::map($user, "name", "name");

@@ -11,8 +11,9 @@ use yii\web\IdentityInterface;
 /**
  * User model
  * This is the model class for table "user". It represents a single user in the system.
+
  *
- * @see Team
+*@see Team
  * @see Adjudicator
  * @property integer        $id
  * @property string         $username
@@ -36,6 +37,7 @@ use yii\web\IdentityInterface;
  * @property Society[]      $societies
  * @property Team[]         $teams
  * @property SpecialNeeds[] $specialNeeds
+ * @property string         $name
  */
 class User extends ActiveRecord implements IdentityInterface {
 
@@ -278,6 +280,10 @@ class User extends ActiveRecord implements IdentityInterface {
 	 */
 	public function setPassword($password) {
 		$this->password_hash = Yii::$app->security->generatePasswordHash($password);
+	}
+
+	public function getPassword() {
+		return null;
 	}
 
 	/**
