@@ -24,8 +24,11 @@ use yii\web\JsExpression;
 
 	<?= $form->field($model, 'surename')->textInput(['maxlength' => 255]) ?>
 
-	<?= $form->field($model, 'email', ['addon' => ['prepend' => ['content' => '@']]])
+	<?= $form->field($model, 'email', ['addon' => ['prepend' => ['content' => '<b>@</b>']]])
 	         ->textInput(['maxlength' => 255]) ?>
+
+	<?= $form->field($model, 'password', ['addon' => ['prepend' => ['content' => "<span class='glyphicon glyphicon-lock'></span>"]]])
+	         ->passwordInput(['maxlength' => 255]) ?>
 
 	<?
 	$urlUserList = Url::to(['user/societies']);

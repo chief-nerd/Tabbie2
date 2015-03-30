@@ -180,6 +180,11 @@ class UserController extends \yii\web\Controller {
 			$model->societies_id = $society->society->id;
 
 		if ($model->load(Yii::$app->request->post())) {
+
+			$new_pass = Yii::$app->request->post()["User"]["password"];
+			if (is_string($new_pass) && $new_pass !== "")
+				$model->setPassword($new_pass);
+
 			if ($model->save()) {
 				if ($model->societies_id > 0) {
 					$found = false;
