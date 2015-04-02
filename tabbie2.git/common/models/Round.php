@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use yii\base\Exception;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "round".
@@ -160,12 +161,22 @@ class Round extends \yii\db\ActiveRecord {
 	public function generateDraw() {
 		try {
 
-			$algo = $this->tournament->getTabAlgorithmInstance();
-			$algo->tournament_id = $this->tournament->id;
-
 			$venues = Venue::find()->active()->tournament($this->tournament->id)->all();
 			$teams = Team::find()->active()->tournament($this->tournament->id)->all();
-			$adjudicators = Adjudicator::find()->active()->tournament($this->tournament->id)->all();
+
+			$adjudicators_Query = Adjudicator::find()->active()->tournament($this->tournament->id);
+
+			$adjudicators = $adjudicators_Query->all();
+			$adjudicators_strengthArray = ArrayHelper::getColumn($adjudicators_Query->asArray()
+			                                                                        ->select("strength")
+			                                                                        ->all(), "strength");
+
+			/* Setup */
+			$algo = $this->tournament->getTabAlgorithmInstance();
+			$algo->tournament_id = $this->tournament->id;
+			$algo->round_number = $this->number;
+			$algo->average_adjudicator_strength = array_sum($adjudicators_strengthArray) / count($adjudicators_strengthArray);
+			$algo->SD_of_adjudicators = $this->stats_standard_deviation($adjudicators_strengthArray);
 
 			$draw = $algo->makeDraw($venues, $teams, $adjudicators);
 
@@ -220,6 +231,25 @@ class Round extends \yii\db\ActiveRecord {
 			$this->addError("TabAlgorithmus", $ex->getMessage());
 		}
 		return false;
+	}
+
+	private function stats_standard_deviation(array $a) {
+		$n = count($a);
+		if ($n === 0) {
+			trigger_error("The array has zero elements", E_USER_WARNING);
+			return false;
+		}
+		if ($n === 1) {
+			trigger_error("The array has only 1 element", E_USER_WARNING);
+			return false;
+		}
+		$mean = array_sum($a) / $n;
+		$carry = 0.0;
+		foreach ($a as $val) {
+			$d = ((double)$val) - $mean;
+			$carry += $d * $d;
+		};
+		return sqrt($carry / $n);
 	}
 
 	public function getAmountSwingTeams() {

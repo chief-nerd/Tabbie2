@@ -60,13 +60,20 @@ class DrawLine extends Model {
 	 */
 	public $messages = [];
 
+
 	/**
 	 * Get the Strength of the Panel
 	 *
-	 * @return int
+	 * @return float
 	 */
 	public function getStrength() {
-		return 1;
+		$total = 0;
+		$n = 0;
+		foreach ($this->adj as $adj) {
+			$total += $adj->strength;
+			$n++;
+		}
+		return intval($total / $n);
 	}
 
 	public function addMessage($key, $msg) {

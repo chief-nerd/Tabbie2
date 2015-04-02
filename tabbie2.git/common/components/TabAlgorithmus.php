@@ -19,6 +19,17 @@ abstract class TabAlgorithmus extends \yii\base\Object {
 	public $tournament_id;
 
 	/**
+	 * Current Round number
+	 *
+	 * @var integer
+	 */
+	public $round_number;
+
+	public $average_adjudicator_strength;
+
+	public $SD_of_adjudicators;
+
+	/**
 	 * Function that calculated the Draw for a round
 	 *
 	 * @param \common\models\Venue[]       $venues       Array of all active venues
@@ -37,7 +48,7 @@ abstract class TabAlgorithmus extends \yii\base\Object {
 	abstract public function calcEnergyLevel($line);
 
 	/**
-	 * @param \common\models\Debate $debate The Debate to be calculated
+	 * @param \common\models\Tournament $tournament
 	 */
 	abstract public function setup($tournament);
 }

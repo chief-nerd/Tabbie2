@@ -48,7 +48,7 @@ class Adjudicator extends \yii\db\ActiveRecord {
 
 	/**
 	 * @inheritdoc
-	 * @return CommentQuery
+	 * @return VTAQuery
 	 */
 	public static function find() {
 		return new VTAQuery(get_called_class());

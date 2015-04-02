@@ -594,39 +594,27 @@ class StrictWUDCRules extends TabAlgorithmus {
 	 * Adds the panel strength penalty
 	 *
 	 * @param DrawLine $line
-	 * @param Round    $round
 	 *
 	 * @return DrawLine
 	 */
-	public function energyRule_PanelSteepness($line, $round) {
+	public function energyRule_PanelSteepness($line) {
 
 		//$penalty = EnergyConfig::get("panel_steepness", $round->tournament_id);
 
 		//First, we need to calculate how good the room is
 
-		$roomPotential = $line->getLevel() - ($round->number - 1) * 2;
+		$roomPotential = $line->getLevel() - ($this->round_number - 1) * 2;
 
 		// This will convert the level of the room into +1, +2, -1 etc. This is useful, because we want the judging to be relative to this level.
 		// The equation we use is: SD = (x-1)*log(abs((x-1)))+1, where x is the 'Room Potential' and SD is the number of SDs that average is from the mean.
 
 		$roomDifference = ($roomPotential-1)*log(abs(($roomPotential-1)))+1;
 
-		$mean_for_round = $round->getAverageAdjudicator();
-		$standard_deviation_for_round = $round->getSDofAdjudicators();
-		$n = 0;
-
-		$total_rating_for_panel = 0;
-		foreach($line->getAdjudicators() as $adjudicator_add){
-			$total_rating_for_panel += $adjudicator_add->strength;
-			$n++;
-		}
-		$average_rating_for_panel = $total_rating_for_panel / $n;
-
 		//So now we need to work out where this sits on the scale
 
-		$comparison_factor = ($average_rating_for_panel - $mean_for_round) / $standard_deviation_for_round;
+		$comparison_factor = ($line->getStrength() - $this->average_adjudicator_strength) / $this->SD_of_adjudicators;
 
-		$line->energyLevel += pow(($roomDifference - $comparison_factor), 2);
+		$line->energyLevel += intval(pow(($roomDifference - $comparison_factor), 2));
 		return $line;
 	}
 
