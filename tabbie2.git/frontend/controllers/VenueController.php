@@ -20,6 +20,9 @@ class VenueController extends BaseTournamentController {
 
 	public function behaviors() {
 		return [
+			'tournamentFilter' => [
+				'class' => TournamentContextFilter::className(),
+			],
 			'access' => [
 				'class' => AccessControl::className(),
 				'rules' => [
@@ -27,20 +30,17 @@ class VenueController extends BaseTournamentController {
 						'allow' => true,
 						'actions' => ['index', 'view'],
 						'matchCallback' => function ($rule, $action) {
-							return (Yii::$app->user->isTabMaster($this->_user) || Yii::$app->user->isConvenor($this->_user));
+							return (Yii::$app->user->isTabMaster($this->_tournament) || Yii::$app->user->isConvenor($this->_tournament));
 						}
 					],
 					[
 						'allow' => true,
 						'actions' => ['create', 'update', 'delete', 'active', 'import'],
 						'matchCallback' => function ($rule, $action) {
-							return (Yii::$app->user->isTabMaster($this->_user));
+							return (Yii::$app->user->isTabMaster($this->_tournament));
 						}
 					],
 				],
-			],
-			'tournamentFilter' => [
-				'class' => TournamentContextFilter::className(),
 			],
 			'verbs' => [
 				'class' => VerbFilter::className(),
@@ -58,7 +58,7 @@ class VenueController extends BaseTournamentController {
 	 */
 	public function actionIndex() {
 		$dataProvider = new ActiveDataProvider([
-			'query' => Venue::find()->where(["tournament_id" => $this->_user->id]),
+			'query' => Venue::find()->where(["tournament_id" => $this->_tournament->id]),
 		]);
 
 		return $this->render('index', [
