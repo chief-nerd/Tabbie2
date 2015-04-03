@@ -15,7 +15,7 @@ function init() {
                 url: href,
             }).success(function (data) {
                 $(contentdiv).html(data);
-                root.style.top = (parseInt(root.style.top) - 60) + "px";
+                root.style.top = (parseInt(root.style.top) - 30) + "px";
             }).error(function (jqXHR, textStatus, errorThrown) {
                 console.error(textStatus + " : " + errorThrown);
             });
@@ -63,10 +63,6 @@ function init() {
             th[0].className = "glyphicon glyphicon-remove-circle text-error";
             console.error(textStatus + " : " + errorThrown);
         });
-    });
-
-    $("a.btn.moveAdj").on("click", function () {
-        alert("Move");
     });
 }
 $("#debateDraw-pjax").on("pjax:end", function () {
