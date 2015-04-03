@@ -179,7 +179,7 @@ class VenueController extends BaseTournamentController {
 
 	public function actionImport() {
 		set_time_limit(0);
-		$tournament = $this->_user;
+		$tournament = $this->_tournament;
 		$model = new \frontend\models\ImportForm();
 
 		if (Yii::$app->request->isPost) {
@@ -194,10 +194,10 @@ class VenueController extends BaseTournamentController {
 					$venue = new Venue();
 					$venue->name = $row[0];
 					$venue->active = $row[1];
-					$venue->tournament_id = $this->_user->id;
+					$venue->tournament_id = $this->_tournament->id;
 					$venue->save();
 				}
-				return $this->redirect(['index', "tournament_id" => $this->_user->id]);
+				return $this->redirect(['index', "tournament_id" => $this->_tournament->id]);
 			}
 			else { //FORM UPLOAD
 				$file = \yii\web\UploadedFile::getInstance($model, 'csvFile');

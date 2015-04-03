@@ -11,6 +11,7 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 /**
  * TournamentController implements the CRUD actions for Tournament model.
@@ -88,7 +89,9 @@ class TournamentController extends BaseTournamentController {
 			$file = UploadedFile::getInstance($model, 'logo');
 			$model->load(Yii::$app->request->post());
 			$model->generateUrlSlug();
-			$model->saveLogo($file);
+			if ($file !== null) {
+				$model->saveLogo($file);
+			}
 
 			if ($model->save()) {
 				$energyConf = new models\EnergyConfig();
