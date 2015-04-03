@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "adjudicator".
@@ -193,27 +194,22 @@ class Adjudicator extends \yii\db\ActiveRecord {
 	 * @return boolean
 	 */
 	public static function compare_strength($a, $b) {
-		$as = $a->strength;
-		$bs = $b->strength;
+		$as = $a["strength"];
+		$bs = $b["strength"];
 		return ($as < $bs) ? 1 : (($as > $bs) ? -1 : 0);
 	}
 
-	public function getPastAdjudicatorIDs($line) {
+	public function getPastAdjudicatorIDs() {
 		//Works without tournament_id because adjudicator is only valid in tournament scope
 		$model = \Yii::$app->db->createCommand("SELECT a.adjudicator_id AS aid, b.adjudicator_id AS bid, a.panel_id AS pid FROM adjudicator_in_panel AS a LEFT JOIN adjudicator_in_panel AS b ON a.panel_id = b.panel_id
 		WHERE a.adjudicator_id = " . $this->id . " GROUP BY bid");
 
 		$past = $model->queryAll();
-		$pastIDs = [];
-		foreach ($past as $line) {
-			$pastIDs[] = $line["bid"];
-		}
-
-		return $pastIDs;
+		return ArrayHelper::getColumn($past, "bid");
 	}
 
 	public function getPastTeamIDs() {
-		$sql = "SELECT og_team_id, oo_team_id, cg_team_id, co_team_id FROM adjudicator_in_panel AS aip LEFT JOIN panel ON panel.id = aip.panel_id RIGHT JOIN debate ON debate.panel_id = panel.id WHERE adjudicator_id = 783 GROUP BY adjudicator_id";
+		$sql = "SELECT og_team_id, oo_team_id, cg_team_id, co_team_id FROM adjudicator_in_panel AS aip LEFT JOIN panel ON panel.id = aip.panel_id RIGHT JOIN debate ON debate.panel_id = panel.id WHERE adjudicator_id = " . $this->id . " GROUP BY adjudicator_id";
 		$model = \Yii::$app->db->createCommand($sql);
 		$queryresult = $model->queryAll();
 		$pastIDs = [];

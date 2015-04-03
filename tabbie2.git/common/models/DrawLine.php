@@ -15,6 +15,7 @@ class DrawLine extends Model {
 	const CG = 3;
 	const CO = 4;
 
+	public $id;
 	/**
 	 * @var Venue
 	 */
@@ -51,7 +52,7 @@ class DrawLine extends Model {
 	/**
 	 * The Energy Level of the Adjudicator Panel
 	 */
-	public $energyLevel = 0;
+	public $energyLevel;
 
 	/**
 	 * Messages for that line to show to user
@@ -70,7 +71,7 @@ class DrawLine extends Model {
 		$total = 0;
 		$n = 0;
 		foreach ($this->adj as $adj) {
-			$total += $adj->strength;
+			$total += $adj["strength"];
 			$n++;
 		}
 		return intval($total / $n);
@@ -205,10 +206,10 @@ class DrawLine extends Model {
 	 */
 	public function getLevel() {
 		return max([
-			$this->getOG()->points,
-			$this->getOO()->points,
-			$this->getCO()->points,
-			$this->getCG()->points,
+			$this->getOG()["points"],
+			$this->getOO()["points"],
+			$this->getCO()["points"],
+			$this->getCG()["points"],
 		]);
 	}
 }

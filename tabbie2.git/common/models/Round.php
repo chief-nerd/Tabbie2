@@ -160,16 +160,33 @@ class Round extends \yii\db\ActiveRecord {
 	 */
 	public function generateDraw() {
 		try {
-
-			$venues = Venue::find()->active()->tournament($this->tournament->id)->all();
-			$teams = Team::find()->active()->tournament($this->tournament->id)->all();
+			set_time_limit(0);
+			$venues = Venue::find()->active()->tournament($this->tournament->id)->asArray()->all();
+			$teams = Team::find()->active()->tournament($this->tournament->id)->asArray()->all();
 
 			$adjudicators_Query = Adjudicator::find()->active()->tournament($this->tournament->id);
 
-			$adjudicators = $adjudicators_Query->all();
-			$adjudicators_strengthArray = ArrayHelper::getColumn($adjudicators_Query->asArray()
-			                                                                        ->select("strength")
-			                                                                        ->all(), "strength");
+			$adjudicatorsObjects = $adjudicators_Query->all();
+			$adjudicators = [];
+			for ($i = 0; $i < count($adjudicatorsObjects); $i++) {
+				$adjudicators[$i] = $adjudicatorsObjects[$i]->attributes;
+				$adjudicators[$i]["name"] = $adjudicatorsObjects[$i]->name;
+
+				$strikedAdju = $adjudicatorsObjects[$i]->getStrikedAdjudicators()->select(["id"])->asArray()->all();
+				$adjudicators[$i]["strikedAdjudicators"] = $strikedAdju;
+
+				$strikedTeam = $adjudicatorsObjects[$i]->getStrikedTeams()->select(["id", "name"])->asArray()->all();
+				$adjudicators[$i]["strikedTeams"] = $strikedTeam;
+
+				$adjudicators[$i]["pastAdjudicatorIDs"] = $adjudicatorsObjects[$i]->getPastAdjudicatorIDs();
+				$adjudicators[$i]["pastTeamIDs"] = $adjudicatorsObjects[$i]->getPastTeamIDs();
+			}
+
+
+			$adjudicators_strengthArray = ArrayHelper::getColumn(
+				$adjudicators_Query->select("strength")->asArray()->all(),
+				"strength"
+			);
 
 			/* Setup */
 			$algo = $this->tournament->getTabAlgorithmInstance();
@@ -197,7 +214,7 @@ class Round extends \yii\db\ActiveRecord {
 					foreach ($line->adjudicators as $judge) {
 						/* @var $judge Adjudicator */
 						$alloc = new AdjudicatorInPanel();
-						$alloc->adjudicator_id = $judge->id;
+						$alloc->adjudicator_id = $judge["id"];
 						$alloc->panel_id = $line->panelID;
 						if (!$chairSet) {
 							$alloc->function = Panel::FUNCTION_CHAIR;
@@ -214,11 +231,11 @@ class Round extends \yii\db\ActiveRecord {
 				$debate = new Debate();
 				$debate->round_id = $this->id;
 				$debate->tournament_id = $this->tournament_id;
-				$debate->og_team_id = $line->OG->id;
-				$debate->oo_team_id = $line->OO->id;
-				$debate->cg_team_id = $line->CG->id;
-				$debate->co_team_id = $line->CO->id;
-				$debate->venue_id = $line->venue->id;
+				$debate->og_team_id = $line->OG["id"];
+				$debate->oo_team_id = $line->OO["id"];
+				$debate->cg_team_id = $line->CG["id"];
+				$debate->co_team_id = $line->CO["id"];
+				$debate->venue_id = $line->venue["id"];
 				$debate->panel_id = $line->panelID;
 				$debate->energy = $line->energyLevel;
 				$debate->setMessages($line->messages);
@@ -226,10 +243,12 @@ class Round extends \yii\db\ActiveRecord {
 				if (!$debate->save())
 					throw new Exception("Can't save Debate " . print_r($debate->getErrors(), true));
 			}
+			set_time_limit(30);
 			return true;
 		} catch (Exception $ex) {
 			$this->addError("TabAlgorithmus", $ex->getMessage());
 		}
+		set_time_limit(30);
 		return false;
 	}
 

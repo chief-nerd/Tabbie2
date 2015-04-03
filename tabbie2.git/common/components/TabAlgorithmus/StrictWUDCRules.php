@@ -63,7 +63,7 @@ class StrictWUDCRules extends TabAlgorithmus {
 		 * Set Past Position Matrix
 		 */
 		for ($i = 0; $i < count($teams); $i++) {
-			$teams[$i]->positionMatrix = $teams[$i]->getPastPositionMatrix();
+			$teams[$i]["positionMatrix"] = Team::getPastPositionMatrix($teams[$i]["id"], $this->tournament_id);
 		}
 
 		/**
@@ -72,12 +72,13 @@ class StrictWUDCRules extends TabAlgorithmus {
 		for ($i = 0; $i < $active_rooms; $i++) {
 			$line = new DrawLine();
 
+			$line->id = $i;
 			$choosen = array_splice($teams, 0, 4);
 			shuffle($choosen);
 			$line->setTeamsByArray($choosen);
 
 			$line->venue = $venues[$i];
-			$this->tournament_id = $venues[$i]->tournament_id;
+			$this->tournament_id = $venues[$i]["tournament_id"];
 			$this->DRAW[] = $line;
 		}
 
@@ -93,20 +94,24 @@ class StrictWUDCRules extends TabAlgorithmus {
 			$maxIterations = count($this->DRAW);
 			for ($lineIterator = 0; $lineIterator < $maxIterations; $lineIterator++) {
 				for ($teamIterator = 0; $teamIterator < 4; $teamIterator++) {
-					if ($this->DRAW[$lineIterator]->teams[$teamIterator]->getPositionBadness($teamIterator) > 0) { // Not optimal positioning exists here
+
+					$posBadness = Team::getPositionBadness($teamIterator, $this->DRAW[$lineIterator]->teams[$teamIterator]);
+					if ($posBadness > 0) { // Not optimal positioning exists here
 						if ($this->find_best_team_swap_for($this->DRAW[$lineIterator], $teamIterator)) { //Do we find a swap that makes it better
 							$stillFoundASwap = true; //We found a better swap, do the loop again
 							break;
 						}
 					}
+
 				}
 				if ($stillFoundASwap)
 					break; //Found it already break on!
 			}
 			if (memory_get_usage() > $memory_limit) {
 				$stillFoundASwap = false;
-				Yii::$app->session->addFlash("error", "Abort Team optimization due to memory limit: " . memory_get_usage() / 1024 / 1024);
+				Yii::$app->session->addFlash("error", "Abort <b>Team</b> optimization due to memory limit: " . memory_get_usage() / 1024 / 1024);
 			}
+
 			//If we havn't found a better swap $stillFoundASwap should be false and the loop breaks
 		}
 
@@ -132,12 +137,15 @@ class StrictWUDCRules extends TabAlgorithmus {
 		 * Now start improving that initial set
 		 * Go through the Draw until you can't make any improvements
 		 */
-		/*
+
+		$maxIterations = count($this->DRAW);
+
+		$secure_counter = 0;
+		$secure_max_Iterations = $maxIterations * 3;
 		$stillFoundASwap = true;
 		while ($stillFoundASwap) {
 			$stillFoundASwap = false; //Assume we are done, prove me wrong
 
-			$maxIterations = count($this->DRAW);
 			for ($lineIterator = 0; $lineIterator < $maxIterations; $lineIterator++) {
 				$maxAdjuIteration = count($this->DRAW[$lineIterator]->getAdjudicators());
 				for ($adjuIterator = 0; $adjuIterator < $maxAdjuIteration; $adjuIterator++) {
@@ -152,14 +160,18 @@ class StrictWUDCRules extends TabAlgorithmus {
 				if ($stillFoundASwap)
 					break; //Found it already break on!
 			}
-			if(memory_get_usage() > $memory_limit)
-			{
+			if (memory_get_usage() > $memory_limit) {
 				$stillFoundASwap = false;
-				Yii::$app->session->addFlash("error", "Abort Adjudicator optimization due to memory limit: ".memory_get_usage()/1024/1024);
+				Yii::$app->session->addFlash("error", "Abort <b>Adjudicator</b> optimization due to memory limit: " . memory_get_usage() / 1024 / 1024);
+			}
+			$secure_counter++;
+			if ($secure_counter > $secure_max_Iterations) {
+				$stillFoundASwap = false;
+				Yii::$app->session->addFlash("error", "Abort <b>Adjudicator</b> optimization due to infinite loop!");
 			}
 			//If we havn't found a better swap $stillFoundASwap should be false and the loop breaks
 		}
-		*/
+
 
 		/*
 		 * We have found the best possible combination
@@ -203,11 +215,11 @@ class StrictWUDCRules extends TabAlgorithmus {
 	 */
 	public function randomise_within_points($teams) {
 
-		$saved_points = $teams[0]->points; //reset to start
+		$saved_points = $teams[0]["points"]; //reset to start
 		$last_break = 0;
 
 		for ($i = 0; $i < count($teams); $i++) {
-			$team_points = $teams[$i]->points;
+			$team_points = $teams[$i]["points"];
 			if ($team_points != $saved_points) {
 				$bracket = array_slice($teams, $last_break, ($i - $last_break));
 				shuffle($bracket);
@@ -267,23 +279,24 @@ class StrictWUDCRules extends TabAlgorithmus {
 		$best_team_b_line = false;
 		$best_team_b_pos = false;
 
-		$team_a_badness = $team_a->getPositionBadness($pos_a);
+		$team_a_badness = Team::getPositionBadness($pos_a, $team_a);
 
 		$maxIterations = count($this->DRAW);
 		for ($lineIterator = 0; $lineIterator < $maxIterations; $lineIterator++) {
 			for ($teamIterator = 0; $teamIterator < 4; $teamIterator++) {
 				//foreach ($this->DRAW as $line) {
 				//foreach ($line->getTeams() as $pos_b => $team_b) { //this loop especially can be limited
-				if ($team_a->is_swappable_with(
+				if (Team::is_swappable_with(
+					$team_a,
 					$this->DRAW[$lineIterator]->teams[$teamIterator],
 					$line_a->level,
 					$this->DRAW[$lineIterator]->level)
 				) {
 
 					//Get Status Quo Badness
-					$current = $team_a_badness + $this->DRAW[$lineIterator]->teams[$teamIterator]->getPositionBadness($teamIterator);
+					$current = $team_a_badness + Team::getPositionBadness($teamIterator, $this->DRAW[$lineIterator]->teams[$teamIterator]);
 					//How it would look like
-					$future = $team_a->getPositionBadness($teamIterator) + $this->DRAW[$lineIterator]->teams[$teamIterator]->getPositionBadness($pos_a);
+					$future = Team::getPositionBadness($teamIterator, $team_a) + Team::getPositionBadness($pos_a, $this->DRAW[$lineIterator]->teams[$teamIterator]);
 
 					$net_effect = $future - $current;
 					if ($net_effect < $best_effect) {
@@ -314,12 +327,14 @@ class StrictWUDCRules extends TabAlgorithmus {
 		$best_adju_b_line = false;
 		$best_adju_b_pos = false;
 
+		$line_a_strength = $line_a->getStrength();
+
 		$maxIterations = count($this->DRAW);
 		for ($lineIterator = 0; $lineIterator < $maxIterations; $lineIterator++) {
 			$maxAdjudicator = count($this->DRAW[$lineIterator]->getAdjudicators());
 			for ($adjuIterator = 0; $adjuIterator < $maxAdjudicator; $adjuIterator++) {
 
-				$currentEnergy = $line_a->energyLevel + $this->DRAW[$lineIterator]->energyLevel;
+				$currentEnergy = $line_a_strength + $this->DRAW[$lineIterator]->getStrength();
 
 				//Create new lines for future
 				$new_line_a = $line_a;
@@ -331,10 +346,10 @@ class StrictWUDCRules extends TabAlgorithmus {
 				//Calculate New Energy Levels
 				$this->calcEnergyLevel($new_line_a);
 				$this->calcEnergyLevel($new_line_b);
-				$futureEnergy = $new_line_a->energyLevel + $new_line_b->energyLevel;
+				$futureEnergy = $new_line_a->getStrength() + $new_line_b->getStrength();
 
 				$net_effect = $futureEnergy - $currentEnergy;
-				if ($net_effect > $best_effect) {
+				if ($net_effect < $best_effect) {
 					$best_effect = $net_effect;
 					$best_adju_b_line = $this->DRAW[$lineIterator];
 					$best_adju_b_pos = $adjuIterator;
@@ -342,7 +357,7 @@ class StrictWUDCRules extends TabAlgorithmus {
 			}
 		}
 
-		if ($best_adju_b_line && $best_adju_b_pos) {
+		if ($best_adju_b_line && $best_adju_b_pos && $best_adju_b_line != $line_a && $best_adju_b_pos != $pos_a) {
 			$this->swap_adjudicator($line_a, $pos_a, $best_adju_b_line, $best_adju_b_pos);
 			return true;
 		}
@@ -437,8 +452,8 @@ class StrictWUDCRules extends TabAlgorithmus {
 		$penalty = EnergyConfig::get("society_strike", $this->tournament_id);
 		foreach ($line->getAdjudicators() as $adjudicator) {
 			foreach ($line->getTeams() as $team) {
-				if ($team->society_id == $adjudicator->society_id) {
-					$line->addMessage("error", "Adjudicator " . $adjudicator->name . " and " . $team->name . " in same society");
+				if ($team["society_id"] == $adjudicator["society_id"]) {
+					$line->addMessage("error", "Adjudicator " . $adjudicator["name"] . " and " . $team["name"] . " in same society");
 					$line->energyLevel += $penalty;
 				}
 			}
@@ -459,9 +474,9 @@ class StrictWUDCRules extends TabAlgorithmus {
 		$penalty = EnergyConfig::get("adjudicator_strike", $this->tournament_id);
 
 		foreach ($line->getAdjudicators() as $adjudicator) {
-			foreach ($adjudicator->getStrikedAdjudicators()->all() as $adjudicator_check) {
-				if ($adjudicator_check->id == $adjudicator->id) {
-					$line->addMessage("error", "Adjudicator " . $adjudicator->name . " and " . $adjudicator_check->name . " are manually clashed");
+			foreach ($adjudicator["strikedAdjudicators"] as $adjudicator_check) {
+				if ($adjudicator["id"] == $adjudicator_check["id"]) {
+					$line->addMessage("error", "Adjudicator #" . $adjudicator["name"] . " and #" . $adjudicator_check["name"] . " are manually clashed");
 					$line->energyLevel += $penalty;
 				}
 			}
@@ -482,10 +497,10 @@ class StrictWUDCRules extends TabAlgorithmus {
 		$penalty = EnergyConfig::get("team_strike", $this->tournament_id);
 
 		foreach ($line->getAdjudicators() as $adjudicator) {
-			foreach ($adjudicator->getStrikedTeams()->all() as $team_check) {
+			foreach ($adjudicator["strikedTeams"] as $team_check) {
 				foreach ($line->getTeams() as $team) {
-					if ($team->id == $team_check->id) {
-						$line->addMessage("error", "Adjudicator " . $adjudicator->name . " and Team " . $team->name . " are manually clashed");
+					if ($team["id"] == $team_check["id"]) {
+						$line->addMessage("error", "Adjudicator " . $adjudicator["name"] . " and Team " . $team["name"] . " are manually clashed");
 						$line->energyLevel += $penalty;
 					}
 				}
@@ -506,8 +521,8 @@ class StrictWUDCRules extends TabAlgorithmus {
 
 		$penalty = EnergyConfig::get("non_chair", $this->tournament_id);
 		//This relies on there being a 'can_chair' tag
-		if ($line->getChair()->can_chair == 0) {
-			$line->addMessage("error", "Adjudicator " . $line->getChair()->name . " has been labelled a non-chair");
+		if ($line->getChair()["can_chair"] == 0) {
+			$line->addMessage("error", "Adjudicator " . $line->getChair()["name"] . " has been labelled a non-chair");
 			$line->energyLevel += $penalty;
 		}
 
@@ -526,7 +541,7 @@ class StrictWUDCRules extends TabAlgorithmus {
 		$penalty = EnergyConfig::get("chair_not_perfect", $this->tournament_id);
 
 		//This basically adds a penalty for each point away from the maximum the chair's ranking is
-		$diffPerfect = (Adjudicator::MAX_RATING - $line->getChair()->strength);
+		$diffPerfect = (Adjudicator::MAX_RATING - $line->getChair()["strength"]);
 
 		if ($diffPerfect > 0) {
 			$line->addMessage("warning", "Chair not perfect by " . $diffPerfect);
@@ -547,14 +562,17 @@ class StrictWUDCRules extends TabAlgorithmus {
 		$penalty = EnergyConfig::get("judge_met_judge", $this->tournament_id);
 		$found = [];
 		foreach ($line->getAdjudicators() as $adjudicator) {
-			$pastAdjudicatorIDS = $adjudicator->getPastAdjudicatorIDs($line);
-
 			foreach ($line->getAdjudicators() as $adjudicator_match) {
-				if ($adjudicator_match->id != $adjudicator->id) {
-					if (in_array($adjudicator_match->id, $pastAdjudicatorIDS)) {
-						if (!in_array($adjudicator_match->id, $found)) {
-							$found[] = $adjudicator_match->id;
-							$line->addMessage("warning", "Adjudicator " . $adjudicator->name . " and " . $adjudicator_match->name . " have judged together before");
+
+				if ($adjudicator_match["id"] != $adjudicator["id"]) {
+					if (in_array($adjudicator_match["id"], $adjudicator["pastAdjudicatorIDs"])) {
+
+						if (!in_array($adjudicator_match["id"], $found)) {
+							$found[] = $adjudicator_match["id"];
+							$line->addMessage("warning", "Adjudicator " .
+								$adjudicator["name"] . " and " .
+								$adjudicator_match["name"] .
+								" have judged together before");
 							$line->energyLevel += $penalty;
 						}
 					}
@@ -577,11 +595,9 @@ class StrictWUDCRules extends TabAlgorithmus {
 
 		$penalty = EnergyConfig::get("judge_met_team", $this->tournament_id);
 		foreach ($line->getAdjudicators() as $adjudicator) {
-			$pastTeamIDs = $adjudicator->getPastTeamIDs();
-
 			foreach ($line->getTeams() as $team) {
-				if (in_array($team->id, $pastTeamIDs)) {
-					$line->addMessage("warning", "Adjudicator " . $adjudicator->name . " has judged Team " . $team->name . " before");
+				if (in_array($team["id"], $adjudicator["pastTeamIDs"])) {
+					$line->addMessage("warning", "Adjudicator " . $adjudicator["name"] . " has judged Team " . $team["name"] . " before");
 					$line->energyLevel += $penalty;
 				}
 			}

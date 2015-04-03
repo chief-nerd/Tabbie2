@@ -231,8 +231,8 @@ class Team extends \yii\db\ActiveRecord {
 	 * @param Team $b
 	 */
 	public static function compare_points($a, $b) {
-		$ap = $a->points;
-		$bp = $b->points;
+		$ap = $a["points"];
+		$bp = $b["points"];
 		return ($ap < $bp) ? 1 : (($ap > $bp) ? -1 : 0);
 	}
 
@@ -246,9 +246,9 @@ class Team extends \yii\db\ActiveRecord {
 	 * @uses Team::getLevel
 	 * @return bool
 	 */
-	public function is_swappable_with($other_team, $line_a_level, $line_b_level) {
-		$result = ($this->id != $other_team->id) &&
-			(($this->points == $other_team->points) ||
+	public static function is_swappable_with($team, $other_team, $line_a_level, $line_b_level) {
+		$result = ($team["id"] != $other_team["id"]) &&
+			(($team["points"] == $other_team["points"]) ||
 				($line_a_level == $line_b_level));
 		return $result;
 	}
@@ -337,14 +337,16 @@ class Team extends \yii\db\ActiveRecord {
 
 	/**
 	 * Gets an integer value representing how BAD the current position is for the Team
-	 *
-	 * @param integer $pos
-	 *
-	 * @return integer
-	 */
-	public function getPositionBadness($pos) {
 
-		$positions = $this->positionMatrix;
+	 *
+*@param integer $pos
+	 * @param Array $team
+	 *
+*@return integer
+	 */
+	public static function getPositionBadness($pos, $team) {
+
+		$positions = $team["positionMatrix"];
 		$badness_lookup = Team::PositionBadnessTable();
 
 		$positions[$pos] += 1;
@@ -366,12 +368,12 @@ class Team extends \yii\db\ActiveRecord {
 	 *
 	 * @return array[4]
 	 */
-	public function getPastPositionMatrix() {
+	public static function getPastPositionMatrix($id, $tournament_id) {
 
-		$og = Debate::find()->where(["tournament_id" => $this->tournament_id, "og_team_id" => $this->id])->count();
-		$oo = Debate::find()->where(["tournament_id" => $this->tournament_id, "oo_team_id" => $this->id])->count();
-		$cg = Debate::find()->where(["tournament_id" => $this->tournament_id, "cg_team_id" => $this->id])->count();
-		$co = Debate::find()->where(["tournament_id" => $this->tournament_id, "co_team_id" => $this->id])->count();
+		$og = Debate::find()->where(["tournament_id" => $tournament_id, "og_team_id" => $id])->count();
+		$oo = Debate::find()->where(["tournament_id" => $tournament_id, "oo_team_id" => $id])->count();
+		$cg = Debate::find()->where(["tournament_id" => $tournament_id, "cg_team_id" => $id])->count();
+		$co = Debate::find()->where(["tournament_id" => $tournament_id, "co_team_id" => $id])->count();
 
 		return [$og, $oo, $cg, $co];
 	}
