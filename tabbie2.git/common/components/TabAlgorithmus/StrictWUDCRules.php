@@ -378,37 +378,37 @@ class StrictWUDCRules extends TabAlgorithmus {
 			[
 				"label" => "Team and adjudicator in same society penalty",
 				"key" => "society_strike",
-				"value" => -1000,
+				"value" => 1000,
 			],
 			[
 				"label" => "Adjudicators are clashed",
 				"key" => "adjudicator_strike",
-				"value" => -1000,
+				"value" => 1000,
 			],
 			[
 				"label" => "Team with Adjudicator is clashed",
 				"key" => "team_strike",
-				"value" => -1000,
+				"value" => 1000,
 			],
 			[
 				"label" => "Adjudicator is not allowed to chair",
 				"key" => "non_chair",
-				"value" => -1000,
+				"value" => 1000,
 			],
 			[
 				"label" => "Chair is not perfect at the current situation",
 				"key" => "chair_not_perfect",
-				"value" => -100,
+				"value" => 100,
 			],
 			[
 				"label" => "Adjudicator has already judged in this combination",
 				"key" => "judge_met_judge",
-				"value" => -100,
+				"value" => 100,
 			],
 			[
 				"label" => "Adjudicator has seen the team already",
 				"key" => "judge_met_team",
-				"value" => -20,
+				"value" => 20,
 			]
 		];
 
@@ -453,7 +453,7 @@ class StrictWUDCRules extends TabAlgorithmus {
 		foreach ($line->getAdjudicators() as $adjudicator) {
 			foreach ($line->getTeams() as $team) {
 				if ($team["society_id"] == $adjudicator["society_id"]) {
-					$line->addMessage("error", "Adjudicator " . $adjudicator["name"] . " and " . $team["name"] . " in same society");
+					$line->addMessage("error", "Adjudicator " . $adjudicator["name"] . " and " . $team["name"] . " in same society (+$penalty)");
 					$line->energyLevel += $penalty;
 				}
 			}
@@ -476,7 +476,7 @@ class StrictWUDCRules extends TabAlgorithmus {
 		foreach ($line->getAdjudicators() as $adjudicator) {
 			foreach ($adjudicator["strikedAdjudicators"] as $adjudicator_check) {
 				if ($adjudicator["id"] == $adjudicator_check["id"]) {
-					$line->addMessage("error", "Adjudicator #" . $adjudicator["name"] . " and #" . $adjudicator_check["name"] . " are manually clashed");
+					$line->addMessage("error", "Adjudicator #" . $adjudicator["name"] . " and #" . $adjudicator_check["name"] . " are manually clashed (+$penalty)");
 					$line->energyLevel += $penalty;
 				}
 			}
@@ -500,7 +500,7 @@ class StrictWUDCRules extends TabAlgorithmus {
 			foreach ($adjudicator["strikedTeams"] as $team_check) {
 				foreach ($line->getTeams() as $team) {
 					if ($team["id"] == $team_check["id"]) {
-						$line->addMessage("error", "Adjudicator " . $adjudicator["name"] . " and Team " . $team["name"] . " are manually clashed");
+						$line->addMessage("error", "Adjudicator " . $adjudicator["name"] . " and Team " . $team["name"] . " are manually clashed (+$penalty)");
 						$line->energyLevel += $penalty;
 					}
 				}
@@ -522,7 +522,7 @@ class StrictWUDCRules extends TabAlgorithmus {
 		$penalty = EnergyConfig::get("non_chair", $this->tournament_id);
 		//This relies on there being a 'can_chair' tag
 		if ($line->getChair()["can_chair"] == 0) {
-			$line->addMessage("error", "Adjudicator " . $line->getChair()["name"] . " has been labelled a non-chair");
+			$line->addMessage("error", "Adjudicator " . $line->getChair()["name"] . " has been labelled a non-chair (+$penalty)");
 			$line->energyLevel += $penalty;
 		}
 
@@ -544,8 +544,9 @@ class StrictWUDCRules extends TabAlgorithmus {
 		$diffPerfect = (Adjudicator::MAX_RATING - $line->getChair()["strength"]);
 
 		if ($diffPerfect > 0) {
-			$line->addMessage("warning", "Chair not perfect by " . $diffPerfect);
-			$line->energyLevel += ($penalty * $diffPerfect);
+			$comp_penalty = ($penalty * $diffPerfect);
+			$line->addMessage("warning", "Chair not perfect by " . $diffPerfect . " (+$comp_penalty)");
+			$line->energyLevel += $comp_penalty;
 		}
 		return $line;
 	}
@@ -572,7 +573,7 @@ class StrictWUDCRules extends TabAlgorithmus {
 							$line->addMessage("warning", "Adjudicator " .
 								$adjudicator["name"] . " and " .
 								$adjudicator_match["name"] .
-								" have judged together before");
+								" have judged together before (+$penalty)");
 							$line->energyLevel += $penalty;
 						}
 					}
@@ -597,7 +598,7 @@ class StrictWUDCRules extends TabAlgorithmus {
 		foreach ($line->getAdjudicators() as $adjudicator) {
 			foreach ($line->getTeams() as $team) {
 				if (in_array($team["id"], $adjudicator["pastTeamIDs"])) {
-					$line->addMessage("warning", "Adjudicator " . $adjudicator["name"] . " has judged Team " . $team["name"] . " before");
+					$line->addMessage("warning", "Adjudicator " . $adjudicator["name"] . " has judged Team " . $team["name"] . " before (+$penalty)");
 					$line->energyLevel += $penalty;
 				}
 			}
@@ -630,7 +631,9 @@ class StrictWUDCRules extends TabAlgorithmus {
 
 		$comparison_factor = ($line->getStrength() - $this->average_adjudicator_strength) / $this->SD_of_adjudicators;
 
-		$line->energyLevel += intval(pow(($roomDifference - $comparison_factor), 2));
+		$penalty = intval(pow(($roomDifference - $comparison_factor), 2));
+		$line->addMessage("notice", "Steepness Comparison: " . round($comparison_factor, 3) . ", Difference: " . round($roomDifference, 3) . " (+$penalty)");
+		$line->energyLevel += $penalty;
 		return $line;
 	}
 
