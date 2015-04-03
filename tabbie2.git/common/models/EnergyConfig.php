@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "energy_config".
@@ -81,6 +82,12 @@ class EnergyConfig extends \yii\db\ActiveRecord {
 			"key" => $key,
 			"tournament_id" => $tournament_id,
 		])->one()->value;
+	}
+
+	public static function loadArray($tournament_id) {
+		$config = [];
+		$en = EnergyConfig::find()->tournament($tournament_id)->asArray()->all();
+		return ArrayHelper::map($en, "key", "value");
 	}
 
 }

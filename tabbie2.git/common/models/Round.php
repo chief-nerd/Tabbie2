@@ -191,6 +191,7 @@ class Round extends \yii\db\ActiveRecord {
 			/* Setup */
 			$algo = $this->tournament->getTabAlgorithmInstance();
 			$algo->tournament_id = $this->tournament->id;
+			$algo->energyConfig = EnergyConfig::loadArray($this->tournament->id);
 			$algo->round_number = $this->number;
 			$algo->average_adjudicator_strength = array_sum($adjudicators_strengthArray) / count($adjudicators_strengthArray);
 			$algo->SD_of_adjudicators = $this->stats_standard_deviation($adjudicators_strengthArray);

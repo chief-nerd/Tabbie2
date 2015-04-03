@@ -320,6 +320,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 */
 	public function find_best_adju_swap_for($line_a, $pos_a) {
 
+		Yii::beginProfile("find_best_adju_swap_for");
 		$best_effect = 0;
 		$best_adju_b_line = false;
 		$best_adju_b_pos = false;
@@ -354,6 +355,7 @@ class StrictWUDCRules extends TabAlgorithm {
 			}
 		}
 
+		Yii::endProfile("find_best_adju_swap_for");
 		if ($best_adju_b_line && $best_adju_b_pos && $best_adju_b_line != $line_a && $best_adju_b_pos != $pos_a) {
 			$this->swap_adjudicator($line_a, $pos_a, $best_adju_b_line, $best_adju_b_pos);
 			return true;
@@ -448,7 +450,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 */
 	public function energyRule_SameSocietyStrikes($line) {
 
-		$penalty = EnergyConfig::get("society_strike", $this->tournament_id);
+		$penalty = $this->energyConfig["society_strike"]; // EnergyConfig::get("society_strike", $this->tournament_id);
 		foreach ($line->getAdjudicators() as $adjudicator) {
 			foreach ($line->getTeams() as $team) {
 				if ($team["society_id"] == $adjudicator["society_id"]) {
@@ -470,7 +472,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 */
 	public function energyRule_AdjudicatorStrikes($line) {
 
-		$penalty = EnergyConfig::get("adjudicator_strike", $this->tournament_id);
+		$penalty = $this->energyConfig["adjudicator_strike"]; //EnergyConfig::get("adjudicator_strike", $this->tournament_id);
 
 		foreach ($line->getAdjudicators() as $adjudicator) {
 			foreach ($adjudicator["strikedAdjudicators"] as $adjudicator_check) {
@@ -493,7 +495,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 */
 	public function energyRule_TeamAdjStrikes($line) {
 
-		$penalty = EnergyConfig::get("team_strike", $this->tournament_id);
+		$penalty = $this->energyConfig["team_strike"]; // EnergyConfig::get("team_strike", $this->tournament_id);
 
 		foreach ($line->getAdjudicators() as $adjudicator) {
 			foreach ($adjudicator["strikedTeams"] as $team_check) {
@@ -518,7 +520,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 */
 	public function energyRule_NonChair($line) {
 
-		$penalty = EnergyConfig::get("non_chair", $this->tournament_id);
+		$penalty = $this->energyConfig["non_chair"]; // EnergyConfig::get("non_chair", $this->tournament_id);
 		//This relies on there being a 'can_chair' tag
 		if ($line->getChair()["can_chair"] == 0) {
 			$line->addMessage("error", "Adjudicator " . $line->getChair()["name"] . " has been labelled a non-chair (+$penalty)");
@@ -537,7 +539,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 */
 	public function energyRule_NotPerfect($line) {
 
-		$penalty = EnergyConfig::get("chair_not_perfect", $this->tournament_id);
+		$penalty = $this->energyConfig["chair_not_perfect"]; //EnergyConfig::get("chair_not_perfect", $this->tournament_id);
 
 		//This basically adds a penalty for each point away from the maximum the chair's ranking is
 		$diffPerfect = (Adjudicator::MAX_RATING - $line->getChair()["strength"]);
@@ -559,7 +561,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 */
 	public function energyRule_JudgeMetJudge($line) {
 
-		$penalty = EnergyConfig::get("judge_met_judge", $this->tournament_id);
+		$penalty = $this->energyConfig["judge_met_judge"]; // EnergyConfig::get("judge_met_judge", $this->tournament_id);
 		$found = [];
 		foreach ($line->getAdjudicators() as $adjudicator) {
 			foreach ($line->getAdjudicators() as $adjudicator_match) {
@@ -593,7 +595,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 */
 	public function energyRule_JudgeMetTeam($line) {
 
-		$penalty = EnergyConfig::get("judge_met_team", $this->tournament_id);
+		$penalty = $this->energyConfig["judge_met_team"]; // EnergyConfig::get("judge_met_team", $this->tournament_id);
 		foreach ($line->getAdjudicators() as $adjudicator) {
 			foreach ($line->getTeams() as $team) {
 				if (in_array($team["id"], $adjudicator["pastTeamIDs"])) {

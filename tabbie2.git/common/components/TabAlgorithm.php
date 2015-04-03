@@ -18,6 +18,8 @@ abstract class TabAlgorithm extends \yii\base\Object {
 	 */
 	public $tournament_id;
 
+	public $energyConfig;
+
 	/**
 	 * Current Round number
 	 *
