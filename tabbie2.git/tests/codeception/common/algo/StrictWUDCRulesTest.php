@@ -59,7 +59,7 @@ class StrictWUDCRulesTest extends DbTestCase {
         }
     }
 
-    public function testSwap() {
+	public function testSwapTeams() {
 
         $pos_a = rand(0, 3);
         $team_a = new Team(["id" => 1]);
@@ -79,16 +79,46 @@ class StrictWUDCRulesTest extends DbTestCase {
     }
 
     public function testRunFullDraw() {
-        $venues = Venue::findAll(["tournament_id" => 1]);
-        $teams = Team::findAll(["tournament_id" => 1]);
-        $adjudicators = Adjudicator::findAll(["tournament_id" => 1]);
-        $draw = $this->algo->makeDraw($venues, $teams, $adjudicators);
+
+	    $venues = Venue::find()->active()->tournament(1)->asArray()->all();
+	    $teams = Team::find()->active()->tournament(1)->asArray()->all();
+
+	    $adjudicators_Query = Adjudicator::find()->active()->tournament(1);
+
+	    $adjudicatorsObjects = $adjudicators_Query->all();
+	    $adjudicators = [];
+	    for ($i = 0; $i < count($adjudicatorsObjects); $i++) {
+		    $adjudicators[$i] = $adjudicatorsObjects[$i]->attributes;
+		    $adjudicators[$i]["name"] = $adjudicatorsObjects[$i]->name;
+
+		    $strikedAdju = $adjudicatorsObjects[$i]->getStrikedAdjudicators()->select(["id"])->asArray()->all();
+		    $adjudicators[$i]["strikedAdjudicators"] = $strikedAdju;
+
+		    $strikedTeam = $adjudicatorsObjects[$i]->getStrikedTeams()->select(["id", "name"])->asArray()->all();
+		    $adjudicators[$i]["strikedTeams"] = $strikedTeam;
+
+		    $adjudicators[$i]["pastAdjudicatorIDs"] = $adjudicatorsObjects[$i]->getPastAdjudicatorIDs();
+		    $adjudicators[$i]["pastTeamIDs"] = $adjudicatorsObjects[$i]->getPastTeamIDs();
+	    }
+
+
+	    $adjudicators_strengthArray = ArrayHelper::getColumn(
+		    $adjudicators_Query->select("strength")->asArray()->all(),
+		    "strength"
+	    );
+
+	    /* Setup */
+	    $this->algo->tournament_id = 1;
+	    $this->algo->round_number = 1;
+	    $this->algo->average_adjudicator_strength = array_sum($adjudicators_strengthArray) / count($adjudicators_strengthArray);
+	    $this->algo->SD_of_adjudicators = $this->stats_standard_deviation($adjudicators_strengthArray);
+
+	    $this->algo->makeDraw($venues, $teams, $adjudicators);
     }
 
     public function testEnergyCalculation() {
         $line = new \common\models\DrawLine();
-        $round = \common\models\Round::findOne(1);
-        $line = $this->algo->calcEnergyLevel($line, $round);
+	    $line = $this->algo->calcEnergyLevel($line);
         expect("Energy Level is set", $line->energyLevel)->notEquals(0);
     }
 
