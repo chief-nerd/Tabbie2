@@ -1,8 +1,8 @@
 <?php
 
-namespace common\components\TabAlgorithmus;
+namespace common\components\algorithms;
 
-use common\components\TabAlgorithmus;
+use common\components\TabAlgorithm;
 use common\models\Adjudicator;
 use common\models\DrawLine;
 use common\models\EnergyConfig;
@@ -12,7 +12,7 @@ use common\models\Venue;
 use Yii;
 use yii\base\Exception;
 
-class StrictWUDCRules extends TabAlgorithmus {
+class StrictWUDCRules extends TabAlgorithm {
 
 	/**
 	 * Function to calculate a draw based on WUDC strict Rules
@@ -29,6 +29,7 @@ class StrictWUDCRules extends TabAlgorithmus {
 	 */
 	public function makeDraw($venues, $teams, $adjudicators, $preset_panels = array()) {
 
+		Yii::beginProfile("generateDraw");
 		$memory_limit = (ini_get('memory_limit') * 1024 * 1024) * 0.9;
 
 		$active_rooms = (count($teams) / 4);
@@ -48,7 +49,6 @@ class StrictWUDCRules extends TabAlgorithmus {
 		 * Sort Adjudicator at Strength
 		 */
 		$adjudicators = $this->sort_adjudicators($adjudicators);
-
 		/*
 		  First we need to make the brackets for each debate. This means ordering the teams by the number of points.
 		 */
@@ -87,6 +87,7 @@ class StrictWUDCRules extends TabAlgorithmus {
 		 * Now start improving that initial set
 		 * Go through the Draw until you can't make any improvements
 		 */
+		Yii::beginProfile("optimizeTeamAllocation");
 		$stillFoundASwap = true;
 		while ($stillFoundASwap) {
 			$stillFoundASwap = false; //Assume we are done, prove me wrong
@@ -114,6 +115,7 @@ class StrictWUDCRules extends TabAlgorithmus {
 
 			//If we havn't found a better swap $stillFoundASwap should be false and the loop breaks
 		}
+		Yii::endProfile("optimizeTeamAllocation");
 
 		/*
 		 * Allocate the Adjudicators
@@ -137,11 +139,9 @@ class StrictWUDCRules extends TabAlgorithmus {
 		 * Now start improving that initial set
 		 * Go through the Draw until you can't make any improvements
 		 */
-
+		Yii::beginProfile("optimizeAdjudicatorAllocation");
 		$maxIterations = count($this->DRAW);
 
-		$secure_counter = 0;
-		$secure_max_Iterations = $maxIterations * 3;
 		$stillFoundASwap = true;
 		while ($stillFoundASwap) {
 			$stillFoundASwap = false; //Assume we are done, prove me wrong
@@ -164,13 +164,9 @@ class StrictWUDCRules extends TabAlgorithmus {
 				$stillFoundASwap = false;
 				Yii::$app->session->addFlash("error", "Abort <b>Adjudicator</b> optimization due to memory limit: " . memory_get_usage() / 1024 / 1024);
 			}
-			$secure_counter++;
-			if ($secure_counter > $secure_max_Iterations) {
-				$stillFoundASwap = false;
-				Yii::$app->session->addFlash("error", "Abort <b>Adjudicator</b> optimization due to infinite loop!");
-			}
 			//If we havn't found a better swap $stillFoundASwap should be false and the loop breaks
 		}
+		Yii::endProfile("optimizeAdjudicatorAllocation");
 
 
 		/*
@@ -178,6 +174,7 @@ class StrictWUDCRules extends TabAlgorithmus {
 		 * There is no better swap possible now.
 		 * Return der DRAW[] and get ready to debate
 		 */
+		Yii::endProfile("generateDraw");
 		return $this->DRAW;
 	}
 
@@ -432,11 +429,13 @@ class StrictWUDCRules extends TabAlgorithmus {
 	public function calcEnergyLevel($line) {
 		$line->energyLevel = 0;
 		$line->messages = [];
+		Yii::beginProfile("calcEnergyLevel");
 		foreach (get_class_methods($this) as $function) {
 			if (strpos($function, "energyRule_") === 0) {
 				$line = \call_user_func([StrictWUDCRules::className(), $function], $line);
 			}
 		}
+		Yii::endProfile("calcEnergyLevel");
 		return $line;
 	}
 

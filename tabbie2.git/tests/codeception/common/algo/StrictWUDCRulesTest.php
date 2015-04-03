@@ -17,6 +17,9 @@ use common\models\Adjudicator;
  */
 class StrictWUDCRulesTest extends DbTestCase {
 
+	/**
+	 * @var common\components\TabAlgorithmus\StrictWUDCRules
+	 */
     public $algo;
 
     public function setUp() {
@@ -77,6 +80,24 @@ class StrictWUDCRulesTest extends DbTestCase {
         expect($line_a->getTeamOn($pos_a))->equals($team_b);
         expect($line_b->getTeamOn($pos_b))->equals($team_a);
     }
+
+	public function testSwapAdjudicator() {
+
+		$pos_a = rand(0, 3);
+		$adju_a = new Adjudicator(["id" => 1]);
+		$line_a = new \common\models\DrawLine();
+		$line_a->addAdjudicator($adju_a);
+
+		$pos_b = rand(0, 3);
+		$adju_b = new Adjudicator(["id" => 2]);
+		$line_b = new \common\models\DrawLine();
+		$line_b->addAdjudicator($adju_b);
+
+		$this->algo->swap_adjudicator($line_a, $pos_a, $line_b, $pos_b);
+
+		expect($line_a->getAdjudicator($pos_a))->equals($adju_b);
+		expect($line_b->getAdjudicator($pos_b))->equals($adju_a);
+	}
 
     public function testRunFullDraw() {
 

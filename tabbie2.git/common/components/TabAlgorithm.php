@@ -2,7 +2,7 @@
 
 namespace common\components;
 
-abstract class TabAlgorithmus extends \yii\base\Object {
+abstract class TabAlgorithm extends \yii\base\Object {
 
 	/**
 	 * The Draw

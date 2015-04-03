@@ -89,11 +89,13 @@ class Tournament extends \yii\db\ActiveRecord {
 
 	/**
 	 * Find a Tournament by Primary Key
+
 	 *
-	 * @param integer $id
+*@param integer $id
+
 	 *
-	 * @uses Tournamnet::findOne
-	 * @return null|static
+*@uses Tournamnet::findOne
+	 * @return null|Tournamnet
 	 */
 	public static function findByPk($id) {
 		$tournament = Yii::$app->cache->get("tournament" . $id);
@@ -263,7 +265,7 @@ class Tournament extends \yii\db\ActiveRecord {
 	 */
 	public function getTabAlgorithmInstance() {
 		$algoClass = $this->tabAlgorithmClass;
-		$algoName = "common\components\TabAlgorithmus\\" . $algoClass;
+		$algoName = "common\components\algorithms\\" . $algoClass;
 		return new $algoName();
 	}
 
