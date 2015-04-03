@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use yii\base\Exception;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "team".
@@ -370,12 +371,16 @@ class Team extends \yii\db\ActiveRecord {
 	 */
 	public static function getPastPositionMatrix($id, $tournament_id) {
 
-		$og = Debate::find()->where(["tournament_id" => $tournament_id, "og_team_id" => $id])->count();
-		$oo = Debate::find()->where(["tournament_id" => $tournament_id, "oo_team_id" => $id])->count();
-		$cg = Debate::find()->where(["tournament_id" => $tournament_id, "cg_team_id" => $id])->count();
-		$co = Debate::find()->where(["tournament_id" => $tournament_id, "co_team_id" => $id])->count();
+		$pos = Yii::$app->db->createCommand("
+		SELECT count(*) FROM debate WHERE tournament_id = $tournament_id && og_team_id = $id
+		UNION ALL
+		SELECT count(*) FROM debate WHERE tournament_id = $tournament_id && oo_team_id = $id
+		UNION ALL
+		SELECT count(*) FROM debate WHERE tournament_id = $tournament_id && cg_team_id = $id
+		UNION ALL
+		SELECT count(*) FROM debate WHERE tournament_id = $tournament_id && co_team_id = $id")->queryAll();
 
-		return [$og, $oo, $cg, $co];
+		return ArrayHelper::getColumn($pos, "count(*)");
 	}
 
 }

@@ -431,13 +431,11 @@ class StrictWUDCRules extends TabAlgorithm {
 	public function calcEnergyLevel($line) {
 		$line->energyLevel = 0;
 		$line->messages = [];
-		Yii::beginProfile("calcEnergyLevel");
 		foreach (get_class_methods($this) as $function) {
 			if (strpos($function, "energyRule_") === 0) {
 				$line = \call_user_func([StrictWUDCRules::className(), $function], $line);
 			}
 		}
-		Yii::endProfile("calcEnergyLevel");
 		return $line;
 	}
 

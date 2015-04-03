@@ -172,10 +172,10 @@ class Round extends \yii\db\ActiveRecord {
 				$adjudicators[$i] = $adjudicatorsObjects[$i]->attributes;
 				$adjudicators[$i]["name"] = $adjudicatorsObjects[$i]->name;
 
-				$strikedAdju = $adjudicatorsObjects[$i]->getStrikedAdjudicators()->select(["id"])->asArray()->all();
+				$strikedAdju = $adjudicatorsObjects[$i]->getStrikedAdjudicators()->asArray()->all();
 				$adjudicators[$i]["strikedAdjudicators"] = $strikedAdju;
 
-				$strikedTeam = $adjudicatorsObjects[$i]->getStrikedTeams()->select(["id", "name"])->asArray()->all();
+				$strikedTeam = $adjudicatorsObjects[$i]->getStrikedTeams()->asArray()->all();
 				$adjudicators[$i]["strikedTeams"] = $strikedTeam;
 
 				$adjudicators[$i]["pastAdjudicatorIDs"] = $adjudicatorsObjects[$i]->getPastAdjudicatorIDs();
