@@ -86,7 +86,12 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 			$attributes[] = 'motion:ntext';
 			if ($model->infoslide)
 				$attributes[] = 'infoslide:ntext';
-			$attributes[] = 'energy';
+			$attributes[] = [
+				"attribute" => 'energy',
+				'label' => "Average Energy",
+				'format' => 'raw',
+				'value' => intval($model->energy / $debateDataProvider->getCount()),
+			];
 			if ($model->displayed)
 				$attributes[] = 'prep_started';
 			$attributes[] = 'time:text:Creation Time';
@@ -94,7 +99,6 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 				"attribute" => 'lastrun_temp',
 				'format' => 'raw',
 				'value' => Yii::$app->formatter->asDecimal($model->lastrun_temp, 15),
-				'visible' => Yii::$app->user->isAdmin(),
 			];
 
 			echo DetailView::widget([

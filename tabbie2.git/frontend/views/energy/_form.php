@@ -22,7 +22,7 @@ use yii\widgets\MaskedInput;
 	<?= $form->field($model, 'value')->widget(MaskedInput::className(), [
 		'name' => 'value',
 		'mask' => '9',
-		'clientOptions' => ['repeat' => 4, 'greedy' => false]
+		'clientOptions' => ['repeat' => 5, 'greedy' => false]
 	]); ?>
 
 	<div class="form-group">
