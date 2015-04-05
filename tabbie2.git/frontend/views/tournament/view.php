@@ -24,30 +24,26 @@ $this->params['breadcrumbs'][] = $this->title;
 		</div>
 		<div class="col-xs-12 col-sm-4 text-right">
 			<?
-			$debate = Yii::$app->user->hasOpenFeedback($model);
-			if ($debate instanceof common\models\Debate) {
-				echo Html::a(Yii::t('app', 'Enter Feedback'), ['feedback/create', "id" => $debate->id, "tournament_id" => $model->id], ['class' => 'btn btn-success']);
+
+			if ($model->status === \common\models\Tournament::STATUS_RUNNING) {
+				$debate = Yii::$app->user->hasOpenFeedback($model);
+				if ($debate instanceof common\models\Debate) {
+					echo "&nbsp;" . Html::a(Yii::t('app', 'Enter Feedback'), ['feedback/create', "id" => $debate->id, "tournament_id" => $model->id], ['class' => 'btn btn-success']);
+				}
+				$debate = Yii::$app->user->hasChairedLastRound($model);
+				if ($debate instanceof common\models\Debate && !$debate->result instanceof \common\models\Result) {
+					echo "&nbsp;" . Html::a(Yii::t('app', 'Enter Result'), ['result/create', "id" => $debate->id, "tournament_id" => $model->id], ['class' => 'btn btn-success']);
+				}
+				if (Yii::$app->user->isConvenor($model))
+					echo "&nbsp;" . Html::a(Yii::t('app', 'Display Draw'), ['display/index', "tournament_id" => $model->id], ['class' => 'btn btn-default']);
 			}
-			?>
-			<?
-			$debate = Yii::$app->user->hasChairedLastRound($model);
-			if ($debate instanceof common\models\Debate && !$debate->result instanceof \common\models\Result) {
-				echo Html::a(Yii::t('app', 'Enter Result'), ['result/create', "id" => $debate->id, "tournament_id" => $model->id], ['class' => 'btn btn-success']);
+
+			if ($model->status != \common\models\Tournament::STATUS_CLOSED) {
+				if (Yii::$app->user->isTabMaster($model) || Yii::$app->user->isConvenor($model)) {
+					echo "&nbsp;" . Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
+				}
 			}
-			?>
-			<?
-			if (Yii::$app->user->isTabMaster($model) || Yii::$app->user->isConvenor($model)) {
-				echo Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
-			}
-			?>
-			<?
-			if (Yii::$app->user->isLanguageOfficer($model)) {
-				echo Html::a(Yii::t('app', 'Language Officer'), ['tournament/language', 'id' => $model->id], ['class' => 'btn btn-primary']);
-			}
-			?>
-			<?
-			if (Yii::$app->user->isConvenor($model))
-				echo Html::a(Yii::t('app', 'Display Draw'), ['display/index', "tournament_id" => $model->id], ['class' => 'btn btn-default']);
+
 			?>
 		</div>
 	</div>

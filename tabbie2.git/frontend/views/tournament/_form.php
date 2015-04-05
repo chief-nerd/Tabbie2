@@ -25,6 +25,8 @@ use yii\helpers\Html;
 		'addon' => ['prepend' => ['content' => "<i class=\"glyphicon glyphicon-user\"></i>"]]
 	])->dropDownList($model->getTabmasterOptions()) ?>
 
+	<?= $form->field($model, 'status')->dropDownList($model->getStatusOptions()) ?>
+
 	<?=
 	$form->field($model, 'start_date', [
 		'addon' => ['prepend' => ['content' => "<i class=\"glyphicon glyphicon-calendar\"></i>"]]

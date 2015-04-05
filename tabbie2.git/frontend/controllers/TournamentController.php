@@ -84,6 +84,7 @@ class TournamentController extends BaseTournamentController {
 	 */
 	public function actionCreate() {
 		$model = new Tournament();
+		$model->status = Tournament::STATUS_RUNNING;
 
 		if (Yii::$app->request->isPost) {
 			$file = UploadedFile::getInstance($model, 'logo');
@@ -138,6 +139,7 @@ class TournamentController extends BaseTournamentController {
 				$model->logo = $oldFile;
 
 			if ($model->save()) {
+				Yii::$app->cache->set("tournament" . $model->id, $model, 120);
 				return $this->redirect(['view', 'id' => $model->id]);
 			}
 		}

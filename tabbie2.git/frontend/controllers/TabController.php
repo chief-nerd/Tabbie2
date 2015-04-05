@@ -3,9 +3,13 @@
 namespace frontend\controllers;
 
 use common\components\filter\TournamentContextFilter;
+use common\models\PublishTabSpeaker;
+use common\models\PublishTabTeam;
 use common\models\TabAfterRound;
+use common\models\Tournament;
 use common\models\User;
 use Yii;
+use yii\base\Exception;
 use yii\data\ArrayDataProvider;
 use yii\filters\VerbFilter;
 
@@ -33,79 +37,9 @@ class TabController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionTeam() {
+	public function actionLiveTeam() {
 
-		$results = \common\models\Result::find()->leftJoin("debate", "debate.id = result.debate_id")->where([
-			"debate.tournament_id" => $this->_tournament->id,
-		])->all();
-
-		$teams = \common\models\Team::find()->where(["tournament_id" => $this->_tournament->id])->all();
-
-		$lines = [];
-
-		foreach ($teams as $team) {
-			$lines[$team->id] = new \common\models\TabLine([
-				"object" => $team,
-				"points" => 0,
-				"speaks" => 0,
-			]);
-		}
-
-		foreach ($results as $result) {
-			/* @var $result \common\models\Result */
-			foreach (\common\models\Debate::positions() as $p) {
-				$line = $lines[$result->debate->{$p . "_team_id"}];
-				$line->points = $line->points + (4 - $result->{$p . "_place"});
-				$line->results_array[$result->debate->round->number] = $result->{$p . "_place"};
-				$line->speaks = $line->speaks + $result->{$p . "_A_speaks"} + $result->{$p . "_B_speaks"};
-				$lines[$result->debate->{$p . "_team_id"}] = $line;
-			}
-		}
-
-		usort($lines, "frontend\controllers\TabController::rankTeamsWithSpeaks");
-
-		$i = 1;
-		$jumpover = 0;
-		foreach ($lines as $index => $line) {
-			if (isset($lines[$index - 1]))
-				if (!($lines[$index - 1]->points == $lines[$index]->points && $lines[$index - 1]->speaks == $lines[$index]->speaks)) {
-					$i++;
-					if ($jumpover > 0) {
-						$i = $i + $jumpover;
-						$jumpover = 0;
-					}
-				}
-				else {
-					$jumpover++;
-				}
-			$line->enl_place = $i;
-			$lines[$index] = $line;
-		}
-
-		if ($this->_tournament->has_esl) {
-			$i = 0;
-			$jumpover = 0;
-			foreach ($lines as $index => $line) {
-				if ($line->object->language_status >= User::LANGUAGE_ESL) {
-					if (isset($lines[$index - 1])) {
-						if (!($lines[$index - 1]->points == $lines[$index]->points && $lines[$index - 1]->speaks == $lines[$index]->speaks)) {
-							$i++;
-							if ($jumpover > 0) {
-								$i = $i + $jumpover;
-								$jumpover = 0;
-							}
-						}
-						else {
-							$jumpover++;
-						}
-					}
-					else $i++;
-
-					$line->esl_place = $i;
-					$lines[$index] = $line;
-				}
-			}
-		}
+		$lines = PublishTabTeam::generateTeamTab($this->_tournament);
 
 		$dataProvider = new ArrayDataProvider([
 			'allModels' => $lines,
@@ -128,94 +62,9 @@ class TabController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionSpeaker() {
+	public function actionLiveSpeaker() {
 
-		$results = \common\models\Result::find()->leftJoin("debate", "debate.id = result.debate_id")->where([
-			"debate.tournament_id" => $this->_tournament->id,
-		])->all();
-
-		$teams = \common\models\Team::find()->where(["tournament_id" => $this->_tournament->id])->all();
-
-		$lines = [];
-
-		foreach ($teams as $team) {
-			/** @var \common\models\Team $team */
-			$lines[$team->speakerA_id] = new \common\models\TabLine([
-				"object" => $team->speakerA,
-				"points" => 0,
-				"speaks" => 0,
-			]);
-			$lines[$team->speakerB_id] = new \common\models\TabLine([
-				"object" => $team->speakerB,
-				"points" => 0,
-				"speaks" => 0,
-			]);
-		}
-
-		foreach ($results as $result) {
-			/* @var $result \common\models\Result */
-			foreach (\common\models\Debate::positions() as $p) {
-
-				$line = $lines[$result->debate->{$p . "_team"}->speakerA_id];
-				$line->points = $line->points + (4 - $result->{$p . "_place"});
-				$line->results_array[$result->debate->round->number] = $result->{$p . "_A_speaks"};
-				$line->speaks = $line->speaks + $result->{$p . "_A_speaks"};
-				$lines[$result->debate->{$p . "_team"}->speakerA_id] = $line;
-
-				$line = $lines[$result->debate->{$p . "_team"}->speakerB_id];
-				$line->points = $line->points + (4 - $result->{$p . "_place"});
-				$line->results_array[$result->debate->round->number] = $result->{$p . "_B_speaks"};
-				$line->speaks = $line->speaks + $result->{$p . "_B_speaks"};
-				$lines[$result->debate->{$p . "_team"}->speakerB_id] = $line;
-			}
-		}
-
-		usort($lines, "frontend\controllers\TabController::rankSpeaker");
-
-		$i = 1;
-		$jumpover = 0;
-		foreach ($lines as $index => $line) {
-			if (isset($lines[$index - 1]))
-				if (!($lines[$index - 1]->points == $lines[$index]->points && $lines[$index - 1]->speaks == $lines[$index]->speaks)) {
-					$i++;
-					if ($jumpover > 0) {
-						$i = $i + $jumpover;
-						$jumpover = 0;
-					}
-				}
-				else {
-					$jumpover++;
-				}
-			$line->enl_place = $i;
-			$lines[$index] = $line;
-		}
-
-		if ($this->_tournament->has_esl) {
-			$i = 0;
-			$jumpover = 0;
-			foreach ($lines as $index => $line) {
-				if ($line->object->language_status >= User::LANGUAGE_ESL) {
-					if ($line->object->id) {
-						if (isset($lines[$index - 1])) {
-							if (!($lines[$index - 1]->points == $lines[$index]->points && $lines[$index - 1]->speaks == $lines[$index]->speaks)) {
-								$i++;
-								if ($jumpover > 0) {
-									$i = $i + $jumpover;
-									$jumpover = 0;
-								}
-							}
-							else {
-								$jumpover++;
-							}
-						}
-						else $i++;
-
-						$line->esl_place = $i;
-						$lines[$index] = $line;
-					}
-				}
-			}
-		}
+		$lines = PublishTabSpeaker::generateSpeakerTab($this->_tournament);
 
 		$dataProvider = new ArrayDataProvider([
 			'allModels' => $lines,
@@ -233,35 +82,45 @@ class TabController extends BaseTournamentController {
 		]);
 	}
 
-	/**
-	 * Rank Teams by points and then by Speaker points
-	 *
-	 * @param $a
-	 * @param $b
-	 *
-	 * @using rankSpeaker
-	 * @return int
-	 */
-	public function rankTeamsWithSpeaks($a, $b) {
-		$ap = $a["points"];
-		$as = $a["speaks"];
-		$bp = $b["points"];
-		$bs = $b["speaks"];
-		return ($ap < $bp) ? 1 : (($ap > $bp) ? -1 : $this->rankSpeaker($a, $b));
-	}
+	public function actionPublish() {
+		$lines_team = PublishTabTeam::generateTeamTab($this->_tournament);
 
-	/**
-	 * Rank by Speaker Points
-	 *
-	 * @param $a
-	 * @param $b
-	 *
-	 * @return int
-	 */
-	public function rankSpeaker($a, $b) {
-		$as = $a["speaks"];
-		$bs = $b["speaks"];
-		return (($as < $bs) ? 1 : (($as > $bs) ? -1 : 0));
+		foreach ($lines_team as $line) {
+			$ptt = new PublishTabTeam([
+				"tournament_id" => $this->_tournament->id,
+				"team_id" => $line->object->id,
+				"enl_place" => $line->enl_place,
+				"esl_place" => $line->esl_place,
+				"cache_results" => json_encode($line->results_array),
+				"speaks" => $line->speaks,
+			]);
+			if (!$ptt->save())
+				throw new Exception("Save Error " . print_r($ptt->getErrors(), true));
+		}
+
+		$lines_speaker = PublishTabSpeaker::generateSpeakerTab($this->_tournament);
+
+		foreach ($lines_speaker as $line) {
+			$ptt = new PublishTabSpeaker([
+				"tournament_id" => $this->_tournament->id,
+				"user_id" => $line->object->id,
+				"enl_place" => $line->enl_place,
+				"esl_place" => $line->esl_place,
+				"cache_results" => json_encode($line->results_array),
+				"speaks" => $line->speaks,
+			]);
+			if (!$ptt->save())
+				throw new Exception("Save Error " . print_r($ptt->getErrors(), true));
+		}
+
+		/** Close Tournament */
+
+		$this->_tournament->status = Tournament::STATUS_CLOSED;
+		$this->_tournament->save();
+
+		Yii::$app->session->addFlash("success", Yii::t("app", "Tab published and tournament closed. Go have a drink!"));
+
+		return $this->redirect(["tournament/view", "id" => $this->_tournament->id]);
 	}
 
 }

@@ -7,9 +7,11 @@ use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "tournament".
+
  *
- * @property integer                  $id
+*@property integer                  $id
  * @property string                   $url_slug
+ * @property integer                  $status
  * @property integer                  $convenor_user_id
  * @property integer                  $tabmaster_user_id
  * @property integer                  $hosted_by_id
@@ -37,6 +39,10 @@ use yii\helpers\ArrayHelper;
  */
 class Tournament extends \yii\db\ActiveRecord {
 
+	const STATUS_CREATED = 0;
+	const STATUS_RUNNING = 1;
+	const STATUS_CLOSED  = 2;
+
 	/**
 	 * @inheritdoc
 	 */
@@ -50,7 +56,7 @@ class Tournament extends \yii\db\ActiveRecord {
 	public function rules() {
 		return [
 			[['url_slug', 'convenor_user_id', 'tabmaster_user_id', 'name', 'start_date', 'end_date'], 'required'],
-			[['convenor_user_id', 'tabmaster_user_id', 'hosted_by_id', 'expected_rounds'], 'integer'],
+			[['convenor_user_id', 'tabmaster_user_id', 'hosted_by_id', 'expected_rounds', 'status'], 'integer'],
 			[['start_date', 'end_date', 'time', 'has_esl', 'has_final', 'has_semifinal', 'has_octofinal', 'has_quarterfinal'], 'safe'],
 			[['url_slug', 'name', 'tabAlgorithmClass'], 'string', 'max' => 100],
 			[['logo'], 'string', 'max' => 255],
@@ -105,6 +111,16 @@ class Tournament extends \yii\db\ActiveRecord {
 		}
 
 		return $tournament;
+	}
+
+	public function getStatusOptions($id = null) {
+		$options = [
+			self::STATUS_CREATED => "Created",
+			self::STATUS_RUNNING => "Running",
+			self::STATUS_CLOSED => "Closed",
+		];
+
+		return ($id) ? $options[$id] : $options;
 	}
 
 	/**
