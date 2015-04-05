@@ -292,8 +292,8 @@ class Round extends \yii\db\ActiveRecord {
 		/** @var DrawLine[] $DRAW */
 		$DRAW = [];
 
-		if (is_int(intval($runs)) && $runs <= 99) {
-			$runs *= 1000;
+		if (is_int(intval($runs)) && $runs <= 100000) {
+			$runs = intval($runs);
 		}
 		else
 			$runs = null;

@@ -32,10 +32,10 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 				<!-- Split button -->
 				<div class="btn-group">
 					<?
-					$kruns = 20 / 2
+					$runs = \common\models\EnergyConfig::get("max_iterations", $tournament->id) / 2;
 					?>
 					<?=
-					Html::a(Yii::t('app', 'Continue Improving by') . " " . $kruns . "k", ['improve', 'id' => $model->id, "runs" => $kruns, "tournament_id" => $tournament->id], [
+					Html::a(Yii::t('app', 'Continue Improving by') . " " . ($runs / 1000) . "k", ['improve', 'id' => $model->id, "runs" => $runs, "tournament_id" => $tournament->id], [
 						'class' => 'btn btn-default',
 					])
 					?>
@@ -48,10 +48,10 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 						<? for ($i = 2; $i <= 3; $i++): ?>
 							<li>
 								<?=
-								Html::a(Yii::t('app', 'Continue Improving by') . " " . ($kruns * $i) . "k", [
+								Html::a(Yii::t('app', 'Continue Improving by') . " " . ($runs * $i / 1000) . "k", [
 									'improve',
 									'id' => $model->id,
-									'runs' => ($kruns * $i),
+									'runs' => ($runs * $i),
 									'tournament_id' => $tournament->id], [
 								])
 								?>
