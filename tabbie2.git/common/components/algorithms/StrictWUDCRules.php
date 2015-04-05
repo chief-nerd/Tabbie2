@@ -200,11 +200,12 @@ class StrictWUDCRules extends TabAlgorithm {
 			do {
 				$chosen_line_a = mt_rand(0, ($maxDrawIterations - 1));
 				$chosen_line_b = mt_rand(0, ($maxDrawIterations - 1));
-			} while ($chosen_line_a == $chosen_line_b);
 
-			//Get a random adjudicator
-			$chosen_adjpos_a = mt_rand(0, (count($DRAW[$chosen_line_a]->getAdjudicators()) - 1));
-			$chosen_adjpos_b = mt_rand(0, (count($DRAW[$chosen_line_b]->getAdjudicators()) - 1));
+				//Get a random adjudicator
+				$chosen_adjpos_a = mt_rand(0, (count($DRAW[$chosen_line_a]->getAdjudicators()) - 1));
+				$chosen_adjpos_b = mt_rand(0, (count($DRAW[$chosen_line_b]->getAdjudicators()) - 1));
+
+			} while ($chosen_line_a == $chosen_line_b && $chosen_adjpos_a == $chosen_adjpos_b);
 
 			//Create new lines for future
 			$new_line_a = $DRAW[$chosen_line_a];
