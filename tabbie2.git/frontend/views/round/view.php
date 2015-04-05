@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 					?>
 					<?=
 					Html::a(Yii::t('app', 'Continue Improving by') . " " . ($runs / 1000) . "k", ['improve', 'id' => $model->id, "runs" => $runs, "tournament_id" => $tournament->id], [
-						'class' => 'btn btn-default',
+						'class' => 'btn btn-default loading',
 					])
 					?>
 					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
@@ -52,8 +52,10 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 									'improve',
 									'id' => $model->id,
 									'runs' => ($runs * $i),
-									'tournament_id' => $tournament->id], [
-								])
+									'tournament_id' => $tournament->id],
+									[
+										'class' => 'loading'
+									])
 								?>
 							</li>
 						<? endfor; ?>
@@ -61,6 +63,7 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 						<li>
 							<?=
 							Html::a(Yii::t('app', 'Generate new draw from blank'), ['redraw', 'id' => $model->id, "tournament_id" => $tournament->id], [
+								'class' => 'loading',
 								'data' => [
 									'confirm' => Yii::t('app', 'Are you sure you want to re-draw the round? All information will be lost!'),
 									'method' => 'post',
@@ -77,6 +80,7 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 		</div>
 	</div>
 	<br>
+
 	<div class="row">
 		<div class="col-md-8 text-middle">
 			<?

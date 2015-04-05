@@ -174,3 +174,78 @@ a.desc:after {
 #tournament-missing .table td {
     padding: 3px;
 }
+
+/** LOADER */
+#loader {
+    display: none;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 9999999;
+}
+
+#loader .container {
+    height: 100%;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+#loader .machine {
+    width: 60vmin;
+    fill: #fff;
+}
+
+#loader .small-shadow, .medium-shadow, .large-shadow {
+    fill: rgba(0, 0, 0, 0.05);
+}
+
+#loader .small {
+    -webkit-transform-origin: 100.136px 225.345px;
+    -ms-transform-origin: 100.136px 225.345px;
+    transform-origin: 100.136px 225.345px;
+}
+
+#loader .small-shadow {
+    -webkit-transform-origin: 110.136px 235.345px;
+    -ms-transform-origin: 110.136px 235.345px;
+    transform-origin: 110.136px 235.345px;
+}
+
+#loader .medium {
+    -webkit-transform-origin: 254.675px 379.447px;
+    -ms-transform-origin: 254.675px 379.447px;
+    transform-origin: 254.675px 379.447px;
+}
+
+#loader .medium-shadow {
+    -webkit-transform-origin: 264.675px 389.447px;
+    -ms-transform-origin: 264.675px 389.447px;
+    transform-origin: 264.675px 389.447px;
+}
+
+#loader .large {
+    -webkit-transform-origin: 461.37px 173.694px;
+    -ms-transform-origin: 461.37px 173.694px;
+    transform-origin: 461.37px 173.694px;
+}
+
+#loader .large-shadow {
+    -webkit-transform-origin: 471.37px 183.694px;
+    -ms-transform-origin: 471.37px 183.694px;
+    transform-origin: 471.37px 183.694px;
+}
+
+/** LOADER ENDE */
