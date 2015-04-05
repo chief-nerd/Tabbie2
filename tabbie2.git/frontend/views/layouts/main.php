@@ -112,6 +112,7 @@ if ($this->context->hasMethod("_getContext")) {
 					"items" => [
 						['label' => 'List Venues', 'url' => ['venue/index', "tournament_id" => $tournament->id]],
 						['label' => 'Create Venue', 'url' => ['venue/create', "tournament_id" => $tournament->id]],
+						['label' => 'Import Venue', 'url' => ['venue/import', "tournament_id" => $tournament->id]],
 					]
 				],
 				['label' => 'Teams', 'url' => '#',
@@ -155,9 +156,12 @@ if ($this->context->hasMethod("_getContext")) {
 						['label' => 'Team Tab', 'url' => ['tab/team', "tournament_id" => $tournament->id]],
 						['label' => 'Speaker Tab', 'url' => ['tab/speaker', "tournament_id" => $tournament->id]],
 						'<li class="divider"></li>',
-						['label' => 'Missing User', 'url' => ['display/missinguser', "tournament_id" => $tournament->id]],
+						['label' => 'Missing User', 'url' => ['display/missinguser', "tournament_id" => $tournament->id], 'linkOptions' => ['target' => '_blank']],
 						['label' => 'Checkin Form', 'url' => ['tournament/checkin', "id" => $tournament->id]],
-						['label' => 'Reset Checkin', 'url' => ['tournament/checkinreset', "id" => $tournament->id]],
+						['label' => 'Reset Checkin', 'url' => ['tournament/checkinreset', "id" => $tournament->id],
+							'linkOptions' => ['data' => [
+								"confirm" => "Are you sure you want to reset the checkin?"
+							]]],
 					]
 				],
 				['label' => 'Feedback', 'url' => '#',
