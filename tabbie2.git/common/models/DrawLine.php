@@ -26,14 +26,14 @@ class DrawLine extends Model {
 	 *
 	 * @var Team[]
 	 */
-	private $teams;
+	private $teams = [];
 
 	/**
 	 * Adjudicators in that debate, Position 0 is the chair
 	 *
 	 * @var Adjudicator[]
 	 */
-	private $adj;
+	private $adj = [];
 
 	/**
 	 * Flag that marks if the panel already existed and should be saved
@@ -63,9 +63,9 @@ class DrawLine extends Model {
 
 
 	/**
-	 * Get the Strength of the Panel
+	 * Get the Average Strength of the Panel
 	 *
-	 * @return float
+*@return float
 	 */
 	public function getStrength() {
 		$total = 0;
@@ -177,6 +177,10 @@ class DrawLine extends Model {
 		$this->adj[] = $adj;
 	}
 
+	public function addChair($adj) {
+		array_unshift($this->adj, $adj);
+	}
+
 	/**
 	 * Get all Adjudicators with Chair in first array spot.
 	 *
@@ -211,5 +215,34 @@ class DrawLine extends Model {
 			$this->getCO()["points"],
 			$this->getCG()["points"],
 		]);
+	}
+
+	/**
+	 * Compare function for point sorting
+	 *
+	 * @param DrawLine $a
+	 * @param DrawLine $b
+	 *
+	 * @return integer
+	 */
+	public static function compare_points($a, $b) {
+		$as = $a->getLevel();
+		$bs = $b->getLevel();
+		return ($as < $bs) ? 1 : (($as > $bs) ? -1 : 0);
+	}
+
+	/**
+	 * @param DrawLine[] $draw
+	 *
+	 * @return int
+	 */
+	public static function getDrawEnergy($draw) {
+		$max_lines = count($draw);
+		$energy = 0;
+		for ($line = 0; $line < $max_lines; $line++) {
+			$energy += $draw[$line]->energyLevel;
+		}
+
+		return $energy;
 	}
 }

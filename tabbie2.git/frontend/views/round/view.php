@@ -28,15 +28,49 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 			<? if (!$model->published): ?>
 				<?= Html::a(Yii::t('app', 'Publish Tab'), ['publish', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success']) ?>
 				<?= Html::a(Yii::t('app', 'Update Round Info'), ['update', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-primary']) ?>
-				<?=
-				Html::a(Yii::t('app', 'ReDraw Round'), ['redraw', 'id' => $model->id, "tournament_id" => $tournament->id], [
-					'class' => 'btn btn-default',
-					'data' => [
-						'confirm' => Yii::t('app', 'Are you sure you want to re-draw the round? All information will be lost!'),
-						'method' => 'post',
-					],
-				])
-				?>
+
+				<!-- Split button -->
+				<div class="btn-group">
+					<?
+					$kruns = 20 / 2
+					?>
+					<?=
+					Html::a(Yii::t('app', 'Continue Improving by') . " " . $kruns . "k", ['improve', 'id' => $model->id, "runs" => $kruns, "tournament_id" => $tournament->id], [
+						'class' => 'btn btn-default',
+					])
+					?>
+					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+					        aria-expanded="false">
+						<span class="caret"></span>
+						<span class="sr-only">Toggle Dropdown</span>
+					</button>
+					<ul class="dropdown-menu" role="menu">
+						<? for ($i = 2; $i <= 3; $i++): ?>
+							<li>
+								<?=
+								Html::a(Yii::t('app', 'Continue Improving by') . " " . ($kruns * $i) . "k", [
+									'improve',
+									'id' => $model->id,
+									'runs' => ($kruns * $i),
+									'tournament_id' => $tournament->id], [
+								])
+								?>
+							</li>
+						<? endfor; ?>
+						<li class="divider"></li>
+						<li>
+							<?=
+							Html::a(Yii::t('app', 'Generate new draw from blank'), ['redraw', 'id' => $model->id, "tournament_id" => $tournament->id], [
+								'data' => [
+									'confirm' => Yii::t('app', 'Are you sure you want to re-draw the round? All information will be lost!'),
+									'method' => 'post',
+								],
+							])
+							?>
+						</li>
+					</ul>
+				</div>
+
 			<? endif; ?>
 			<?= Html::a(Yii::t('app', 'Print Ballots'), ['printballots', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-default']) ?>
 
@@ -53,9 +87,11 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 			$attributes[] = 'motion:ntext';
 			if ($model->infoslide)
 				$attributes[] = 'infoslide:ntext';
+			$attributes[] = 'energy';
 			if ($model->displayed)
 				$attributes[] = 'prep_started';
 			$attributes[] = 'time:text:Creation Time';
+			$attributes[] = 'lastrun_temp';
 
 			echo DetailView::widget([
 				'model' => $model,

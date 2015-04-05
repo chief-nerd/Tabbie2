@@ -91,7 +91,7 @@ class UserIdentity extends \yii\web\User {
 		if ($lastRound) {
 			/* @var $debate Debate */
 			foreach ($lastRound->getDebates()->all() as $debate) {
-				if ($debate->getChair()->user_id == $this->id)
+				if ($debate->getChair() && $debate->getChair()->user_id == $this->id)
 					return $debate;
 			}
 		}

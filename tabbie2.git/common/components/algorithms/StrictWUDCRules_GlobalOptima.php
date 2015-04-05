@@ -6,6 +6,7 @@ use common\components\TabAlgorithm;
 use common\models\Adjudicator;
 use common\models\DrawLine;
 use common\models\EnergyConfig;
+use common\models\Round;
 use common\models\Team;
 use common\models\Venue;
 use Yii;
@@ -13,20 +14,15 @@ use yii\base\Exception;
 
 class StrictWUDCRules extends TabAlgorithm {
 
-	private $uphill_probability = 0.5;
-	private $alpha = 0.0005;
-	private $determination = 500;
-
 	/**
 	 * Function to calculate a draw based on WUDC strict Rules
 	 *
-	 * @param Venue[] $venues
+	 * @param Venue[]        $venues
 	 * @param Team[]         $teams
 	 * @param Adjudicators[] $adjudicators
 	 * @param type           $preset_panels
-
 	 *
-*@return type
+	 * @return type
 	 * @throws Exception
 	 */
 	public function makeDraw($venues, $teams, $adjudicators, $preset_panels = array()) {
@@ -42,7 +38,6 @@ class StrictWUDCRules extends TabAlgorithm {
 		if ($active_rooms > count($adjudicators))
 			throw new Exception("Not enough adjudicators (active:" . count($adjudicators) . " min-required:" . $active_rooms . ")", "500");
 
-		Yii::beginProfile("initTeamAllocation");
 		/**
 		 * Shuffle venues
 		 */
@@ -52,14 +47,13 @@ class StrictWUDCRules extends TabAlgorithm {
 		 * Sort Adjudicator at Strength
 		 */
 		$adjudicators = $this->sort_adjudicators($adjudicators);
-
-		/**
-		 * First we need to make the brackets for each debate. This means ordering the teams by the number of points.
+		/*
+		  First we need to make the brackets for each debate. This means ordering the teams by the number of points.
 		 */
 		$teams = $this->sort_teams($teams);
 
-		/**
-		 * Then, within point brackets, we randomise the teams
+		/*
+		  Then, within point brackets, we randomise the teams
 		 */
 		$teams = $this->randomise_within_points($teams);
 
@@ -85,8 +79,7 @@ class StrictWUDCRules extends TabAlgorithm {
 			$this->tournament_id = $venues[$i]["tournament_id"];
 			$this->DRAW[] = $line;
 		}
-		$maxIterations = count($this->DRAW);
-		Yii::endProfile("initTeamAllocation");
+
 
 		/**
 		 * Now start improving that initial set
@@ -97,6 +90,7 @@ class StrictWUDCRules extends TabAlgorithm {
 		while ($stillFoundASwap) {
 			$stillFoundASwap = false; //Assume we are done, prove me wrong
 
+			$maxIterations = count($this->DRAW);
 			for ($lineIterator = 0; $lineIterator < $maxIterations; $lineIterator++) {
 				for ($teamIterator = 0; $teamIterator < 4; $teamIterator++) {
 
@@ -121,14 +115,8 @@ class StrictWUDCRules extends TabAlgorithm {
 		}
 		Yii::endProfile("optimizeTeamAllocation");
 
-		Yii::beginProfile("initAdjudicatorAllocation");
-		/**
-		 * Sort Array by strength
-		 */
-		$this->DRAW = $this->sort_draw_by_points($this->DRAW);
-
-		/**
-		 * Initial allocate the adjudicators
+		/*
+		 * Allocate the Adjudicators
 		 */
 		$lineID = 0;
 		foreach ($adjudicators as $adj) {
@@ -140,148 +128,53 @@ class StrictWUDCRules extends TabAlgorithm {
 				$lineID = 0; //Start again at beginning
 		}
 
-		/**
-		 * Calculate initial energylevel
-		 */
+		$maxIterations = count($this->DRAW);
 		for ($lineIterator = 0; $lineIterator < $maxIterations; $lineIterator++) {
 			$this->DRAW[$lineIterator] = $this->calcEnergyLevel($this->DRAW[$lineIterator]);
 		}
-		Yii::endProfile("initAdjudicatorAllocation");
 
 		/**
 		 * Now start improving that initial set
 		 * Go through the Draw until you can't make any improvements
 		 */
 		Yii::beginProfile("optimizeAdjudicatorAllocation");
+		$maxIterations = count($this->DRAW);
 
-		$this->optimiseAdjudicatorAllocation();
+		$stillFoundASwap = true;
+		while ($stillFoundASwap) {
+			$stillFoundASwap = false; //Assume we are done, prove me wrong
 
+			Yii::beginProfile("optimizeAdjudicatorAllocation_fullrun");
+			for ($lineIterator = 0; $lineIterator < $maxIterations; $lineIterator++) {
+				$maxAdjuIteration = count($this->DRAW[$lineIterator]->getAdjudicators());
+				for ($adjuIterator = 0; $adjuIterator < $maxAdjuIteration; $adjuIterator++) {
+
+					if ($this->find_best_adju_swap_for($this->DRAW[$lineIterator], $adjuIterator)) {
+						$stillFoundASwap = true; //We found a better swap, do the loop again
+						break;
+					}
+
+				}
+				if ($stillFoundASwap)
+					break; //Found it already break on!
+			}
+			if (memory_get_usage() > $memory_limit) {
+				$stillFoundASwap = false;
+				Yii::$app->session->addFlash("error", "Abort <b>Adjudicator</b> optimization due to memory limit: " . memory_get_usage() / 1024 / 1024);
+			}
+			Yii::endProfile("optimizeAdjudicatorAllocation_fullrun");
+			//If we havn't found a better swap $stillFoundASwap should be false and the loop breaks
+		}
 		Yii::endProfile("optimizeAdjudicatorAllocation");
+
+
 		/*
 		 * We have found the best possible combination
 		 * There is no better swap possible now.
 		 * Return der DRAW[] and get ready to debate
 		 */
 		Yii::endProfile("generateDraw");
-
 		return $this->DRAW;
-	}
-
-	/**
-	 * @param \common\components\DrawLine[]|null $DRAW     DrawArra, if null $this->DRAW will be used
-	 * @param integer|null                       $max_runs Amount of runs e.g 20000
-	 * @param float                              $temp     Tempreture of the simulated annulation
-	 *
-	 * @return \common\components\DrawLine[]
-	 * @throws \yii\base\Exception
-	 */
-	public function optimiseAdjudicatorAllocation($max_runs = null, $temp = null) {
-
-		$DRAW = &$this->DRAW;
-
-		if ($temp === null)
-			$this->temp = 1.0;
-		else
-			$this->temp = $temp;
-
-		$maxDrawIterations = count($DRAW);
-		if ($maxDrawIterations == 0)
-			throw new Exception("No rows in draw");
-
-		if ($max_runs == null || !is_int($max_runs))
-			$max_runs = $this->energyConfig["max_iterations"];
-
-		$best_draw = $DRAW;
-		$this->best_energy = DrawLine::getDrawEnergy($DRAW);
-		$best_moment = 0;
-
-		for ($run = 0; $run < $max_runs; $run++) {
-			//Get a random line
-			do {
-				$chosen_line_a = mt_rand(0, ($maxDrawIterations - 1));
-				$chosen_line_b = mt_rand(0, ($maxDrawIterations - 1));
-			} while ($chosen_line_a == $chosen_line_b);
-
-			//Get a random adjudicator
-			$chosen_adjpos_a = mt_rand(0, (count($DRAW[$chosen_line_a]->getAdjudicators()) - 1));
-			$chosen_adjpos_b = mt_rand(0, (count($DRAW[$chosen_line_b]->getAdjudicators()) - 1));
-
-			//Create new lines for future
-			$new_line_a = $DRAW[$chosen_line_a];
-			$new_line_b = $DRAW[$chosen_line_b];
-
-			//Swap the adjudicators in the new line
-			$this->swap_adjudicator($new_line_a, $chosen_adjpos_a, $new_line_b, $chosen_adjpos_b);
-
-			//Calculate new Energy Levels for new lines
-			$this->calcEnergyLevel($new_line_a);
-			$this->calcEnergyLevel($new_line_b);
-
-			//Get Energy Comparison
-			$currentEnergy = $DRAW[$chosen_line_a]->energyLevel + $DRAW[$chosen_line_b]->energyLevel;
-			$potentialEnergy = $new_line_a->energyLevel + $new_line_b->energyLevel;
-			$energyDiff = $potentialEnergy - $currentEnergy;
-
-			/** I don't know what this is doing .. copied from tabbie1 */
-
-			if ($this->throw_dice($this->probability($energyDiff, $temp))) {
-				//Keep it
-				$DRAW[$chosen_line_a] = $new_line_a;
-				$DRAW[$chosen_line_b] = $new_line_b;
-			}
-
-			if ($energyDiff < 0) { //better than prev
-				$energy = DrawLine::getDrawEnergy($DRAW);
-				if ($energy < $this->best_energy) {
-					$best_draw = $DRAW;
-					$this->best_energy = $energy;
-					$best_moment = $run;
-				}
-			}
-			elseif ($run - $best_moment > $this->determination) {
-				$best_moment = $run;
-				$DRAW = $best_draw;
-			}
-			$this->temp = $this->decrease_temp($this->temp);
-		}
-		return $best_draw;
-	}
-
-	/**
-	 * ???
-	 * @param integer $diff
-	 * @param float   $temp
-	 *
-	 * @return int
-	 */
-	private function probability($diff, $temp) {
-		if ($diff <= 0)
-			return 1;
-		if ($diff > 0)
-			return $temp * $this->uphill_probability;
-	}
-
-	/**
-	 * ????
-	 * @param float $probability
-	 *
-	 * @return bool
-	 */
-	private function throw_dice($probability) {
-		$nr = 10000;
-		$dice = mt_rand(0, $nr - 1);
-		return ($dice <= $probability * $nr);
-	}
-
-	/**
-	 * Decreases Temperatur by alpha factor
-	 *
-	 * @param float $temp
-	 *
-	 * @return mixed
-	 */
-	private function decrease_temp($temp) {
-		return $temp * (1 - $this->alpha);
 	}
 
 	/**
@@ -291,8 +184,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 *
 	 * @return Team[]
 	 */
-	public
-	function sort_teams($teams) {
+	public function sort_teams($teams) {
 		//Surpress an error due to a php bug.
 		@usort($teams, array('common\models\Team', 'compare_points'));
 		return $teams;
@@ -305,23 +197,9 @@ class StrictWUDCRules extends TabAlgorithm {
 	 *
 	 * @return Adjudicator[]
 	 */
-	public
-	function sort_adjudicators($adj) {
+	public function sort_adjudicators($adj) {
 		usort($adj, array('common\models\Adjudicator', 'compare_strength'));
 		return $adj;
-	}
-
-	/**
-	 * Sorts the Draw so strongest room is on top
-	 *
-	 * @param DrawLine[] $draw
-	 *
-	 * @return DrawLine[]
-	 */
-	public
-	function sort_draw_by_points($draw) {
-		usort($draw, ['common\models\DrawLine', "compare_points"]);
-		return $draw;
 	}
 
 	/**
@@ -331,8 +209,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 *
 	 * @return Team[]
 	 */
-	public
-	function randomise_within_points($teams) {
+	public function randomise_within_points($teams) {
 
 		$saved_points = $teams[0]["points"]; //reset to start
 		$last_break = 0;
@@ -359,8 +236,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 * @param DrawLine $line_b
 	 * @param integer  $pos_b
 	 */
-	public
-	function swap_teams($line_a, $pos_a, $line_b, $pos_b) {
+	public function swap_teams($line_a, $pos_a, $line_b, $pos_b) {
 
 		$team_a = $line_a->getTeamOn($pos_a);
 		$team_b = $line_b->getTeamOn($pos_b);
@@ -377,8 +253,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 * @param DrawLine $line_b
 	 * @param integer  $pos_b
 	 */
-	public
-	function swap_adjudicator($line_a, $pos_a, $line_b, $pos_b) {
+	public function swap_adjudicator($line_a, $pos_a, $line_b, $pos_b) {
 
 		$adju_a = $line_a->getAdjudicator($pos_a);
 		$adju_b = $line_b->getAdjudicator($pos_b);
@@ -393,8 +268,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 *
 	 * @return boolean
 	 */
-	public
-	function find_best_team_swap_for($line_a, $pos_a) {
+	public function find_best_team_swap_for($line_a, $pos_a) {
 		/** @var Team $team_a */
 		$team_a = $line_a->getTeamOn($pos_a);
 		$best_effect = 0;
@@ -443,8 +317,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 *
 	 * @return bool
 	 */
-	public
-	function find_best_adju_swap_for($line_a, $pos_a) {
+	public function find_best_adju_swap_for($line_a, $pos_a) {
 
 		Yii::beginProfile("find_best_adju_swap_for");
 		$best_effect = 0;
@@ -492,26 +365,20 @@ class StrictWUDCRules extends TabAlgorithm {
 	/**
 	 * Sets up the variables in the EnergyConfig
 	 *
-	 * @param Tournament
-
+	 * @param Tournament $tournament
 	 *
-*@return boolean
+	 * @return boolean
 	 */
 	public function setup($tournament) {
 		$tid = $tournament->id;
 		$config = [
-			[
-				"label" => "Max Iterations to improve the Adjudicator Allocation",
-				"key" => "max_iterations",
-				"value" => 20000,
-			],
 			[
 				"label" => "Team and adjudicator in same society penalty",
 				"key" => "society_strike",
 				"value" => 1000,
 			],
 			[
-				"label" => "Both Adjudicators are clashed",
+				"label" => "Adjudicators are clashed",
 				"key" => "adjudicator_strike",
 				"value" => 1000,
 			],
@@ -531,14 +398,14 @@ class StrictWUDCRules extends TabAlgorithm {
 				"value" => 100,
 			],
 			[
-				"label" => "Adjudicator has seen the team already",
-				"key" => "judge_met_team",
-				"value" => 50,
-			],
-			[
 				"label" => "Adjudicator has already judged in this combination",
 				"key" => "judge_met_judge",
-				"value" => 50,
+				"value" => 100,
+			],
+			[
+				"label" => "Adjudicator has seen the team already",
+				"key" => "judge_met_team",
+				"value" => 20,
 			]
 		];
 
@@ -559,8 +426,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 *
 	 * @return DrawLine
 	 */
-	public
-	function calcEnergyLevel($line) {
+	public function calcEnergyLevel($line) {
 		$line->energyLevel = 0;
 		$line->messages = [];
 		foreach (get_class_methods($this) as $function) {
@@ -578,8 +444,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 *
 	 * @return DrawLine
 	 */
-	public
-	function energyRule_SameSocietyStrikes($line) {
+	public function energyRule_SameSocietyStrikes($line) {
 
 		$penalty = $this->energyConfig["society_strike"]; // EnergyConfig::get("society_strike", $this->tournament_id);
 		foreach ($line->getAdjudicators() as $adjudicator) {
@@ -601,8 +466,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 *
 	 * @return DrawLine
 	 */
-	public
-	function energyRule_AdjudicatorStrikes($line) {
+	public function energyRule_AdjudicatorStrikes($line) {
 
 		$penalty = $this->energyConfig["adjudicator_strike"]; //EnergyConfig::get("adjudicator_strike", $this->tournament_id);
 
@@ -625,8 +489,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 *
 	 * @return DrawLine
 	 */
-	public
-	function energyRule_TeamAdjStrikes($line) {
+	public function energyRule_TeamAdjStrikes($line) {
 
 		$penalty = $this->energyConfig["team_strike"]; // EnergyConfig::get("team_strike", $this->tournament_id);
 
@@ -651,8 +514,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 *
 	 * @return DrawLine
 	 */
-	public
-	function energyRule_NonChair($line) {
+	public function energyRule_NonChair($line) {
 
 		$penalty = $this->energyConfig["non_chair"]; // EnergyConfig::get("non_chair", $this->tournament_id);
 		//This relies on there being a 'can_chair' tag
@@ -671,8 +533,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 *
 	 * @return DrawLine
 	 */
-	public
-	function energyRule_NotPerfect($line) {
+	public function energyRule_NotPerfect($line) {
 
 		$penalty = $this->energyConfig["chair_not_perfect"]; //EnergyConfig::get("chair_not_perfect", $this->tournament_id);
 
@@ -694,8 +555,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 *
 	 * @return DrawLine
 	 */
-	public
-	function energyRule_JudgeMetJudge($line) {
+	public function energyRule_JudgeMetJudge($line) {
 
 		$penalty = $this->energyConfig["judge_met_judge"]; // EnergyConfig::get("judge_met_judge", $this->tournament_id);
 		$found = [];
@@ -729,8 +589,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 *
 	 * @return DrawLine
 	 */
-	public
-	function energyRule_JudgeMetTeam($line) {
+	public function energyRule_JudgeMetTeam($line) {
 
 		$penalty = $this->energyConfig["judge_met_team"]; // EnergyConfig::get("judge_met_team", $this->tournament_id);
 		foreach ($line->getAdjudicators() as $adjudicator) {
@@ -752,8 +611,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	 *
 	 * @return DrawLine
 	 */
-	public
-	function energyRule_PanelSteepness($line) {
+	public function energyRule_PanelSteepness($line) {
 
 		//$penalty = EnergyConfig::get("panel_steepness", $round->tournament_id);
 

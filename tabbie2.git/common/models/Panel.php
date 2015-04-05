@@ -7,12 +7,14 @@ use Yii;
 
 /**
  * This is the model class for table "panel".
+
  *
- * @property integer              $id
+*@property integer              $id
  * @property integer              $strength
  * @property string               $time
  * @property integer              $tournament_id
  * @property integer              $used
+ * @property integer              $is_preset
  * @property AdjudicatorInPanel[] $adjudicatorInPanels
  * @property Adjudicator[]        $adjudicators
  * @property Debate[]             $debates
@@ -43,7 +45,7 @@ class Panel extends \yii\db\ActiveRecord {
 	 */
 	public function rules() {
 		return [
-			[['strength', 'tournament_id', 'used'], 'integer'],
+			[['strength', 'tournament_id', 'used', 'is_preset'], 'integer'],
 			[['time'], 'safe'],
 			[['tournament_id'], 'required']
 		];
@@ -59,6 +61,7 @@ class Panel extends \yii\db\ActiveRecord {
 			'time' => Yii::t('app', 'Time'),
 			'tournament_id' => Yii::t('app', 'Tournament ID'),
 			'used' => Yii::t('app', 'Used'),
+			'is_preset' => Yii::t('app', 'Is Preset Panel'),
 		];
 	}
 

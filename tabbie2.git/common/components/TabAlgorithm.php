@@ -20,6 +20,10 @@ abstract class TabAlgorithm extends \yii\base\Object {
 
 	public $energyConfig;
 
+	public $temp = 1.0;
+
+	public $best_energy = 0;
+
 	/**
 	 * Current Round number
 	 *
@@ -30,6 +34,10 @@ abstract class TabAlgorithm extends \yii\base\Object {
 	public $average_adjudicator_strength;
 
 	public $SD_of_adjudicators;
+
+	public function setDraw($draw) {
+		$this->DRAW = $draw;
+	}
 
 	/**
 	 * Function that calculated the Draw for a round

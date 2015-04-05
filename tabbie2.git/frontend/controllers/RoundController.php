@@ -4,12 +4,14 @@ namespace frontend\controllers;
 
 use common\components\filter\TournamentContextFilter;
 use common\models\Debate;
+use common\models\DrawLine;
 use common\models\Panel;
 use common\models\Round;
 use common\models\search\DebateSearch;
 use mPDF;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\data\ArrayDataProvider;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
@@ -33,7 +35,7 @@ class RoundController extends BaseTournamentController {
 					],
 					[
 						'allow' => true,
-						'actions' => ['create', 'update', 'changevenue', 'publish', 'redraw'],
+						'actions' => ['create', 'update', 'changevenue', 'publish', 'redraw', 'improve'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->isTabMaster($this->_tournament));
 						}
@@ -76,6 +78,7 @@ class RoundController extends BaseTournamentController {
 	 */
 	public function actionView($id) {
 		$model = $this->findModel($id);
+
 		$debateSearchModel = new DebateSearch();
 		$debateDataProvider = $debateSearchModel->search(Yii::$app->request->queryParams, $this->_tournament->id, $id);
 
@@ -153,7 +156,7 @@ class RoundController extends BaseTournamentController {
 
 		if ($model->load(Yii::$app->request->post())) {
 
-			if ($model->save() && $model->generateDraw()) {
+			if ($model->save() && $model->generateWorkingDraw()) {
 				return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
 			}
 			else {
@@ -253,9 +256,31 @@ class RoundController extends BaseTournamentController {
 				Panel::deleteAll(["id" => $panelid]);
 			}
 
-
-			if (!$model->generateDraw()) {
+			if (!$model->generateWorkingDraw()) {
+				$model->save();
 				Yii::$app->session->addFlash("error", print_r($model->getErrors(), true));
+			}
+		}
+
+		//return $this->render("debug");
+		return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
+	}
+
+	public function actionImprove($id, $runs = null) {
+		$model = Round::findOne(["id" => $id]);
+
+		if ($model instanceof Round) {
+
+			try {
+				$time = microtime(true);
+				$oldEnergy = $model->energy;
+				$model->improveAdjudicator($runs);
+				$model->save();
+				$diff = ($oldEnergy - $model->energy);
+				Yii::$app->session->addFlash(($diff > 0) ? "success" : "notice", "Improved Energy by " . $diff . " in " . intval(microtime(true) - $time) . "s");
+
+			} catch (Exception $ex) {
+				Yii::$app->session->addFlash("error", $ex->getMessage());
 			}
 		}
 
