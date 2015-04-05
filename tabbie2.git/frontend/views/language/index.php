@@ -10,7 +10,7 @@ use kartik\grid\GridView;
 $tournament = $this->context->_getContext();
 $this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
 
-$this->title = Yii::t('app', 'Language User');
+$this->title = Yii::t('app', 'Language Status Review');
 
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -89,7 +89,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				},
 			],
 			'urlCreator' => function ($action, $model, $key, $index) {
-				return \yii\helpers\Url::to(["user/setlanguage", "id" => $key, "status" => $action, "tournament" => $this->context->_getContext()->id]);
+				return \yii\helpers\Url::to(["language/set", "userid" => $key, "status" => $action, "tournament_id" => $this->context->_getContext()->id]);
 			},
 			'dropdown' => true,
 			'vAlign' => 'middle',

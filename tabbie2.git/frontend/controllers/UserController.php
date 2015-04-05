@@ -311,47 +311,6 @@ class UserController extends BaseUserController {
 	}
 
 	/**
-	 * Sets the Users Language Level
-	 * ONLY by Language Officer!
-	 *
-	 * @param integer $id
-	 * @param string  $status
-	 * @param integer $tournament
-	 *
-	 * @return \yii\web\Response
-	 */
-	public function actionSetlanguage($id, $status, $tournament) {
-
-		$user = User::findOne($id);
-		if ($user instanceof User) {
-			switch ($status) {
-				case "ENL":
-					$user->language_status = User::LANGUAGE_ENL;
-					break;
-				case "ESL":
-					$user->language_status = User::LANGUAGE_ESL;
-					break;
-				case "EFL":
-					$user->language_status = User::LANGUAGE_EFL;
-					break;
-				default:
-					Yii::$app->session->addFlash("error", Yii::t("app", "Not a valid Language Options in params"));
-			}
-			$user->language_status_by_id = Yii::$app->user->id;
-			$user->language_status_update = date("Y-m-d H:i:s");
-
-			if ($user->save())
-				Yii::$app->session->addFlash("success", Yii::t("app", "Language Settings saved"));
-			else
-				Yii::$app->session->addFlash("error", Yii::t("app", "Error saving Language Settings"));
-		}
-		else
-			Yii::$app->session->addFlash("error", Yii::t("app", "User not found!"));
-
-		return $this->redirect(['language/index', "tournament_id" => $tournament]);
-	}
-
-	/**
 	 * Finds the User model based on its primary key value.
 	 * If the model is not found, a 404 HTTP exception will be thrown.
 	 *

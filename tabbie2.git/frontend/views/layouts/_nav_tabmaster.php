@@ -16,6 +16,21 @@ foreach ($tournament->rounds as $r) {
 	$rounds[] = ['label' => "Round #$r->number", 'url' => ['round/view', "id" => $r->id, "tournament_id" => $tournament->id]];
 	$results[] = ['label' => "Result Round #$r->number", 'url' => ['result/round', "id" => $r->id, "tournament_id" => $tournament->id]];
 }
+
+$team_items = [
+	['label' => 'List Teams', 'url' => ['team/index', "tournament_id" => $tournament->id]],
+	['label' => 'Create Team', 'url' => ['team/create', "tournament_id" => $tournament->id]],
+	['label' => 'Import Team', 'url' => ['team/import', "tournament_id" => $tournament->id]],
+	'<li class="divider"></li>',
+	['label' => 'Strike Team', 'url' => ['strike/team_index', "tournament_id" => $tournament->id]],
+];
+
+if ($tournament->has_esl) {
+	$team_items[] = '<li class="divider"></li>';
+	$team_items[] = ['label' => 'Language Officers', 'url' => ['language/officer', "tournament_id" => $tournament->id]];
+	$team_items[] = ['label' => 'Language Status Review', 'url' => ['language/index', "tournament_id" => $tournament->id]];
+}
+
 $menuItems = [
 	['label' => 'Venues', 'url' => '#',
 		"items" => [
@@ -25,15 +40,7 @@ $menuItems = [
 		]
 	],
 	['label' => 'Teams', 'url' => '#',
-		"items" => [
-			['label' => 'List Teams', 'url' => ['team/index', "tournament_id" => $tournament->id]],
-			['label' => 'Create Team', 'url' => ['team/create', "tournament_id" => $tournament->id]],
-			['label' => 'Import Team', 'url' => ['team/import', "tournament_id" => $tournament->id]],
-			'<li class="divider"></li>',
-			['label' => 'Strike Team', 'url' => ['strike/team_index', "tournament_id" => $tournament->id]],
-			'<li class="divider"></li>',
-			['label' => 'Review Language Status', 'url' => ['tournament/language', "id" => $tournament->id]],
-		]
+		"items" => $team_items,
 	],
 	['label' => 'Adjudicators', 'url' => '#',
 		"items" => [

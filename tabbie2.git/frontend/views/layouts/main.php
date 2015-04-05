@@ -17,7 +17,7 @@ AppAsset::register($this);
 <?
 if ($this->context->hasMethod("_getContext")) {
 	$tournament = $this->context->_getContext();
-	if ($tournament instanceof Tournament && (Yii::$app->user->isTabMaster($tournament) || Yii::$app->user->isAdmin())) {
+	if ($tournament instanceof Tournament && (Yii::$app->user->isTabMaster($tournament) || Yii::$app->user->isLanguageOfficer($tournament))) {
 		$addclass = "movedown";
 	}
 }
@@ -40,9 +40,11 @@ if ($this->context->hasMethod("_getContext")) {
 </head>
 <body class="<?= isset($addclass) ? $addclass : "" ?>">
 <?php $this->beginBody() ?>
+
 <div class="flashes">
 	<?= Alert::widget() ?>
 </div>
+
 <div class="wrap">
 	<?
 	echo $this->render("_nav");
