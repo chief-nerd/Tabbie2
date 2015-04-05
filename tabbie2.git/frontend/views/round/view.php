@@ -27,25 +27,19 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 		<div class="col-md-12">
 			<? if (!$model->published): ?>
 				<?= Html::a(Yii::t('app', 'Publish Tab'), ['publish', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success']) ?>
-				<?= Html::a(Yii::t('app', 'Update Round Info'), ['update', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-primary']) ?>
-
 				<!-- Split button -->
 				<div class="btn-group">
-					<?
-					$runs = \common\models\EnergyConfig::get("max_iterations", $tournament->id) / 2;
-					?>
-					<?=
-					Html::a(Yii::t('app', 'Continue Improving by') . " " . ($runs / 1000) . "k", ['improve', 'id' => $model->id, "runs" => $runs, "tournament_id" => $tournament->id], [
-						'class' => 'btn btn-default loading',
-					])
-					?>
-					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+					<?= Html::a(Yii::t('app', 'Update Round'), ['update', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-primary']) ?>
+
+					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
 					        aria-expanded="false">
 						<span class="caret"></span>
 						<span class="sr-only">Toggle Dropdown</span>
 					</button>
 					<ul class="dropdown-menu" role="menu">
-						<? for ($i = 2; $i <= 3; $i++): ?>
+						<?
+						$runs = \common\models\EnergyConfig::get("max_iterations", $tournament->id) / 2;
+						for ($i = 1; $i <= 3; $i++): ?>
 							<li>
 								<?=
 								Html::a(Yii::t('app', 'Continue Improving by') . " " . ($runs * $i / 1000) . "k", [
@@ -96,7 +90,12 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 			if ($model->displayed)
 				$attributes[] = 'prep_started';
 			$attributes[] = 'time:text:Creation Time';
-			$attributes[] = 'lastrun_temp';
+			$attributes[] = [
+				"attribute" => 'lastrun_temp',
+				'format' => 'raw',
+				'value' => Yii::$app->formatter->asDecimal($model->lastrun_temp, 15),
+				'visible' => Yii::$app->user->isAdmin(),
+			];
 
 			echo DetailView::widget([
 				'model' => $model,
