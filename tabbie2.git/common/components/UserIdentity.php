@@ -64,7 +64,7 @@ class UserIdentity extends \yii\web\User {
 	}
 
 	public function isLanguageOfficer($tournament) {
-		if ($tournament instanceof Tournament) {
+		if ($tournament instanceof Tournament && $tournament->status != Tournament::STATUS_CLOSED) {
 			if (LanguageOfficer::find()->where([
 					"tournament_id" => $tournament->id,
 					"user_id" => $this->id,

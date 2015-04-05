@@ -7,11 +7,11 @@ use common\models\PublishTabSpeaker;
 use common\models\PublishTabTeam;
 use common\models\TabAfterRound;
 use common\models\Tournament;
-use common\models\User;
 use Yii;
 use yii\base\Exception;
 use yii\data\ArrayDataProvider;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * TabController implements the CRUD actions for DrawAfterRound model.
@@ -22,6 +22,18 @@ class TabController extends BaseTournamentController {
 		return [
 			'tournamentFilter' => [
 				'class' => TournamentContextFilter::className(),
+			],
+			'access' => [
+				'class' => AccessControl::className(),
+				'rules' => [
+					[
+						'allow' => true,
+						'actions' => ['live-team', 'live-speaker', 'live-publish'],
+						'matchCallback' => function ($rule, $action) {
+							return (Yii::$app->user->isTabMaster($this->_tournament));
+						}
+					],
+				],
 			],
 			'verbs' => [
 				'class' => VerbFilter::className(),
