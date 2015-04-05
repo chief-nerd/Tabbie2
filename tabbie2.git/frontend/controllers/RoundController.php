@@ -246,6 +246,7 @@ class RoundController extends BaseTournamentController {
 
 		if ($model instanceof Round) {
 
+			$time = microtime(true);
 			foreach ($model->debates as $debate) {
 				/** @var Debate $debate * */
 				foreach ($debate->panel->adjudicatorInPanels as $aj)
@@ -257,8 +258,11 @@ class RoundController extends BaseTournamentController {
 			}
 
 			if (!$model->generateWorkingDraw()) {
-				$model->save();
 				Yii::$app->session->addFlash("error", print_r($model->getErrors(), true));
+			}
+			else {
+				$model->save();
+				Yii::$app->session->addFlash("success", "Successfully redrawn in " . intval(microtime(true) - $time) . "s");
 			}
 		}
 
