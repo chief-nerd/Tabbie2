@@ -73,7 +73,16 @@ class Adjudicator extends \yii\db\ActiveRecord {
 	}
 
 	public function getName() {
-		return $this->user->name;
+		$key = "AdjudicatorName#" . $this->id;
+
+		if (Yii::$app->cache->exists($key)) {
+			return Yii::$app->cache->get($key);
+		}
+
+		$name = $this->user->name;
+		Yii::$app->cache->set($key, $name, 1 * 60 * 60);
+
+		return $name;
 	}
 
 	public function getSocietyName() {
