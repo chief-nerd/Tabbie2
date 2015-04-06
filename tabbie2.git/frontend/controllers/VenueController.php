@@ -14,7 +14,7 @@ use yii\web\NotFoundHttpException;
 /**
  * VenueController implements the CRUD actions for Venue model.
  *
- * @property Tournament $_user
+ * @property Tournament $_tournament
  */
 class VenueController extends BaseTournamentController {
 
@@ -87,7 +87,7 @@ class VenueController extends BaseTournamentController {
 	 */
 	public function actionCreate() {
 		$model = new Venue();
-		$model->tournament_id = $this->_user->id;
+		$model->tournament_id = $this->_tournament->id;
 		$model->active = true;
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -133,7 +133,7 @@ class VenueController extends BaseTournamentController {
 	public function actionDelete($id) {
 		$this->findModel($id)->delete();
 
-		return $this->redirect(['tournament/view', 'id' => $this->_user->id]);
+		return $this->redirect(['tournament/view', 'id' => $this->_tournament->id]);
 	}
 
 	/**
@@ -156,7 +156,7 @@ class VenueController extends BaseTournamentController {
 			Yii::$app->session->addFlash("error", $model->getErrors("active"));
 		}
 
-		return $this->redirect(['venue/index', 'tournament_id' => $this->_user->id]);
+		return $this->redirect(['venue/index', 'tournament_id' => $this->_tournament->id]);
 	}
 
 	/**
