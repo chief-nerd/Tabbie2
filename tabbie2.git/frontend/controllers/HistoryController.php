@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\components\filter\UserContextFilter;
+use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use Yii;
@@ -42,19 +43,16 @@ class HistoryController extends BaseUserController {
 
 		$query = $model->getTeams()->joinWith("tournament")->orderBy(["tournament.end_date" => SORT_DESC]);
 
-		$countQuery = clone $query;
-		$pages = new Pagination([
-			'totalCount' => $countQuery->count(),
-			'pageSize' => Yii::$app->params["tournament_per_history"],
+		$dataProvider = new ActiveDataProvider([
+			"query" => $query,
+			'pagination' => [
+				'pageSize' => Yii::$app->params["tournament_per_history"],
+			],
 		]);
-		$teams = $query->offset($pages->offset)
-		               ->limit($pages->limit)
-		               ->all();
 
 		return $this->render("index", [
 			"model" => $model,
-			"teams" => $teams,
-			"pages" => $pages,
+			"dataProvider" => $dataProvider,
 		]);
 	}
 
