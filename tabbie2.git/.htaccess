@@ -1,4 +1,3 @@
-php_value memory_limit 1024M
 Options -Indexes
 
 <IfModule mod_rewrite.c>
