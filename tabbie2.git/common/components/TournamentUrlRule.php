@@ -22,6 +22,8 @@ class TournamentUrlRule extends UrlRule {
 			$url = "";
 			if ($parts[1] == "index")
 				$url = "tournaments";
+			if ($parts[1] == "create")
+				$url = "tournament/create";
 
 			if (isset($params['id'])) {
 				$tournament = Tournament::findByPk($params['id']);
