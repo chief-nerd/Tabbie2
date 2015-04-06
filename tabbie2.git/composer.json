@@ -1,13 +1,12 @@
 {
-  "name": "yiisoft/yii2-app-advanced",
-  "description": "Yii 2 Advanced Application Template",
+  "name": "Tabbie2 Webapp",
+  "description": "A BP Debate-Tab Webapp written in Yii2",
   "keywords": [
-    "yii2",
-    "framework",
-    "advanced",
-    "application template"
+    "BP",
+    "tabbing",
+    "Debating",
   ],
-  "homepage": "http://www.yiiframework.com/",
+  "homepage": "http://www.tabbie.com/",
   "type": "project",
   "license": "BSD-3-Clause",
   "support": {
