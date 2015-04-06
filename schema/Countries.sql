@@ -15,25 +15,6 @@
 /*!40101 SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES = @@SQL_NOTES, SQL_NOTES = 0 */;
 
---
--- Table structure for table `country`
---
-
-DROP TABLE IF EXISTS `country`;
-/*!40101 SET @saved_cs_client = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `country` (
-  `id`        INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name`      VARCHAR(50)               DEFAULT NULL,
-  `alpha_2`   VARCHAR(2)                DEFAULT NULL,
-  `alpha_3`   VARCHAR(3)                DEFAULT NULL,
-  `region_id` INT(11)                   DEFAULT NULL,
-  PRIMARY KEY (`id`)
-)
-  ENGINE = InnoDB
-  AUTO_INCREMENT = 250
-  DEFAULT CHARSET = utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `country`

@@ -35,11 +35,60 @@ CREATE TABLE IF NOT EXISTS `tabbie`.`user` (
   `status` SMALLINT(6) NOT NULL DEFAULT '10',
   `givenname` VARCHAR(255) NULL,
   `surename` VARCHAR(255) NULL,
+  `gender`                 INT              NOT NULL DEFAULT 0,
+  `language_status`        INT(11)          NOT NULL DEFAULT 0,
+  `language_status_by_id`  INT(11) UNSIGNED NULL,
+  `language_status_update` DATETIME         NULL,
   `picture` VARCHAR(255) NULL,
   `last_change` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `time` DATETIME NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_user_user1_idx` (`language_status_by_id` ASC),
+  CONSTRAINT `fk_user_user1`
+  FOREIGN KEY (`language_status_by_id`)
+  REFERENCES `tabbie`.`user` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+)
+  ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `tabbie`.`country`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `tabbie`.`country`;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`country` (
+  `id`        INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name`      VARCHAR(50)  NULL,
+  `alpha_2`   VARCHAR(2)   NULL,
+  `alpha_3`   VARCHAR(3)   NULL,
+  `region_id` INT(11)      NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `tabbie`.`society`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `tabbie`.`society`;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`society` (
+  `id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `fullname`   VARCHAR(255) NULL,
+  `abr`        VARCHAR(45)  NULL,
+  `city`       VARCHAR(255) NULL,
+  `country_id` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `adr_UNIQUE` (`abr` ASC),
+  INDEX `fk_society_country1_idx` (`country_id` ASC),
+  CONSTRAINT `fk_society_country1`
+  FOREIGN KEY (`country_id`)
+  REFERENCES `tabbie`.`country` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+)
+  ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
@@ -50,18 +99,27 @@ DROP TABLE IF EXISTS `tabbie`.`tournament` ;
 CREATE TABLE IF NOT EXISTS `tabbie`.`tournament` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `url_slug` VARCHAR(100) NOT NULL,
+  `status`           INT(11)      NOT NULL DEFAULT 0,
   `convenor_user_id` INT(11) UNSIGNED NOT NULL,
   `tabmaster_user_id` INT(11) UNSIGNED NOT NULL,
+  `hosted_by_id`     INT UNSIGNED NOT NULL,
   `name` VARCHAR(100) NOT NULL,
   `start_date` DATETIME NOT NULL,
   `end_date` DATETIME NOT NULL,
   `logo` VARCHAR(255) NULL,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `tabAlgorithmClass` VARCHAR(100) NOT NULL DEFAULT 'StrictWUDCRules',
+  `expected_rounds`  INT(11)      NOT NULL DEFAULT 6,
+  `has_esl`          TINYINT(1)   NOT NULL DEFAULT 0,
+  `has_final`        TINYINT(1)   NOT NULL DEFAULT 1,
+  `has_semifinal`    TINYINT(1)   NOT NULL DEFAULT 1,
+  `has_quarterfinal` TINYINT(1)   NOT NULL DEFAULT 0,
+  `has_octofinal`    TINYINT(1)   NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `fk_tournament_user1_idx` (`convenor_user_id` ASC),
   INDEX `fk_tournament_user2_idx` (`tabmaster_user_id` ASC),
   UNIQUE INDEX `slug_UNIQUE` (`url_slug` ASC),
+  INDEX `fk_tournament_society1_idx` (`hosted_by_id` ASC),
   CONSTRAINT `fk_tournament_user1`
     FOREIGN KEY (`convenor_user_id`)
     REFERENCES `tabbie`.`user` (`id`)
@@ -71,23 +129,12 @@ CREATE TABLE IF NOT EXISTS `tabbie`.`tournament` (
     FOREIGN KEY (`tabmaster_user_id`)
     REFERENCES `tabbie`.`user` (`id`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tournament_society1`
+  FOREIGN KEY (`hosted_by_id`)
+  REFERENCES `tabbie`.`society` (`id`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `tabbie`.`society`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`society` ;
-
-CREATE TABLE IF NOT EXISTS `tabbie`.`society` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `fullname` VARCHAR(255) NULL,
-  `abr` VARCHAR(45) NULL,
-  `city` VARCHAR(255) NULL,
-  `country` VARCHAR(255) NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `adr_UNIQUE` (`abr` ASC))
 ENGINE = InnoDB;
 
 
@@ -100,10 +147,12 @@ CREATE TABLE IF NOT EXISTS `tabbie`.`adjudicator` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `tournament_id` INT UNSIGNED NOT NULL,
   `user_id` INT UNSIGNED NOT NULL,
+  `active`    TINYINT(1) NOT NULL DEFAULT 1,
   `strength` TINYINT NULL,
   `society_id` INT UNSIGNED NOT NULL,
   `can_chair` TINYINT(1) NOT NULL DEFAULT 1,
   `are_watched` TINYINT(1) NOT NULL DEFAULT 0,
+  `checkedin` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `fk_adjudicator_username1_idx` (`user_id` ASC),
   INDEX `fk_adjudicator_tournament1_idx` (`tournament_id` ASC),
@@ -135,9 +184,17 @@ CREATE TABLE IF NOT EXISTS `tabbie`.`team` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NULL,
   `tournament_id` INT UNSIGNED NOT NULL,
-  `speakerA_id` INT UNSIGNED NOT NULL,
-  `speakerB_id` INT UNSIGNED NOT NULL,
+  `active`             TINYINT(1)   NOT NULL DEFAULT 1,
+  `speakerA_id`        INT UNSIGNED NULL,
+  `speakerB_id`        INT UNSIGNED NULL,
   `society_id` INT UNSIGNED NOT NULL,
+  `isSwing`            TINYINT(1)   NOT NULL DEFAULT 0,
+  `language_status`    TINYINT      NOT NULL DEFAULT 0,
+  `points`             INT(11)      NOT NULL DEFAULT 0,
+  `speakerA_speaks`    INT(11)      NOT NULL DEFAULT 0,
+  `speakerB_speaks`    VARCHAR(45)  NOT NULL DEFAULT 0,
+  `speakerA_checkedin` TINYINT(1)   NOT NULL DEFAULT 0,
+  `speakerB_checkedin` TINYINT(1)   NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `fk_team_username_idx` (`speakerA_id` ASC),
   INDEX `fk_team_username1_idx` (`speakerB_id` ASC),
@@ -175,6 +232,7 @@ CREATE TABLE IF NOT EXISTS `tabbie`.`round` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `number` INT NOT NULL,
   `tournament_id` INT UNSIGNED NOT NULL,
+  `energy`       INT(11) NOT NULL DEFAULT 0,
   `motion` TEXT NOT NULL,
   `infoslide` TEXT NULL,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -183,6 +241,7 @@ CREATE TABLE IF NOT EXISTS `tabbie`.`round` (
   `closed` TINYINT(1) NOT NULL DEFAULT 0,
   `prep_started` DATETIME NULL,
   `finished_time` DATETIME NULL,
+  `lastrun_temp` FLOAT   NOT NULL DEFAULT 1.0,
   PRIMARY KEY (`id`),
   INDEX `fk_round_tournament1_idx` (`tournament_id` ASC),
   CONSTRAINT `fk_round_tournament1`
@@ -224,6 +283,7 @@ CREATE TABLE IF NOT EXISTS `tabbie`.`panel` (
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `tournament_id` INT UNSIGNED NOT NULL,
   `used` TINYINT(1) NOT NULL DEFAULT 1,
+  `is_preset` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `fk_panel_tournament1_idx` (`tournament_id` ASC),
   CONSTRAINT `fk_panel_tournament1`
@@ -255,6 +315,7 @@ CREATE TABLE IF NOT EXISTS `tabbie`.`debate` (
   `cg_feedback` TINYINT(1) NOT NULL DEFAULT 0,
   `co_feedback` TINYINT(1) NOT NULL DEFAULT 0,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `messages` TEXT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_debate_venue1_idx` (`venue_id` ASC),
   INDEX `fk_debate_panel1_idx` (`panel_id` ASC),
@@ -292,19 +353,19 @@ CREATE TABLE IF NOT EXISTS `tabbie`.`result` (
   `co_B_speaks` TINYINT NOT NULL,
   `co_place` TINYINT NOT NULL,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `enteredBy_adjudicator_id` INT UNSIGNED NOT NULL,
+  `entered_by_id` INT(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_result_debate1_idx` (`debate_id` ASC),
-  INDEX `fk_result_adjudicator1_idx` (`enteredBy_adjudicator_id` ASC),
   UNIQUE INDEX `debate_id_UNIQUE` (`debate_id` ASC),
+  INDEX `fk_result_user1_idx` (`entered_by_id` ASC),
   CONSTRAINT `fk_result_debate1`
     FOREIGN KEY (`debate_id`)
     REFERENCES `tabbie`.`debate` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_result_adjudicator1`
-    FOREIGN KEY (`enteredBy_adjudicator_id`)
-    REFERENCES `tabbie`.`adjudicator` (`id`)
+  CONSTRAINT `fk_result_user1`
+  FOREIGN KEY (`entered_by_id`)
+  REFERENCES `tabbie`.`user` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -367,67 +428,6 @@ CREATE TABLE IF NOT EXISTS `tabbie`.`username_has_special_needs` (
   CONSTRAINT `fk_username_has_special_needs_special_needs1`
     FOREIGN KEY (`special_needs_id`)
     REFERENCES `tabbie`.`special_needs` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `tabbie`.`tab_after_round`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`tab_after_round` ;
-
-CREATE TABLE IF NOT EXISTS `tabbie`.`tab_after_round` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `tournament_id` INT UNSIGNED NOT NULL,
-  `round_id` INT UNSIGNED NOT NULL,
-  `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  INDEX `fk_draw_tournament1_idx` (`tournament_id` ASC),
-  INDEX `fk_draw_round1_idx` (`round_id` ASC),
-  CONSTRAINT `fk_draw_tournament1`
-    FOREIGN KEY (`tournament_id`)
-    REFERENCES `tabbie`.`tournament` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_draw_round1`
-    FOREIGN KEY (`round_id`)
-    REFERENCES `tabbie`.`round` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `tabbie`.`tab_position`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`tab_position` ;
-
-CREATE TABLE IF NOT EXISTS `tabbie`.`tab_position` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `tab_id` INT UNSIGNED NOT NULL,
-  `team_id` INT UNSIGNED NOT NULL,
-  `result_id` INT UNSIGNED NOT NULL,
-  `points` INT NOT NULL,
-  `speakerA_speaks` INT NOT NULL,
-  `speakerB_speaks` INT NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_draw_position_team1_idx` (`team_id` ASC),
-  INDEX `fk_draw_position_draw1_idx` (`tab_id` ASC),
-  INDEX `fk_draw_position_result1_idx` (`result_id` ASC),
-  CONSTRAINT `fk_draw_position_team1`
-    FOREIGN KEY (`team_id`)
-    REFERENCES `tabbie`.`team` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_draw_position_draw1`
-    FOREIGN KEY (`tab_id`)
-    REFERENCES `tabbie`.`tab_after_round` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_draw_position_result1`
-    FOREIGN KEY (`result_id`)
-    REFERENCES `tabbie`.`result` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -594,7 +594,7 @@ CREATE TABLE IF NOT EXISTS `tabbie`.`energy_config` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `key` VARCHAR(100) NOT NULL,
   `tournament_id` INT UNSIGNED NOT NULL,
-  `label` VARCHAR(45) NOT NULL,
+  `label` VARCHAR(255) NOT NULL,
   `value` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `fk_energy_config_tournament1_idx` (`tournament_id` ASC),
@@ -615,9 +615,11 @@ CREATE TABLE IF NOT EXISTS `tabbie`.`team_strike` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `team_id` INT UNSIGNED NOT NULL,
   `adjudicator_id` INT UNSIGNED NOT NULL,
+  `tournament_id` INT UNSIGNED NOT NULL,
   INDEX `fk_team_strike_team1_idx` (`team_id` ASC),
   PRIMARY KEY (`id`),
   INDEX `fk_team_strike_adjudicator1_idx` (`adjudicator_id` ASC),
+  INDEX `fk_team_strike_tournament1_idx` (`tournament_id` ASC),
   CONSTRAINT `fk_team_strike_team1`
     FOREIGN KEY (`team_id`)
     REFERENCES `tabbie`.`team` (`id`)
@@ -626,6 +628,11 @@ CREATE TABLE IF NOT EXISTS `tabbie`.`team_strike` (
   CONSTRAINT `fk_team_strike_adjudicator1`
     FOREIGN KEY (`adjudicator_id`)
     REFERENCES `tabbie`.`adjudicator` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_team_strike_tournament1`
+  FOREIGN KEY (`tournament_id`)
+  REFERENCES `tabbie`.`tournament` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -637,19 +644,111 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `tabbie`.`adjudicator_strike` ;
 
 CREATE TABLE IF NOT EXISTS `tabbie`.`adjudicator_strike` (
-  `adjudicator_id` INT UNSIGNED NOT NULL,
-  `adjudicator_id1` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`adjudicator_id`, `adjudicator_id1`),
-  INDEX `fk_adjudicator_has_adjudicator_adjudicator2_idx` (`adjudicator_id1` ASC),
-  INDEX `fk_adjudicator_has_adjudicator_adjudicator1_idx` (`adjudicator_id` ASC),
+  `adjudicator_from_id` INT UNSIGNED NOT NULL,
+  `adjudicator_to_id`   INT UNSIGNED NOT NULL,
+  `tournament_id`       INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`adjudicator_from_id`, `adjudicator_to_id`),
+  INDEX `fk_adjudicator_has_adjudicator_adjudicator2_idx` (`adjudicator_to_id` ASC),
+  INDEX `fk_adjudicator_has_adjudicator_adjudicator1_idx` (`adjudicator_from_id` ASC),
+  INDEX `fk_adjudicator_strike_tournament1_idx` (`tournament_id` ASC),
   CONSTRAINT `fk_adjudicator_has_adjudicator_adjudicator1`
-    FOREIGN KEY (`adjudicator_id`)
+  FOREIGN KEY (`adjudicator_from_id`)
     REFERENCES `tabbie`.`adjudicator` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_adjudicator_has_adjudicator_adjudicator2`
-    FOREIGN KEY (`adjudicator_id1`)
+  FOREIGN KEY (`adjudicator_to_id`)
     REFERENCES `tabbie`.`adjudicator` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_adjudicator_strike_tournament1`
+  FOREIGN KEY (`tournament_id`)
+  REFERENCES `tabbie`.`tournament` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+)
+  ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `tabbie`.`publish_tab_team`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `tabbie`.`publish_tab_team`;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`publish_tab_team` (
+  `id`            INT          NOT NULL AUTO_INCREMENT,
+  `tournament_id` INT UNSIGNED NOT NULL,
+  `team_id`       INT UNSIGNED NOT NULL,
+  `enl_place`     INT          NOT NULL,
+  `esl_place`     VARCHAR(45)  NULL,
+  `cache_results` TEXT         NOT NULL,
+  `speaks`        INT(11)      NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_publish_tab_team_team1_idx` (`team_id` ASC),
+  INDEX `fk_publish_tab_team_tournament1_idx` (`tournament_id` ASC),
+  CONSTRAINT `fk_publish_tab_team_team1`
+  FOREIGN KEY (`team_id`)
+  REFERENCES `tabbie`.`team` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_publish_tab_team_tournament1`
+  FOREIGN KEY (`tournament_id`)
+  REFERENCES `tabbie`.`tournament` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+)
+  ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `tabbie`.`publish_tab_speaker`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `tabbie`.`publish_tab_speaker`;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`publish_tab_speaker` (
+  `id`            INT              NOT NULL AUTO_INCREMENT,
+  `tournament_id` INT UNSIGNED     NOT NULL,
+  `user_id`       INT(11) UNSIGNED NOT NULL,
+  `enl_place`     INT              NOT NULL,
+  `esl_place`     INT              NULL,
+  `cache_results` TEXT             NOT NULL,
+  `speaks`        INT(11)          NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_publish_tab_speaker_user1_idx` (`user_id` ASC),
+  INDEX `fk_publish_tab_speaker_tournament1_idx` (`tournament_id` ASC),
+  CONSTRAINT `fk_publish_tab_speaker_user1`
+  FOREIGN KEY (`user_id`)
+  REFERENCES `tabbie`.`user` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_publish_tab_speaker_tournament1`
+  FOREIGN KEY (`tournament_id`)
+  REFERENCES `tabbie`.`tournament` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+)
+  ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `tabbie`.`language_officer`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `tabbie`.`language_officer`;
+
+CREATE TABLE IF NOT EXISTS `tabbie`.`language_officer` (
+  `user_id`       INT(11) UNSIGNED NOT NULL,
+  `tournament_id` INT UNSIGNED     NOT NULL,
+  PRIMARY KEY (`user_id`, `tournament_id`),
+  INDEX `fk_user_has_tournament_tournament1_idx` (`tournament_id` ASC),
+  INDEX `fk_user_has_tournament_user1_idx` (`user_id` ASC),
+  CONSTRAINT `fk_user_has_tournament_user1`
+  FOREIGN KEY (`user_id`)
+  REFERENCES `tabbie`.`user` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_user_has_tournament_tournament1`
+  FOREIGN KEY (`tournament_id`)
+  REFERENCES `tabbie`.`tournament` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
