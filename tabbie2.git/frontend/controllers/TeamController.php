@@ -132,13 +132,6 @@ class TeamController extends BaseTournamentController {
 			}
 		}
 
-		$publishpath = Yii::$app->assetManager->publish(Yii::getAlias("@frontend/assets/js/createTeam.js"));
-		$this->view->registerJsFile($publishpath[1], [
-			"depends" => [
-				\yii\web\JqueryAsset::className(),
-			],
-		]);
-
 		$model->active = 1; //Set default;
 		return $this->render('create', [
 			'model' => $model,
