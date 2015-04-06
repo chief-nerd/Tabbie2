@@ -90,7 +90,7 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 				"attribute" => 'energy',
 				'label' => "Average Energy",
 				'format' => 'raw',
-				'value' => intval($model->energy / $debateDataProvider->getCount()),
+				'value' => (($debateDataProvider->getCount()) ? intval($model->energy / $debateDataProvider->getCount()) : 0),
 			];
 			if ($model->displayed)
 				$attributes[] = 'prep_started';
