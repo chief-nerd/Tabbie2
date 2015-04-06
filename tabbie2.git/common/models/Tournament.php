@@ -273,7 +273,8 @@ class Tournament extends \yii\db\ActiveRecord {
 
 	public function getLogoImage($width_max = null, $height_max = null) {
 
-		return Html::img($this->logo, ["alt" => $this->getFullname(),
+		$alt = ($this->name) ? $this->getFullname() : "";
+		return Html::img($this->logo, ["alt" => $alt,
 			"class" => "img-responsive img-rounded center-block",
 			"style" => "max-width: " . $width_max . "px; max-height: " . $height_max . "px;",
 			"width" => $width_max,

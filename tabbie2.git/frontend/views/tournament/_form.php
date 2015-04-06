@@ -69,8 +69,7 @@ use yii\helpers\Html;
 
 	<div class="row">
 		<div class="col-sm-2">
-			<img class="image-responsive" style="margin-right: 50px;" src="<?= $model["logo"] ?>" height="150"
-			     alt="<?= $model["fullname"] ?>">
+			<?= $model->getLogoImage(150, 150) ?>
 		</div>
 		<div class="col-sm-10">
 			<?= $form->field($model, 'logo')->fileInput() ?>
