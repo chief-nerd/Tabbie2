@@ -33,15 +33,7 @@ class StrictWUDCRules extends TabAlgorithm {
 
 		Yii::beginProfile("generateDraw");
 		$memory_limit = (ini_get('memory_limit') * 1024 * 1024) * 0.9;
-
-		$active_rooms = (count($teams) / 4);
-		if (count($teams) % 4 != 0)
-			throw new Exception("Amount of active Teams must be divided by 4 ;) - (active: " . count($teams) . ")", "500");
-		if ($active_rooms > count($venues))
-			throw new Exception("Not enough active Rooms (active:" . count($venues) . " required:" . $active_rooms . ")", "500");
-		if ($active_rooms > count($adjudicators))
-			throw new Exception("Not enough adjudicators (active:" . count($adjudicators) . " min-required:" . $active_rooms . ")", "500");
-
+		
 		Yii::beginProfile("initTeamAllocation");
 		/**
 		 * Shuffle venues

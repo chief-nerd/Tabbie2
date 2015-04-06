@@ -176,6 +176,20 @@ class Round extends \yii\db\ActiveRecord {
 			$adjudicators_Query = Adjudicator::find()->active()->tournament($this->tournament->id);
 
 			$adjudicatorsObjects = $adjudicators_Query->all();
+
+			$active_rooms = (count($teams) / 4);
+			if (count($teams) < 4)
+				throw new Exception("Not enough Teams to fill a single room - (active: " . count($teams) . ")", "500");
+			if (count($adjudicatorsObjects) > 0)
+				throw new Exception("At least a single Adjudicator is necessary - (active: " . count($adjudicatorsObjects) . ")", "500");
+			if (count($teams) % 4 != 0)
+				throw new Exception("Amount of active Teams must be divided by 4 ;) - (active: " . count($teams) . ")", "500");
+			if ($active_rooms > count($venues))
+				throw new Exception("Not enough active Rooms (active:" . count($venues) . " required:" . $active_rooms . ")", "500");
+			if ($active_rooms > count($adjudicatorsObjects))
+				throw new Exception("Not enough adjudicators (active:" . count($adjudicatorsObjects) . " min-required:" . $active_rooms . ")", "500");
+
+
 			$adjudicators = [];
 			for ($i = 0; $i < count($adjudicatorsObjects); $i++) {
 				$adjudicators[$i] = $adjudicatorsObjects[$i]->attributes;
