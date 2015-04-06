@@ -33,7 +33,8 @@ class StrictWUDCRules extends TabAlgorithm {
 
 		Yii::beginProfile("generateDraw");
 		$memory_limit = (ini_get('memory_limit') * 1024 * 1024) * 0.9;
-		
+		$active_rooms = (count($teams) / 4);
+
 		Yii::beginProfile("initTeamAllocation");
 		/**
 		 * Shuffle venues
