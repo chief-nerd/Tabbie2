@@ -28,7 +28,7 @@ class TabController extends BaseTournamentController {
 				'rules' => [
 					[
 						'allow' => true,
-						'actions' => ['live-team', 'live-speaker', 'live-publish'],
+						'actions' => ['live-team', 'live-speaker', 'publish'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->isTabMaster($this->_tournament));
 						}

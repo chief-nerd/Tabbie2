@@ -13,6 +13,7 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
+use yii\data\Pagination;
 
 /**
  * UserController implements the CRUD actions for User model.
@@ -36,7 +37,7 @@ class UserController extends BaseUserController {
 					],
 					[
 						'allow' => true,
-						'actions' => ['update', 'societies'],
+						'actions' => ['update', 'societies', 'history'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->id == Yii::$app->request->get("id") || Yii::$app->user->isAdmin());
 						}

@@ -7,7 +7,7 @@ use yii\helpers\Url;
 <div class="row">
 	<a href="<?= Url::to(['view', 'id' => $tournament->id]) ?>">
 		<div class="col-xs-3 col-sm-2">
-			<?= Html::img($tournament->logo, ["class" => "img-responsive"]) ?>
+			<?= $tournament->getLogoImage(150) ?>
 		</div>
 		<div class="col-xs-9 col-sm-10">
 			<h2><?= Html::encode($tournament->name) ?></h2>

@@ -93,52 +93,57 @@ class UserUrlRule extends UrlRule {
 	public function parseRequest($manager, $request) {
 		$pathInfo = $request->getPathInfo();
 		$params = [];
+		$route = "";
 
 		if ($pathInfo == "user")
 			return ["user/index", $params];
 
 		$parts = explode("/", $pathInfo);
+
 		//Yii::trace("Request URL Parts: " . print_r($parts, true), __METHOD__);
 		if ($parts[0] == "user") {
 			$potential_username = $parts[1];
 			$user = User::findByUsername($potential_username);
 			if ($user !== null) {
 				//Yii::trace("User found with id: #" . $user->id . " named " . $user->name, __METHOD__);
-				unset($parts[1]);
 
-				if (isset($parts[2]) && $parts[2] != null) {
-					if (isset($parts[3])) {
-						if (is_numeric($parts[3])) {
-							//Yii::trace("parts[3] is numeric", __METHOD__);
-							$params['id'] = $parts[3];
-							$parts[3] = "view";
-						}
+				$modul = "other";
 
-						if (count($parts) > 2) {
-							$route = implode("/", array_slice($parts, 1, 2));
-							$params["user_id"] = $user->id;
-							if (isset($parts[4]) && is_numeric($parts[4]))
-								$params["id"] = $parts[4];
-							else
-								for ($i = 4; $i <= count($parts); $i = $i + 2)
-									$params[$parts[$i]] = $parts[$i + 1];
-						}
-						else {
-							$route = implode("/", array_slice($parts, 0, 2));
-							$params["id"] = $user->id;
+				if (count($parts) <= 3)
+					$modul = "user";
 
-							for ($i = 3; $i <= count($parts); $i = $i + 2)
-								$params[$parts[$i]] = $parts[$i + 1];
-						}
-					}
-					else {
-						$params['id'] = $user->id;
+				if (isset($parts[3]) && $parts[3] == "")
+					$modul = "other";
+
+				if ($modul == "user") //Base User Class
+				{
+					if (isset($parts[2]) && $parts[2] != null)
 						$route = "user/" . $parts[2];
-					}
-				}
-				else {
+					else
+						$route = "user/view";
+
 					$params['id'] = $user->id;
-					$route = "user/view";
+					$offset = 3;
+				}
+				else { //Context Classes
+
+					//case index
+					if ($parts[3] == "")
+						$parts[3] = "index";
+
+					$route = implode("/", [$parts[2], $parts[3]]);
+
+					if (isset($parts[4]) && is_numeric($parts[4])) {
+						$params['id'] = $parts[4];
+					}
+
+					$params['user_id'] = $user->id;
+					$offset = 4;
+				}
+
+				for ($i = $offset; $i <= count($parts); $i = $i + 2) {
+					if (isset($parts[$i]) && isset($parts[$i + 1]))
+						$params[$parts[$i]] = $parts[$i + 1];
 				}
 
 				$ret = [$route, $params];

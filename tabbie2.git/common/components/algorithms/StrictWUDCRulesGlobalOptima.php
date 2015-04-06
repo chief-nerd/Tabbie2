@@ -12,7 +12,7 @@ use common\models\Venue;
 use Yii;
 use yii\base\Exception;
 
-class StrictWUDCRules extends TabAlgorithm {
+class StrictWUDCRulesGlobalOptima extends TabAlgorithm {
 
 	/**
 	 * Function to calculate a draw based on WUDC strict Rules

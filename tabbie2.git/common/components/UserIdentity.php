@@ -64,17 +64,19 @@ class UserIdentity extends \yii\web\User {
 	}
 
 	public function isLanguageOfficer($tournament) {
-		if ($tournament instanceof Tournament && $tournament->status != Tournament::STATUS_CLOSED) {
-			if (LanguageOfficer::find()->where([
-					"tournament_id" => $tournament->id,
-					"user_id" => $this->id,
-				])->count() == 1
-			) {
-				\Yii::trace("User is LanguageOfficer for Tournament #" . $tournament->id, __METHOD__);
-				return true;
+		if ($tournament instanceof Tournament) {
+			if ($tournament->status != Tournament::STATUS_CLOSED) {
+				if (LanguageOfficer::find()->where([
+						"tournament_id" => $tournament->id,
+						"user_id" => $this->id,
+					])->count() == 1
+				) {
+					\Yii::trace("User is LanguageOfficer for Tournament #" . $tournament->id, __METHOD__);
+					return true;
+				}
+				else if (\Yii::$app->user->isAdmin()) //Admin secure override
+					return true;
 			}
-			else if (\Yii::$app->user->isAdmin()) //Admin secure override
-				return true;
 		}
 		else throw new Exception("Wrong Parameter not a valid tournament");
 

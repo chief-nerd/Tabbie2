@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /**
  * This is the model class for table "tournament".
@@ -268,6 +269,11 @@ class Tournament extends \yii\db\ActiveRecord {
 	 */
 	public function getPanels() {
 		return $this->hasMany(Panel::className(), ['tournament_id' => 'id']);
+	}
+
+	public function getLogoImage($width_max = null, $height_max = null) {
+
+		return Html::img($this->logo, ["alt" => $this->getFullname(), "class" => "img-responsive img-rounded center-block", "style" => "max-width: " . $width_max . "px; max-height: " . $height_max . "px;"]);
 	}
 
 	public static function getTabAlgorithmOptions() {

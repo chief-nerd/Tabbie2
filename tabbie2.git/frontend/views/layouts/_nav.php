@@ -30,7 +30,7 @@ else {
 	];
 	$menuItems[] = [
 		'label' => Yii::$app->user->getModel()->surename . "'s History",
-		'url' => ['user/history', 'id' => Yii::$app->user->id],
+		'url' => ['history/index', 'user_id' => Yii::$app->user->id],
 	];
 	$menuItems[] = [
 		'label' => 'Logout',
