@@ -161,7 +161,7 @@ class Tournament extends \yii\db\ActiveRecord {
 	}
 
 	public function getFullname() {
-		return $this->name . " " . substr($this->end_date, 0, 4);
+		return $this->name . " " . Yii::$app->formatter->asDate($this->end_date, "Y");
 	}
 
 	/**
@@ -273,7 +273,12 @@ class Tournament extends \yii\db\ActiveRecord {
 
 	public function getLogoImage($width_max = null, $height_max = null) {
 
-		return Html::img($this->logo, ["alt" => $this->getFullname(), "class" => "img-responsive img-rounded center-block", "style" => "max-width: " . $width_max . "px; max-height: " . $height_max . "px;"]);
+		return Html::img($this->logo, ["alt" => $this->getFullname(),
+			"class" => "img-responsive img-rounded center-block",
+			"style" => "max-width: " . $width_max . "px; max-height: " . $height_max . "px;",
+			"width" => $width_max,
+			"height" => $height_max,
+		]);
 	}
 
 	public static function getTabAlgorithmOptions() {

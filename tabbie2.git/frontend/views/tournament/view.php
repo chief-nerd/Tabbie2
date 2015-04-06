@@ -79,8 +79,16 @@ $this->params['breadcrumbs'][] = $this->title;
 					'hostedby.fullname:text:Hosted By',
 					'convenorUser.name:text:Convenor',
 					'tabmasterUser.name:text:Tabmaster',
-					'start_date',
-					'end_date',
+					[
+						"attribute" => 'start_date',
+						'format' => 'raw',
+						'value' => Yii::$app->formatter->asDateTime($model->start_date, "short"),
+					],
+					[
+						"attribute" => 'end_date',
+						'format' => 'raw',
+						'value' => Yii::$app->formatter->asDateTime($model->end_date, "short"),
+					],
 				],
 			])
 			?>

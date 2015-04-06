@@ -41,6 +41,9 @@ class TournamentSearch extends Tournament {
 
 		$dataProvider = new ActiveDataProvider([
 			'query' => $query,
+			'pagination' => [
+				'pageSize' => Yii::$app->params["tournament_per_page"],
+			],
 		]);
 
 		if (!($this->load($params) && $this->validate())) {

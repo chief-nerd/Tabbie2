@@ -17,10 +17,9 @@ use yii\widgets\ActiveForm;
 	?>
 	<div class="row">
 		<div class="col-xs-6"><?= $form->field($model, 'name') ?></div>
-		<div class="col-xs-6"><?= $form->field($model, 'start_date') ?></div>
-		<div class="form-group col-xs-12 text-right btn-group">
+		<div class="form-group col-xs-6 text-right btn-group buttons">
 			<?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>
-			<?= Html::resetButton(Yii::t('app', 'Reset'), ['class' => 'btn btn-default']) ?>
+			<?= Html::a(Yii::t('app', 'Reset'), ["tournament/index"], ['class' => 'btn btn-default']) ?>
 		</div>
 	</div>
 

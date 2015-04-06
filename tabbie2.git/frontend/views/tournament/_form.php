@@ -34,7 +34,9 @@ use yii\helpers\Html;
 		'type' => DateTimePicker::TYPE_INPUT,
 		'options' => ['placeholder' => 'Enter start date / time ...'],
 		'pluginOptions' => [
-			'autoclose' => true
+			'format' => 'yyyy-mm-dd hh:ii',
+			'startDate' => date("Y-m-d H:i"),
+			'autoclose' => true,
 		]
 	]);
 	?>
@@ -46,7 +48,9 @@ use yii\helpers\Html;
 		'type' => DateTimePicker::TYPE_INPUT,
 		'options' => ['placeholder' => 'Enter the end date / time ...'],
 		'pluginOptions' => [
-			'autoclose' => true
+			'format' => 'yyyy-mm-dd hh:ii',
+			'startDate' => date("Y-m-d H:i"),
+			'autoclose' => true,
 		]
 	]);
 	?>

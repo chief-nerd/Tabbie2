@@ -3,7 +3,7 @@
 use common\components\UserIdentity;
 
 return [
-	'language' => 'de-DE',
+	'language' => 'en-UK',
 	'sourceLanguage' => 'en-UK',
 	'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
 	'components' => [

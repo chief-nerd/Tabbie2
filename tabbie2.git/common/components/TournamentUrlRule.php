@@ -19,21 +19,32 @@ class TournamentUrlRule extends UrlRule {
 		//Yii::trace("Start with Route parts: " . print_r($parts, true) . " and params " . print_r($params, true), __METHOD__);
 		//Handle tournament base
 		if ($parts[0] == "tournament") {
+			$url = "";
 			if ($parts[1] == "index")
-				return "tournaments";
+				$url = "tournaments";
 
 			if (isset($params['id'])) {
 				$tournament = Tournament::findByPk($params['id']);
+				unset($params['id']);
 				if ($parts[1] == "view")
 					$parts[1] = null;
 
-				$ret = $tournament->url_slug . "/" . $parts[1];
-
-				if ($parts[1] == "language")
-					$ret .= "/";
+				$url = $tournament->url_slug . "/" . $parts[1];
+				unset($parts[1]);
 				//Yii::trace("Returning Base: " . $ret, __METHOD__);
-				return $ret;
 			}
+
+			$paramsString = "";
+			foreach ($params as $key => $value) {
+				if (is_array($value)) {
+					foreach ($value as $k => $v) {
+						$paramsString .= "/" . $key . "[" . $k . "]/" . $v;
+					}
+				}
+				else
+					$paramsString .= "/" . $key . "/" . $value;
+			}
+			return $url . (($paramsString) ? $paramsString : "");
 		}
 
 		//Manuel Set
@@ -80,11 +91,21 @@ class TournamentUrlRule extends UrlRule {
 	public function parseRequest($manager, $request) {
 		$pathInfo = $request->getPathInfo();
 		$params = [];
-		if ($pathInfo == "tournaments")
-			return ["tournament/index", $params];
 
 		$parts = explode("/", $pathInfo);
 		//Yii::trace("Request URL Parts: " . print_r($parts, true), __METHOD__);
+
+		if ($parts[0] == "tournaments") {
+			$route = "tournament/index";
+			for ($i = 1; $i < count($parts); $i = $i + 2) {
+				if (isset($parts[$i + 1]))
+					$params[$parts[$i]] = $parts[$i + 1];
+				else
+					$params[$parts[$i]] = null;
+			}
+			return [$route, $params];
+		}
+
 
 		$potential_slug = $parts[0];
 		$tournament = Tournament::findByUrlSlug($potential_slug);
@@ -113,7 +134,7 @@ class TournamentUrlRule extends UrlRule {
 					}
 
 					//Further Params
-					for ($i = $startParam; $i <= count($parts); $i = $i + 2) {
+					for ($i = $startParam; $i < count($parts); $i = $i + 2) {
 						if (isset($parts[$i + 1]))
 							$params[$parts[$i]] = $parts[$i + 1];
 						else

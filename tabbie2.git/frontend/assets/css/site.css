@@ -71,11 +71,6 @@ body.movedown {
     padding: 14px 24px;
 }
 
-.tournament h2 {
-    padding-top: 20px;
-    text-align: left;
-}
-
 .not-set {
     color: #c55;
     font-style: italic;
