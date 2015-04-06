@@ -35,7 +35,7 @@ $this->title = Yii::$app->params["slogan"];
 				?>
 				<a href="<?= \yii\helpers\Url::to(["tournament/view", "id" => $t->id]) ?>">
 					<div class="tournament <?= $cols ?> <?= ($index % 3 == 0) ? $posCorrect : "" ?>">
-						<img src="<?= $t->logo ?>" width="100">
+						<?= $t->getLogoImage(100, 100) ?>
 
 						<h2><?= $t->name ?></h2>
 					</div>
