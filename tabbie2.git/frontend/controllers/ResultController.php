@@ -7,6 +7,7 @@ use common\models\Debate;
 use common\models\Result;
 use common\models\search\ResultSearch;
 use Yii;
+use yii\base\Exception;
 use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
@@ -79,6 +80,9 @@ class ResultController extends BaseTournamentController {
 				\yii\widgets\PjaxAsset::className(),
 			],
 		]);
+
+		if ($dataProvider->getCount() == 0)
+			throw new Exception("No Debates found");
 
 		$number = $dataProvider->getModels()[0]->round->number;
 

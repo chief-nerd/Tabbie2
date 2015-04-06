@@ -180,7 +180,7 @@ class Round extends \yii\db\ActiveRecord {
 			$active_rooms = (count($teams) / 4);
 			if (count($teams) < 4)
 				throw new Exception("Not enough Teams to fill a single room - (active: " . count($teams) . ")", "500");
-			if (count($adjudicatorsObjects) > 0)
+			if (count($adjudicatorsObjects) < 1)
 				throw new Exception("At least a single Adjudicator is necessary - (active: " . count($adjudicatorsObjects) . ")", "500");
 			if (count($teams) % 4 != 0)
 				throw new Exception("Amount of active Teams must be divided by 4 ;) - (active: " . count($teams) . ")", "500");
