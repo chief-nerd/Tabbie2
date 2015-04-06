@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\components\filter\TournamentContextFilter;
+use common\models\search\VenueSearch;
 use common\models\Tournament;
 use common\models\Venue;
 use Yii;
@@ -57,9 +58,8 @@ class VenueController extends BaseTournamentController {
 	 * @return mixed
 	 */
 	public function actionIndex() {
-		$dataProvider = new ActiveDataProvider([
-			'query' => Venue::find()->where(["tournament_id" => $this->_tournament->id]),
-		]);
+		$search = new VenueSearch(["tournament_id" => $this->_tournament->id]);
+		$dataProvider = $search->search(Yii::$app->request->queryParams);
 
 		return $this->render('index', [
 			'dataProvider' => $dataProvider,

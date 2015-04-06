@@ -13,6 +13,11 @@ use common\models\Venue;
 class VenueSearch extends Venue {
 
 	/**
+	 * @var int
+	 */
+	public $tournament_id;
+
+	/**
 	 * @inheritdoc
 	 */
 	public function rules() {
@@ -38,7 +43,7 @@ class VenueSearch extends Venue {
 	 * @return ActiveDataProvider
 	 */
 	public function search($params) {
-		$query = Venue::find();
+		$query = Venue::find()->tournament($this->tournament_id);
 
 		$dataProvider = new ActiveDataProvider([
 			'query' => $query,
