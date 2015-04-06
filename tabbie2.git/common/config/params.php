@@ -1,8 +1,8 @@
 <?php
 
 return [
-	'adminEmail' => 'admin@tabbie.com',
-	'supportEmail' => 'support@example.com',
+	'adminEmail' => 'admin@tabbie.org',
+	'supportEmail' => 'support@tabbie.org',
 	'user.passwordResetTokenExpire' => 3600,
 	'appName' => 'Tabbie2',
 	'slogan' => 'BP Tabbing so easy a fresher can do it',
