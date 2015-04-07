@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			<?= $form->field($model, 'email') ?>
 			<?= $form->field($model, 'password')->passwordInput() ?>
 			<?
-			$urlUserList = Url::to(['user/societies']);
+			$urlUserList = Url::to(['site/list-societies']);
 
 			// Script to initialize the selection based on the value of the select2 element
 			$initUserScript = <<< SCRIPT

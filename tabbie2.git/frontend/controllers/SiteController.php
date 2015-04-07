@@ -26,10 +26,10 @@ class SiteController extends Controller {
 		return [
 			'access' => [
 				'class' => AccessControl::className(),
-				'only' => ['logout', 'signup'],
+				'only' => ['logout', 'signup', 'list-societies'],
 				'rules' => [
 					[
-						'actions' => ['signup'],
+						'actions' => ['signup', 'list-societies'],
 						'allow' => true,
 						'roles' => ['?'],
 					],
@@ -62,6 +62,20 @@ class SiteController extends Controller {
 				'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
 			],
 		];
+	}
+
+	/**
+	 * Dirty Dirty Dirty Fix for anonymous access
+	 *
+	 * @param null $search
+	 * @param null $id
+	 *
+	 * @return mixed
+	 * @throws \yii\base\InvalidRouteException
+	 */
+	public function actionListSocieties($search = null, $id = null) {
+		$soc_controller = new SocietyController('society', Yii::$app);
+		return $soc_controller->runAction('list', ["search" => $search, "id" => $id]);
 	}
 
 	public function actionIndex() {
