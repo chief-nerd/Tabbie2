@@ -156,12 +156,10 @@ class RoundController extends BaseTournamentController {
 
 		if ($model->load(Yii::$app->request->post())) {
 
-			if ($model->save() && $model->generateWorkingDraw()) {
-				return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
-			}
-			else {
+			if (!$model->save() || !$model->generateWorkingDraw()) {
 				Yii::$app->session->setFlash("error", print_r($model->getErrors(), true));
 			}
+			return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
 		}
 
 		return $this->render('create', [

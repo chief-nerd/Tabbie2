@@ -25,8 +25,16 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 
 	<div class="row">
 		<div class="col-md-12">
+
 			<? if (!$model->published): ?>
-				<?= Html::a(Yii::t('app', 'Publish Tab'), ['publish', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success']) ?>
+
+				<?
+				if ($debateDataProvider->getCount() > 0)
+					echo Html::a(Yii::t('app', 'Publish Tab'), ['publish', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success']);
+				else
+					echo Html::a(Yii::t('app', 'Retry to generate Draw'), ['redraw', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success loading']);
+				?>
+
 				<!-- Split button -->
 				<div class="btn-group">
 					<?= Html::a(Yii::t('app', 'Update Round'), ['update', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-primary']) ?>
