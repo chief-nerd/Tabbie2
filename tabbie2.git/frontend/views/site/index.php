@@ -18,12 +18,12 @@ $this->title = Yii::$app->params["slogan"];
 			$cols = (int)(count($tournaments) % 3);
 			switch ($cols) {
 				case 1:
-					$cols = "col-md-5 col-sm-12";
-					$posCorrect = "col-md-offset-4";
+					$cols = "col-md-6 col-sm-12";
+					$posCorrect = "col-md-offset-3";
 					break;
 				case 2:
-					$cols = "col-xs-12 col-sm-6 col-md-5 col-lg-4";
-					$posCorrect = "col-md-offset-1 col-lg-offset-2";
+					$cols = "col-xs-12 col-sm-5 col-md-5 col-lg-3";
+					$posCorrect = "col-sm-offset-1 col-md-offset-1 col-lg-offset-3";
 					break;
 				case 0:
 					$cols = "col-md-4";
