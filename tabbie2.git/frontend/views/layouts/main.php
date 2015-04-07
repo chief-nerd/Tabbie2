@@ -28,12 +28,6 @@ if ($this->context->hasMethod("_getContext")) {
 	<meta charset="<?= Yii::$app->charset ?>"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<?
-	if (isset($tournament) && $tournament instanceof Tournament) {
-		echo '<link rel = "apple-touch-icon" href = "' . $tournament->logo . '"/>';
-	}
-	?>
-
 	<?= Html::csrfMetaTags() ?>
 	<title><?= Html::encode($this->title) ?> :: <?= Html::encode(Yii::$app->params["appName"]) ?></title>
 	<?php $this->head() ?>

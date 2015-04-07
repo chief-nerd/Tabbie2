@@ -5,6 +5,7 @@ namespace common\models;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "tournament".
@@ -276,9 +277,13 @@ class Tournament extends \yii\db\ActiveRecord {
 		return $this->hasMany(Panel::className(), ['tournament_id' => 'id']);
 	}
 
-	public function getLogo() {
-		if ($this->logo !== null)
-			return $this->logo;
+	public function getLogo($absolute = false) {
+		if ($this->logo !== null) {
+			if ($absolute)
+				return Url::to('@web' . $this->logo, true);
+			else
+				return $this->logo;
+		}
 		else {
 			$defaultPath = Yii::getAlias("@frontend/assets/images/") . "default-tournament.png";
 			return Yii::$app->assetManager->publish($defaultPath)[1];

@@ -7,9 +7,9 @@ use yii\widgets\DetailView;
 /* @var $model common\models\Tournament */
 
 $this->registerMetaTag(["property" => "og:title", "content" => Yii::t("app", "{tournament} on Tabbie2", ["tournament" => $model->fullname])], "og:title");
-$this->registerMetaTag(["property" => "og:image", "content" => $model->getLogo()], "og:image");
+$this->registerMetaTag(["property" => "og:image", "content" => $model->getLogo(true)], "og:image");
 $this->registerMetaTag(["property" => "og:description", "content" =>
-	Yii::t("app", "Tournament from {start} to {end} hosted by {convenor} from {host} in {country}", [
+	Yii::t("app", "Tournament taking place from {start} to {end} hosted by {convenor} from {host} in {country}", [
 		"start" => Yii::$app->formatter->asDate($model->start_date, "short"),
 		"end" => Yii::$app->formatter->asDate($model->end_date, "short"),
 		"convenor" => Html::encode($model->convenorUser->name),
@@ -17,6 +17,8 @@ $this->registerMetaTag(["property" => "og:description", "content" =>
 		"country" => Html::encode($model->hostedby->country->name),
 	])],
 	"og:description");
+
+$this->registerLinkTag(["rel" => "apple-touch-icon", "href" => $model->getLogo(true)], "apple-touch-icon");
 
 $this->title = $model->fullname;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Tournaments'), 'url' => ['index']];
