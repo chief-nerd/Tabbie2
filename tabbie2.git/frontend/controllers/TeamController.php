@@ -220,7 +220,10 @@ class TeamController extends BaseTournamentController {
 						$society->fullname = $row[1][0];
 						$society->abr = \common\models\Society::generateAbr($society->fullname);
 						$society->country_id = \common\models\Country::COUNTRY_UNKNOWN_ID;
-						$society->save();
+						if (!$society->save()) {
+							Yii::error("Import Errors Society: " . print_r($society->getErrors(), true), __METHOD__);
+							Yii::$app->session->addFlash("error", "Error saving Society Relation for " . $society->fullname);
+						}
 						$societyID = $society->id;
 					}
 					else if (count($row[1]) == 2) {
@@ -335,9 +338,7 @@ class TeamController extends BaseTournamentController {
 						//
 						//Debating Society
 						$name = $model->tempImport[$i][1][0];
-						$societies = \common\models\Society::find()
-						                                   ->where("fullname LIKE '%:name%'", [":name" => $name])
-						                                   ->all();
+						$societies = \common\models\Society::find()->where(["like", "fullname", $name])->all();
 						$model->tempImport[$i][1] = array();
 						$model->tempImport[$i][1][0] = $name;
 						$a = 1;

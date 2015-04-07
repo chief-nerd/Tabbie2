@@ -392,7 +392,7 @@ class AdjudicatorController extends BaseTournamentController {
 //Debating Society
 						$name = $model->tempImport[$i][0][0];
 						$societies = \common\models\Society::find()
-						                                   ->where("fullname LIKE '%:name%'", [":name" => $name])
+							->where(["like", "fullname", $name])
 						                                   ->all();
 						$model->tempImport[$i][0] = array();
 						$model->tempImport[$i][0][0] = $name;

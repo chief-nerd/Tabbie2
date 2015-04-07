@@ -35,6 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			}
 			else { //Ups found multiple
 				$class = "yellow";
+				$options = [];
 				for ($a = 1; $a < count($societyField); $a++) {
 					$options[$societyField[$a]["id"]] = $societyField[$a]["name"];
 				}
