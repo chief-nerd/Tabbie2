@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 use yii\helpers\ArrayHelper;
 use common\models\Adjudicator;
+use common\models\Tournament;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\search\AdjudicatorSearch */
@@ -22,6 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			<h1><?= Html::encode($this->title) ?></h1>
 
 			<p>
+				<? if ($tournament->status < Tournament::STATUS_CLOSED): ?>
 				<?=
 				Html::a(Yii::t('app', 'Create {modelClass}', [
 					'modelClass' => 'Adjudicator',
@@ -37,6 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
 					'modelClass' => 'Adjudicator',
 				]), ['resetwatched', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
 				?>
+				<? endif; ?>
 			</p>
 		</div>
 

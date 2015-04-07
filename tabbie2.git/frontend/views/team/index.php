@@ -2,6 +2,7 @@
 
 use kartik\grid\GridView;
 use yii\helpers\Html;
+use common\models\Tournament;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\search\TeamSearch */
@@ -20,6 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			<h1><?= Html::encode($this->title) ?></h1>
 
 			<p>
+				<? if ($tournament->status < Tournament::STATUS_CLOSED): ?>
 				<?=
 				Html::a(Yii::t('app', 'Create {modelClass}', [
 					'modelClass' => 'Team',
@@ -30,6 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
 					'modelClass' => 'Team',
 				]), ['import', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
 				?>
+				<? endif; ?>
 			</p>
 		</div>
 		<div class="col-md-4">

@@ -1,6 +1,7 @@
 <?
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
+use common\models\Tournament;
 
 NavBar::begin([
 	'brandLabel' => $tournament->name . " - Tabmaster",
@@ -19,8 +20,8 @@ foreach ($tournament->rounds as $r) {
 
 $team_items = [
 	['label' => 'List Teams', 'url' => ['team/index', "tournament_id" => $tournament->id]],
-	['label' => 'Create Team', 'url' => ['team/create', "tournament_id" => $tournament->id]],
-	['label' => 'Import Team', 'url' => ['team/import', "tournament_id" => $tournament->id]],
+	(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => 'Create Team', 'url' => ['team/create', "tournament_id" => $tournament->id]] : ""),
+	(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => 'Import Team', 'url' => ['team/import', "tournament_id" => $tournament->id]] : ""),
 	'<li class="divider"></li>',
 	['label' => 'Strike Team', 'url' => ['strike/team_index', "tournament_id" => $tournament->id]],
 ];
@@ -35,8 +36,8 @@ $menuItems = [
 	['label' => 'Venues', 'url' => '#',
 		"items" => [
 			['label' => 'List Venues', 'url' => ['venue/index', "tournament_id" => $tournament->id]],
-			['label' => 'Create Venue', 'url' => ['venue/create', "tournament_id" => $tournament->id]],
-			['label' => 'Import Venue', 'url' => ['venue/import', "tournament_id" => $tournament->id]],
+			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => 'Create Venue', 'url' => ['venue/create', "tournament_id" => $tournament->id]] : ""),
+			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => 'Import Venue', 'url' => ['venue/import', "tournament_id" => $tournament->id]] : ""),
 		]
 	],
 	['label' => 'Teams', 'url' => '#',
@@ -45,8 +46,8 @@ $menuItems = [
 	['label' => 'Adjudicators', 'url' => '#',
 		"items" => [
 			['label' => 'List Adjudicators', 'url' => ['adjudicator/index', "tournament_id" => $tournament->id]],
-			['label' => 'Create Adjudicator', 'url' => ['adjudicator/create', "tournament_id" => $tournament->id]],
-			['label' => 'Import Adjudicator', 'url' => ['adjudicator/import', "tournament_id" => $tournament->id]],
+			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => 'Create Adjudicator', 'url' => ['adjudicator/create', "tournament_id" => $tournament->id]] : ""),
+			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => 'Import Adjudicator', 'url' => ['adjudicator/import', "tournament_id" => $tournament->id]] : ""),
 			'<li class="divider"></li>',
 			['label' => 'Preset Adj. Panels', 'url' => ["panel/create", "tournament_id" => $tournament->id]],
 			'<li class="divider"></li>',
@@ -56,7 +57,7 @@ $menuItems = [
 	['label' => 'Rounds', 'url' => '#',
 		"items" => array_merge_recursive([
 			['label' => 'List Rounds', 'url' => ['round/index', "tournament_id" => $tournament->id]],
-			['label' => 'Create Round', 'url' => ['round/create', "tournament_id" => $tournament->id]],
+			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => 'Create Round', 'url' => ['round/create', "tournament_id" => $tournament->id]] : ""),
 			'<li class="divider"></li>',
 			['label' => 'Energy Options', 'url' => ['energy/index', "tournament_id" => $tournament->id]],
 			'<li class="divider"></li>',
@@ -74,11 +75,11 @@ $menuItems = [
 			['label' => 'Team Tab', 'url' => ['tab/live-team', "tournament_id" => $tournament->id]],
 			['label' => 'Speaker Tab', 'url' => ['tab/live-speaker', "tournament_id" => $tournament->id]],
 			'<li class="divider"></li>',
-			['label' => 'Publish Tab', 'url' => ['tab/publish', "tournament_id" => $tournament->id],
+			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => 'Publish Tab', 'url' => ['tab/publish', "tournament_id" => $tournament->id],
 				'linkOptions' => ['data' => [
 					"confirm" => "Publishing the Tab will close and archive the tournament!! Are you sure you want to continue?"
-				]]],
-			'<li class="divider"></li>',
+				]]] : ""),
+			(($tournament->status < Tournament::STATUS_CLOSED) ? '<li class="divider"></li>' : ""),
 			['label' => 'Missing User', 'url' => ['display/missinguser', "tournament_id" => $tournament->id], 'linkOptions' => ['target' => '_blank']],
 			['label' => 'Checkin Form', 'url' => ['tournament/checkin', "id" => $tournament->id]],
 			['label' => 'Reset Checkin', 'url' => ['tournament/checkinreset', "id" => $tournament->id],
@@ -88,7 +89,7 @@ $menuItems = [
 		]
 	],
 	['label' => 'Feedback', 'url' => '#',
-		"items" => [
+		/*"items" => [
 			['label' => 'Every Feedback', 'url' => ['feedback/index', "tournament_id" => $tournament->id]],
 			'<li class="divider"></li>',
 			['label' => 'Adjudicator Feedback', 'url' => ['feedback/adjudicator', "tournament_id" => $tournament->id]],
@@ -98,7 +99,7 @@ $menuItems = [
 			'<li class="divider"></li>',
 			['label' => 'Tournament Feedback', 'url' => ['feedback/tournament', "tournament_id" => $tournament->id]],
 			['label' => Yii::$app->params["appName"] . ' Feedback', 'url' => ['feedback/tabbie', "tournament_id" => $tournament->id]],
-		]
+		]*/
 	],
 ];
 

@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use kartik\grid\GridView;
 use common\models\Venue;
+use common\models\Tournament;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -17,6 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	<h1><?= Html::encode($this->title) ?></h1>
 
 	<p>
+		<? if ($tournament->status < Tournament::STATUS_CLOSED): ?>
 		<?=
 		Html::a(Yii::t('app', 'Create {modelClass}', [
 			'modelClass' => 'Venue',
@@ -27,6 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'modelClass' => 'Venues',
 		]), ['import', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
 		?>
+		<? endif; ?>
 	</p>
 
 	<?

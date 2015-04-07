@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 	<div class="row">
 		<div class="col-md-12">
 
-			<? if (!$model->published): ?>
+			<? if (!$model->published && $tournament->status < \common\models\Tournament::STATUS_CLOSED): ?>
 
 				<?
 				if ($debateDataProvider->getCount() > 0)

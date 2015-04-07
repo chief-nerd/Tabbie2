@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ListView;
+use common\models\Tournament;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -16,8 +17,9 @@ $this->params['breadcrumbs'][] = $this->title;
 	<h1><?= Html::encode($this->title) ?></h1>
 
 	<p>
-		<?=
-		Html::a(Yii::t('app', 'Create {modelClass}', [
+		<?
+		if ($tournament->status < Tournament::STATUS_CLOSED)
+			echo Html::a(Yii::t('app', 'Create {modelClass}', [
 			'modelClass' => 'Round',
 		]), ['create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
 		?>
