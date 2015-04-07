@@ -23,7 +23,7 @@ use yii\helpers\Html;
 
 	<?= $form->field($model, 'tabmaster_user_id', [
 		'addon' => ['prepend' => ['content' => "<i class=\"glyphicon glyphicon-user\"></i>"]]
-	])->dropDownList($model->getTabmasterOptions()) ?>
+	])->dropDownList($model->getTabmasterOptions(true)) ?>
 
 	<?=
 	$form->field($model, 'start_date', [
