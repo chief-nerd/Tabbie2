@@ -47,7 +47,7 @@ $this->title = Yii::$app->params["slogan"];
 					}
 					?>
 					<div class="tournament <?= $cols ?> <?= $posCorrect ?>">
-						<?= $t->getLogoImage(100, 100) ?>
+						<?= $t->getLogoImage(null, 100) ?>
 
 						<h2><?= $t->name ?></h2>
 					</div>
