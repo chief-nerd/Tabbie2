@@ -24,7 +24,7 @@ class SocietyController extends BaseUserController {
 				'rules' => [
 					[
 						'allow' => true,
-						'actions' => ['create', 'update'],
+						'actions' => ['create', 'update', 'list'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_user->id == Yii::$app->user->id || Yii::$app->user->isAdmin());
 						}
@@ -109,6 +109,33 @@ class SocietyController extends BaseUserController {
 		$this->findModel($id)->delete();
 
 		return $this->redirect(['index']);
+	}
+
+	/**
+	 * Returns 20 societies in an JSON List
+	 *
+	 * @param type $search
+	 * @param type $id
+	 */
+	public function actionList($search = null, $id = null) {
+		$out = ['more' => false];
+		if (!is_null($search)) {
+			$query = new \yii\db\Query;
+			$query->select(["id", "fullname as text"])
+			      ->from('society')
+			      ->where('fullname LIKE "%' . $search . '%"')
+			      ->limit(20);
+			$command = $query->createCommand();
+			$data = $command->queryAll();
+			$out['results'] = array_values($data);
+		}
+		elseif ($id > 0) {
+			$out['results'] = ['id' => $id, 'text' => Society::findOne($id)->fullname];
+		}
+		else {
+			$out['results'] = ['id' => 0, 'text' => 'No matching records found'];
+		}
+		echo \yii\helpers\Json::encode($out);
 	}
 
 	/**

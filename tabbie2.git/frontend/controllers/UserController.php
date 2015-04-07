@@ -32,7 +32,7 @@ class UserController extends BaseUserController {
 					],
 					[
 						'allow' => true,
-						'actions' => ['view', 'list'],
+						'actions' => ['view'],
 						'roles' => ['@'],
 					],
 					[
@@ -277,33 +277,6 @@ class UserController extends BaseUserController {
 		}
 		elseif ($id > 0) {
 			$out['results'] = ['id' => $id, 'text' => User::findOne($id)->name];
-		}
-		else {
-			$out['results'] = ['id' => 0, 'text' => 'No matching records found'];
-		}
-		echo \yii\helpers\Json::encode($out);
-	}
-
-	/**
-	 * Returns 20 societies in an JSON List
-	 *
-	 * @param type $search
-	 * @param type $id
-	 */
-	public function actionSocieties($search = null, $id = null) {
-		$out = ['more' => false];
-		if (!is_null($search)) {
-			$query = new \yii\db\Query;
-			$query->select(["id", "fullname as text"])
-			      ->from('society')
-			      ->where('fullname LIKE "%' . $search . '%"')
-			      ->limit(20);
-			$command = $query->createCommand();
-			$data = $command->queryAll();
-			$out['results'] = array_values($data);
-		}
-		elseif ($id > 0) {
-			$out['results'] = ['id' => $id, 'text' => Society::findOne($id)->fullname];
 		}
 		else {
 			$out['results'] = ['id' => 0, 'text' => 'No matching records found'];

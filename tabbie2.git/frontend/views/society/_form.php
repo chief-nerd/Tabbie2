@@ -17,7 +17,7 @@ use kartik\widgets\DatePicker;
 	<?php $form = ActiveForm::begin(); ?>
 
 	<?
-	$urlUserList = Url::to(['user/societies']);
+	$urlUserList = Url::to(['society/list', "user_id" => $model->user_id]);
 
 	// Script to initialize the selection based on the value of the select2 element
 	$initUserScript = <<< SCRIPT
