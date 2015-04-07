@@ -32,9 +32,8 @@ $this->params['breadcrumbs'][] = $this->title;
 			])
 			?>
 		</div>
-		<div class="col-xs-12 col-sm-4">
-			<img class="img-rounded img-responsive center-block" src="<?= $model->getPicture() ?>"
-			     style="max-height: 180px;">
+		<div class="col-xs-12 col-sm-4" style="padding-top: 30px;">
+			<?= $model->getPictureImage(null, 180) ?>
 		</div>
 	</div>
 

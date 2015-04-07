@@ -1,3 +1,6 @@
+/**
+ * Flash functions
+ */
 function setFlash(type, msg) {
     $("div.flashes").append("<div class='alert alert-" + type + " fade in'>" + msg + "</div>");
     triggerFlash();
@@ -20,6 +23,9 @@ $(document).ready(function () {
     triggerFlash();
 });
 
+/**
+ * Loading Animation fadein and start
+ */
 $(document).on("click", ".loading", function () {
 
     $("#loader").fadeIn();

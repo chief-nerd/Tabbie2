@@ -6,6 +6,7 @@ use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\helpers\Html;
 use yii\web\IdentityInterface;
 
 /**
@@ -474,12 +475,24 @@ class User extends ActiveRecord implements IdentityInterface {
 
 
 	public function getPicture() {
-		if (file_exists(Yii::getAlias("@frontend/web") . ($this->picture)))
+		if ($this->picture !== null)
 			return $this->picture;
 		else {
 			$defaultPath = Yii::getAlias("@frontend/assets/images/") . "default-avatar.png";
 			return Yii::$app->assetManager->publish($defaultPath)[1];
 		}
+	}
+
+	public function getPictureImage($width_max = null, $height_max = null, $options = []) {
+
+		$alt = ($this->name) ? $this->name : "";
+		$img_options = array_merge($options, ["alt" => $alt,
+			"style" => "max-width: " . $width_max . "px; max-height: " . $height_max . "px;",
+			"width" => $width_max,
+			"height" => $height_max,
+		]);
+		$img_options["class"] = "img-responsive img-rounded center-block" . (isset($img_options["class"]) ? " " . $img_options["class"] : "");
+		return Html::img($this->getPicture(), $img_options);
 	}
 
 	/**

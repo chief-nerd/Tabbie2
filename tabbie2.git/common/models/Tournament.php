@@ -271,15 +271,25 @@ class Tournament extends \yii\db\ActiveRecord {
 		return $this->hasMany(Panel::className(), ['tournament_id' => 'id']);
 	}
 
-	public function getLogoImage($width_max = null, $height_max = null) {
+	public function getLogo() {
+		if ($this->logo !== null)
+			return $this->logo;
+		else {
+			$defaultPath = Yii::getAlias("@frontend/assets/images/") . "default-tournament.png";
+			return Yii::$app->assetManager->publish($defaultPath)[1];
+		}
+	}
+
+	public function getLogoImage($width_max = null, $height_max = null, $options = []) {
 
 		$alt = ($this->name) ? $this->getFullname() : "";
-		return Html::img($this->logo, ["alt" => $alt,
-			"class" => "img-responsive img-rounded center-block",
+		$img_options = array_merge($options, ["alt" => $alt,
 			"style" => "max-width: " . $width_max . "px; max-height: " . $height_max . "px;",
 			"width" => $width_max,
 			"height" => $height_max,
 		]);
+		$img_options["class"] = "img-responsive img-rounded center-block" . (isset($img_options["class"]) ? " " . $img_options["class"] : "");
+		return Html::img($this->getLogo(), $img_options);
 	}
 
 	public static function getTabAlgorithmOptions() {

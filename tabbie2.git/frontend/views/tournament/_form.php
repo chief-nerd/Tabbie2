@@ -69,10 +69,16 @@ use yii\helpers\Html;
 
 	<div class="row">
 		<div class="col-sm-2">
-			<?= $model->getLogoImage(150, 150) ?>
+			<?= $model->getLogoImage(150, 150, ["id" => "previewImageUpload"]) ?>
 		</div>
 		<div class="col-sm-10">
 			<?= $form->field($model, 'logo')->fileInput() ?>
+			<script>
+				var s = document.getElementById('tournament-logo');
+				s.onchange = function (event) {
+					document.getElementById('previewImageUpload').src = URL.createObjectURL(event.target.files[0]);
+				}
+			</script>
 		</div>
 	</div>
 	<br>

@@ -28,7 +28,20 @@ use yii\web\JsExpression;
 	<?= $form->field($model, 'password', ['addon' => ['prepend' => ['content' => "<span class='glyphicon glyphicon-lock'></span>"]]])
 	         ->passwordInput(['maxlength' => 255]) ?>
 
-	<?= $form->field($model, 'picture')->fileInput() ?>
+	<div class="row">
+		<div class="col-sm-2">
+			<?= $model->getPictureImage(150, 150, ["id" => "previewImageUpload"]) ?>
+		</div>
+		<div class="col-sm-10">
+			<?= $form->field($model, 'picture')->fileInput() ?>
+			<script>
+				var s = document.getElementById('user-picture');
+				s.onchange = function (event) {
+					document.getElementById('previewImageUpload').src = URL.createObjectURL(event.target.files[0]);
+				}
+			</script>
+		</div>
+	</div>
 
 	<div class="form-group">
 		<?= Html::a(Yii::t('app', 'Cancel'), ["view", "id" => $model->id], ["class" => "btn btn-default"]) ?>

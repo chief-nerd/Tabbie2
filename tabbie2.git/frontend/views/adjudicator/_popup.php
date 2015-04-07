@@ -10,7 +10,7 @@ use common\models\Country;
 $this->context->layout = null;
 ?>
 <div style="float:left; height:80px; margin-right: 10px;">
-	<img src="<?= $model->user->getPicture() ?>" width="80" height="80">
+	<?= $model->user->getPictureImage(80, 80) ?>
 </div>
 <table>
 	<colgroup>
