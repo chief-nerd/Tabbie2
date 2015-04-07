@@ -28,7 +28,19 @@ class ResultController extends BaseTournamentController {
 				'rules' => [
 					[
 						'allow' => true,
-						'actions' => ['index', 'round', 'view', 'create', 'update', 'manual', 'correctcache'],
+						'actions' => ['create'],
+						'matchCallback' => function ($rule, $action) {
+							$debate = Yii::$app->user->hasChairedLastRound($this->_tournament);
+							if (($debate instanceof Debate && !$debate->result instanceof Result)) {
+								if ($action->id == "create" && $debate->id == Yii::$app->request->get("id"))
+									return true;
+							}
+							return false;
+						},
+					],
+					[
+						'allow' => true,
+						'actions' => ['index', 'round', 'create', 'view', 'update', 'manual', 'correctcache'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->isTabMaster($this->_tournament));
 						}

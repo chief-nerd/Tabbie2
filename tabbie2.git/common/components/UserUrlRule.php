@@ -20,7 +20,7 @@ class UserUrlRule extends UrlRule {
 		//Handle tournament base
 		if ($parts[0] == "user") {
 			if ($parts[1] == "index")
-				$route = "s";
+				$route = "users";
 
 			if (isset($params['id'])) {
 				$user = User::findOne($params['id']);
@@ -29,7 +29,7 @@ class UserUrlRule extends UrlRule {
 					if ($parts[1] == "view")
 						$parts[1] = null;
 
-					$route = "/" . $user->username . "/" . $parts[1];
+					$route = "user/" . $user->username . "/" . $parts[1];
 				}
 				else
 					return "user/#";
@@ -46,7 +46,7 @@ class UserUrlRule extends UrlRule {
 					$paramsString .= "/" . $key . "/" . $value;
 			}
 
-			$ret = "user" . $route . $paramsString;
+			$ret = $route . $paramsString;
 			//Yii::trace("Returning Base: " . $ret, __METHOD__);
 			return $ret;
 		}

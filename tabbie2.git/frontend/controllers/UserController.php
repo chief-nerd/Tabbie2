@@ -32,7 +32,7 @@ class UserController extends BaseUserController {
 					],
 					[
 						'allow' => true,
-						'actions' => ['view'],
+						'actions' => ['view', 'list'],
 						'roles' => ['@'],
 					],
 					[

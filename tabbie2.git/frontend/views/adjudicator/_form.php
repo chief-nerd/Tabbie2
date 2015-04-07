@@ -31,7 +31,7 @@ function (element, callback) {
 }
 SCRIPT;
 
-	$Societyurl = Url::to(['user/societies']);
+	$Societyurl = Url::to(['society/list', "user_id" => $model->user_id]);
 
 	// Script to initialize the selection based on the value of the select2 element
 	$initSocietyScript = <<< SCRIPT

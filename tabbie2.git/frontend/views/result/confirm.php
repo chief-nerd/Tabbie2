@@ -61,7 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<div class="row">
 		<div class="col-xs-4">
-			<?= Html::a(Yii::t('app', 'Go back'), ["create", "id" => $debate->id, "tournament_id" => $debate->tournament_id], ['class' => 'btn btn-default btn-block']) ?>
+			<?= Html::a(Yii::t('app', 'start over'), ["create", "id" => $debate->id, "tournament_id" => $debate->tournament_id], ['class' => 'btn btn-default btn-block']) ?>
 		</div>
 		<div class="col-xs-8">
 			<?= Html::submitButton(Yii::t('app', 'Make it so!'), ['class' => 'btn btn-success btn-block']) ?>
