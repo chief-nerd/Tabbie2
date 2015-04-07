@@ -20,7 +20,7 @@ class UserUrlRule extends UrlRule {
 		//Handle tournament base
 		if ($parts[0] == "user") {
 			if ($parts[1] == "index")
-				return "user";
+				$route = "s";
 
 			if (isset($params['id'])) {
 				$user = User::findOne($params['id']);
@@ -29,24 +29,26 @@ class UserUrlRule extends UrlRule {
 					if ($parts[1] == "view")
 						$parts[1] = null;
 
-					$paramsString = "";
-					foreach ($params as $key => $value) {
-						if (is_array($value)) {
-							foreach ($value as $k => $v) {
-								$paramsString .= "/" . $key . "[" . $k . "]/" . $v;
-							}
-						}
-						else
-							$paramsString .= "/" . $key . "/" . $value;
-					}
-
-					$ret = "user/" . $user->username . "/" . $parts[1] . $paramsString;
-					//Yii::trace("Returning Base: " . $ret, __METHOD__);
-					return $ret;
+					$route = "/" . $user->username . "/" . $parts[1];
 				}
 				else
 					return "user/#";
 			}
+
+			$paramsString = "";
+			foreach ($params as $key => $value) {
+				if (is_array($value)) {
+					foreach ($value as $k => $v) {
+						$paramsString .= "/" . $key . "[" . $k . "]/" . $v;
+					}
+				}
+				else
+					$paramsString .= "/" . $key . "/" . $value;
+			}
+
+			$ret = "user" . $route . $paramsString;
+			//Yii::trace("Returning Base: " . $ret, __METHOD__);
+			return $ret;
 		}
 
 		//Manuel Set
@@ -95,10 +97,15 @@ class UserUrlRule extends UrlRule {
 		$params = [];
 		$route = "";
 
-		if ($pathInfo == "user")
-			return ["user/index", $params];
-
 		$parts = explode("/", $pathInfo);
+
+		if ($parts[0] == "users") {
+			for ($i = 1; $i <= count($parts); $i = $i + 2) {
+				if (isset($parts[$i]) && isset($parts[$i + 1]))
+					$params[$parts[$i]] = $parts[$i + 1];
+			}
+			return ["user/index", $params];
+		}
 
 		//Yii::trace("Request URL Parts: " . print_r($parts, true), __METHOD__);
 		if ($parts[0] == "user") {
