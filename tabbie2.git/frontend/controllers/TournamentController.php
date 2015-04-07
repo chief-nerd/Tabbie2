@@ -92,9 +92,11 @@ class TournamentController extends BaseTournamentController {
 			$file = UploadedFile::getInstance($model, 'logo');
 			$model->load(Yii::$app->request->post());
 			$model->generateUrlSlug();
-			if ($file !== null) {
+			if ($file instanceof UploadedFile) {
 				$model->saveLogo($file);
 			}
+			else
+				$model->logo = null;
 
 			if ($model->save()) {
 				$energyConf = new models\EnergyConfig();
@@ -133,7 +135,7 @@ class TournamentController extends BaseTournamentController {
 			//Load new values
 			$model->load(Yii::$app->request->post());
 
-			if ($file !== null) {
+			if ($file instanceof UploadedFile) {
 				//Save new File
 				$model->saveLogo($file);
 			}
