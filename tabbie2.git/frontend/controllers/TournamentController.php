@@ -111,6 +111,8 @@ class TournamentController extends BaseTournamentController {
 				Yii::$app->session->setFlash("error", "Can't save Tournament!" . print_r($model->getErrors(), true));
 			}
 		}
+		//Preset variables
+		$model->tabmaster_user_id = Yii::$app->user->id;
 		return $this->render('create', ['model' => $model,]);
 	}
 

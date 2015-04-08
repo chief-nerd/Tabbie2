@@ -224,9 +224,7 @@ class Tournament extends \yii\db\ActiveRecord {
 	public function getTabmasterOptions($includeMyself = false) {
 		$tabmaster = \yii\helpers\ArrayHelper::map(User::find()->where("role>10")->all(), 'id', 'name');
 		if ($includeMyself)
-			$tabmaster = array_merge([
-				Yii::$app->user->id => Yii::$app->user->getModel()->name
-			], $tabmaster);
+			$tabmaster[Yii::$app->user->id] = Yii::$app->user->getModel()->name;
 		return $tabmaster;
 	}
 
