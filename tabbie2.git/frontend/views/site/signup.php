@@ -18,19 +18,55 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<p>Please fill out the following fields to signup:</p>
 
-	<div class="row">
-		<div class="col-lg-5">
-			<?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
-			<?= $form->field($model, 'username') ?>
-			<?= $form->field($model, 'surename') ?>
-			<?= $form->field($model, 'givenname') ?>
-			<?= $form->field($model, 'email') ?>
-			<?= $form->field($model, 'password')->passwordInput() ?>
-			<?
-			$urlUserList = Url::to(['site/list-societies']);
+	<div class="signup form-group">
+		<?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
 
-			// Script to initialize the selection based on the value of the select2 element
-			$initUserScript = <<< SCRIPT
+		<div class="row">
+			<div class="col-lg-12">
+				<?= $form->field($model, 'username')->textInput() ?>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-6">
+				<?= $form->field($model, 'password')->passwordInput() ?>
+			</div>
+			<div class="col-lg-6">
+				<?= $form->field($model, 'password_repeat')->passwordInput() ?>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-6">
+				<?= $form->field($model, 'givenname')->textInput() ?>
+			</div>
+			<div class="col-lg-6">
+				<?= $form->field($model, 'surename')->textInput() ?>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-lg-6">
+				<?= $form->field($model, 'email') ?>
+			</div>
+			<div class="col-lg-6">
+				<div class="help_popup" title="Why do we ask for this?">
+					<?= Yii::t("app", "Most tournament allocation algorithm in this system try also to take panel diversity into account.
+					For this to work at all, we would politely ask to choose an option from this list.
+					We are aware that not every personal preference can be matched by our choises and apologise for missing options.
+					If you feel that none of the options is in any applicable please choose <Not Revealing>.
+					This option will never be shown to any user and is only for calculation purposes only!");
+					?>
+				</div>
+				<?= $form->field($model, 'gender')->dropDownList(\common\models\User::genderOptions()) ?>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-lg-12">
+				<?
+				$urlUserList = Url::to(['site/list-societies']);
+
+				// Script to initialize the selection based on the value of the select2 element
+				$initUserScript = <<< SCRIPT
 function (element, callback) {
     var id=\$(element).val();
     if (id !== "") {
@@ -41,28 +77,47 @@ function (element, callback) {
 }
 SCRIPT;
 
-			echo $form->field($model, 'societies_id')->widget(Select2::classname(), [
-				'options' => [
-					'placeholder' => 'Search for a societies ...',
-					'multiple' => true,
-				],
-				'pluginOptions' => [
-					'allowClear' => true,
-					'minimumInputLength' => 3,
-					'ajax' => [
-						'url' => $urlUserList,
-						'dataType' => 'json',
-						'data' => new JsExpression('function(term,page) { return {search:term}; }'),
-						'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
+				echo $form->field($model, 'societies_id')->widget(Select2::classname(), [
+					'options' => [
+						'placeholder' => 'Search for a society ...',
+						'multiple' => false,
 					],
-					'initSelection' => new JsExpression($initUserScript)
-				],
-			]);
-			?>
-			<div class="form-group">
-				<?= Html::submitButton('Signup', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
+					'pluginOptions' => [
+						'allowClear' => true,
+						'minimumInputLength' => 3,
+						'ajax' => [
+							'url' => $urlUserList,
+							'dataType' => 'json',
+							'data' => new JsExpression('function(term,page) { return {search:term}; }'),
+							'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
+						],
+						'initSelection' => new JsExpression($initUserScript)
+					],
+				]);
+				?>
 			</div>
-			<?php ActiveForm::end(); ?>
 		</div>
+
+		<div class="row">
+			<div class="col-sm-2">
+				<?= $model->getPictureImage(150, 150, ["id" => "previewImageUpload"]) ?>
+			</div>
+			<div class="col-sm-10">
+
+				<?= $form->field($model, 'picture')->fileInput() ?>
+
+				<script>
+					var s = document.getElementById('signupform-picture');
+					s.onchange = function (event) {
+						document.getElementById('previewImageUpload').src = URL.createObjectURL(event.target.files[0]);
+					}
+				</script>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<?= Html::submitButton('Signup', ['class' => 'btn btn-success btn-block', 'name' => 'signup-button']) ?>
+		</div>
+		<?php ActiveForm::end(); ?>
 	</div>
 </div>

@@ -403,6 +403,15 @@ class User extends ActiveRecord implements IdentityInterface {
 		}
 	}
 
+	public static function genderOptions() {
+		return [
+			self::GENDER_NOTREVEALING => Yii::t("app", "Not revealing"),
+			self::GENDER_FEMALE => Yii::t("app", "Female"),
+			self::GENDER_MALE => Yii::t("app", "Male"),
+			self::GENDER_TRANSGENDER => Yii::t("app", "Transgender"),
+		];
+	}
+
 	public static function generatePlaceholder($letter) {
 		$letter = strtoupper($letter);
 		$user = new User([
@@ -478,9 +487,13 @@ class User extends ActiveRecord implements IdentityInterface {
 		if ($this->picture !== null)
 			return $this->picture;
 		else {
-			$defaultPath = Yii::getAlias("@frontend/assets/images/") . "default-avatar.png";
-			return Yii::$app->assetManager->publish($defaultPath)[1];
+			return User::defaultAvatar();
 		}
+	}
+
+	public static function defaultAvatar() {
+		$defaultPath = Yii::getAlias("@frontend/assets/images/") . "default-avatar.png";
+		return Yii::$app->assetManager->publish($defaultPath)[1];
 	}
 
 	public function getPictureImage($width_max = null, $height_max = null, $options = []) {
