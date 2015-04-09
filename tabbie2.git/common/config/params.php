@@ -5,6 +5,7 @@ return [
 	'supportEmail' => 'support@tabbie.org',
 	'user.passwordResetTokenExpire' => 3600,
 	'appName' => 'Tabbie2',
+	'appUrl' => 'http://www.tabbie.org',
 	'slogan' => 'BP Tabbing so easy a fresher can do it',
 	'tabAlgorithmOptions' => [
 		//Installed Algorithm Options as class => description

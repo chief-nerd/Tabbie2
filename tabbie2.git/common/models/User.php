@@ -12,9 +12,8 @@ use yii\web\IdentityInterface;
 /**
  * User model
  * This is the model class for table "user". It represents a single user in the system.
-
  *
-*@see Team
+ * @see Team
  * @see Adjudicator
  * @property integer        $id
  * @property string         $username
@@ -519,6 +518,46 @@ class User extends ActiveRecord implements IdentityInterface {
 				":ending" => date("Y-m-d", strtotime(Yii::$app->params["time_to_still_consider_active_in_society"]))
 			]
 		);
+	}
+
+	public static function NewViaImport($societyID, $givenname, $surename, $email) {
+		$userA = new \common\models\User();
+		$userA->givenname = $givenname;
+		$userA->surename = $surename;
+		$userA->username = $userA->givenname . $userA->surename;
+		$userA->email = $email;
+		$userA->setPassword($userA->email);
+		$userA->generateAuthKey();
+		$userA->time = $userA->last_change = date("Y-m-d H:i:s");
+		if ($userA->save()) {
+			$inSociety = new \common\models\InSociety();
+			$inSociety->user_id = $userA->id;
+			$inSociety->society_id = $societyID;
+			$inSociety->starting = date("Y-m-d");
+			if ($inSociety->save()) {
+				//User created - WOOHOO
+				self::sendNewUserMail($userA);
+				return $userA;
+			}
+			else {
+				Yii::error("Import Errors inSociety: " . print_r($inSociety->getErrors(), true), __METHOD__);
+				Yii::$app->session->addFlash("error", "Error saving InSociety Relation for " . $userA->username);
+			}
+		}
+		else {
+			Yii::error("Import Errors userA: " . print_r($userA->getErrors(), true), __METHOD__);
+			Yii::$app->session->addFlash("error", "Error Saving User " . $userA->username);
+		}
+		return false;
+	}
+
+	public static function sendNewUserMail($user) {
+		\Yii::$app->mailer->compose('import_user_created', [
+			'user' => $user,
+		])->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->params["name"] . ' robot'])
+		                  ->setTo([$user->email => $user->name])
+		                  ->setSubject('User Account for ' . $user->name)
+		                  ->send();
 	}
 
 }

@@ -7,6 +7,7 @@ use common\models\Adjudicator;
 use common\models\Country;
 use common\models\Panel;
 use common\models\search\AdjudicatorSearch;
+use common\models\User;
 use common\models\Venue;
 use Yii;
 use yii\base\Exception;
@@ -321,6 +322,8 @@ class AdjudicatorController extends BaseTournamentController {
 
 //User
 					if (count($row[1]) == 1) { //NEW
+						$userA = User::NewViaImport($societyID, $row[1][0], $row[2][0], $row[3][0]);
+						/*
 						$userA = new \common\models\User();
 						$userA->givenname = $row[1][0];
 						$userA->surename = $row[2][0];
@@ -342,7 +345,7 @@ class AdjudicatorController extends BaseTournamentController {
 						else {
 							Yii::error("Import Errors userA: " . print_r($userA->getErrors(), true), __METHOD__);
 							Yii::$app->session->addFlash("error", "Error Saving User " . $userA->username);
-						}
+						}*/
 						$userAID = $userA->id;
 					}
 					else if (count($row[1]) == 2) {

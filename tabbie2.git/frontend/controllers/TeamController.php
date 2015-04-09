@@ -6,6 +6,7 @@ use common\components\filter\TournamentContextFilter;
 use common\models\Country;
 use common\models\search\TeamSearch;
 use common\models\Team;
+use common\models\User;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -232,30 +233,7 @@ class TeamController extends BaseTournamentController {
 
 					//UserA
 					if (count($row[2]) == 1) { //NEW
-						$userA = new \common\models\User();
-						$userA->givenname = $row[2][0];
-						$userA->surename = $row[3][0];
-						$userA->username = $userA->givenname . $userA->surename;
-						$userA->email = $row[4][0];
-						$userA->setPassword($userA->email);
-						$userA->generateAuthKey();
-						$userA->time = $userA->last_change = date("Y-m-d H:i:s");
-						if ($userA->save()) {
-							$inSociety = new \common\models\InSociety();
-							$inSociety->user_id = $userA->id;
-							$inSociety->society_id = $societyID;
-							$inSociety->starting = date("Y-m-d");
-							if (!$inSociety->save()) {
-								Yii::error("Import Errors inSocietyA: " . print_r($inSociety->getErrors(), true), __METHOD__);
-								Yii::$app->session->addFlash("error", "Error saving InSociety Relation for " . $userA->username);
-							}
-							else
-								Yii::trace("In Society A created" . print_r($inSociety->getErrors(), true));
-						}
-						else {
-							Yii::error("Import Errors userA: " . print_r($userA->getErrors(), true), __METHOD__);
-							Yii::$app->session->addFlash("error", "Error Saving User " . $userA->username);
-						}
+						$userA = User::NewViaImport($societyID, $row[2][0], $row[3][0], $row[4][0]);
 						$userAID = $userA->id;
 					}
 					else if (count($row[2]) == 2) {
@@ -264,31 +242,7 @@ class TeamController extends BaseTournamentController {
 
 					//UserB
 					if (count($row[5]) == 1) { //NEW
-						$userB = new \common\models\User();
-						$userB->givenname = $row[5][0];
-						$userB->surename = $row[6][0];
-						$userB->username = $userB->givenname . $userB->surename;
-						$userB->email = $row[7][0];
-						$userB->setPassword($userB->email);
-						$userB->generateAuthKey();
-						$userB->time = $userB->last_change = date("Y-m-d H:i:s");
-						if ($userB->save()) {
-							$inSociety = new \common\models\InSociety();
-							$inSociety->user_id = $userB->id;
-							$inSociety->society_id = $societyID;
-							$inSociety->starting = date("Y-m-d");
-							if (!$inSociety->save()) {
-								Yii::error("Import Errors inSocietyB: " . print_r($inSociety->getErrors(), true), __METHOD__);
-								Yii::$app->session->addFlash("error", "Error saving InSociety Relation for " . $userB->username);
-							}
-							else
-								Yii::trace("In Society A created" . print_r($inSociety->getErrors(), true));
-
-						}
-						else {
-							Yii::error("Import Errors userB: " . print_r($userB->getErrors(), true), __METHOD__);
-							Yii::$app->session->addFlash("error", "Error Saving User " . $userB->username);
-						}
+						$userB = User::NewViaImport($societyID, $row[5][0], $row[6][0], $row[7][0]);
 						$userBID = $userB->id;
 					}
 					else if (count($row[5]) == 2) {
