@@ -22,6 +22,9 @@ class AdjudicatorController extends BaseTournamentController {
 
 	public function behaviors() {
 		return [
+			'tournamentFilter' => [
+				'class' => TournamentContextFilter::className(),
+			],
 			'access' => [
 				'class' => AccessControl::className(),
 				'rules' => [
@@ -40,9 +43,6 @@ class AdjudicatorController extends BaseTournamentController {
 						}
 					],
 				],
-			],
-			'tournamentFilter' => [
-				'class' => TournamentContextFilter::className(),
 			],
 			'verbs' => [
 				'class' => VerbFilter::className(),

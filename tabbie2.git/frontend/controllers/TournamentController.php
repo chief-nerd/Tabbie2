@@ -20,6 +20,9 @@ class TournamentController extends BaseTournamentController {
 
 	public function behaviors() {
 		return [
+			'tournamentFilter' => [
+				'class' => TournamentContextFilter::className(),
+			],
 			'access' => [
 				'class' => AccessControl::className(),
 				'rules' => [
@@ -41,9 +44,6 @@ class TournamentController extends BaseTournamentController {
 						}
 					],
 				],
-			],
-			'tournamentFilter' => [
-				'class' => TournamentContextFilter::className(),
 			],
 			'verbs' => [
 				'class' => VerbFilter::className(),
