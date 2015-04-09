@@ -200,7 +200,7 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 				/** @var Debate $model */
 				$list = array();
 				$panel = common\models\Panel::findOne($model->panel_id);
-				if ($panel) {
+				if ($panel && count($panel->adjudicators) > 0) {
 					$panel_chair_id = $model->getChair()->id;
 					foreach ($panel->adjudicators as $adj) {
 
@@ -240,6 +240,21 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 					return Sortable::widget([
 						'type' => Sortable::TYPE_GRID,
 						'items' => $list,
+						'disabled' => $model->round->published,
+						'handleLabel' => ($model->round->published) ? '' : '<i class="glyphicon glyphicon-move"></i> ',
+						'connected' => true,
+						'showHandle' => true,
+						'options' => [
+							"data-panel" => $panel->id,
+							"class" => "adj_panel",
+						],
+					]);
+				}
+				else { // Empty panel line - but a placeholder there
+					//@todo: Allow dropping into it <ul> does not render
+					return Sortable::widget([
+						'type' => Sortable::TYPE_GRID,
+						'items' => [],
 						'disabled' => $model->round->published,
 						'handleLabel' => ($model->round->published) ? '' : '<i class="glyphicon glyphicon-move"></i> ',
 						'connected' => true,
