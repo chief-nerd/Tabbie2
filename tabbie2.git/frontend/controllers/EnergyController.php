@@ -8,6 +8,7 @@ use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
+use yii\filters\AccessControl;
 
 /**
  * EnergyController implements the CRUD actions for EnergyConfig model.
@@ -18,6 +19,18 @@ class EnergyController extends BaseTournamentController {
 		return [
 			'tournamentFilter' => [
 				'class' => TournamentContextFilter::className(),
+			],
+			'access' => [
+				'class' => AccessControl::className(),
+				'rules' => [
+					[
+						'allow' => true,
+						'actions' => ['index', 'update'],
+						'matchCallback' => function ($rule, $action) {
+							return (Yii::$app->user->isTabMaster($this->_tournament));
+						}
+					],
+				],
 			],
 			'verbs' => [
 				'class' => VerbFilter::className(),
