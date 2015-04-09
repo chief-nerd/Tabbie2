@@ -57,7 +57,7 @@ class Tournament extends \yii\db\ActiveRecord {
 	 */
 	public function rules() {
 		return [
-			[['url_slug', 'convenor_user_id', 'tabmaster_user_id', 'name', 'start_date', 'end_date'], 'required'],
+			[['url_slug', 'convenor_user_id', 'tabmaster_user_id', 'hosted_by_id', 'name', 'start_date', 'end_date'], 'required'],
 			[['convenor_user_id', 'tabmaster_user_id', 'hosted_by_id', 'expected_rounds', 'status'], 'integer'],
 			[['start_date', 'end_date', 'time', 'has_esl', 'has_final', 'has_semifinal', 'has_octofinal', 'has_quarterfinal'], 'safe'],
 			[['url_slug', 'name', 'tabAlgorithmClass'], 'string', 'max' => 100],
