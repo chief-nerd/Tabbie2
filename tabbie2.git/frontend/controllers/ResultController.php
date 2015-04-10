@@ -143,7 +143,7 @@ class ResultController extends BaseTournamentController {
 			$model = new Result();
 			$model->debate_id = $id;
 
-			if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+			if ($model->load(Yii::$app->request->post()) && $model->validate(["debate_id"])) {
 				if ($model->confirmed == "true") {
 
 					$model->entered_by_id = Yii::$app->user->id;
