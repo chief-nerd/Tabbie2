@@ -142,6 +142,16 @@ class Debate extends \yii\db\ActiveRecord {
 	}
 
 	public function getAdjudicators() {
+		return $this->hasMany(Adjudicator::className(), ["id" => "adjudicator_id"])
+		            ->viaTable("panel", ["panel.id" => "panel_id"])
+		            ->viaTable('adjudicator_in_panel', ['panel_id' => 'id']);
+	}
+
+	/**
+	 * @deprecated
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getAdjudicatorObjects() {
 		return Adjudicator::findBySql("SELECT adjudicator.* FROM " . Adjudicator::tableName() . " "
 			. "LEFT OUTER JOIN " . AdjudicatorInPanel::tableName() . " ON " . Adjudicator::tableName() . ".id = " . AdjudicatorInPanel::tableName() . ".adjudicator_id "
 			. "LEFT OUTER JOIN " . Panel::tableName() . " ON panel_id = " . Panel::tableName() . ".id "

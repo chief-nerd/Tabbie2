@@ -11,9 +11,11 @@ use yii\widgets\ActiveForm;
  * This is the model class for table "answer".
 
 
+
 *
 *@property integer             $id
  * @property integer             $question_id
+ * @property integer             $feedback_id
  * @property string              $value
  * @property Question           $questions
  * @property FeedbackHasAnswer[] $feedbackHasAnswers
@@ -32,8 +34,8 @@ class Answer extends \yii\db\ActiveRecord {
 	 */
 	public function rules() {
 		return [
-			[['question_id'], 'required'],
-			[['question_id'], 'integer'],
+			[['question_id', 'feedback_id'], 'required'],
+			[['question_id', 'feedback_id'], 'integer'],
 			[['value'], 'string']
 		];
 	}
@@ -44,6 +46,7 @@ class Answer extends \yii\db\ActiveRecord {
 	public function attributeLabels() {
 		return [
 			'id' => Yii::t('app', 'ID'),
+			'feedback_id' => Yii::t('app', 'Feedback ID'),
 			'question_id' => Yii::t('app', 'Question ID'),
 			'value' => Yii::t('app', 'Value'),
 		];
@@ -59,16 +62,8 @@ class Answer extends \yii\db\ActiveRecord {
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getFeedbackHasAnswers() {
-		return $this->hasMany(FeedbackHasAnswer::className(), ['answer_id' => 'id']);
-	}
-
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getFeedbacks() {
-		return $this->hasMany(Feedback::className(), ['id' => 'feedback_id'])
-		            ->viaTable('feedback_has_answer', ['answer_id' => 'id']);
+	public function getFeedback() {
+		return $this->hasOne(Feedback::className(), ['id' => 'feedback_id']);
 	}
 
 	public function getName($q_id) {

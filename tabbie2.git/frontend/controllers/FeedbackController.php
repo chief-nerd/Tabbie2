@@ -8,6 +8,7 @@ use common\models\Answer;
 use common\models\Debate;
 use common\models\feedback;
 use common\models\FeedbackHasAnswer;
+use common\models\search\AnswerSearch;
 use common\models\search\FeedbackSearch;
 use common\models\Team;
 use Yii;
@@ -43,7 +44,7 @@ class FeedbackController extends BaseTournamentController {
 					],
 					[
 						'allow' => true,
-						'actions' => ['index', 'view', 'create'],
+						'actions' => ['index', 'view', 'create', 'adjudicator'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->isTabMaster($this->_tournament));
 						}
@@ -149,15 +150,10 @@ class FeedbackController extends BaseTournamentController {
 
 			foreach ($this->_tournament->getQuestions($type)->all() as $question) {
 				$models[$question->id]->value = $answers[$question->id];
+				$models[$question->id]->feedback_id = $feedback->id;
 
 				if ($models[$question->id]->save()) {
-					$link = new FeedbackHasAnswer();
-					$link->feedback_id = $feedback->id;
-					$link->answer_id = $models[$question->id]->id;
-					if (!$link->save()) {
 						$allGood = false;
-					}
-
 				}
 				else {
 					$allGood = false;
@@ -187,6 +183,17 @@ class FeedbackController extends BaseTournamentController {
 		}
 		else
 			return $this->render('create', ['models' => $models,]);
+	}
+
+
+	public function actionAdjudicator() {
+		$searchModel = new AnswerSearch();
+		$dataProvider = $searchModel->searchByAdjudicator(Yii::$app->request->queryParams);
+
+		return $this->render('by_adjudicator', [
+			'searchModel' => $searchModel,
+			'dataProvider' => $dataProvider,
+		]);
 	}
 
 	/**

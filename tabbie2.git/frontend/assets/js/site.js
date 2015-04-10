@@ -23,6 +23,13 @@ $(document).ready(function () {
     triggerFlash();
 });
 
+$(document).on("click", "div.flashes .alert", function () {
+    console.log("click");
+    $(this).slideUp(100, function () {
+        $(this).remove();
+    });
+});
+
 /**
  * Loading Animation fadein and start
  */
