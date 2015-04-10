@@ -31,8 +31,7 @@ class ResultController extends BaseTournamentController {
 						'actions' => ['create'],
 						'matchCallback' => function ($rule, $action) {
 							$debate = Yii::$app->user->hasChairedLastRound($this->_tournament);
-							if (($debate instanceof Debate && !$debate->result instanceof Result)) {
-								if ($action->id == "create" && $debate->id == Yii::$app->request->get("id"))
+							if (($debate instanceof Debate) && $debate->id == Yii::$app->request->get("id")) {
 									return true;
 							}
 							return false;
@@ -144,7 +143,7 @@ class ResultController extends BaseTournamentController {
 			$model = new Result();
 			$model->debate_id = $id;
 
-			if ($model->load(Yii::$app->request->post())) {
+			if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 				if ($model->confirmed == "true") {
 
 					$model->entered_by_id = Yii::$app->user->id;

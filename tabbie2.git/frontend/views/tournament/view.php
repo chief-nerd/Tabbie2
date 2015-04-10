@@ -39,9 +39,9 @@ $this->params['breadcrumbs'][] = $this->title;
 			<?
 
 			if ($model->status === \common\models\Tournament::STATUS_RUNNING) {
-				$debate = Yii::$app->user->hasOpenFeedback($model);
-				if ($debate instanceof common\models\Debate) {
-					echo "&nbsp;" . Html::a(Yii::t('app', 'Enter Feedback'), ['feedback/create', "id" => $debate->id, "tournament_id" => $model->id], ['class' => 'btn btn-success']);
+				$ref = Yii::$app->user->hasOpenFeedback($model);
+				if (is_array($ref)) {
+					echo "&nbsp;" . Html::a(Yii::t('app', 'Enter Feedback'), array_merge($ref, ['feedback/create', "tournament_id" => $model->id]), ['class' => 'btn btn-success']);
 				}
 				$debate = Yii::$app->user->hasChairedLastRound($model);
 				if ($debate instanceof common\models\Debate && !$debate->result instanceof \common\models\Result) {

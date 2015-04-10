@@ -46,9 +46,36 @@ class Result extends \yii\db\ActiveRecord {
 			[['debate_id', 'og_place', 'oo_place', 'cg_place', 'co_place', 'entered_by_id'], 'integer'],
 			[['og_A_speaks', 'og_B_speaks', 'oo_A_speaks', 'oo_B_speaks', 'cg_A_speaks', 'cg_B_speaks', 'co_A_speaks', 'co_B_speaks'],
 				"integer", "max" => Yii::$app->params["speaks_max"], "min" => Yii::$app->params["speaks_min"]],
+			['debate_id', 'validateNotEqualPlace'],
 			['debate_id', 'unique'],
 			[['time', 'confirmed'], 'safe']
 		];
+	}
+
+	/**
+	 * Checks that every team speaks count is unique.
+	 * Prevents same position.
+	 *
+	 * @param type $attribute
+	 * @param type $params
+	 */
+	public function validateNotEqualPlace($attribute, $params) {
+		$positions = ["og", "oo", "cg", "co"];
+		$results = [
+			"og" => $this->og_speaks,
+			"oo" => $this->oo_speaks,
+			"cg" => $this->cg_speaks,
+			"co" => $this->co_speaks,
+		];
+
+		$results = array_unique($results);
+
+		foreach ($positions as $pos) {
+			if (!array_key_exists($pos, $results)) {
+				$this->addError($pos . "_A_speaks", 'Equal place exist');
+				$this->addError($pos . "_B_speaks", 'Equal place exist');
+			}
+		}
 	}
 
 	/**
