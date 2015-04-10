@@ -2,7 +2,9 @@
 
 namespace common\components;
 
+use common\models\Feedback;
 use common\models\LanguageOfficer;
+use common\models\Panel;
 use \common\models\Tournament;
 use \common\models\User;
 use common\models\Debate;
@@ -112,18 +114,24 @@ class UserIdentity extends \yii\web\User {
 			foreach ($lastRound->getDebates()->all() as $debate) {
 				/** check teams* */
 				if ($debate->og_feedback == 0 && $debate->isOGTeamMember($this->id))
-					return $debate;
+					return ["type" => Feedback::FROM_TEAM, "id" => $debate->id, "ref" => $debate->og_team_id];
 				if ($debate->oo_feedback == 0 && $debate->isOOTeamMember($this->id))
-					return $debate;
+					return ["type" => Feedback::FROM_TEAM, "id" => $debate->id, "ref" => $debate->oo_team_id];
 				if ($debate->cg_feedback == 0 && $debate->isCGTeamMember($this->id))
-					return $debate;
+					return ["type" => Feedback::FROM_TEAM, "id" => $debate->id, "ref" => $debate->cg_team_id];
 				if ($debate->co_feedback == 0 && $debate->isCOTeamMember($this->id))
-					return $debate;
+					return ["type" => Feedback::FROM_TEAM, "id" => $debate->id, "ref" => $debate->co_team_id];
 
 				/** check judges * */
 				foreach ($debate->panel->adjudicatorInPanels as $judge) {
-					if ($judge->got_feedback == 0 && $judge->adjudicator->user_id == $this->id)
-						return $debate;
+					if ($judge->got_feedback == 0 && $judge->adjudicator->user_id == $this->id) {
+						if ($judge->function == Panel::FUNCTION_CHAIR)
+							$type = Feedback::FROM_CHAIR;
+						else
+							$type = Feedback::FROM_WING;
+
+						return ["type" => $type, "id" => $debate->id, "ref" => $judge->adjudicator->id];
+					}
 				}
 			}
 		}

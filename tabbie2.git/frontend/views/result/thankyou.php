@@ -49,7 +49,18 @@ $this->params['breadcrumbs'][] = $this->title;
 			<?= Html::a("Go to Home", ["tournament/view", "id" => $tournament->id], ["class" => "btn btn-default center-block"]) ?>
 		</div>
 		<div class="col-xs-6">
-			<?= Html::a("Enter Feedback", ["feedback/create", "id" => $model->debate->id, "tournament_id" => $tournament->id], ["class" => "btn btn-success center-block"]) ?>
+			<?
+			//Can only be chair
+			$ref = $model->debate->getChair()->id;
+
+			?>
+			<?= Html::a("Enter Feedback", [
+				"feedback/create",
+				"id" => $model->debate->id,
+				"type" => \common\models\Feedback::FROM_CHAIR,
+				"ref" => $ref,
+				"tournament_id" => $tournament->id],
+				["class" => "btn btn-success center-block"]) ?>
 		</div>
 	</div>
 </div>

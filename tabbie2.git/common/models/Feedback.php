@@ -16,6 +16,10 @@ use Yii;
  */
 class Feedback extends \yii\db\ActiveRecord {
 
+	const FROM_CHAIR = 1;
+	const FROM_WING  = 2;
+	const FROM_TEAM  = 3;
+
 	/**
 	 * @inheritdoc
 	 */
@@ -66,33 +70,4 @@ class Feedback extends \yii\db\ActiveRecord {
 		return $this->hasMany(Answer::className(), ['id' => 'answer_id'])
 		            ->viaTable('feedback_has_answer', ['feedback_id' => 'id']);
 	}
-
-	/**
-	 * @param Tournament $tournament
-	 *
-	 * @return Question[]
-	 * @throws Exception
-	 */
-	public function getQuestions($tournament) {
-
-		$model = Yii::$app->user->getRoleModel($tournament->id);
-		$lastRound = $tournament->getLastRound();
-
-		if ($model instanceof Adjudicator) {
-			//Check if was chair
-			$lastRound->id;
-		}
-		else if ($model instanceof Team) {
-
-		}
-		else
-			throw new Exception("No Role");
-
-		$filter = array();
-		$filter = array_merge($filter, [
-			"tournament_id" => $tournament->id
-		]);
-		return Question::find()->joinWith("tournamentHasQuestion")->where($filter)->all();
-	}
-
 }

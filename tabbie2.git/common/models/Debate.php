@@ -207,6 +207,13 @@ class Debate extends \yii\db\ActiveRecord {
 			return false;
 	}
 
+	/**
+	 * Get the Teams in a searchable Array
+	 *
+	 * @param bool $onlyKeys
+	 *
+	 * @return array
+	 */
 	public function getTeams($onlyKeys = false) {
 		return [
 			"og" => ($onlyKeys) ? $this->og_team_id : $this->og_team,

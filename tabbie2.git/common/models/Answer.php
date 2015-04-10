@@ -2,15 +2,20 @@
 
 namespace common\models;
 
+use kartik\rating\StarRating;
 use Yii;
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 
 /**
  * This is the model class for table "answer".
- *
- * @property integer             $id
- * @property integer             $questions_id
+
+
+*
+*@property integer             $id
+ * @property integer             $question_id
  * @property string              $value
- * @property Questions           $questions
+ * @property Question           $questions
  * @property FeedbackHasAnswer[] $feedbackHasAnswers
  * @property Feedback[]          $feedbacks
  */
@@ -27,8 +32,8 @@ class Answer extends \yii\db\ActiveRecord {
 	 */
 	public function rules() {
 		return [
-			[['questions_id'], 'required'],
-			[['questions_id'], 'integer'],
+			[['question_id'], 'required'],
+			[['question_id'], 'integer'],
 			[['value'], 'string']
 		];
 	}
@@ -39,7 +44,7 @@ class Answer extends \yii\db\ActiveRecord {
 	public function attributeLabels() {
 		return [
 			'id' => Yii::t('app', 'ID'),
-			'questions_id' => Yii::t('app', 'Questions ID'),
+			'question_id' => Yii::t('app', 'Question ID'),
 			'value' => Yii::t('app', 'Value'),
 		];
 	}
@@ -47,8 +52,8 @@ class Answer extends \yii\db\ActiveRecord {
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getQuestions() {
-		return $this->hasOne(Questions::className(), ['id' => 'questions_id']);
+	public function getQuestion() {
+		return $this->hasOne(Question::className(), ['id' => 'question_id']);
 	}
 
 	/**
@@ -64,5 +69,50 @@ class Answer extends \yii\db\ActiveRecord {
 	public function getFeedbacks() {
 		return $this->hasMany(Feedback::className(), ['id' => 'feedback_id'])
 		            ->viaTable('feedback_has_answer', ['answer_id' => 'id']);
+	}
+
+	public function getName($q_id) {
+		return "Answer[" . $q_id . "]";
+	}
+
+	public function renderLabel($q_id) {
+		return '<label class="control-label" for="' . $this->getName($q_id) . '">' . $this->question->text . '</label>';
+	}
+
+	/**
+	 * @param ActiveForm $form
+	 *
+	 * @return string
+	 */
+	public function renderField($q_id) {
+		//<input id="answer-value" class="form-control" name="Answer[value]" type="text">
+		$element = null;
+		switch ($this->question->type) {
+			case Question::TYPE_INPUT:
+				$element = Html::textInput($this->getName($q_id), $this->value, [
+					"class" => "form-control",
+					"name" => "Answer[" . $q_id . "]",
+				]);
+				break;
+			case Question::TYPE_TEXT:
+				$element = Html::textarea($this->getName($q_id), $this->value, [
+					"class" => "form-control",
+					"name" => "Answer[" . $q_id . "]",
+				]);
+				break;
+			case Question::TYPE_STAR:
+				$element = StarRating::widget([
+					"name" => "Answer[" . $q_id . "]",
+					"pluginOptions" => [
+						"stars" => 5,
+						"min" => 0,
+						"max" => 5,
+						"step" => 1,
+						"size" => "md",
+					],
+				]);
+				break;
+		}
+		return $element;
 	}
 }

@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use kartik\widgets\StarRating;
 use Yii;
 use yii\helpers\Html;
 
@@ -19,6 +20,11 @@ use yii\helpers\Html;
  * @property Tournament[]             $tournaments
  */
 class Question extends \yii\db\ActiveRecord {
+
+	const TYPE_INPUT  = 1;
+	const TYPE_STAR   = 0;
+	const TYPE_TEXT   = 2;
+	const TYPE_NUMBER = 3;
 
 	/**
 	 * @inheritdoc
@@ -76,36 +82,12 @@ class Question extends \yii\db\ActiveRecord {
 
 	public function getTypeOptions($id = null) {
 		$types = [
-			0 => "Star Rating (1-5)",
-			1 => "Short Text",
-			2 => "Long Text",
-			3 => "Number",
+			self::TYPE_STAR => "Star Rating (1-5)",
+			self::TYPE_INPUT => "Short Text",
+			self::TYPE_TEXT => "Long Text",
+			self::TYPE_NUMBER => "Number",
 		];
 		return ($id === null) ? $types : $types[$id];
-	}
-
-	public function getName() {
-		return "Question[" . $this->id . "]";
-	}
-
-	public function renderLabel() {
-		return Html::label($this->text, $this->name);
-	}
-
-	public function renderInput() {
-		$element = null;
-		switch ($this->type) {
-			case 0:
-				$element = Html::textInput($this->name, (($this->answers instanceof \common\models\Answer) ? $this->answers->value : ''));
-				break;
-			case 1:
-				$element = Html::textarea($this->name);
-				break;
-			case 2:
-				$element = \kartik\widgets\StarRating::widget();
-				break;
-		}
-		return $element;
 	}
 
 }

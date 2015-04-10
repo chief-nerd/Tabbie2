@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\base\Exception;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -245,9 +246,25 @@ class Tournament extends \yii\db\ActiveRecord {
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getQuestions() {
-		return $this->hasMany(Questions::className(), ['id' => 'questions_id'])
-		            ->viaTable('tournament_has_questions', ['tournament_id' => 'id']);
+	public function getQuestions($type) {
+
+		switch ($type) {
+			case Feedback::FROM_CHAIR:
+				$field = "C2W";
+				break;
+			case Feedback::FROM_WING:
+				$field = "W2C";
+				break;
+			case Feedback::FROM_TEAM:
+				$field = "T2C";
+				break;
+			default:
+				throw new Exception("Wrong Parameter");
+		}
+
+		return $this->hasMany(Question::className(), ['id' => 'questions_id'])
+		            ->viaTable('tournament_has_question', ['tournament_id' => 'id'])
+		            ->where(["apply_" . $field => 1]);
 	}
 
 	public function getSocieties() {

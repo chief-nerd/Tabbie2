@@ -15,24 +15,17 @@ $tournament = $this->context->_getContext();
 
 	<?php $form = ActiveForm::begin(); ?>
 
-	<?= Html::activeHiddenInput($model, 'debate_id') ?>
-
-	<?
-	/* @var $q Question */
-	foreach ($model->getQuestions($tournament) as $q):
+	<? foreach ($models as $q_id => $model):
 		?>
-		<div class="row">
-			<div class="col-xs-12">
-				<?= $q->renderLabel() ?>
-			</div>
-			<div class="col-xs-12">
-				<?= $q->renderInput() ?>
-			</div>
+		<div class="form-group field-answer-value">
+			<?= $model->renderLabel($q_id) ?>
+			<?= $model->renderField($q_id) ?>
+			<div class="help-block"></div>
 		</div>
 	<? endforeach; ?>
 
 	<div class="form-group">
-		<?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+		<?= Html::submitButton(Yii::t('app', 'Submit Feedback'), ['class' => 'btn btn-success btn-block']) ?>
 	</div>
 
 	<?php ActiveForm::end(); ?>

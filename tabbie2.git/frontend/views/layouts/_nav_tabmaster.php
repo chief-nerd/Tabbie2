@@ -89,17 +89,15 @@ $menuItems = [
 		]
 	],
 	['label' => 'Feedback', 'url' => '#',
-		/*"items" => [
-			['label' => 'Every Feedback', 'url' => ['feedback/index', "tournament_id" => $tournament->id]],
-			'<li class="divider"></li>',
-			['label' => 'Adjudicator Feedback', 'url' => ['feedback/adjudicator', "tournament_id" => $tournament->id]],
-			['label' => 'Team to Chair Feedback', 'url' => ['feedback/team', "tournament_id" => $tournament->id]],
-			'<li class="divider"></li>',
+		"items" => [
 			['label' => 'Setup Questions', 'url' => ['question/index', "tournament_id" => $tournament->id]],
 			'<li class="divider"></li>',
+			['label' => 'Every Feedback', 'url' => ['feedback/index', "tournament_id" => $tournament->id]],
+			['label' => 'Adjudicator Feedback', 'url' => ['feedback/adjudicator', "tournament_id" => $tournament->id]],
+			'<li class="divider"></li>',
 			['label' => 'Tournament Feedback', 'url' => ['feedback/tournament', "tournament_id" => $tournament->id]],
-			['label' => Yii::$app->params["appName"] . ' Feedback', 'url' => ['feedback/tabbie', "tournament_id" => $tournament->id]],
-		]*/
+			['label' => Yii::$app->params["appName"] . ' System Feedback', 'url' => ['feedback/tabbie', "tournament_id" => $tournament->id]],
+		]
 	],
 ];
 
