@@ -1,5 +1,9 @@
 Options -Indexes
 
+<IfModule mod_headers.c>
+    Header set Connection keep-alive
+</IfModule>
+
 <IfModule mod_deflate.c>
     # compress text, html, javascript, css, xml:
   AddOutputFilterByType DEFLATE application/javascript
