@@ -30,14 +30,14 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 
 				<?
 				if ($debateDataProvider->getCount() > 0)
-					echo Html::a(Yii::t('app', 'Publish Tab'), ['publish', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success']);
+					echo Html::a(\kartik\helpers\Html::icon("thumbs-up") . "&nbsp" . Yii::t('app', 'Publish Tab'), ['publish', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success']);
 				else
-					echo Html::a(Yii::t('app', 'Retry to generate Draw'), ['redraw', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success loading']);
+					echo Html::a(\kartik\helpers\Html::icon("repeat") . "&nbsp" . Yii::t('app', 'Retry to generate Draw'), ['redraw', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success loading']);
 				?>
 
 				<!-- Split button -->
 				<div class="btn-group">
-					<?= Html::a(Yii::t('app', 'Update Round'), ['update', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-primary']) ?>
+					<?= Html::a(\kartik\helpers\Html::icon("cog") . "&nbsp" . Yii::t('app', 'Update Round'), ['update', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-primary']) ?>
 
 					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
 					        aria-expanded="false">
@@ -50,7 +50,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 						for ($i = 1; $i <= 3; $i++): ?>
 							<li>
 								<?=
-								Html::a(Yii::t('app', 'Continue Improving by') . " " . ($runs * $i / 1000) . "k", [
+								Html::a(\kartik\helpers\Html::icon("refresh") . "&nbsp" . Yii::t('app', 'Continue Improving by') . " " . ($runs * $i / 1000) . "k", [
 									'improve',
 									'id' => $model->id,
 									'runs' => ($runs * $i),
@@ -64,7 +64,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 						<li class="divider"></li>
 						<li>
 							<?=
-							Html::a(Yii::t('app', 'Generate new draw from blank'), ['redraw', 'id' => $model->id, "tournament_id" => $tournament->id], [
+							Html::a(\kartik\helpers\Html::icon("file") . "&nbsp" . Yii::t('app', 'Generate new draw from blank'), ['redraw', 'id' => $model->id, "tournament_id" => $tournament->id], [
 								'class' => 'loading',
 								'data' => [
 									'confirm' => Yii::t('app', 'Are you sure you want to re-draw the round? All information will be lost!'),
@@ -77,7 +77,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 				</div>
 
 			<? endif; ?>
-			<?= Html::a(Yii::t('app', 'Print Ballots'), ['printballots', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-default']) ?>
+			<?= Html::a(\kartik\helpers\Html::icon("print") . "&nbsp" . Yii::t('app', 'Print Ballots'), ['printballots', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-default']) ?>
 
 		</div>
 	</div>
@@ -204,7 +204,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 					$panel_chair_id = $model->getChair()->id;
 					foreach ($panel->adjudicators as $adj) {
 
-						$popcontent = Yii::t("app", "Loading ...");
+						$popcontent = \kartik\helpers\Html::icon("refresh") . "&nbsp;" . Yii::t("app", "Loading ...");
 
 						$class = "label toLoad";
 						$class .= " " . common\models\Adjudicator::getCSSStrength($adj->strength);
@@ -219,8 +219,8 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 							'placement' => PopoverX::ALIGN_TOP,
 							'content' => $popcontent,
 							'footer' =>
-								Html::a(Yii::t("app", 'Move'), ["adjudicator/move", "id" => $adj->id, "debate" => $model->id, "tournament_id" => $model->tournament_id], ['class' => 'moveAdj btn btn-sm btn-primary']) .
-								Html::a(Yii::t("app", 'View more'), ["adjudicator/view", "id" => $adj->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-sm btn-default']),
+								Html::a(\kartik\helpers\Html::icon("move") . "&nbsp;" . Yii::t("app", 'Move'), ["adjudicator/move", "id" => $adj->id, "debate" => $model->id, "tournament_id" => $model->tournament_id], ['class' => 'moveAdj btn btn-sm btn-primary']) .
+								Html::a(\kartik\helpers\Html::icon("folder-open") . "&nbsp;" . Yii::t("app", 'View more'), ["adjudicator/view", "id" => $adj->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-sm btn-default']),
 							'toggleButton' => [
 								'label' => $adj->user->name,
 								'class' => 'btn btn-sm adj ' . $class,
@@ -241,7 +241,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 						'type' => Sortable::TYPE_GRID,
 						'items' => $list,
 						'disabled' => $model->round->published,
-						'handleLabel' => ($model->round->published) ? '' : '<i class="glyphicon glyphicon-move"></i> ',
+						'handleLabel' => ($model->round->published) ? '' : \kartik\helpers\Html::icon("move"),
 						'connected' => true,
 						'showHandle' => true,
 						'options' => [
@@ -256,7 +256,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 						'type' => Sortable::TYPE_GRID,
 						'items' => [],
 						'disabled' => $model->round->published,
-						'handleLabel' => ($model->round->published) ? '' : '<i class="glyphicon glyphicon-move"></i> ',
+						'handleLabel' => ($model->round->published) ? '' : \kartik\helpers\Html::icon("move"),
 						'connected' => true,
 						'showHandle' => true,
 						'options' => [

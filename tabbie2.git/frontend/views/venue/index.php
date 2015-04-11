@@ -20,12 +20,12 @@ $this->params['breadcrumbs'][] = $this->title;
 	<p>
 		<? if ($tournament->status < Tournament::STATUS_CLOSED): ?>
 		<?=
-		Html::a(Yii::t('app', 'Create {modelClass}', [
+			Html::a(\kartik\helpers\Html::icon("plus") . "&nbsp" . Yii::t('app', 'Create {modelClass}', [
 			'modelClass' => 'Venue',
 		]), ['create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
 		?>
 		<?=
-		Html::a(Yii::t('app', 'Import {modelClass}', [
+			Html::a(\kartik\helpers\Html::icon("import") . "&nbsp" . Yii::t('app', 'Import {modelClass}', [
 			'modelClass' => 'Venues',
 		]), ['import', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
 		?>
@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'vAlign' => 'middle',
 			'buttons' => [
 				"active" => function ($url, $model) {
-					return Html::a("<span class='glyphicon glyphicon-pause'></span>", $url, [
+					return Html::a(\kartik\helpers\Html::icon("pause"), $url, [
 						'title' => Yii::t('app', 'Toogle Active'),
 						'data-pjax' => '0',
 						'data-toggle-active' => $model->id
@@ -65,7 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'urlCreator' => function ($action, $model, $key, $index) {
 				return \yii\helpers\Url::to(["venue/" . $action, "id" => $model->id, "tournament_id" => $model->tournament->id]);
 			},
-			'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", 'View {modelClass}', ['modelClass' => 'Venue']), 'data-toggle' => 'tooltip'],
+			'viewOptions' => ['label' => \kartik\helpers\Html::icon("folder-open"), 'title' => Yii::t("app", 'View {modelClass}', ['modelClass' => 'Venue']), 'data-toggle' => 'tooltip'],
 			'updateOptions' => ['title' => Yii::t("app", 'Update {modelClass}', ['modelClass' => 'Venue']), 'data-toggle' => 'tooltip'],
 			'deleteOptions' => ['title' => Yii::t("app", 'Delete {modelClass}', ['modelClass' => 'Venue']), 'data-toggle' => 'tooltip'],
 			'width' => '100px'

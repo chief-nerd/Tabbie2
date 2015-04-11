@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\Html;
+use kartik\helpers\Html;
 use yii\widgets\ActiveForm;
 use common\models\Question;
 
@@ -25,7 +25,7 @@ $tournament = $this->context->_getContext();
 	<? endforeach; ?>
 
 	<div class="form-group">
-		<?= Html::submitButton(Yii::t('app', 'Submit Feedback'), ['class' => 'btn btn-success btn-block']) ?>
+		<?= Html::submitButton(Html::icon("send") . "&nbsp;" . Yii::t('app', 'Submit Feedback'), ['class' => 'btn btn-success btn-block']) ?>
 	</div>
 
 	<?php ActiveForm::end(); ?>

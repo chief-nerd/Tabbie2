@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\Html;
+use kartik\helpers\Html;
 
 /* @var $this yii\web\View */
 $this->title = Yii::$app->params["slogan"];
@@ -58,9 +58,9 @@ $this->title = Yii::$app->params["slogan"];
 		<br><br>
 
 		<p>
-			<?= Html::a(Yii::t("app", "View all Tournaments"), ['tournament/index'], ["class" => "btn btn-lg btn-success"]) ?>
+			<?= Html::a(Html::icon("calendar") . "&nbsp;" . Yii::t("app", "View all Tournaments"), ['tournament/index'], ["class" => "btn btn-lg btn-primary"]) ?>
 			&nbsp;&nbsp;or&nbsp;&nbsp;
-			<?= Html::a(Yii::t("app", "Create new Tournament"), ['tournament/create'], ["class" => "btn btn-lg btn-primary"]) ?>
+			<?= Html::a(Html::icon("plus") . "&nbsp;" . Yii::t("app", "Create new Tournament"), ['tournament/create'], ["class" => "btn btn-lg btn-success"]) ?>
 		</p>
 	</div>
 

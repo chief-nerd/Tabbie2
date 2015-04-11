@@ -1,7 +1,7 @@
 <?php
 use yii\bootstrap\ActiveForm;
 use yii\captcha\Captcha;
-use yii\helpers\Html;
+use kartik\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			<?= $form->field($model, 'key') ?>
 		</div>
 		<div class="col-sm-2">
-			<?= Html::submitButton('Submit', ['class' => 'btn btn-primary', 'name' => 'contact-button']) ?>
+			<?= Html::submitButton(Html::icon("send") . "&nbsp;" . Yii::t("app", 'Submit'), ['class' => 'btn btn-primary', 'name' => 'contact-button']) ?>
 		</div>
 
 	</div>

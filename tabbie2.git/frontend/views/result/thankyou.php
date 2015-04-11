@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\Html;
+use kartik\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Result */
@@ -25,15 +25,15 @@ $this->params['breadcrumbs'][] = $this->title;
 					$pre = "";
 					if ($place <= ($max / 4)) {
 						$class = "success";
-						$pre = '<i class="glyphicon glyphicon-star"></i> ' . Yii::t("app", "Speeeed Bonus!");
+						$pre = Html::icon("star") . "&nbsp;" . Yii::t("app", "Speeeed Bonus!");
 					}
 					if ($place >= floor(($max / 4 * 3))) {
 						$class = "danger";
-						$pre = '<i class="glyphicon glyphicon-alert"></i> ' . Yii::t("app", "Hurry up! Chop Chop!");
+						$pre = Html::icon("exclamation-sign") . "&nbsp;" . Yii::t("app", "Hurry up! Chop Chop!");
 					}
 					if ($place == $max) {
 						$class = "danger";
-						$pre = '<i class="glyphicon glyphicon-alert"></i> ' . Yii::t("app", "Bummer! Last one!");
+						$pre = Html::icon("alert") . "&nbsp;" . Yii::t("app", "Bummer! Last one!");
 					}
 					echo '<h3 class="text-' . $class . '">' . $pre . " " . Yii::t("app", "You are <b>#{place}</b> from {max}", [
 							"place" => $place,
@@ -49,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<div class="row">
 		<div class="col-xs-6">
-			<?= Html::a(Yii::t("app", "Go to Home"), ["tournament/view", "id" => $tournament->id], ["class" => "btn btn-default center-block"]) ?>
+			<?= Html::a(Html::icon("home") . "&nbsp;" . Yii::t("app", "Go to Home"), ["tournament/view", "id" => $tournament->id], ["class" => "btn btn-default center-block"]) ?>
 		</div>
 		<div class="col-xs-6">
 			<?
@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			$ref = $model->debate->getChair()->id;
 
 			?>
-			<?= Html::a(Yii::t("app", "Enter Feedback"), [
+			<?= Html::a(Html::icon("comment") . "&nbsp;" . Yii::t("app", "Enter Feedback"), [
 				"feedback/create",
 				"id" => $model->debate->id,
 				"type" => \common\models\Feedback::FROM_CHAIR,
