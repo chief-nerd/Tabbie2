@@ -41,8 +41,6 @@ if ($this->context->hasMethod("_getContext")) {
 
 <div class="wrap">
 	<?
-	echo $this->render("_nav");
-
 	/* @var $tournament common\models\Tournament */
 	if ($this->context->hasMethod("_getContext")) {
 		$tournament = $this->context->_getContext();
@@ -55,6 +53,8 @@ if ($this->context->hasMethod("_getContext")) {
 
 		}
 	}
+	//Render later for overlapping
+	echo $this->render("_nav");
 	?>
 	<div class="container">
 		<?=

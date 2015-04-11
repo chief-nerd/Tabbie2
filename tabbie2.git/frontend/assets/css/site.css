@@ -41,6 +41,11 @@ body.movedown {
 }
 
 /** BOOTSTRAP HACKS **/
+
+.navbar-fixed-top .navbar-collapse {
+    max-height: 500px !important;
+}
+
 /* Give me full with! */
 @media (min-width: 1300px) {
     .container {
@@ -55,6 +60,16 @@ body.movedown {
     background-image: -o-repeating-linear-gradient(-65deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%);
     background-image: repeating-linear-gradient(-65deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%);
     background-size: 30px 60px;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .navbar-sub .navbar-header {
+        display: none;
+    }
+
+    .nav > li > a {
+        padding: 15px 8px !important;
+    }
 }
 
 /***********************/
