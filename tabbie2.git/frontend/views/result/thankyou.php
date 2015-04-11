@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model common\models\Result */
 /* @var $form yii\widgets\ActiveForm */
-$this->title = "Thank you";
+$this->title = Yii::t("app", "Thank you");
 $tournament = $this->context->_getContext();
 $this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
-$this->params['breadcrumbs'][] = "Result";
+$this->params['breadcrumbs'][] = Yii::t("app", "Result");
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -35,7 +35,10 @@ $this->params['breadcrumbs'][] = $this->title;
 						$class = "danger";
 						$pre = '<i class="glyphicon glyphicon-alert"></i> ' . Yii::t("app", "Bummer! Last one!");
 					}
-					echo '<h3 class="text-' . $class . '">' . $pre . ' You are <b>#' . $place . '</b> from ' . $max . '</h3>';
+					echo '<h3 class="text-' . $class . '">' . $pre . " " . Yii::t("app", "You are <b>#{place}</b> from {max}", [
+							"place" => $place,
+							"max" => $max,
+						]) . '</h3>';
 				}
 				?>
 			</center>
@@ -46,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<div class="row">
 		<div class="col-xs-6">
-			<?= Html::a("Go to Home", ["tournament/view", "id" => $tournament->id], ["class" => "btn btn-default center-block"]) ?>
+			<?= Html::a(Yii::t("app", "Go to Home"), ["tournament/view", "id" => $tournament->id], ["class" => "btn btn-default center-block"]) ?>
 		</div>
 		<div class="col-xs-6">
 			<?
@@ -54,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			$ref = $model->debate->getChair()->id;
 
 			?>
-			<?= Html::a("Enter Feedback", [
+			<?= Html::a(Yii::t("app", "Enter Feedback"), [
 				"feedback/create",
 				"id" => $model->debate->id,
 				"type" => \common\models\Feedback::FROM_CHAIR,

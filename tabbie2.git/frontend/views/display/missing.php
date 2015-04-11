@@ -16,13 +16,13 @@ $this->registerJs('
         $("#pjax_poll").on("pjax:end", function() {
             $.pjax.reload({container:"#tournament-missing"});  //Reload GridView
         });
-        //setTimeout(function(){ $.pjax.reload({container:"#tournament-missing"}); }, 2000);
+        setTimeout(function(){ $.pjax.reload({container:"#tournament-missing"}); }, 2000);
 	'
 );
 
 if (Yii::$app->user->isTabMaster($tournament)) {
 	$this->context->menuItems = [
-		['label' => 'Mark missing as inactive', 'url' => "markmissing", "linkOptions" => ["class" => "btn btn-default"]],
+		['label' => Yii::t("app", 'Mark missing as inactive'), 'url' => "markmissing", "linkOptions" => ["class" => "btn btn-default"]],
 	];
 }
 

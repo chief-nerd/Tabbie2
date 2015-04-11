@@ -129,7 +129,7 @@ class TeamController extends BaseTournamentController {
 				return $this->redirect(['view', 'id' => $model->id, 'tournament_id' => $model->tournament_id]);
 			else {
 				\Yii::error("Error saving Team: " . print_r($model->getErrors(), true), __METHOD__);
-				\Yii::$app->session->addFlash("error", "Couldn't create Team.");
+				\Yii::$app->session->addFlash("error", Yii::t("app", "Couldn't create Team."));
 			}
 		}
 
@@ -223,7 +223,7 @@ class TeamController extends BaseTournamentController {
 						$society->country_id = \common\models\Country::COUNTRY_UNKNOWN_ID;
 						if (!$society->save()) {
 							Yii::error("Import Errors Society: " . print_r($society->getErrors(), true), __METHOD__);
-							Yii::$app->session->addFlash("error", "Error saving Society Relation for " . $society->fullname);
+							Yii::$app->session->addFlash("error", Yii::t("app", "Error saving Society Relation for {society}", ["society" => $society->fullname]));
 						}
 						$societyID = $society->id;
 					}
@@ -277,7 +277,7 @@ class TeamController extends BaseTournamentController {
 						}
 
 						if (($num = count($data)) != 8) {
-							throw new \yii\base\Exception("500", "File Syntax Wrong");
+							throw new \yii\base\Exception("500", Yii::t("app", "File Syntax Wrong"));
 						}
 						for ($c = 0; $c < $num; $c++) {
 							$model->tempImport[$row][$c][0] = trim($data[$c]);
@@ -340,7 +340,7 @@ class TeamController extends BaseTournamentController {
 					}
 				}
 				else {
-					Yii::$app->session->addFlash("error", "No File available");
+					Yii::$app->session->addFlash("error", Yii::t("app", "No File available"));
 					print_r($file);
 				}
 			}
@@ -394,7 +394,7 @@ class TeamController extends BaseTournamentController {
 			$out['results'] = ['id' => $id, 'text' => Team::findOne($id)->name];
 		}
 		else {
-			$out['results'] = ['id' => 0, 'text' => 'No matching records found'];
+			$out['results'] = ['id' => 0, 'text' => Yii::t("app", 'No matching records found')];
 		}
 		echo \yii\helpers\Json::encode($out);
 	}

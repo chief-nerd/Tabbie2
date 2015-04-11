@@ -37,8 +37,8 @@ $this->params['breadcrumbs'][] = $this->title;
 				'urlCreator' => function ($action, $model, $key, $index) {
 					return \yii\helpers\Url::to(["strike/team_" . $action, "team_id" => $model->team_id, "adjudicator_id" => $model->adjudicator_id, "tournament_id" => $model->tournament_id]);
 				},
-				'updateOptions' => ['title' => Yii::t("app", "Update team"), 'data-toggle' => 'tooltip'],
-				'deleteOptions' => ['title' => Yii::t("app", "Delete team"), 'data-toggle' => 'tooltip'],
+				'updateOptions' => ['title' => Yii::t("app", "Update Team"), 'data-toggle' => 'tooltip'],
+				'deleteOptions' => ['title' => Yii::t("app", "Delete Team"), 'data-toggle' => 'tooltip'],
 				'width' => '100px',
 			],
 		],

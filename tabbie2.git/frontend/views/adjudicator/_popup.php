@@ -40,7 +40,7 @@ $this->context->layout = null;
 		<td>@todo</td>
 	</tr>
 	<tr>
-		<th>Pointer</th>
+		<th><?= Yii::t("app", "Pointer") ?></th>
 		<td>@todo</td>
 	</tr>
 </table>

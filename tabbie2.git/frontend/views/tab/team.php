@@ -22,13 +22,13 @@ $this->params['breadcrumbs'][] = $this->title;
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'enl_place',
-			'label' => 'ENL Place',
+			'label' => Yii::t("app", 'ENL Place'),
 			'width' => '80px',
 		],
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'esl_place',
-			'label' => 'ESL Place',
+			'label' => Yii::t("app", 'ESL Place'),
 			'width' => '80px',
 			'visible' => $tournament->has_esl,
 			'value' => function ($model, $key, $index, $widget) {
@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'object.name',
-			'label' => 'Team',
+			'label' => Yii::t("app", 'Team'),
 			'format' => 'raw',
 			'value' => function ($model, $key, $index, $widget) {
 				return Html::a($model->object->name, ["team/view", "id" => $model->object->id, "tournament_id" => $model->object->tournament_id]);
@@ -47,13 +47,13 @@ $this->params['breadcrumbs'][] = $this->title;
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'points',
-			'label' => 'Team Points',
+			'label' => Yii::t("app", 'Team Points'),
 			'width' => "20px",
 		],
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'speaks',
-			'label' => 'Speaker Points',
+			'label' => Yii::t("app", 'Speaker Points'),
 			'width' => "20px",
 		],
 	];
@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		$columns[] = [
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'results_array.' . $r->number,
-			'label' => "#" . $r->number,
+			'label' => Yii::t("app", "#{number}", ["number" => $r->number]),
 			'width' => "80px",
 		];
 	}

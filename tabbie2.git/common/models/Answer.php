@@ -71,7 +71,7 @@ class Answer extends \yii\db\ActiveRecord {
 	}
 
 	public function renderLabel($q_id) {
-		return '<label class="control-label" for="' . $this->getName($q_id) . '">' . $this->question->text . '</label>';
+		return '<label class="control-label" for="' . Html::encode($this->getName($q_id)) . '">' . Html::encode($this->question->text) . '</label>';
 	}
 
 	/**

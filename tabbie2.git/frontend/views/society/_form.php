@@ -33,7 +33,7 @@ SCRIPT;
 
 	echo $form->field($model, 'society')->widget(Select2::classname(), [
 		'options' => [
-			'placeholder' => 'Search for a society ...',
+			'placeholder' => Yii::t("app", 'Search for a society ...'),
 			'multiple' => true,
 		],
 		'pluginOptions' => [
@@ -53,7 +53,7 @@ SCRIPT;
 	<?=
 	$form->field($model, 'starting')->widget(DatePicker::classname(), [
 		'type' => DatePicker::TYPE_INPUT,
-		'options' => ['placeholder' => 'Enter start date ...'],
+		'options' => ['placeholder' => Yii::t("app", 'Enter start date ...')],
 		'pluginOptions' => [
 			'autoclose' => true,
 			'format' => 'yyyy-mm-dd'
@@ -65,7 +65,7 @@ SCRIPT;
 	if (!$model->isNewRecord)
 		echo $form->field($model, 'ending')->widget(DatePicker::classname(), [
 			'type' => DatePicker::TYPE_INPUT,
-			'options' => ['placeholder' => 'Enter ending date if applicable ...'],
+			'options' => ['placeholder' => Yii::t("app", 'Enter ending date if applicable ...')],
 			'pluginOptions' => [
 				'autoclose' => true,
 				'format' => 'yyyy-mm-dd',

@@ -279,7 +279,7 @@ class UserController extends BaseUserController {
 			$out['results'] = ['id' => $id, 'text' => User::findOne($id)->name];
 		}
 		else {
-			$out['results'] = ['id' => 0, 'text' => 'No matching records found'];
+			$out['results'] = ['id' => 0, 'text' => Yii::t("app", 'No matching records found')];
 		}
 		echo \yii\helpers\Json::encode($out);
 	}

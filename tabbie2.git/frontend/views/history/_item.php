@@ -23,12 +23,12 @@
 						<table class="table">
 							<thead>
 							<tr>
-								<th>Team</th>
+								<th><?= Yii::t("app", "Team") ?></th>
 								<th width="200">ENL Place</th>
 								<? if ($model->tournament->has_esl && $tab->esl_place): ?>
-									<th width="200">ESL Place</th>
+									<th width="200"><?= Yii::t("app", "ESL Place") ?></th>
 								<? endif; ?>
-								<th width="250">Team Speaker Points</th>
+								<th width="250"><?= Yii::t("app", "Team Speaker Points") ?></th>
 								<?
 								$results = json_decode($tab->cache_results);
 
@@ -71,12 +71,12 @@
 						<table class="table">
 							<thead>
 							<tr>
-								<th>Speaker</th>
-								<th width="200">ENL Place</th>
+								<th><? Yii::t("app", "Speaker") ?></th>
+								<th width="200"><? Yii::t("app", "ENL Place") ?></th>
 								<? if ($model->tournament->has_esl && $tab->esl_place): ?>
-									<th width="200">ESL Place</th>
+									<th width="200"><? Yii::t("app", "ESL Place") ?></th>
 								<? endif; ?>
-								<th width="250">Speaker Points</th>
+								<th width="250"><? Yii::t("app", "Speaker Points") ?></th>
 								<?
 								$results_A = json_decode($tab_A->cache_results);
 								$results_B = json_decode($tab_B->cache_results);
@@ -111,7 +111,7 @@
 					</div>
 				<? else: ?>
 					<div class="col-md-12">
-						<b>No published tab available at the moment</b>
+						<b><?= Yii::t("app", "No published tab available at the moment") ?></b>
 					</div>
 				<? endif; ?>
 			</div>

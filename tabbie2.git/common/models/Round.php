@@ -8,10 +8,8 @@ use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "round".
-
-
-*
-*@property integer         $id
+ *
+ * @property integer         $id
  * @property integer         $number
  * @property integer         $tournament_id
  * @property integer         $energy
@@ -179,15 +177,21 @@ class Round extends \yii\db\ActiveRecord {
 
 			$active_rooms = (count($teams) / 4);
 			if (count($teams) < 4)
-				throw new Exception("Not enough Teams to fill a single room - (active: " . count($teams) . ")", "500");
+				throw new Exception(Yii::t("app", "Not enough Teams to fill a single room - (active: {teams_count})", ["teams_count" => count($teams)]), "500");
 			if (count($adjudicatorsObjects) < 1)
-				throw new Exception("At least a single Adjudicator is necessary - (active: " . count($adjudicatorsObjects) . ")", "500");
+				throw new Exception(Yii::t("app", "At least a single Adjudicator is necessary - (active: {count_adju})", ["count_adju" => count($adjudicatorsObjects)]), "500");
 			if (count($teams) % 4 != 0)
-				throw new Exception("Amount of active Teams must be divided by 4 ;) - (active: " . count($teams) . ")", "500");
+				throw new Exception(Yii::t("app", "Amount of active Teams must be divided by 4 ;) - (active: {count_teams})", ["count_teams" => count($teams)]), "500");
 			if ($active_rooms > count($venues))
-				throw new Exception("Not enough active Rooms (active:" . count($venues) . " required:" . $active_rooms . ")", "500");
+				throw new Exception(Yii::t("app", "Not enough active Rooms (active: {active_rooms} required: {required})", [
+					"active_rooms" => count($venues),
+					"required" => $active_rooms,
+				]), "500");
 			if ($active_rooms > count($adjudicatorsObjects))
-				throw new Exception("Not enough adjudicators (active:" . count($adjudicatorsObjects) . " min-required:" . $active_rooms . ")", "500");
+				throw new Exception(Yii::t("app", "Not enough adjudicators (active: {active}  min-required: {required})", [
+					"active" => count($adjudicatorsObjects),
+					"required" => $active_rooms,
+				]), "500");
 
 
 			$adjudicators = [];
@@ -242,7 +246,7 @@ class Round extends \yii\db\ActiveRecord {
 				$panel->strength = $line->strength;
 				//Save Panel
 				if (!$panel->save())
-					throw new Exception("Can't save Panel " . print_r($panel->getErrors(), true));
+					throw new Exception(Yii::t("app", "Can't save Panel {message}", ["message" => print_r($panel->getErrors(), true)]));
 
 				$line->panelID = $panel->id;
 
@@ -260,7 +264,7 @@ class Round extends \yii\db\ActiveRecord {
 						$alloc->function = Panel::FUNCTION_WING;
 
 					if (!$alloc->save())
-						throw new Exception("Can't save AdjudicatorInPanel " . print_r($alloc->getErrors(), true));
+						throw new Exception(Yii::t("app", "Can't save AdjudicatorInPanel {message}", ["message" => print_r($alloc->getErrors(), true)]));
 				}
 			}
 
@@ -277,7 +281,7 @@ class Round extends \yii\db\ActiveRecord {
 			$debate->setMessages($line->messages);
 
 			if (!$debate->save())
-				throw new Exception("Can't save Debate " . print_r($debate->getErrors(), true));
+				throw new Exception(Yii::t("app", "Can't save Debate {message}", ["message" => print_r($debate->getErrors(), true)]));
 		}
 	}
 

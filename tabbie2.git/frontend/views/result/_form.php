@@ -25,7 +25,7 @@ use yii\widgets\ActiveForm;
 
 	<div class="row">
 		<div class="<?= $cols ?>">
-			<h3>Opening Government</h3>
+			<h3><?= Yii::t("app", "Opening Government") ?></h3>
 			<h4><?= $debate->og_team->name ?></h4>
 			<?= $form->field($model, 'og_A_speaks', $fieldOption)
 			         ->label($debate->og_team->speakerA->name)
@@ -35,7 +35,7 @@ use yii\widgets\ActiveForm;
 			         ->textInput($textOption) ?>
 		</div>
 		<div class="<?= $cols ?>">
-			<h3>Opening Opposition</h3>
+			<h3><?= Yii::t("app", "Opening Opposition") ?></h3>
 			<h4><?= $debate->oo_team->name ?></h4>
 			<?= $form->field($model, 'oo_A_speaks', $fieldOption)
 			         ->label($debate->oo_team->speakerA->name)
@@ -47,7 +47,7 @@ use yii\widgets\ActiveForm;
 	</div>
 	<div class="row">
 		<div class="<?= $cols ?>">
-			<h3>Closing Government</h3>
+			<h3><?= Yii::t("app", "Closing Government") ?></h3>
 			<h4><?= $debate->cg_team->name ?></h4>
 			<?= $form->field($model, 'cg_A_speaks', $fieldOption)
 			         ->label($debate->cg_team->speakerA->name)
@@ -57,7 +57,7 @@ use yii\widgets\ActiveForm;
 			         ->textInput($textOption) ?>
 		</div>
 		<div class="<?= $cols ?>">
-			<h3>Closing Opposition</h3>
+			<h3><?= Yii::t("app", "Closing Opposition") ?></h3>
 			<h4><?= $debate->co_team->name ?></h4>
 			<?= $form->field($model, 'co_A_speaks', $fieldOption)
 			         ->label($debate->co_team->speakerA->name)

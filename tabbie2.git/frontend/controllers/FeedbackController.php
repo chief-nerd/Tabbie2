@@ -107,7 +107,7 @@ class FeedbackController extends BaseTournamentController {
 			case Feedback::FROM_WING:
 				$object = AdjudicatorInPanel::findOne(["adjudicator_id" => $ref, "panel_id" => $feedback->debate->panel_id]);
 				if (!$object) {
-					throw new Exception("Chair in Panel not found - type wrong?");
+					throw new Exception(Yii::t("app", "Chair in Panel not found - type wrong?"));
 				}
 				$already_entered = $object->got_feedback;
 				break;
@@ -122,7 +122,7 @@ class FeedbackController extends BaseTournamentController {
 					]
 				)->one();
 				if (!$object) {
-					throw new Exception("Team not found - type wrong?");
+					throw new Exception(Yii::t("app", "Team not found - type wrong?"));
 				}
 
 				foreach ($object->getTeams(true) as $pos => $team_id) {
@@ -133,7 +133,7 @@ class FeedbackController extends BaseTournamentController {
 				}
 				break;
 			default:
-				throw new Exception("No type");
+				throw new Exception(Yii::t("app", "No type"));
 		}
 
 		foreach ($this->_tournament->getQuestions($type)->all() as $question) {

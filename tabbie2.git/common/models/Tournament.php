@@ -118,9 +118,9 @@ class Tournament extends \yii\db\ActiveRecord {
 
 	public function getStatusOptions($id = null) {
 		$options = [
-			self::STATUS_CREATED => "Created",
-			self::STATUS_RUNNING => "Running",
-			self::STATUS_CLOSED => "Closed",
+			self::STATUS_CREATED => Yii::t("app", "Created"),
+			self::STATUS_RUNNING => Yii::t("app", "Running"),
+			self::STATUS_CLOSED => Yii::t("app", "Closed"),
 		];
 
 		return ($id) ? $options[$id] : $options;

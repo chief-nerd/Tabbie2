@@ -13,11 +13,11 @@ use yii\widgets\DetailView;
 
 \frontend\assets\RoundviewAsset::register($this);
 
-$this->title = "Round #" . $model->number;
+$this->title = Yii::t("app", "Round #{number}", ["number" => $model->number]);
 $tournament = $this->context->_getContext();
 $this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Rounds'), 'url' => ['index', "tournament_id" => $tournament->id]];
-$this->params['breadcrumbs'][] = "#" . $model->number;
+$this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model->number]);
 ?>
 <div class="round-view">
 
@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
 					        aria-expanded="false">
 						<span class="caret"></span>
-						<span class="sr-only">Toggle Dropdown</span>
+						<span class="sr-only"><?= Yii::t("app", "Toggle Dropdown") ?></span>
 					</button>
 					<ul class="dropdown-menu" role="menu">
 						<?
@@ -88,7 +88,7 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 			<?
 			$attributes = [];
 			$attributes[] = [
-				"label" => 'Round Status',
+				"label" => Yii::t("app", 'Round Status'),
 				'value' => common\models\Round::statusLabel($model->status),
 			];
 			$attributes[] = 'motion:ntext';
@@ -96,13 +96,13 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 				$attributes[] = 'infoslide:ntext';
 			$attributes[] = [
 				"attribute" => 'energy',
-				'label' => "Average Energy",
+				'label' => Yii::t("app", "Average Energy"),
 				'format' => 'raw',
 				'value' => (($debateDataProvider->getCount()) ? intval($model->energy / $debateDataProvider->getCount()) : 0),
 			];
 			if ($model->displayed)
 				$attributes[] = 'prep_started';
-			$attributes[] = 'time:text:Creation Time';
+			$attributes[] = 'time:text:' . Yii::t("app", "Creation Time");
 			$attributes[] = [
 				"attribute" => 'lastrun_temp',
 				'format' => 'raw',
@@ -116,7 +116,7 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 			?>
 		</div>
 		<div class="col-md-4 text-center">
-			<h3 style="margin-top:0; margin-bottom:20px;">Color Palette</h3>
+			<h3 style="margin-top:0; margin-bottom:20px;"><?= Yii::t("app", "Color Palette") ?></h3>
 
 			<?= SwitchInput::widget([
 				'name' => 'colorpattern',
@@ -160,7 +160,7 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'venue',
-			'label' => 'Venue',
+			'label' => Yii::t("app", 'Venue'),
 			'width' => '8%',
 			'format' => 'raw',
 			'value' => function ($model, $key, $index, $widget) {
@@ -173,27 +173,27 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'og_team.name',
-			'label' => "OG Team",
+			'label' => Yii::t("app", "OG Team"),
 		],
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'oo_team.name',
-			'label' => "OO Team",
+			'label' => Yii::t("app", "OO Team"),
 		],
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'cg_team.name',
-			'label' => 'CG Team',
+			'label' => Yii::t("app", 'CG Team'),
 		],
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'co_team.name',
-			'label' => 'CO Team',
+			'label' => Yii::t("app", 'CO Team'),
 		],
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'panel',
-			'label' => 'Adjudicator',
+			'label' => Yii::t("app", 'Adjudicator'),
 			'format' => 'raw',
 			'width' => '40%',
 			'value' => function ($model, $key, $index, $widget) {
@@ -204,7 +204,7 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 					$panel_chair_id = $model->getChair()->id;
 					foreach ($panel->adjudicators as $adj) {
 
-						$popcontent = "Loading...";
+						$popcontent = Yii::t("app", "Loading ...");
 
 						$class = "label";
 						$class .= " " . common\models\Adjudicator::getCSSStrength($adj->strength);
@@ -219,8 +219,8 @@ $this->params['breadcrumbs'][] = "#" . $model->number;
 							'placement' => PopoverX::ALIGN_TOP,
 							'content' => $popcontent,
 							'footer' =>
-								Html::a('Move', ["adjudicator/move", "id" => $adj->id, "debate" => $model->id, "tournament_id" => $model->tournament_id], ['class' => 'moveAdj btn btn-sm btn-primary']) .
-								Html::a('View more', ["adjudicator/view", "id" => $adj->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-sm btn-default']),
+								Html::a(Yii::t("app", 'Move'), ["adjudicator/move", "id" => $adj->id, "debate" => $model->id, "tournament_id" => $model->tournament_id], ['class' => 'moveAdj btn btn-sm btn-primary']) .
+								Html::a(Yii::t("app", 'View more'), ["adjudicator/view", "id" => $adj->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-sm btn-default']),
 							'toggleButton' => [
 								'label' => $adj->user->name,
 								'class' => 'btn btn-sm adj ' . $class,

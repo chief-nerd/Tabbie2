@@ -3,7 +3,7 @@
 use kartik\grid\GridView;
 
 $this->context->menuItems = [
-	['label' => 'Run', 'url' => "#run", "linkOptions" => ["class" => "run"]],
+	['label' => Yii::t("app", 'Run'), 'url' => "#run", "linkOptions" => ["class" => "run"]],
 ];
 
 $this->title = "Round " . $round->number . " Draw";
@@ -15,32 +15,32 @@ $this->title = "Round " . $round->number . " Draw";
 			[
 				'class' => '\kartik\grid\DataColumn',
 				'attribute' => 'venue.name',
-				'label' => 'Venue',
+				'label' => Yii::t("app", 'Venue'),
 			],
 			[
 				'class' => '\kartik\grid\DataColumn',
 				'attribute' => 'og_team.name',
-				'label' => "OG Team",
+				'label' => Yii::t("app", "OG Team"),
 			],
 			[
 				'class' => '\kartik\grid\DataColumn',
 				'attribute' => 'oo_team.name',
-				'label' => "OO Team",
+				'label' => Yii::t("app", "OO Team"),
 			],
 			[
 				'class' => '\kartik\grid\DataColumn',
 				'attribute' => 'cg_team.name',
-				'label' => 'CG Team',
+				'label' => Yii::t("app", 'CG Team'),
 			],
 			[
 				'class' => '\kartik\grid\DataColumn',
 				'attribute' => 'co_team.name',
-				'label' => 'CO Team',
+				'label' => Yii::t("app", 'CO Team'),
 			],
 			[
 				'class' => '\kartik\grid\DataColumn',
 				'attribute' => 'panel',
-				'label' => 'Adjudicator',
+				'label' => Yii::t("app", 'Adjudicator'),
 				'format' => 'raw',
 				'width' => '40%',
 				'value' => function ($model, $key, $index, $widget) {
@@ -85,8 +85,8 @@ $this->title = "Round " . $round->number . " Draw";
 	<? $motionStyle = "display:none;"; ?>
 	<div class="row" id="drawdisplay" style="width: 90%; margin: 0 auto;">
 		<center>
-			<?= yii\helpers\Html::button("Show Info Slide", ["disabled" => "disabled", "id" => 'infoslide', "class" => "btn btn-success"]) ?>
-			<?= yii\helpers\Html::button("Show Motion", ["disabled" => "disabled", "class" => "btn btn-success", "id" => 'motion']) ?>
+			<?= yii\helpers\Html::button(Yii::t("app", "Show Info Slide"), ["disabled" => "disabled", "id" => 'infoslide', "class" => "btn btn-success"]) ?>
+			<?= yii\helpers\Html::button(Yii::t("app", "Show Motion"), ["disabled" => "disabled", "class" => "btn btn-success", "id" => 'motion']) ?>
 		</center>
 		<div class="col-sm-12" id="infoslideContent" style="display:none; margin-bottom: 100%">
 			<h2><?= $round->infoslide ?></h2>
@@ -100,7 +100,7 @@ $this->title = "Round " . $round->number . " Draw";
 <? else: ?>
 	<div class="row" id="drawdisplay" style="width: 90%; margin: 0 auto;">
 		<center>
-			<?= yii\helpers\Html::button("Show Motion", ["disabled" => "disabled", "class" => "btn btn-success", "id" => 'motion']) ?>
+			<?= yii\helpers\Html::button(Yii::t("app", "Show Motion"), ["disabled" => "disabled", "class" => "btn btn-success", "id" => 'motion']) ?>
 		</center>
 		<div class="col-sm-12 text-center" id="motionContent"
 		     data-href="<?= yii\helpers\Url::to(["display/start", "id" => $round->id, "tournament_id" => $round->tournament_id]) ?>"

@@ -132,7 +132,7 @@ class User extends ActiveRecord implements IdentityInterface {
 		}
 
 		if (in_array($this->$attribute, $actions)) {
-			$this->addError($attribute, 'This Username is not allowed.');
+			$this->addError($attribute, Yii::t("app", 'This Username is not allowed.'));
 		}
 	}
 
@@ -169,7 +169,7 @@ class User extends ActiveRecord implements IdentityInterface {
 	 * @inheritdoc
 	 */
 	public static function findIdentityByAccessToken($token, $type = null) {
-		throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+		throw new NotSupportedException(Yii::t("app", '"findIdentityByAccessToken" is not implemented.'));
 	}
 
 	/**
@@ -541,12 +541,12 @@ class User extends ActiveRecord implements IdentityInterface {
 			}
 			else {
 				Yii::error("Import Errors inSociety: " . print_r($inSociety->getErrors(), true), __METHOD__);
-				Yii::$app->session->addFlash("error", "Error saving InSociety Relation for " . $userA->username);
+				Yii::$app->session->addFlash("error", Yii::t("app", "Error saving InSociety Relation for {user}", ["user" => $userA->username]));
 			}
 		}
 		else {
 			Yii::error("Import Errors userA: " . print_r($userA->getErrors(), true), __METHOD__);
-			Yii::$app->session->addFlash("error", "Error Saving User " . $userA->username);
+			Yii::$app->session->addFlash("error", Yii::t("app", "Error Saving User {user}", ["user" => $userA->username]));
 		}
 		return false;
 	}
@@ -556,7 +556,7 @@ class User extends ActiveRecord implements IdentityInterface {
 			'user' => $user,
 		])->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->params["name"] . ' robot'])
 		                  ->setTo([$user->email => $user->name])
-		                  ->setSubject('User Account for ' . $user->name)
+			->setSubject(Yii::t("email", 'User Account for {user_name}', ["user_name" => $user->name]))
 		                  ->send();
 	}
 

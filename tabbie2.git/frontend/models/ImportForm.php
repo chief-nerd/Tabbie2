@@ -28,7 +28,7 @@ class ImportForm extends Model {
 	 */
 	public function attributeLabels() {
 		return [
-			'csvFile' => '*.csv File',
+			'csvFile' => Yii::t("app", '*.csv File'),
 		];
 	}
 

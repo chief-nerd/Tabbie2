@@ -55,7 +55,7 @@ class SignupForm extends Model {
 		}
 
 		if (in_array($this->$attribute, $actions)) {
-			$this->addError($attribute, 'This Username is not allowed.');
+			$this->addError($attribute, Yii::t("app", 'This Username is not allowed.'));
 		}
 	}
 

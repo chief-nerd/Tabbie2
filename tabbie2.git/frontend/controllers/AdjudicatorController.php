@@ -142,7 +142,7 @@ class AdjudicatorController extends BaseTournamentController {
 						}
 					}
 					else {
-						throw new Exception("No condition matched");
+						throw new Exception(Yii::t("app", "No condition matched"));
 					}
 					// Refresh Values to check
 					$oldPanel->refresh();
@@ -150,7 +150,10 @@ class AdjudicatorController extends BaseTournamentController {
 					if ($oldPanel->check() && $newPanel->check())
 						return 1;
 					else
-						throw new Exception("Did not pass panel check old:" . (($oldPanel->check()) ? 'true' : 'false') . " new:" . (($newPanel->check()) ? 'true' : 'false'));
+						throw new Exception(Yii::t("app", "Did not pass panel check old: {old} / new: {new}", [
+							"old" => (($oldPanel->check()) ? 'true' : 'false'),
+							"new" => (($newPanel->check()) ? 'true' : 'false'),
+						]));
 				}
 				else
 					throw new Exception("No Panel");
@@ -362,7 +365,7 @@ class AdjudicatorController extends BaseTournamentController {
 					$adj->strength = $row[4][0];
 					$adj->society_id = $societyID;
 					if (!$adj->save())
-						Yii::$app->session->addFlash("error", "Save error: " . print_r($adj->getErrors(), true));
+						Yii::$app->session->addFlash("error", Yii::t("app", "Save error: {message}", ["message" => print_r($adj->getErrors(), true)]));
 				}
 				set_time_limit(30);
 				return $this->redirect(['index', "tournament_id" => $this->_tournament->id]);
@@ -381,7 +384,7 @@ class AdjudicatorController extends BaseTournamentController {
 						}
 
 						if (($num = count($data)) != 5) {
-							throw new \yii\base\Exception("500", "File Syntax Wrong");
+							throw new \yii\base\Exception("500", Yii::t("app", "File Syntax Wrong"));
 						}
 						for ($c = 0; $c < $num; $c++) {
 							$model->tempImport[$row][$c][0] = trim($data[$c]);
@@ -430,7 +433,7 @@ class AdjudicatorController extends BaseTournamentController {
 					}
 				}
 				else {
-					Yii::$app->session->addFlash("error", "No File available");
+					Yii::$app->session->addFlash("error", Yii::t("app", "No File available"));
 					print_r($file);
 				}
 			}
@@ -497,7 +500,7 @@ class AdjudicatorController extends BaseTournamentController {
 			$out['results'] = ['id' => $id, 'text' => Adjudicator::findOne($id)->name];
 		}
 		else {
-			$out['results'] = ['id' => 0, 'text' => 'No matching records found'];
+			$out['results'] = ['id' => 0, 'text' => Yii::t("app", 'No matching records found')];
 		}
 		echo \yii\helpers\Json::encode($out);
 	}

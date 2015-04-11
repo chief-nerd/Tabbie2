@@ -24,21 +24,19 @@ $this->params['breadcrumbs'][] = $this->title;
 
 			<p>
 				<? if ($tournament->status < Tournament::STATUS_CLOSED): ?>
-				<?=
-				Html::a(Yii::t('app', 'Create {modelClass}', [
-					'modelClass' => 'Adjudicator',
-				]), ['create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
-				?>
-				<?=
-				Html::a(Yii::t('app', 'Import {modelClass}', [
-					'modelClass' => 'Adjudicator',
-				]), ['import', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
-				?>
-				<?=
-				Html::a(Yii::t('app', 'Reset watched', [
-					'modelClass' => 'Adjudicator',
-				]), ['resetwatched', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
-				?>
+					<?=
+					Html::a(Yii::t('app', 'Create {modelClass}', [
+						'modelClass' => 'Adjudicator',
+					]), ['create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
+					?>
+					<?=
+					Html::a(Yii::t('app', 'Import {modelClass}', [
+						'modelClass' => 'Adjudicator',
+					]), ['import', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
+					?>
+					<?=
+					Html::a(Yii::t('app', 'Reset watched'), ['resetwatched', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
+					?>
 				<? endif; ?>
 			</p>
 		</div>
@@ -85,7 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
-			'filterInputOptions' => ['placeholder' => 'Any Adjudicator'],
+			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any Adjudicator ...')],
 		],
 		[
 			'class' => '\kartik\grid\DataColumn',
@@ -95,7 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
-			'filterInputOptions' => ['placeholder' => 'Any Society'],
+			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any Society ...')],
 		],
 		[
 			'class' => '\kartik\grid\DataColumn',
@@ -138,9 +136,9 @@ $this->params['breadcrumbs'][] = $this->title;
 			'urlCreator' => function ($action, $model, $key, $index) {
 				return \yii\helpers\Url::to(["adjudicator/" . $action, "id" => $model->id, "tournament_id" => $model->tournament->id]);
 			},
-			'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", "View Adjudicator"), 'data-toggle' => 'tooltip'],
-			'updateOptions' => ['title' => Yii::t("app", "Update Adjudicator"), 'data-toggle' => 'tooltip'],
-			'deleteOptions' => ['title' => Yii::t("app", "Delete Adjudicator"), 'data-toggle' => 'tooltip'],
+			'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", 'View {modelClass}', ['modelClass' => 'Adjudicator']), 'data-toggle' => 'tooltip'],
+			'updateOptions' => ['title' => Yii::t("app", 'Update {modelClass}', ['modelClass' => 'Adjudicator']), 'data-toggle' => 'tooltip'],
+			'deleteOptions' => ['title' => Yii::t("app", 'Delete {modelClass}', ['modelClass' => 'Adjudicator']), 'data-toggle' => 'tooltip'],
 			'width' => '122px',
 		],
 	];
@@ -158,7 +156,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		'floatHeaderOptions' => ['scrollingTop' => 100],
 		'toolbar' => [
 			['content' =>
-				Html::a('<i class="glyphicon glyphicon-plus"></i> ' . Yii::t('app', 'Add Adjudicator'), ["adjudicator/create", "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
+				Html::a('<i class="glyphicon glyphicon-plus"></i> ' . Yii::t('app', 'Add {modelClass}', ['modelClass' => 'Adjudicator']), ["adjudicator/create", "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
 			]
 		]
 	])

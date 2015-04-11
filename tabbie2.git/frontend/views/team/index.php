@@ -78,7 +78,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
-			'filterInputOptions' => ['placeholder' => 'Any Team'],
+			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any Team ...')],
 		],
 		[
 			'class' => '\kartik\grid\DataColumn',
@@ -89,7 +89,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
-			'filterInputOptions' => ['placeholder' => 'Any Society'],
+			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any Society ...')],
 		],
 		[
 			'class' => '\kartik\grid\DataColumn',
@@ -105,7 +105,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
-			'filterInputOptions' => ['placeholder' => 'Any Speaker'],
+			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any Speaker ...')],
 		],
 		[
 			'class' => 'kartik\grid\ActionColumn',
@@ -124,9 +124,9 @@ $this->params['breadcrumbs'][] = $this->title;
 			'urlCreator' => function ($action, $model, $key, $index) {
 				return \yii\helpers\Url::to(["team/" . $action, "id" => $model->id, "tournament_id" => $model->tournament->id]);
 			},
-			'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", "View team"), 'data-toggle' => 'tooltip'],
-			'updateOptions' => ['title' => Yii::t("app", "Update team"), 'data-toggle' => 'tooltip'],
-			'deleteOptions' => ['title' => Yii::t("app", "Delete team"), 'data-toggle' => 'tooltip'],
+			'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", 'View {modelClass}', ['modelClass' => 'Team']), 'data-toggle' => 'tooltip'],
+			'updateOptions' => ['title' => Yii::t("app", 'Update {modelClass}', ['modelClass' => 'Team']), 'data-toggle' => 'tooltip'],
+			'deleteOptions' => ['title' => Yii::t("app", 'Delete {modelClass}', ['modelClass' => 'Team']), 'data-toggle' => 'tooltip'],
 			'width' => '100px',
 		],
 	];
@@ -144,7 +144,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		'floatHeaderOptions' => ['scrollingTop' => 100],
 		'toolbar' => [
 			['content' =>
-				Html::a('<i class="glyphicon glyphicon-plus"></i> ' . Yii::t('app', 'Add Team'), ["team/create", "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
+				Html::a('<i class="glyphicon glyphicon-plus"></i> ' . Yii::t('app', 'Add {modelClass}', ['modelClass' => 'Team']), ["team/create", "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
 			]
 		],
 	])

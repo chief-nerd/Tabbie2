@@ -36,7 +36,7 @@ SCRIPT;
 	<div class="row">
 		<div class="col-sm-12">
 			<?= $form->field($model, 'id')->widget(Select2::classname(), [
-					'options' => ['placeholder' => 'Filter for an adjudicator ...'],
+					'options' => ['placeholder' => Yii::t("app", 'Filter for an adjudicator ...')],
 					'addon' => [
 						"prepend" => [
 							"content" => '<i class="glyphicon glyphicon-user"></i>'

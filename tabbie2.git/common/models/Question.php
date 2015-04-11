@@ -82,10 +82,10 @@ class Question extends \yii\db\ActiveRecord {
 
 	public function getTypeOptions($id = null) {
 		$types = [
-			self::TYPE_STAR => "Star Rating (1-5)",
-			self::TYPE_INPUT => "Short Text",
-			self::TYPE_TEXT => "Long Text",
-			self::TYPE_NUMBER => "Number",
+			self::TYPE_STAR => Yii::t("app", "Star Rating (1-5) Field"),
+			self::TYPE_INPUT => Yii::t("app", "Short Text Field"),
+			self::TYPE_TEXT => Yii::t("app", "Long Text Field"),
+			self::TYPE_NUMBER => Yii::t("app", "Number Field"),
 		];
 		return ($id === null) ? $types : $types[$id];
 	}

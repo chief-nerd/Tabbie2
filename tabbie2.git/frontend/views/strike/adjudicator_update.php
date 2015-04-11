@@ -5,8 +5,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model common\models\Strikes */
 
-$this->title = Yii::t('app', 'Update Adjudicator {modelClass}', [
-	'modelClass' => 'Strikes',
+$this->title = Yii::t('app', 'Update {modelClass}', [
+	'modelClass' => 'Adjudicator Strikes',
 ]);
 $tournament = $this->context->_getContext();
 $this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];

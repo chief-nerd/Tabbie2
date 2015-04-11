@@ -8,8 +8,8 @@
 		</ul>
 	</div>
 	<div class="col-xs-2">
-		<h3>Point
-			Bucket: <?= max($model->og_team->points, $model->oo_team->points, $model->cg_team->points, $model->co_team->points) ?></h3>
+		<h3><?= Yii::t("app", "Point Bucket") ?>
+			: <?= max($model->og_team->points, $model->oo_team->points, $model->cg_team->points, $model->co_team->points) ?></h3>
 	</div>
 	<div class="col-xs-4 messages">
 		<table>
@@ -21,6 +21,6 @@
 		</table>
 	</div>
 	<div class="col-xs-3 messages">
-		<h3>Energy Level: <?= $model->energy ?></h3>
+		<h3><?= Yii::t("app", "Energy Level") ?>: <?= $model->energy ?></h3>
 	</div>
 </div>

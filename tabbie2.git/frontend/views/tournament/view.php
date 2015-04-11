@@ -68,7 +68,7 @@ $this->params['breadcrumbs'][] = $this->title;
 						<div class="row">
 							<div class="col-xs-12 col-md-3">
 								<?
-								$linktext = "Motion Round #" . $round->number . ":";
+								$linktext = Yii::t("app", "Motion Round #{number}:", ["number" => $round->number]);
 								if (Yii::$app->user->isTabMaster($model) || Yii::$app->user->isConvenor($model)):
 									?>
 									<?= Html::a($linktext, ["round/view", "id" => $round->id, "tournament_id" => $model->id]); ?>
@@ -77,7 +77,7 @@ $this->params['breadcrumbs'][] = $this->title;
 								<? endif; ?>
 							</div>
 							<div class="col-xs-12 col-md-9">
-								<?= $round->motion ?>
+								<?= Html::encode($round->motion) ?>
 							</div>
 						</div>
 					</li>

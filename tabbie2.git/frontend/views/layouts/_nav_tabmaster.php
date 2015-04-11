@@ -4,7 +4,7 @@ use yii\bootstrap\NavBar;
 use common\models\Tournament;
 
 NavBar::begin([
-	'brandLabel' => $tournament->name . " - Tabmaster",
+	'brandLabel' => Yii::t("app", "{tournament} - Tabmaster", ["tournament" => $tournament->name]),
 	'brandUrl' => Yii::$app->urlManager->createUrl(["tournament/view", "id" => $tournament->id]),
 	'options' => [
 		'class' => 'navbar navbar-default navbar-fixed-top navbar-sub',
@@ -14,89 +14,89 @@ NavBar::begin([
 $rounds = array();
 $results = array();
 foreach ($tournament->rounds as $r) {
-	$rounds[] = ['label' => "Round #$r->number", 'url' => ['round/view', "id" => $r->id, "tournament_id" => $tournament->id]];
-	$results[] = ['label' => "Result Round #$r->number", 'url' => ['result/round', "id" => $r->id, "tournament_id" => $tournament->id]];
+	$rounds[] = ['label' => Yii::t("app", "Round #{number}", ["number" => $r->number]), 'url' => ['round/view', "id" => $r->id, "tournament_id" => $tournament->id]];
+	$results[] = ['label' => Yii::t("app", "Result Round #{number}", ["number" => $r->number]), 'url' => ['result/round', "id" => $r->id, "tournament_id" => $tournament->id]];
 }
 
 $team_items = [
-	['label' => 'List Teams', 'url' => ['team/index', "tournament_id" => $tournament->id]],
-	(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => 'Create Team', 'url' => ['team/create', "tournament_id" => $tournament->id]] : ""),
-	(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => 'Import Team', 'url' => ['team/import', "tournament_id" => $tournament->id]] : ""),
+	['label' => Yii::t("app", 'List Teams'), 'url' => ['team/index', "tournament_id" => $tournament->id]],
+	(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Yii::t("app", 'Create Team'), 'url' => ['team/create', "tournament_id" => $tournament->id]] : ""),
+	(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Yii::t("app", 'Import Team'), 'url' => ['team/import', "tournament_id" => $tournament->id]] : ""),
 	'<li class="divider"></li>',
-	['label' => 'Strike Team', 'url' => ['strike/team_index', "tournament_id" => $tournament->id]],
+	['label' => Yii::t("app", 'Strike Team'), 'url' => ['strike/team_index', "tournament_id" => $tournament->id]],
 ];
 
 if ($tournament->has_esl) {
 	$team_items[] = '<li class="divider"></li>';
-	$team_items[] = ['label' => 'Language Officers', 'url' => ['language/officer', "tournament_id" => $tournament->id]];
-	$team_items[] = ['label' => 'Language Status Review', 'url' => ['language/index', "tournament_id" => $tournament->id]];
+	$team_items[] = ['label' => Yii::t("app", 'Language Officers'), 'url' => ['language/officer', "tournament_id" => $tournament->id]];
+	$team_items[] = ['label' => Yii::t("app", 'Language Status Review'), 'url' => ['language/index', "tournament_id" => $tournament->id]];
 }
 
 $menuItems = [
 	['label' => 'Venues', 'url' => '#',
 		"items" => [
-			['label' => 'List Venues', 'url' => ['venue/index', "tournament_id" => $tournament->id]],
-			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => 'Create Venue', 'url' => ['venue/create', "tournament_id" => $tournament->id]] : ""),
-			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => 'Import Venue', 'url' => ['venue/import', "tournament_id" => $tournament->id]] : ""),
+			['label' => Yii::t("app", 'List Venues'), 'url' => ['venue/index', "tournament_id" => $tournament->id]],
+			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Yii::t("app", 'Create Venue'), 'url' => ['venue/create', "tournament_id" => $tournament->id]] : ""),
+			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Yii::t("app", 'Import Venue'), 'url' => ['venue/import', "tournament_id" => $tournament->id]] : ""),
 		]
 	],
-	['label' => 'Teams', 'url' => '#',
+	['label' => Yii::t("app", 'Teams'), 'url' => '#',
 		"items" => $team_items,
 	],
-	['label' => 'Adjudicators', 'url' => '#',
+	['label' => Yii::t("app", 'Adjudicators'), 'url' => '#',
 		"items" => [
-			['label' => 'List Adjudicators', 'url' => ['adjudicator/index', "tournament_id" => $tournament->id]],
-			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => 'Create Adjudicator', 'url' => ['adjudicator/create', "tournament_id" => $tournament->id]] : ""),
-			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => 'Import Adjudicator', 'url' => ['adjudicator/import', "tournament_id" => $tournament->id]] : ""),
+			['label' => Yii::t("app", 'List Adjudicators'), 'url' => ['adjudicator/index', "tournament_id" => $tournament->id]],
+			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Yii::t("app", 'Create Adjudicator'), 'url' => ['adjudicator/create', "tournament_id" => $tournament->id]] : ""),
+			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Yii::t("app", 'Import Adjudicator'), 'url' => ['adjudicator/import', "tournament_id" => $tournament->id]] : ""),
 			'<li class="divider"></li>',
-			['label' => 'Preset Adj. Panels', 'url' => ["panel/create", "tournament_id" => $tournament->id]],
+			['label' => Yii::t("app", 'Preset Adj. Panels'), 'url' => ["panel/create", "tournament_id" => $tournament->id]],
 			'<li class="divider"></li>',
-			['label' => 'Strike Adjudicator', 'url' => ['strike/adjudicator_index', "tournament_id" => $tournament->id]],
+			['label' => Yii::t("app", 'Strike Adjudicator'), 'url' => ['strike/adjudicator_index', "tournament_id" => $tournament->id]],
 		]
 	],
-	['label' => 'Rounds', 'url' => '#',
+	['label' => Yii::t("app", 'Rounds'), 'url' => '#',
 		"items" => array_merge_recursive([
-			['label' => 'List Rounds', 'url' => ['round/index', "tournament_id" => $tournament->id]],
-			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => 'Create Round', 'url' => ['round/create', "tournament_id" => $tournament->id]] : ""),
+			['label' => Yii::t("app", 'List Rounds'), 'url' => ['round/index', "tournament_id" => $tournament->id]],
+			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Yii::t("app", 'Create Round'), 'url' => ['round/create', "tournament_id" => $tournament->id]] : ""),
 			'<li class="divider"></li>',
-			['label' => 'Energy Options', 'url' => ['energy/index', "tournament_id" => $tournament->id]],
+			['label' => Yii::t("app", 'Energy Options'), 'url' => ['energy/index', "tournament_id" => $tournament->id]],
 			'<li class="divider"></li>',
 		], $rounds),
 	],
-	['label' => 'Results', 'url' => '#',
+	['label' => Yii::t("app", 'Results'), 'url' => '#',
 		"items" => array_merge_recursive([
-			['label' => 'List Results', 'url' => ['result/index', "tournament_id" => $tournament->id]],
-			['label' => 'Correct Cache', 'url' => ['result/correctcache', "tournament_id" => $tournament->id]],
+			['label' => Yii::t("app", 'List Results'), 'url' => ['result/index', "tournament_id" => $tournament->id]],
+			['label' => Yii::t("app", 'Correct Cache'), 'url' => ['result/correctcache', "tournament_id" => $tournament->id]],
 			'<li class="divider"></li>',
 		], $results),
 	],
-	['label' => 'Current Tab', 'url' => "#",
+	['label' => Yii::t("app", 'Current Tab'), 'url' => "#",
 		"items" => [
-			['label' => 'Team Tab', 'url' => ['tab/live-team', "tournament_id" => $tournament->id]],
-			['label' => 'Speaker Tab', 'url' => ['tab/live-speaker', "tournament_id" => $tournament->id]],
+			['label' => Yii::t("app", 'Team Tab'), 'url' => ['tab/live-team', "tournament_id" => $tournament->id]],
+			['label' => Yii::t("app", 'Speaker Tab'), 'url' => ['tab/live-speaker', "tournament_id" => $tournament->id]],
 			'<li class="divider"></li>',
-			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => 'Publish Tab', 'url' => ['tab/publish', "tournament_id" => $tournament->id],
+			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Yii::t("app", 'Publish Tab'), 'url' => ['tab/publish', "tournament_id" => $tournament->id],
 				'linkOptions' => ['data' => [
-					"confirm" => "Publishing the Tab will close and archive the tournament!! Are you sure you want to continue?"
+					"confirm" => Yii::t("app", "Publishing the Tab will close and archive the tournament!! Are you sure you want to continue?")
 				]]] : ""),
 			(($tournament->status < Tournament::STATUS_CLOSED) ? '<li class="divider"></li>' : ""),
-			['label' => 'Missing User', 'url' => ['display/missinguser', "tournament_id" => $tournament->id], 'linkOptions' => ['target' => '_blank']],
-			['label' => 'Checkin Form', 'url' => ['tournament/checkin', "id" => $tournament->id]],
-			['label' => 'Reset Checkin', 'url' => ['tournament/checkinreset', "id" => $tournament->id],
+			['label' => Yii::t("app", 'Missing User'), 'url' => ['display/missinguser', "tournament_id" => $tournament->id], 'linkOptions' => ['target' => '_blank']],
+			['label' => Yii::t("app", 'Checkin Form'), 'url' => ['tournament/checkin', "id" => $tournament->id]],
+			['label' => Yii::t("app", 'Reset Checkin'), 'url' => ['tournament/checkinreset', "id" => $tournament->id],
 				'linkOptions' => ['data' => [
-					"confirm" => "Are you sure you want to reset the checkin?"
+					"confirm" => Yii::t("app", "Are you sure you want to reset the checkin?")
 				]]],
 		]
 	],
-	['label' => 'Feedback', 'url' => '#',
+	['label' => Yii::t("app", 'Feedback'), 'url' => '#',
 		"items" => [
-			['label' => 'Setup Questions', 'url' => ['question/index', "tournament_id" => $tournament->id]],
+			['label' => Yii::t("app", 'Setup Questions'), 'url' => ['question/index', "tournament_id" => $tournament->id]],
 			'<li class="divider"></li>',
-			['label' => 'Every Feedback', 'url' => ['feedback/index', "tournament_id" => $tournament->id]],
-			['label' => 'Adjudicator Feedback', 'url' => ['feedback/adjudicator', "tournament_id" => $tournament->id]],
+			['label' => Yii::t("app", 'Every Feedback'), 'url' => ['feedback/index', "tournament_id" => $tournament->id]],
+			['label' => Yii::t("app", 'Adjudicator Feedback'), 'url' => ['feedback/adjudicator', "tournament_id" => $tournament->id]],
 			'<li class="divider"></li>',
-			['label' => 'Tournament Feedback', 'url' => ['feedback/tournament', "tournament_id" => $tournament->id]],
-			['label' => Yii::$app->params["appName"] . ' System Feedback', 'url' => ['feedback/tabbie', "tournament_id" => $tournament->id]],
+			['label' => Yii::t("app", 'Tournament Feedback'), 'url' => ['feedback/tournament', "tournament_id" => $tournament->id]],
+			['label' => Yii::t("app", '{app} System Feedback', ["app" => Yii::$app->params["appName"]]), 'url' => ['feedback/tabbie', "tournament_id" => $tournament->id]],
 		]
 	],
 ];

@@ -72,8 +72,8 @@ class Result extends \yii\db\ActiveRecord {
 
 		foreach ($positions as $pos) {
 			if (!array_key_exists($pos, $results)) {
-				$this->addError($pos . "_A_speaks", 'Equal place exist');
-				$this->addError($pos . "_B_speaks", 'Equal place exist');
+				$this->addError($pos . "_A_speaks", Yii::t("app", 'Equal place exist'));
+				$this->addError($pos . "_B_speaks", Yii::t("app", 'Equal place exist'));
 			}
 		}
 	}
