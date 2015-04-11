@@ -126,7 +126,7 @@ $this->params['breadcrumbs'][] = $this->title;
 					]);
 				},
 				"active" => function ($url, $model) {
-					return Html::a("<span class='fa fa-user-times'></span>", $url, [
+					return Html::a("<span class='glyphicon glyphicon-pause'></span>", $url, [
 						'title' => Yii::t('app', 'Toogle Active'),
 						'data-pjax' => '0',
 						'data-toggle-active' => $model->id

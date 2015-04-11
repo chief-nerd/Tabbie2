@@ -21,7 +21,6 @@ class AppAsset extends AssetBundle {
 		'css/site.css',
 		'css/tournament.css',
 		'css/result.css',
-		'//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css',
 	];
 	public $js = [
 		'js/site.js',
