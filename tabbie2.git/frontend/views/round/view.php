@@ -206,7 +206,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 
 						$popcontent = Yii::t("app", "Loading ...");
 
-						$class = "label";
+						$class = "label toLoad";
 						$class .= " " . common\models\Adjudicator::getCSSStrength($adj->strength);
 						if (isset($adj->society->country->region_id))
 							$class .= " " . \common\models\Country::getCSSLabel($adj->society->country->region_id);

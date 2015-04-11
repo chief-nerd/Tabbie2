@@ -9,13 +9,14 @@ function init() {
         href = $(this).data("href");
         root = document.querySelector($(this).data("target"));
         contentdiv = $(root).find(".popover-content");
-        if (contentdiv[0].innerHTML.length <= 13) {
+        if (this.classList.contains('toLoad')) {
+            this.classList.remove('toLoad');
             $.ajax({
                 type: "GET",
                 url: href,
             }).success(function (data) {
                 $(contentdiv).html(data);
-                root.style.top = (parseInt(root.style.top) - 30) + "px";
+                root.style.top = (parseInt(root.style.top) - 60) + "px";
             }).error(function (jqXHR, textStatus, errorThrown) {
                 console.error(textStatus + " : " + errorThrown);
             });
