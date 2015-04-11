@@ -6,7 +6,7 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model common\models\Result */
 /* @var $form yii\widgets\ActiveForm */
-$this->title = Yii::t('app', 'Confirm Data for') . " " . $model->debate->venue->name;
+$this->title = Yii::t('app', 'Confirm Data for {venue}', ["venue" => $model->debate->venue->name]);
 $tournament = $this->context->_getContext();
 $this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
 $this->params['breadcrumbs'][] = $this->title;
@@ -29,13 +29,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<div class="row">
 		<div class="<?= $cols ?>">
-			<h3>Opening Government</h3>
+			<h3><?= Yii::t("app", "Opening Government") ?></h3>
 			<?= Html::activeHiddenInput($model, 'og_A_speaks'); ?>
 			<?= Html::activeHiddenInput($model, 'og_B_speaks'); ?>
 			<?= $form->field($model, 'og_place', $fieldOption)->label($debate->og_team->name)->textInput($textOption) ?>
 		</div>
 		<div class="<?= $cols ?>">
-			<h3>Opening Opposition</h3>
+			<h3><?= Yii::t("app", "Opening Opposition") ?></h3>
 			<?= Html::activeHiddenInput($model, 'oo_A_speaks'); ?>
 			<?= Html::activeHiddenInput($model, 'oo_B_speaks'); ?>
 			<?= $form->field($model, 'oo_place', $fieldOption)->label($debate->oo_team->name)->textInput($textOption) ?>
@@ -43,13 +43,13 @@ $this->params['breadcrumbs'][] = $this->title;
 	</div>
 	<div class="row">
 		<div class="<?= $cols ?>">
-			<h3>Closing Government</h3>
+			<h3><?= Yii::t("app", "Closing Government") ?></h3>
 			<?= Html::activeHiddenInput($model, 'cg_A_speaks'); ?>
 			<?= Html::activeHiddenInput($model, 'cg_B_speaks'); ?>
 			<?= $form->field($model, 'cg_place', $fieldOption)->label($debate->cg_team->name)->textInput($textOption) ?>
 		</div>
 		<div class="<?= $cols ?>">
-			<h3>Closing Opposition</h3>
+			<h3><?= Yii::t("app", "Closing Opposition") ?></h3>
 			<?= Html::activeHiddenInput($model, 'co_A_speaks'); ?>
 			<?= Html::activeHiddenInput($model, 'co_B_speaks'); ?>
 			<?= $form->field($model, 'co_place', $fieldOption)->label($debate->co_team->name)->textInput($textOption) ?>

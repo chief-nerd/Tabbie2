@@ -8,10 +8,11 @@ $this->title = Yii::$app->params["slogan"];
 <div class="site-index">
 
 	<div class="jumbotron">
-		<h1>Welcome to <?= Yii::$app->params["appName"] ?>!</h1>
+		<h1><?= Yii::t("app", "Welcome to {appName}!", ["appName" => Yii::$app->params["appName"]]) ?></h1>
 
 		<p class="lead"><?= Yii::$app->params["slogan"] ?></p>
-		<h4>Current Tournament<?= (count($tournaments) > 1) ? "s" : "" ?>:</h4>
+		<h4><?= Yii::t("app", "Current {count, plural, =0{Tournament} =1{Tournament} other{Tournaments}}", ["count" => count($tournaments)]) ?>
+			:</h4>
 
 		<div class="tournaments row">
 			<?

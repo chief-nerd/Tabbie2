@@ -16,7 +16,7 @@ $form = ActiveForm::begin([
 			echo $form->field($debateSearchModel, 'venue')->widget(Select2::classname(), [
 				'data' => \common\models\search\VenueSearch::getSearchArray($model->tournament_id),
 				'options' => [
-					'placeholder' => 'Select a Venue ...'
+					'placeholder' => Yii::t("app", 'Select a Venue ...')
 				],
 				'pluginOptions' => [
 					'allowClear' => true
@@ -31,7 +31,7 @@ $form = ActiveForm::begin([
 			<?
 			echo $form->field($debateSearchModel, 'team')->widget(Select2::classname(), [
 				'data' => \common\models\search\DebateSearch::getTeamSearchArray($model->tournament_id),
-				'options' => ['placeholder' => 'Select a Team ...'],
+				'options' => ['placeholder' => Yii::t("app", 'Select a Team ...')],
 				'pluginOptions' => [
 					'allowClear' => true
 				],
@@ -45,7 +45,7 @@ $form = ActiveForm::begin([
 			<?
 			echo $form->field($debateSearchModel, 'adjudicator')->widget(Select2::classname(), [
 				'data' => \common\models\search\DebateSearch::getAdjudicatorSearchArray($model->tournament_id),
-				'options' => ['placeholder' => 'Select an Adjudicator ...'],
+				'options' => ['placeholder' => Yii::t("app", 'Select an Adjudicator ...')],
 				'pluginOptions' => [
 					'allowClear' => true
 				],

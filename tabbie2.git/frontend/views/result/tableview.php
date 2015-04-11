@@ -13,22 +13,22 @@ $this->title = Yii::t('app', 'Results');
 $tournament = $this->context->_getContext();
 $this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
 $this->params['breadcrumbs'][] = $this->title;
-$this->params['breadcrumbs'][] = "Table View";
+$this->params['breadcrumbs'][] = Yii::t("app", "Table View");
 ?>
 <div class="result-index">
 
-	<h1><?= Html::encode($this->title) ?> for Round #<?= $round_number ?></h1>
+	<h1><?= Yii::t("app", "Results for Round #{number}", ["number" => $round_number]) ?></h1>
 
 	<p class="text-right">
 		<?=
 		Html::checkbox("autoupdate", false, [
-			'label' => "Auto Update <i id='pjax-status' class=''></i>",
+			'label' => Yii::t("app", "Auto Update <i id='pjax-status' class=''></i>"),
 			"data-pjax" => 0,
 		]);
 		?>
 		&nbsp;|&nbsp;
 		<?=
-		Html::a("Switch to Venue View", ["round",
+		Html::a(Yii::t("app", "Switch to Venue View"), ["round",
 			"id" => $round_id,
 			"tournament_id" => $tournament->id,
 			"view" => "venue",

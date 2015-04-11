@@ -6,7 +6,7 @@ use yii\bootstrap\Modal;
 
 Modal::begin([
 	'options' => ['id' => 'changeVenueForm' . $model->venue_id],
-	'header' => '<h4 style="margin:0; padding:0">Switch venue ' . $model->venue->name . ' with</h4>',
+	'header' => '<h4 style="margin:0; padding:0">' . Yii::t("app", "Switch venue {venue} with", ["venue" => $model->venue->name]) . '</h4>',
 	'toggleButton' => ['label' => $model->venue->name, 'class' => 'btn btn-sm btn-default'],
 ]);
 
@@ -20,7 +20,7 @@ $venueOptions = \common\models\search\VenueSearch::getSearchArray($model->tourna
 echo Select2::widget([
 	'name' => 'new_venue',
 	'data' => $venueOptions,
-	'options' => ['placeholder' => 'Select a Venue ...'],
+	'options' => ['placeholder' => Yii::t("app", 'Select a Venue ...')],
 	"pluginEvents" => [
 		"change" => "function() { document.getElementById('changeVenueForm').submit(); }",
 	]

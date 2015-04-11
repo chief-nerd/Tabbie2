@@ -159,16 +159,16 @@ class Adjudicator extends \yii\db\ActiveRecord {
 	 */
 	public static function translateStrength($id = null) {
 		$table = [
-			0 => Yii::t("app", 'Not Rated'),
-			1 => Yii::t("app", 'Bad Judge'),
-			2 => Yii::t("app", 'Can Judge'),
-			3 => Yii::t("app", 'Decent Judge'),
-			4 => Yii::t("app", 'Average Judge'),
-			5 => Yii::t("app", 'High Potential'),
-			6 => Yii::t("app", 'Chair'),
-			7 => Yii::t("app", 'Good Chair'),
-			8 => Yii::t("app", 'Breaking Chair'),
-			9 => Yii::t("app", 'Chief Adjudicator'),
+			0 => Yii::t("adjudicator", 'Not Rated'),
+			1 => Yii::t("adjudicator", 'Bad Judge'),
+			2 => Yii::t("adjudicator", 'Can Judge'),
+			3 => Yii::t("adjudicator", 'Decent Judge'),
+			4 => Yii::t("adjudicator", 'Average Judge'),
+			5 => Yii::t("adjudicator", 'High Potential'),
+			6 => Yii::t("adjudicator", 'Chair'),
+			7 => Yii::t("adjudicator", 'Good Chair'),
+			8 => Yii::t("adjudicator", 'Breaking Chair'),
+			9 => Yii::t("adjudicator", 'Chief Adjudicator'),
 		];
 		return ($id !== null) ? $table[$id] : $table;
 	}

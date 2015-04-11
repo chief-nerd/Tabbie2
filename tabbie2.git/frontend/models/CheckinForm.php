@@ -46,10 +46,10 @@ class CheckinForm extends Model {
 				if ($adj instanceof Adjudicator) {
 					$adj->checkedin = true;
 					$adj->save();
-					$messages[] = ["success" => $adj->name . " checked in!"];
+					$messages[] = ["success" => Yii::t("app", "{adju} checked in!", ["adju" => $adj->name])];
 				}
 				else
-					$messages[] = ["danger" => $real . " Number not valid! Not an Adjudicator!"];
+					$messages[] = ["danger" => Yii::t("app", "{id} number not valid! Not an Adjudicator!", ["id" => $real])];
 
 				break;
 
@@ -58,10 +58,10 @@ class CheckinForm extends Model {
 				if ($team instanceof Team) {
 					$team->speakerA_checkedin = true;
 					$team->save();
-					$messages[] = ["success" => $team->speakerA->name . " checked in!"];
+					$messages[] = ["success" => Yii::t("app", "{speaker} checked in!", ["speaker" => $team->speakerA->name])];
 				}
 				else
-					$messages[] = ["danger" => $real . " Number not valid! Not a Team A"];
+					$messages[] = ["danger" => Yii::t("app", "{id} number not valid! Not a Team!", ["id" => $real])];
 
 				break;
 
@@ -70,15 +70,15 @@ class CheckinForm extends Model {
 				if ($team instanceof Team) {
 					$team->speakerB_checkedin = true;
 					$team->save();
-					$messages[] = ["success" => $team->speakerB->name . " checked in!"];
+					$messages[] = ["success" => Yii::t("app", "{speaker} checked in!", ["speaker" => $team->speakerB->name])];
 				}
 				else
-					$messages[] = ["danger" => $real . " Number not valid! Not a Team B"];
+					$messages[] = ["danger" => Yii::t("app", "{id} number not valid! Not a Team!", ["id" => $real])];
 
 				break;
 
 			default:
-				$messages[] = ["danger" => "Not a valid input"];
+				$messages[] = ["danger" => Yii::t("app", "Not a valid input")];
 				break;
 		}
 		return $messages;

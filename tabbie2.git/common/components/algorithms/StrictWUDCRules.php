@@ -495,42 +495,42 @@ class StrictWUDCRules extends TabAlgorithm {
 		$tid = $tournament->id;
 		$config = [
 			[
-				"label" => "Max Iterations to improve the Adjudicator Allocation",
+				"label" => Yii::t("app", "Max Iterations to improve the Adjudicator Allocation"),
 				"key" => "max_iterations",
 				"value" => 20000,
 			],
 			[
-				"label" => "Team and adjudicator in same society penalty",
+				"label" => Yii::t("app", "Team and adjudicator in same society penalty"),
 				"key" => "society_strike",
 				"value" => 1000,
 			],
 			[
-				"label" => "Both Adjudicators are clashed",
+				"label" => Yii::t("app", "Both Adjudicators are clashed"),
 				"key" => "adjudicator_strike",
 				"value" => 1000,
 			],
 			[
-				"label" => "Team with Adjudicator is clashed",
+				"label" => Yii::t("app", "Team with Adjudicator is clashed"),
 				"key" => "team_strike",
 				"value" => 1000,
 			],
 			[
-				"label" => "Adjudicator is not allowed to chair",
+				"label" => Yii::t("app", "Adjudicator is not allowed to chair"),
 				"key" => "non_chair",
 				"value" => 1000,
 			],
 			[
-				"label" => "Chair is not perfect at the current situation",
+				"label" => Yii::t("app", "Chair is not perfect at the current situation"),
 				"key" => "chair_not_perfect",
 				"value" => 100,
 			],
 			[
-				"label" => "Adjudicator has seen the team already",
+				"label" => Yii::t("app", "Adjudicator has seen the team already"),
 				"key" => "judge_met_team",
 				"value" => 50,
 			],
 			[
-				"label" => "Adjudicator has already judged in this combination",
+				"label" => Yii::t("app", "Adjudicator has already judged in this combination"),
 				"key" => "judge_met_judge",
 				"value" => 50,
 			]
@@ -579,7 +579,11 @@ class StrictWUDCRules extends TabAlgorithm {
 		foreach ($line->getAdjudicators() as $adjudicator) {
 			foreach ($line->getTeams() as $team) {
 				if ($team["society_id"] == $adjudicator["society_id"]) {
-					$line->addMessage("error", "Adjudicator " . $adjudicator["name"] . " and " . $team["name"] . " in same society (+$penalty)");
+					$line->addMessage("error", Yii::t("app", "Adjudicator {adju} and {team} in same society (+{pen})", [
+						"adju" => $adjudicator["name"],
+						"team" => $team["name"],
+						"pen" => $penalty,
+					]));
 					$line->energyLevel += $penalty;
 				}
 			}
@@ -603,7 +607,12 @@ class StrictWUDCRules extends TabAlgorithm {
 		foreach ($line->getAdjudicators() as $adjudicator) {
 			foreach ($adjudicator["strikedAdjudicators"] as $adjudicator_check) {
 				if ($adjudicator["id"] == $adjudicator_check["id"]) {
-					$line->addMessage("error", "Adjudicator #" . $adjudicator["name"] . " and #" . $adjudicator_check["name"] . " are manually clashed (+$penalty)");
+					$line->addMessage("error", Yii::t("app", "Adjudicator {adju1} and {adju2} are manually clashed (+{penalty})", [
+						"adju1" => $adjudicator["name"],
+						"adju2" => $adjudicator_check["name"],
+						"penalty" => $penalty,
+
+					]));
 					$line->energyLevel += $penalty;
 				}
 			}
@@ -628,7 +637,12 @@ class StrictWUDCRules extends TabAlgorithm {
 			foreach ($adjudicator["strikedTeams"] as $team_check) {
 				foreach ($line->getTeams() as $team) {
 					if ($team["id"] == $team_check["id"]) {
-						$line->addMessage("error", "Adjudicator " . $adjudicator["name"] . " and Team " . $team["name"] . " are manually clashed (+$penalty)");
+						$line->addMessage("error", Yii::t("app", "Adjudicator {adju} and Team {team} are manually clashed (+{penalty})", [
+							"adju" => $adjudicator["name"],
+							"team" => $team["name"],
+							"penalty" => $penalty,
+
+						]));
 						$line->energyLevel += $penalty;
 					}
 				}
@@ -651,7 +665,10 @@ class StrictWUDCRules extends TabAlgorithm {
 		$penalty = $this->energyConfig["non_chair"]; // EnergyConfig::get("non_chair", $this->tournament_id);
 		//This relies on there being a 'can_chair' tag
 		if ($line->getChair()["can_chair"] == 0) {
-			$line->addMessage("error", "Adjudicator " . $line->getChair()["name"] . " has been labelled a non-chair (+$penalty)");
+			$line->addMessage("error", Yii::t("app", "Adjudicator {adju} has been labelled a non-chair (+{penalty})", [
+				"adju" => $line->getChair()["name"],
+				"penalty" => $penalty,
+			]));
 			$line->energyLevel += $penalty;
 		}
 
@@ -675,7 +692,10 @@ class StrictWUDCRules extends TabAlgorithm {
 
 		if ($diffPerfect > 0) {
 			$comp_penalty = ($penalty * $diffPerfect);
-			$line->addMessage("warning", "Chair not perfect by " . $diffPerfect . " (+$comp_penalty)");
+			$line->addMessage("warning", Yii::t("app", "Chair not perfect by {points} (+{penalty})", [
+				"points" => $diffPerfect,
+				"penalty" => $comp_penalty,
+			]));
 			$line->energyLevel += $comp_penalty;
 		}
 		return $line;
@@ -701,10 +721,11 @@ class StrictWUDCRules extends TabAlgorithm {
 
 						if (!in_array($adjudicator_match["id"], $found)) {
 							$found[] = $adjudicator_match["id"];
-							$line->addMessage("warning", "Adjudicator " .
-								$adjudicator["name"] . " and " .
-								$adjudicator_match["name"] .
-								" have judged together before (+$penalty)");
+							$line->addMessage("warning", Yii::t("app", "Adjudicator {adju1} and {adju2} have judged together before (+{penalty})", [
+								"adju1" => $adjudicator["name"],
+								"adju2" => $adjudicator_match["name"],
+								"penalty" => $penalty,
+							]));
 							$line->energyLevel += $penalty;
 						}
 					}
@@ -730,7 +751,11 @@ class StrictWUDCRules extends TabAlgorithm {
 		foreach ($line->getAdjudicators() as $adjudicator) {
 			foreach ($line->getTeams() as $team) {
 				if (in_array($team["id"], $adjudicator["pastTeamIDs"])) {
-					$line->addMessage("warning", "Adjudicator " . $adjudicator["name"] . " has judged Team " . $team["name"] . " before (+$penalty)");
+					$line->addMessage("warning", Yii::t("app", "Adjudicator {adju} has judged Team {team} before (+{penalty})", [
+						"adju" => $adjudicator["name"],
+						"team" => $team["name"],
+						"penalty" => $penalty,
+					]));
 					$line->energyLevel += $penalty;
 				}
 			}
@@ -765,7 +790,11 @@ class StrictWUDCRules extends TabAlgorithm {
 		$comparison_factor = ($line->getStrength() - $this->average_adjudicator_strength) / $this->SD_of_adjudicators;
 
 		$penalty = intval(pow(($roomDifference - $comparison_factor), 2));
-		$line->addMessage("notice", "Steepness Comparison: " . round($comparison_factor, 3) . ", Difference: " . round($roomDifference, 3) . " (+$penalty)");
+		$line->addMessage("notice", Yii::t("app", "Steepness Comparison: {comparison_factor}, Difference: {roomDifference} (+{penalty})", [
+			$comparison_factor => round($comparison_factor, 3),
+			$roomDifference => round($roomDifference, 3),
+			$penalty => $penalty,
+		]));
 		$line->energyLevel += $penalty;
 		return $line;
 	}

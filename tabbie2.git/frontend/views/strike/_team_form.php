@@ -34,7 +34,7 @@ SCRIPT;
 	?>
 
 	<?= $form->field($model, 'team_id')->widget(Select2::classname(), [
-		'options' => ['placeholder' => 'Search for a Team ...'],
+		'options' => ['placeholder' => Yii::t("app", 'Search for a Team ...')],
 		'pluginOptions' => [
 			'allowClear' => true,
 			'minimumInputLength' => 2,
@@ -66,7 +66,7 @@ SCRIPT;
 	?>
 
 	<?= $form->field($model, 'adjudicator_id')->widget(Select2::classname(), [
-		'options' => ['placeholder' => 'Search for an Adjudicator ...'],
+		'options' => ['placeholder' => Yii::t("app", 'Search for an Adjudicator ...')],
 		'pluginOptions' => [
 			'allowClear' => true,
 			'minimumInputLength' => 2,

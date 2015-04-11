@@ -10,7 +10,9 @@ use yii\web\JsExpression;
 /* @var $model common\models\LanguageOfficer */
 /* @var $form yii\widgets\ActiveForm */
 
-$this->title = Yii::t('app', 'Add Language Officer: ');
+$this->title = Yii::t('app', 'Add {modelClass}', [
+	'modelClass' => 'Language Officer',
+]);
 
 $this->params['breadcrumbs'][] = ['label' => $model->tournament->fullname, 'url' => ['tournament/view', "id" => $model->tournament->id]];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Langauge Officer'), 'url' => ['language/officer', "tournament_id" => $model->tournament->id]];
@@ -41,7 +43,7 @@ function (element, callback) {
 SCRIPT;
 
 		echo $form->field($model, 'user_id')->widget(Select2::classname(), [
-			'options' => ['placeholder' => 'Search for a user ...'],
+			'options' => ['placeholder' => Yii::t("app", 'Search for a User ...')],
 			'addon' => [
 				"prepend" => [
 					"content" => '<i class="glyphicon glyphicon-user"></i>'

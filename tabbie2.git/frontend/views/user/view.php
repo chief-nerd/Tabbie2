@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		<div class="col-sm-8">
 			<p>
 				<? if (Yii::$app->user->id == Yii::$app->request->get("id") || Yii::$app->user->isAdmin()): ?>
-					<?= Html::a(Yii::t('app', 'Update user profile'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+					<?= Html::a(Yii::t('app', 'Update sser profile'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
 				<? endif; ?>
 			</p>
 			<?=
@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	</div>
 
 
-	<h2>Debate Society History</h2>
+	<h2><?= Yii::t("app", "Debate Society History") ?></h2>
 
 	<p>
 		<? if (Yii::$app->user->id == Yii::$app->request->get("id") || Yii::$app->user->isAdmin()): ?>

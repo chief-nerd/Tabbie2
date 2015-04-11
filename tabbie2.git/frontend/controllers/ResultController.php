@@ -93,7 +93,7 @@ class ResultController extends BaseTournamentController {
 		]);
 
 		if ($dataProvider->getCount() == 0)
-			throw new Exception("No Debates found");
+			throw new Exception(Yii::t("app", "No Debates found"));
 
 		$number = $dataProvider->getModels()[0]->round->number;
 
@@ -105,7 +105,7 @@ class ResultController extends BaseTournamentController {
 				$view = "tableview";
 				break;
 			default:
-				throw new Exception("View does not exist", 404);
+				throw new Exception(Yii::t("app", "View does not exist"), 404);
 		}
 
 		return $this->render($view, [
@@ -168,7 +168,7 @@ class ResultController extends BaseTournamentController {
 					}
 					else {
 						Yii::error("Save Results: " . print_r($model->getErrors(), true), __METHOD__);
-						Yii::$app->session->addFlash("error", "Error saving Results.<br>Please request a paper ballot!");
+						Yii::$app->session->addFlash("error", Yii::t("app", "Error saving Results.<br>Please request a paper ballot!"));
 					}
 				}
 				else {
@@ -211,12 +211,12 @@ class ResultController extends BaseTournamentController {
 				if ($model->save()) {
 					$model->updateTeamCache();
 
-					Yii::$app->session->addFlash("success", "Result updated");
+					Yii::$app->session->addFlash("success", Yii::t("app", "Result updated"));
 					return $this->redirect(['result/round', 'id' => $model->debate->round_id, "tournament_id" => $this->_tournament->id]);
 				}
 				else {
 					Yii::error("Save Results: " . print_r($model->getErrors(), true), __METHOD__);
-					Yii::$app->session->addFlash("error", "Error saving Results.<br>Please request a paper ballot!");
+					Yii::$app->session->addFlash("error", Yii::t("app", "Error saving Results.<br>Please request a paper ballot!"));
 				}
 			}
 			else {
@@ -326,21 +326,36 @@ class ResultController extends BaseTournamentController {
 			}
 
 			if ($calculated_points != $team->points) {
-				Yii::$app->session->addFlash("info", "Correct Points for " . $team->name . " from " . $team->points . " to " . $calculated_points);
+				Yii::$app->session->addFlash("info", Yii::t("app", "Correct Points for {team} from {old_points} to {new_points}", [
+					"team" => $team->name,
+					"old_points" => $team->points,
+					"new_points" => $calculated_points,
+
+				]));
 				$team->points = $calculated_points;
 				$team->save();
 				$found = true;
 			}
 
 			if ($calculated_A_speaks != $team->speakerA_speaks) {
-				Yii::$app->session->addFlash("info", "Correct SpeakerA Speaks for " . $team->name . " from " . $team->speakerA_speaks . " to " . $calculated_A_speaks);
+				Yii::$app->session->addFlash("info", Yii::t("app", "Correct SpeakerA speaks for {team} from {old_points} to {new_points}", [
+					"team" => $team->name,
+					"old_points" => $team->speakerA_speaks,
+					"new_points" => $calculated_A_speaks,
+
+				]));
 				$team->speakerA_speaks = $calculated_A_speaks;
 				$team->save();
 				$found = true;
 			}
 
 			if ($calculated_B_speaks != $team->speakerB_speaks) {
-				Yii::$app->session->addFlash("info", "Correct SpeakerB Speaks for " . $team->name . " from " . $team->speakerB_speaks . " to " . $calculated_B_speaks);
+				Yii::$app->session->addFlash("info", Yii::t("app", "Correct SpeakerB Speaks for {team} from {old_points} to {new_points}", [
+					"team" => $team->name,
+					"old_points" => $team->speakerB_speaks,
+					"new_points" => $calculated_B_speaks,
+
+				]));
 				$team->speakerB_speaks = $calculated_B_speaks;
 				$team->save();
 				$found = true;

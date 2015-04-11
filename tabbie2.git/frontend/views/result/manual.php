@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 		<div class="row">
 			<div class="<?= $cols ?>">
-				<h3>Opening Government</h3>
+				<h3><?= Yii::t("app", "Opening Government") ?></h3>
 				<?= $form->field($model, 'og_A_speaks', $fieldOption)
 				         ->label($debate->og_team->speakerA->name)
 				         ->textInput($textOption) ?>
@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				         ->textInput($textOption) ?>
 			</div>
 			<div class="<?= $cols ?>">
-				<h3>Opening Opposition</h3>
+				<h3><?= Yii::t("app", "Opening Opposition") ?></h3>
 				<?= $form->field($model, 'oo_A_speaks', $fieldOption)
 				         ->label($debate->oo_team->speakerA->name)
 				         ->textInput($textOption) ?>
@@ -53,7 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		</div>
 		<div class="row">
 			<div class="<?= $cols ?>">
-				<h3>Closing Government</h3>
+				<h3><?= Yii::t("app", "Closing Government") ?></h3>
 				<?= $form->field($model, 'cg_A_speaks', $fieldOption)
 				         ->label($debate->cg_team->speakerA->name)
 				         ->textInput($textOption) ?>
@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				         ->textInput($textOption) ?>
 			</div>
 			<div class="<?= $cols ?>">
-				<h3>Closing Opposition</h3>
+				<h3><?= Yii::t("app", "Closing Opposition") ?></h3>
 				<?= $form->field($model, 'co_A_speaks', $fieldOption)
 				         ->label($debate->co_team->speakerA->name)
 				         ->textInput($textOption) ?>

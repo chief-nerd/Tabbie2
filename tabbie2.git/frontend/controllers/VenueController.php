@@ -213,7 +213,7 @@ class VenueController extends BaseTournamentController {
 						}
 
 						if (($num = count($data)) != 2) {
-							throw new \yii\base\Exception("500", "File Syntax Wrong");
+							throw new \yii\base\Exception("500", Yii::t("app", "File Syntax Wrong"));
 						}
 
 						for ($c = 0; $c < $num; $c++) {
@@ -224,7 +224,7 @@ class VenueController extends BaseTournamentController {
 					fclose($handle);
 				}
 				else {
-					Yii::$app->session->addFlash("error", "No File available");
+					Yii::$app->session->addFlash("error", Yii::t("app", "No File available"));
 					print_r($file);
 				}
 			}

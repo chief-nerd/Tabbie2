@@ -46,7 +46,7 @@ function (element, callback) {
 SCRIPT;
 
 	echo $form->field($model, 'user_id')->widget(Select2::classname(), [
-		'options' => ['placeholder' => 'Search for a user ...'],
+		'options' => ['placeholder' => Yii::t("app", 'Search for a user ...')],
 		'addon' => [
 			"prepend" => [
 				"content" => '<i class="glyphicon glyphicon-user"></i>'
@@ -68,7 +68,7 @@ SCRIPT;
 	<?
 	echo $form->field($model, 'society_id')->widget(Select2::classname(), [
 		'options' => [
-			'placeholder' => 'Search for a societies ...',
+			'placeholder' => Yii::t("app", 'Search for a societies ...'),
 			'multiple' => true,
 		],
 		'addon' => [

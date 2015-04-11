@@ -67,7 +67,7 @@ if ($this->context->hasMethod("_getContext")) {
 		<div class="container">
 			<p class="pull-left"><?= Yii::$app->params["appName"] ?> &copy; <?= date('Y') ?></p>
 
-			<p class="pull-right"><?= HTML::a("Contact", 'mailto:' . Yii::$app->params["adminEmail"]) ?></p>
+			<p class="pull-right"><?= HTML::a(Yii::t("app", "Contact"), 'mailto:' . Yii::$app->params["adminEmail"]) ?></p>
 		</div>
 	</footer>
 	<?= $this->render("_loader") ?>

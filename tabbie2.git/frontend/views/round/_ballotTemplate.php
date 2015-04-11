@@ -13,15 +13,15 @@
 <div id="predetails">
 	<table>
 		<tr>
-			<th>Debate ID</th>
+			<th><?= Yii::t("app", "Debate ID") ?></th>
 			<td><?= $debate->id ?></td>
 		</tr>
 		<tr>
-			<th>Room</th>
+			<th><?= Yii::t("app", "Room") ?></th>
 			<td><?= $debate->venue->name ?></td>
 		</tr>
 		<tr>
-			<th>Chair</th>
+			<th><?= Yii::t("app", "Chair") ?></th>
 			<td><?= $debate->getChair()->name ?></td>
 		</tr>
 		<?
@@ -32,7 +32,7 @@
 		}
 		?>
 		<tr>
-			<th>Adjudicators</th>
+			<th><?= Yii::t("app", "Adjudicators") ?></th>
 			<td><?= substr($panel, 0, -2); ?></td>
 		</tr>
 	</table>
@@ -42,12 +42,12 @@
 	<table>
 		<? if ($round->infoslide): ?>
 			<tr>
-				<th>InfoSlide:</th>
+				<th><?= Yii::t("app", "InfoSlide") ?>:</th>
 				<td><?= $round->infoslide ?></td>
 			</tr>
 		<? endif; ?>
 		<tr>
-			<th>Motion:</th>
+			<th><?= Yii::t("app", "Motion") ?>:</th>
 			<td><?= $round->motion ?></td>
 		</tr>
 	</table>
@@ -59,10 +59,10 @@
 			<td>
 				<table width="100%">
 					<tr>
-						<th colspan="3">Opening Government</th>
+						<th colspan="3"><?= Yii::t("app", "Opening Government") ?></th>
 					</tr>
 					<tr>
-						<td colspan="3">Team: <?= $debate->og_team->name ?></td>
+						<td colspan="3"><?= Yii::t("app", "Team") ?>: <?= $debate->og_team->name ?></td>
 					</tr>
 					<tr>
 						<td><?= $debate->og_team->speakerA->name ?></td>
@@ -75,10 +75,10 @@
 			<td>
 				<table width="100%">
 					<tr>
-						<th colspan="2">Opening Opposition</th>
+						<th colspan="2"><?= Yii::t("app", "Opening Opposition") ?></th>
 					</tr>
 					<tr>
-						<td colspan="2">Team: <?= $debate->oo_team->name ?></td>
+						<td colspan="2"><?= Yii::t("app", "Team") ?>: <?= $debate->oo_team->name ?></td>
 					</tr>
 					<tr>
 						<td><?= $debate->oo_team->speakerA->name ?></td>
@@ -93,10 +93,10 @@
 			<td>
 				<table width="100%">
 					<tr>
-						<th colspan="2">Closing Government</th>
+						<th colspan="2"><?= Yii::t("app", "Closing Government") ?></th>
 					</tr>
 					<tr>
-						<td colspan="2">Team: <?= $debate->cg_team->name ?></td>
+						<td colspan="2"><?= Yii::t("app", "Team") ?>: <?= $debate->cg_team->name ?></td>
 					</tr>
 					<tr>
 						<td><?= $debate->cg_team->speakerA->name ?></td>
@@ -109,10 +109,10 @@
 			<td>
 				<table width="100%">
 					<tr>
-						<th colspan="2">Closing Opposition</th>
+						<th colspan="2"><?= Yii::t("app", "Closing Opposition") ?></th>
 					</tr>
 					<tr>
-						<td colspan="2">Team: <?= $debate->co_team->name ?></td>
+						<td colspan="2"><?= Yii::t("app", "Team") ?>: <?= $debate->co_team->name ?></td>
 					</tr>
 					<tr>
 						<td><?= $debate->co_team->speakerA->name ?></td>

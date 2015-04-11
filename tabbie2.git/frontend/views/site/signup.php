@@ -10,13 +10,13 @@ use yii\web\JsExpression;
 /* @var $form yii\bootstrap\ActiveForm */
 /* @var $model \frontend\models\SignupForm */
 
-$this->title = 'Signup';
+$this->title = Yii::t("app", 'Signup');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-signup">
 	<h1><?= Html::encode($this->title) ?></h1>
 
-	<p>Please fill out the following fields to signup:</p>
+	<p><?= Yii::t("app", "Please fill out the following fields to signup:") ?></p>
 
 	<div class="signup form-group">
 		<?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
@@ -79,7 +79,7 @@ SCRIPT;
 
 				echo $form->field($model, 'societies_id')->widget(Select2::classname(), [
 					'options' => [
-						'placeholder' => 'Search for a society ...',
+						'placeholder' => Yii::t("app", 'Search for a society ...'),
 						'multiple' => false,
 					],
 					'pluginOptions' => [
@@ -116,7 +116,7 @@ SCRIPT;
 		</div>
 
 		<div class="form-group">
-			<?= Html::submitButton('Signup', ['class' => 'btn btn-success btn-block', 'name' => 'signup-button']) ?>
+			<?= Html::submitButton(Yii::t("app", 'Signup'), ['class' => 'btn btn-success btn-block', 'name' => 'signup-button']) ?>
 		</div>
 		<?php ActiveForm::end(); ?>
 	</div>

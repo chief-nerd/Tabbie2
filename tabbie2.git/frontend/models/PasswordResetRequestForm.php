@@ -49,14 +49,14 @@ class PasswordResetRequestForm extends Model {
 				return \Yii::$app->mailer->compose('passwordResetToken', ['user' => $user])
 				                         ->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->name . ' robot'])
 				                         ->setTo($this->email)
-				                         ->setSubject('Password reset for ' . \Yii::$app->name)
+					->setSubject(Yii::t("app", 'Password reset for {user}', ["user" => \Yii::$app->name]))
 				                         ->send();
 			}
 			else
 				$this->addError("user", $user->getErrors());
 		}
 		else
-			$this->addError("email", "User not found with this Email");
+			$this->addError("email", Yii::t("app", "User not found with this Email"));
 
 		return false;
 	}

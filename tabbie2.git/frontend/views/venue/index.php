@@ -65,9 +65,9 @@ $this->params['breadcrumbs'][] = $this->title;
 			'urlCreator' => function ($action, $model, $key, $index) {
 				return \yii\helpers\Url::to(["venue/" . $action, "id" => $model->id, "tournament_id" => $model->tournament->id]);
 			},
-			'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", "View Venue"), 'data-toggle' => 'tooltip'],
-			'updateOptions' => ['title' => Yii::t("app", "Update Venue"), 'data-toggle' => 'tooltip'],
-			'deleteOptions' => ['title' => Yii::t("app", "Delete Venue"), 'data-toggle' => 'tooltip'],
+			'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", 'View {modelClass}', ['modelClass' => 'Venue']), 'data-toggle' => 'tooltip'],
+			'updateOptions' => ['title' => Yii::t("app", 'Update {modelClass}', ['modelClass' => 'Venue']), 'data-toggle' => 'tooltip'],
+			'deleteOptions' => ['title' => Yii::t("app", 'Delete {modelClass}', ['modelClass' => 'Venue']), 'data-toggle' => 'tooltip'],
 			'width' => '100px'
 		],
 	];

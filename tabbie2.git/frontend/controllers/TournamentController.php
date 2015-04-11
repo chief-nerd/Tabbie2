@@ -101,14 +101,14 @@ class TournamentController extends BaseTournamentController {
 			if ($model->save()) {
 				$energyConf = new models\EnergyConfig();
 				if ($energyConf->setup($model))
-					Yii::$app->session->addFlash("success", "Tournament successfully created");
+					Yii::$app->session->addFlash("success", Yii::t("app", "Tournament successfully created"));
 				else
-					Yii::$app->session->addFlash("warning", "Tournament created but Energy config failed!" . print_r($energyConf->getErrors(), true));
+					Yii::$app->session->addFlash("warning", Yii::t("app", "Tournament created but Energy config failed!") . print_r($energyConf->getErrors(), true));
 
 				return $this->redirect(['view', 'id' => $model->id]);
 			}
 			else {
-				Yii::$app->session->setFlash("error", "Can't save Tournament!" . print_r($model->getErrors(), true));
+				Yii::$app->session->setFlash("error", Yii::t("app", "Can't save Tournament!") . print_r($model->getErrors(), true));
 			}
 		}
 		//Preset variables
@@ -239,9 +239,9 @@ class TournamentController extends BaseTournamentController {
 		$rows += models\Adjudicator::updateAll(["checkedin" => 0], ["tournament_id" => $this->_tournament->id]);
 
 		if ($rows > 0)
-			Yii::$app->session->addFlash("success", "Checking Data reseted");
+			Yii::$app->session->addFlash("success", Yii::t("app", "Checking Data reseted"));
 		else
-			Yii::$app->session->addFlash("info", "Already clean");
+			Yii::$app->session->addFlash("info", Yii::t("app", "Already clean"));
 
 		return $this->redirect(["tournament/view", "id" => $this->_tournament->id]);
 	}

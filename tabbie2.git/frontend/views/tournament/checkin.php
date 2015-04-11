@@ -7,7 +7,7 @@ use yii\helpers\Html;
 /* @var $form yii\bootstrap\ActiveForm */
 /* @var $model \frontend\models\ContactForm */
 
-$this->title = 'Checkin';
+$this->title = Yii::t("app", 'Checkin');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-checkin">

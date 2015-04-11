@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
-			'filterInputOptions' => ['placeholder' => 'Any User'],
+			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any User ...')],
 		],
 		[
 			'class' => 'kartik\grid\ActionColumn',

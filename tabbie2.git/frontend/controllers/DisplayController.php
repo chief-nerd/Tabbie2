@@ -62,7 +62,7 @@ class DisplayController extends BaseTournamentController {
 		])->all();
 		$buttons = "";
 		foreach ($rounds as $round) {
-			$buttons .= \yii\helpers\Html::a("Show Round " . $round->number, [
+			$buttons .= \yii\helpers\Html::a(Yii::t("app", "Show Round {number}", ["number" => $round->number]), [
 				"display/view",
 				"id" => $round->id,
 				"tournament_id" => $round->tournament_id], ["class" => "btn btn-lg btn-success"]);

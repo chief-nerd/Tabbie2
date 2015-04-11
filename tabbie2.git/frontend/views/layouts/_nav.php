@@ -10,30 +10,30 @@ NavBar::begin([
 	],
 ]);
 $menuItems = [
-	['label' => 'Home', 'url' => ['/site/index']],
-	['label' => 'About', 'url' => ['/site/about']],
-	['label' => 'Tournaments', 'url' => ['tournament/index']],
+	['label' => Yii::t("app", 'Home'), 'url' => ['/site/index']],
+	['label' => Yii::t("app", 'About'), 'url' => ['/site/about']],
+	['label' => Yii::t("app", 'Tournaments'), 'url' => ['tournament/index']],
 ];
 
 if (Yii::$app->user->isAdmin()) {
-	$menuItems[] = ['label' => 'Users', 'url' => ['user/index']];
+	$menuItems[] = ['label' => Yii::t("app", 'Users'), 'url' => ['user/index']];
 }
 
 if (Yii::$app->user->isGuest) {
-	$menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
-	$menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
+	$menuItems[] = ['label' => Yii::t("app", 'Signup'), 'url' => ['/site/signup']];
+	$menuItems[] = ['label' => Yii::t("app", 'Login'), 'url' => ['/site/login']];
 }
 else {
 	$menuItems[] = [
-		'label' => Yii::$app->user->getModel()->surename . "'s Profile",
+		'label' => Yii::t("app", "{user}'s Profile", ["user" => Yii::$app->user->getModel()->surename]),
 		'url' => ['user/view', 'id' => Yii::$app->user->id],
 	];
 	$menuItems[] = [
-		'label' => Yii::$app->user->getModel()->surename . "'s History",
+		'label' => Yii::t("app", "{user}'s History", ["user" => Yii::$app->user->getModel()->surename]),
 		'url' => ['history/index', 'user_id' => Yii::$app->user->id],
 	];
 	$menuItems[] = [
-		'label' => 'Logout',
+		'label' => Yii::t("app", 'Logout'),
 		'url' => ['/site/logout'],
 		'linkOptions' => ['data-method' => 'post']
 	];

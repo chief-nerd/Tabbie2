@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	echo ListView::widget([
 		'dataProvider' => $rounds,
 		'itemView' => function ($model, $key, $index, $widget) {
-			return Html::a("Round " . $model->number, ['round', "id" => $model->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-default btn-block']);
+			return Html::a(Yii::t("app", "Round {number}", ["number" => $model->number]), ['round', "id" => $model->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-default btn-block']);
 		},
 	]);
 	?>

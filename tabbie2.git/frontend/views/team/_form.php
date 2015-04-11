@@ -53,7 +53,7 @@ function (element, callback) {
 SCRIPT;
 
 	echo $form->field($model, 'speakerA_id')->widget(Select2::classname(), [
-		'options' => ['placeholder' => 'Search for a user ...'],
+		'options' => ['placeholder' => Yii::t("app", 'Search for a user ...')],
 		'addon' => [
 			"prepend" => [
 				"content" => '<i class="glyphicon glyphicon-user"></i>'
@@ -78,7 +78,7 @@ SCRIPT;
 
 	<?=
 	$form->field($model, 'speakerB_id')->widget(Select2::classname(), [
-		'options' => ['placeholder' => 'Search for a user ...'],
+		'options' => ['placeholder' => Yii::t("app", 'Search for a user ...')],
 		'addon' => [
 			"prepend" => [
 				"content" => '<i class="glyphicon glyphicon-user"></i>'
@@ -100,7 +100,7 @@ SCRIPT;
 
 	<?=
 	$form->field($model, 'society_id')->widget(Select2::classname(), [
-		'options' => ['placeholder' => 'Search for a society ...'],
+		'options' => ['placeholder' => Yii::t("app", 'Search for a society ...')],
 		'addon' => [
 			"prepend" => [
 				"content" => '<i class="glyphicon glyphicon-education"></i>'

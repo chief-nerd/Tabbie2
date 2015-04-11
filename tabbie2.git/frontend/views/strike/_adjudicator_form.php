@@ -34,7 +34,7 @@ SCRIPT;
 	?>
 
 	<?= $form->field($model, 'adjudicator_from_id')->widget(Select2::classname(), [
-		'options' => ['placeholder' => 'Search for an From Adjudicator ...'],
+		'options' => ['placeholder' => Yii::t("app", 'Search for an From Adjudicator ...')],
 		'pluginOptions' => [
 			'allowClear' => true,
 			'minimumInputLength' => 2,
@@ -50,7 +50,7 @@ SCRIPT;
 	?>
 
 	<?= $form->field($model, 'adjudicator_to_id')->widget(Select2::classname(), [
-		'options' => ['placeholder' => 'Search for an To Adjudicator ...'],
+		'options' => ['placeholder' => Yii::t("app", 'Search for an To Adjudicator ...')],
 		'pluginOptions' => [
 			'allowClear' => true,
 			'minimumInputLength' => 2,

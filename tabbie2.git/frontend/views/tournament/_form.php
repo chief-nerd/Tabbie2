@@ -15,7 +15,8 @@ use yii\helpers\Html;
 
 	<?= Html::activeHiddenInput($model, 'convenor_user_id', ["value" => Yii::$app->user->id]) ?>
 
-	<?= $form->field($model, 'name')->textInput(['maxlength' => 100, 'placeholder' => 'My super awesome IV']) ?>
+	<?= $form->field($model, 'name')
+	         ->textInput(['maxlength' => 100, 'placeholder' => Yii::t("app", 'My super awesome IV')]) ?>
 
 	<?= $form->field($model, 'hosted_by_id', [
 		'addon' => ['prepend' => ['content' => "<i class=\"glyphicon glyphicon-education\"></i>"]]
@@ -30,7 +31,7 @@ use yii\helpers\Html;
 		'addon' => ['prepend' => ['content' => "<i class=\"glyphicon glyphicon-calendar\"></i>"]]
 	])->widget(DateTimePicker::classname(), [
 		'type' => DateTimePicker::TYPE_INPUT,
-		'options' => ['placeholder' => 'Enter start date / time ...'],
+		'options' => ['placeholder' => Yii::t("app", 'Enter start date / time ...')],
 		'pluginOptions' => [
 			'format' => 'yyyy-mm-dd hh:ii',
 			'startDate' => date("Y-m-d H:i"),
@@ -44,7 +45,7 @@ use yii\helpers\Html;
 		'addon' => ['prepend' => ['content' => "<i class=\"glyphicon glyphicon-calendar\"></i>"]]
 	])->widget(DateTimePicker::classname(), [
 		'type' => DateTimePicker::TYPE_INPUT,
-		'options' => ['placeholder' => 'Enter the end date / time ...'],
+		'options' => ['placeholder' => Yii::t("app", 'Enter the end date / time ...')],
 		'pluginOptions' => [
 			'format' => 'yyyy-mm-dd hh:ii',
 			'startDate' => date("Y-m-d H:i"),

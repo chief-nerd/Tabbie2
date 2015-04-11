@@ -73,7 +73,7 @@ class QuestionController extends BaseTournamentController {
 				if ($ThasQ->save())
 					return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $this->_tournament->id]);
 				else
-					$model->addError("id", "Can't save Tournament Connection");
+					$model->addError("id", Yii::t("app", "Can't save Tournament Connection"));
 			}
 		}
 		else {
@@ -121,7 +121,7 @@ class QuestionController extends BaseTournamentController {
 					Yii::$app->session->addFlash("success", "Question deleted");
 		}
 		else {
-			Yii::$app->session->addFlash("error", "Can't delete Question");
+			Yii::$app->session->addFlash("error", Yii::t("app", "Can't delete Question"));
 		}
 		return $this->redirect(['index', "tournament_id" => $this->_tournament->id]);
 	}

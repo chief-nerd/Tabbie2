@@ -127,10 +127,10 @@ class RoundController extends BaseTournamentController {
 				$old_debate->venue_id = $used_debate->venue_id;
 				$used_debate->venue_id = $old_debate_venue;
 				if ($old_debate->save() && $used_debate->save()) {
-					Yii::$app->session->setFlash('success', 'Venues switched');
+					Yii::$app->session->setFlash('success', Yii::t("app", 'Venues switched'));
 				}
 				else {
-					Yii::$app->session->setFlash('error', 'Error while switching');
+					Yii::$app->session->setFlash('error', Yii::t("app", 'Error while switching'));
 				}
 			}
 		}
@@ -260,7 +260,7 @@ class RoundController extends BaseTournamentController {
 			}
 			else {
 				$model->save();
-				Yii::$app->session->addFlash("success", "Successfully redrawn in " . intval(microtime(true) - $time) . "s");
+				Yii::$app->session->addFlash("success", Yii::t("app", "Successfully redrawn in {secs}s", ["secs" => intval(microtime(true) - $time)]));
 			}
 		}
 
@@ -279,7 +279,10 @@ class RoundController extends BaseTournamentController {
 				$model->improveAdjudicator($runs);
 				$model->save();
 				$diff = ($oldEnergy - $model->energy);
-				Yii::$app->session->addFlash(($diff > 0) ? "success" : "notice", "Improved Energy by " . $diff . " in " . intval(microtime(true) - $time) . "s");
+				Yii::$app->session->addFlash(($diff > 0) ? "success" : "notice", Yii::t("app", "Improved Energy by {diff} points in {secs}s", [
+					"diff" => $diff,
+					"secs" => intval(microtime(true) - $time),
+				]));
 
 			} catch (Exception $ex) {
 				Yii::$app->session->addFlash("error", $ex->getMessage());
@@ -293,7 +296,10 @@ class RoundController extends BaseTournamentController {
 	public function actionPrintballots($id, $debug = false) {
 		$model = Round::findOne(["id" => $id]);
 
-		$title = 'Ballots Round #' . $model->id . ' of the ' . $model->tournament->fullname;
+		$title = Yii::t("app", 'Ballots Round #{number} of the {tournament}', [
+			"number" => $model->number,
+			"tournament" => $model->tournament->fullname,
+		]);
 
 		$mpdf = new mPDF("", "A4-L");
 		$mpdf->SetDrawColor(255, 0, 0);

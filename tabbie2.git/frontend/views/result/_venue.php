@@ -31,12 +31,12 @@ if ($model->result instanceof Result) {
 		. "</table>";
 }
 else
-	$popcontent = "No results yet!";
+	$popcontent = Yii::t("app", "No results yet!");
 ?>
 <?=
 
 PopoverX::widget([
-	'header' => "Results in Room: " . $model->venue->name,
+	'header' => Yii::t("app", "Results in Room: {venue}", ["venue" => $model->venue->name]),
 	'size' => 'md',
 	'placement' => PopoverX::ALIGN_TOP,
 	'content' => $popcontent,
