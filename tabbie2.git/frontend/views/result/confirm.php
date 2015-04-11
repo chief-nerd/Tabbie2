@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\Html;
+use kartik\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
@@ -61,10 +61,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<div class="row">
 		<div class="col-xs-4">
-			<?= Html::a(Yii::t('app', 'start over'), ["create", "id" => $debate->id, "tournament_id" => $debate->tournament_id], ['class' => 'btn btn-default btn-block']) ?>
+			<?= Html::a(Html::icon("trash") . "&nbsp;" . Yii::t('app', 'start over'), ["create", "id" => $debate->id, "tournament_id" => $debate->tournament_id], ['class' => 'btn btn-default btn-block']) ?>
 		</div>
 		<div class="col-xs-8">
-			<?= Html::submitButton(Yii::t('app', 'Make it so!'), ['class' => 'btn btn-success btn-block']) ?>
+			<?= Html::submitButton(Yii::t('app', 'Make it so!') . "&nbsp;" . Html::icon("send"), ['class' => 'btn btn-success btn-block']) ?>
 		</div>
 	</div>
 

@@ -100,3 +100,21 @@ ul li:first-child .adj {
 .messages table {
     width: 100%;
 }
+
+/** HACK OVERFLOW */
+.content .round-view {
+    overflow: hidden;
+}
+
+#debateDraw {
+    overflow-y: visible;
+}
+
+#debateDraw-container {
+    overflow-x: scroll;
+    overflow-y: auto;
+}
+
+#debateDraw .floatThead-wrapper {
+    position: static !important;
+}

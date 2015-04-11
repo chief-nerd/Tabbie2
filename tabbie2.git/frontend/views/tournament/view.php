@@ -1,7 +1,8 @@
 <?php
 
-use yii\helpers\Html;
+
 use yii\widgets\DetailView;
+use kartik\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Tournament */
@@ -41,19 +42,19 @@ $this->params['breadcrumbs'][] = $this->title;
 			if ($model->status === \common\models\Tournament::STATUS_RUNNING) {
 				$ref = Yii::$app->user->hasOpenFeedback($model);
 				if (is_array($ref)) {
-					echo "&nbsp;" . Html::a(Yii::t('app', 'Enter Feedback'), array_merge($ref, ['feedback/create', "tournament_id" => $model->id]), ['class' => 'btn btn-success']);
+					echo "&nbsp;" . Html::a(Html::icon("comment") . "&nbsp;" . Yii::t('app', 'Enter Feedback'), array_merge($ref, ['feedback/create', "tournament_id" => $model->id]), ['class' => 'btn btn-success']);
 				}
 				$debate = Yii::$app->user->hasChairedLastRound($model);
 				if ($debate instanceof common\models\Debate && !$debate->result instanceof \common\models\Result) {
-					echo "&nbsp;" . Html::a(Yii::t('app', 'Enter Result'), ['result/create', "id" => $debate->id, "tournament_id" => $model->id], ['class' => 'btn btn-success']);
+					echo "&nbsp;" . Html::a(Html::icon("envelope") . "&nbsp;" . Yii::t('app', 'Enter Result'), ['result/create', "id" => $debate->id, "tournament_id" => $model->id], ['class' => 'btn btn-success']);
 				}
 				if (Yii::$app->user->isConvenor($model))
-					echo "&nbsp;" . Html::a(Yii::t('app', 'Display Draw'), ['display/index', "tournament_id" => $model->id], ['class' => 'btn btn-default']);
+					echo "&nbsp;" . Html::a(Html::icon("film") . "&nbsp;" . Yii::t('app', 'Display Draw'), ['display/index', "tournament_id" => $model->id], ['class' => 'btn btn-default']);
 			}
 
 			if ($model->status != \common\models\Tournament::STATUS_CLOSED) {
 				if (Yii::$app->user->isTabMaster($model) || Yii::$app->user->isConvenor($model)) {
-					echo "&nbsp;" . Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
+					echo "&nbsp;" . Html::a(Html::icon("cog") . "&nbsp;" . Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
 				}
 			}
 

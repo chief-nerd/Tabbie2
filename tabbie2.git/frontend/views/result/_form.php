@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\Html;
+use kartik\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
@@ -72,7 +72,7 @@ use yii\widgets\ActiveForm;
 
 	<div class="row">
 		<div class="col-xs-12">
-			<?= Html::submitButton(Yii::t('app', 'Enter Speaks and continue'), ['class' => 'btn btn-success btn-block']) ?>
+			<?= Html::submitButton(Yii::t('app', 'Enter Speaks and continue') . "&nbsp;" . Html::icon("chevron-right"), ['class' => 'btn btn-success btn-block']) ?>
 		</div>
 	</div>
 

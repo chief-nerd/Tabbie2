@@ -49,7 +49,7 @@ SCRIPT;
 		'options' => ['placeholder' => Yii::t("app", 'Search for a user ...')],
 		'addon' => [
 			"prepend" => [
-				"content" => '<i class="glyphicon glyphicon-user"></i>'
+				"content" => \kartik\helpers\Html::icon("user")
 			],
 		],
 		'pluginOptions' => [
@@ -73,7 +73,7 @@ SCRIPT;
 		],
 		'addon' => [
 			"prepend" => [
-				"content" => '<i class="glyphicon glyphicon-tower"></i>'
+				"content" => \kartik\helpers\Html::icon("tower")
 			],
 		],
 		'pluginOptions' => [
@@ -113,7 +113,7 @@ SCRIPT;
 	?>
 
 	<div class="form-group">
-		<?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+		<?= Html::submitButton(\kartik\helpers\Html::icon("floppy-disk") . "&nbsp;" . ($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update')), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
 	</div>
 
 	<?php ActiveForm::end(); ?>

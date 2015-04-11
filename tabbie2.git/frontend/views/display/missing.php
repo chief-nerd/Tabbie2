@@ -22,7 +22,7 @@ $this->registerJs('
 
 if (Yii::$app->user->isTabMaster($tournament)) {
 	$this->context->menuItems = [
-		['label' => Yii::t("app", 'Mark missing as inactive'), 'url' => "markmissing", "linkOptions" => ["class" => "btn btn-default"]],
+		['label' => \kartik\helpers\Html::icon("fire") . "&nbsp;" . Yii::t("app", 'Mark missing as inactive'), 'url' => "markmissing", "linkOptions" => ["class" => "btn btn-default"]],
 	];
 }
 

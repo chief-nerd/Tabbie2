@@ -1,6 +1,6 @@
 <?php
 
-use yii\helpers\Html;
+use kartik\helpers\Html;
 use kartik\grid\GridView;
 use common\models\Result;
 use kartik\widgets\SwitchInput;
@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Venue View");
 		?>
 		&nbsp;|&nbsp;
 		<?=
-		Html::a(Yii::t("app", "Switch to Tableview"), ["round",
+		Html::a(Html::icon("list") . "&nbsp;" . Yii::t("app", "Switch to Tableview"), ["round",
 			"id" => $round_id,
 			"tournament_id" => $tournament->id,
 			"view" => "table",

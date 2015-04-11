@@ -25,17 +25,17 @@ $this->params['breadcrumbs'][] = $this->title;
 			<p>
 				<? if ($tournament->status < Tournament::STATUS_CLOSED): ?>
 					<?=
-					Html::a(Yii::t('app', 'Create {modelClass}', [
+					Html::a(\kartik\helpers\Html::icon("plus") . "&nbsp" . Yii::t('app', 'Create {modelClass}', [
 						'modelClass' => 'Adjudicator',
 					]), ['create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
 					?>
 					<?=
-					Html::a(Yii::t('app', 'Import {modelClass}', [
+					Html::a(\kartik\helpers\Html::icon("import") . "&nbsp" . Yii::t('app', 'Import {modelClass}', [
 						'modelClass' => 'Adjudicator',
 					]), ['import', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
 					?>
 					<?=
-					Html::a(Yii::t('app', 'Reset watched'), ['resetwatched', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
+					Html::a(\kartik\helpers\Html::icon("eye-close") . "&nbsp;" . Yii::t('app', 'Reset watched'), ['resetwatched', "tournament_id" => $tournament->id], ['class' => 'btn btn-default'])
 					?>
 				<? endif; ?>
 			</p>
@@ -107,8 +107,8 @@ $this->params['breadcrumbs'][] = $this->title;
 		[
 			'class' => '\kartik\grid\BooleanColumn',
 			'attribute' => 'are_watched',
-			'trueIcon' => '<span class="glyphicon glyphicon-eye-open text-success"></span>',
-			'falseIcon' => '<span class="glyphicon glyphicon-eye-close text-muted"></span>',
+			'trueIcon' => \kartik\helpers\Html::icon("eye-open", ['class' => 'text-success']),
+			'falseIcon' => \kartik\helpers\Html::icon("eye-close", ['class' => 'text-muted']),
 			'vAlign' => 'middle',
 			'width' => '5%',
 		],
@@ -119,14 +119,14 @@ $this->params['breadcrumbs'][] = $this->title;
 			'vAlign' => 'middle',
 			'buttons' => [
 				"watch" => function ($url, $model) {
-					return Html::a("<span class='glyphicon glyphicon-eye-open'></span>", $url, [
+					return Html::a(\kartik\helpers\Html::icon("eye-open"), $url, [
 						'title' => Yii::t('app', 'Toogle Watch'),
 						'data-pjax' => '0',
 						'data-toggle-active' => $model->id
 					]);
 				},
 				"active" => function ($url, $model) {
-					return Html::a("<span class='glyphicon glyphicon-pause'></span>", $url, [
+					return Html::a(\kartik\helpers\Html::icon("pause"), $url, [
 						'title' => Yii::t('app', 'Toogle Active'),
 						'data-pjax' => '0',
 						'data-toggle-active' => $model->id
@@ -136,7 +136,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'urlCreator' => function ($action, $model, $key, $index) {
 				return \yii\helpers\Url::to(["adjudicator/" . $action, "id" => $model->id, "tournament_id" => $model->tournament->id]);
 			},
-			'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", 'View {modelClass}', ['modelClass' => 'Adjudicator']), 'data-toggle' => 'tooltip'],
+			'viewOptions' => ['label' => \kartik\helpers\Html::icon("folder-open"), 'title' => Yii::t("app", 'View {modelClass}', ['modelClass' => 'Adjudicator']), 'data-toggle' => 'tooltip'],
 			'updateOptions' => ['title' => Yii::t("app", 'Update {modelClass}', ['modelClass' => 'Adjudicator']), 'data-toggle' => 'tooltip'],
 			'deleteOptions' => ['title' => Yii::t("app", 'Delete {modelClass}', ['modelClass' => 'Adjudicator']), 'data-toggle' => 'tooltip'],
 			'width' => '122px',
@@ -154,11 +154,6 @@ $this->params['breadcrumbs'][] = $this->title;
 		'hover' => true,
 		'floatHeader' => true,
 		'floatHeaderOptions' => ['scrollingTop' => 100],
-		'toolbar' => [
-			['content' =>
-				Html::a('<i class="glyphicon glyphicon-plus"></i> ' . Yii::t('app', 'Add {modelClass}', ['modelClass' => 'Adjudicator']), ["adjudicator/create", "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
-			]
-		]
 	])
 	?>
 	<?php \yii\widgets\Pjax::end(); ?>
