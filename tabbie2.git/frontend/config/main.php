@@ -54,6 +54,7 @@ return [
 		],
 		'view' => [
 			'class' => '\rmrevin\yii\minify\View',
+			'compress_output' => !YII_DEBUG,
 			'enableMinify' => !YII_DEBUG,
 			'base_path' => '@app/web', // path alias to web base
 			'minify_path' => '@app/web/minify', // path alias to save minify result
