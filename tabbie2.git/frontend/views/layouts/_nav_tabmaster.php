@@ -4,6 +4,8 @@ use yii\bootstrap\NavBar;
 use common\models\Tournament;
 use kartik\helpers\Html;
 
+$icon_class = ["class" => "hidden-md"];
+
 NavBar::begin([
 	'brandLabel' => Yii::t("app", "{tournament} - Tabmaster", ["tournament" => $tournament->name]),
 	'brandUrl' => Yii::$app->urlManager->createUrl(["tournament/view", "id" => $tournament->id]),
@@ -34,17 +36,17 @@ if ($tournament->has_esl) {
 }
 
 $menuItems = [
-	['label' => Html::icon("tower") . "&nbsp;" . 'Venues', 'url' => '#',
+	['label' => Html::icon("tower", $icon_class) . "&nbsp;" . 'Venues', 'url' => '#',
 		"items" => [
 			['label' => Yii::t("app", 'List Venues'), 'url' => ['venue/index', "tournament_id" => $tournament->id]],
 			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Yii::t("app", 'Create Venue'), 'url' => ['venue/create', "tournament_id" => $tournament->id]] : ""),
 			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Yii::t("app", 'Import Venue'), 'url' => ['venue/import', "tournament_id" => $tournament->id]] : ""),
 		]
 	],
-	['label' => Html::icon("bullhorn") . "&nbsp;" . Yii::t("app", 'Teams'), 'url' => '#',
+	['label' => Html::icon("bullhorn", $icon_class) . "&nbsp;" . Yii::t("app", 'Teams'), 'url' => '#',
 		"items" => $team_items,
 	],
-	['label' => Html::icon("dashboard") . "&nbsp;" . Yii::t("app", 'Adjudicators'), 'url' => '#',
+	['label' => Html::icon("dashboard", $icon_class) . "&nbsp;" . Yii::t("app", 'Adjudicators'), 'url' => '#',
 		"items" => [
 			['label' => Yii::t("app", 'List Adjudicators'), 'url' => ['adjudicator/index', "tournament_id" => $tournament->id]],
 			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Yii::t("app", 'Create Adjudicator'), 'url' => ['adjudicator/create', "tournament_id" => $tournament->id]] : ""),
@@ -55,7 +57,7 @@ $menuItems = [
 			['label' => Yii::t("app", 'Strike Adjudicator'), 'url' => ['strike/adjudicator_index', "tournament_id" => $tournament->id]],
 		]
 	],
-	['label' => Html::icon("th-list") . "&nbsp;" . Yii::t("app", 'Rounds'), 'url' => '#',
+	['label' => Html::icon("th-list", $icon_class) . "&nbsp;" . Yii::t("app", 'Rounds'), 'url' => '#',
 		"items" => array_merge_recursive([
 			['label' => Yii::t("app", 'List Rounds'), 'url' => ['round/index', "tournament_id" => $tournament->id]],
 			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Yii::t("app", 'Create Round'), 'url' => ['round/create', "tournament_id" => $tournament->id]] : ""),
@@ -64,14 +66,14 @@ $menuItems = [
 			'<li class="divider"></li>',
 		], $rounds),
 	],
-	['label' => Html::icon("envelope") . "&nbsp;" . Yii::t("app", 'Results'), 'url' => '#',
+	['label' => Html::icon("envelope", $icon_class) . "&nbsp;" . Yii::t("app", 'Results'), 'url' => '#',
 		"items" => array_merge_recursive([
 			['label' => Yii::t("app", 'List Results'), 'url' => ['result/index', "tournament_id" => $tournament->id]],
 			['label' => Yii::t("app", 'Correct Cache'), 'url' => ['result/correctcache', "tournament_id" => $tournament->id]],
 			'<li class="divider"></li>',
 		], $results),
 	],
-	['label' => Html::icon("stats") . "&nbsp;" . Yii::t("app", 'Current Tab'), 'url' => "#",
+	['label' => Html::icon("stats", $icon_class) . "&nbsp;" . Yii::t("app", 'Current Tab'), 'url' => "#",
 		"items" => [
 			['label' => Yii::t("app", 'Team Tab'), 'url' => ['tab/live-team', "tournament_id" => $tournament->id]],
 			['label' => Yii::t("app", 'Speaker Tab'), 'url' => ['tab/live-speaker', "tournament_id" => $tournament->id]],
@@ -89,7 +91,7 @@ $menuItems = [
 				]]],
 		]
 	],
-	['label' => Html::icon("comment") . "&nbsp;" . Yii::t("app", 'Feedback'), 'url' => '#',
+	['label' => Html::icon("comment", $icon_class) . "&nbsp;" . Yii::t("app", 'Feedback'), 'url' => '#',
 		"items" => [
 			['label' => Yii::t("app", 'Setup Questions'), 'url' => ['question/index', "tournament_id" => $tournament->id]],
 			'<li class="divider"></li>',
