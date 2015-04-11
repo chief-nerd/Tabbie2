@@ -1,5 +1,25 @@
 Options -Indexes
 
+<IfModule mod_deflate.c>
+AddOutputFilterByType DEFLATE application/atom+xml \
+                                  application/javascript \
+                                  application/json \
+                                  application/rss+xml \
+                                  application/vnd.ms-fontobject \
+                                  application/x-font-ttf \
+                                  application/xhtml+xml \
+                                  application/xml \
+                                  font/opentype \
+                                  image/svg+xml \
+                                  image/x-icon \
+                                  text/css \
+                                  text/html \
+                                  text/javascript \
+                                  text/plain \
+                                  text/x-component \
+                                  text/xml
+</IfModule>
+
 <IfModule mod_rewrite.c>
   RewriteEngine on
   RewriteBase /
