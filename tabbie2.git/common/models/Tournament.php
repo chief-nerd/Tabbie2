@@ -240,7 +240,7 @@ class Tournament extends \yii\db\ActiveRecord {
 	 * @return \yii\db\ActiveQuery
 	 */
 	public function getTournamentHasQuestions() {
-		return $this->hasMany(TournamentHasQuestions::className(), ['tournament_id' => 'id']);
+		return $this->hasMany(TournamentHasQuestion::className(), ['tournament_id' => 'id']);
 	}
 
 	/**

@@ -25,11 +25,11 @@ class SocietyController extends BaseUserController {
 					[
 						'allow' => true,
 						'actions' => ['list'],
-						'roles' => ['?'],
+						'roles' => ['@'],
 					],
 					[
 						'allow' => true,
-						'actions' => ['create', 'update', 'list'],
+						'actions' => ['create', 'update'],
 						'matchCallback' => function ($rule, $action) {
 							return (isset($this->_user) && ($this->_user->id == Yii::$app->user->id || Yii::$app->user->isAdmin()));
 						}

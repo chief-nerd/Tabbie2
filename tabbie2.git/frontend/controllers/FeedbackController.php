@@ -96,6 +96,7 @@ class FeedbackController extends BaseTournamentController {
 	 */
 	public function actionCreate($id, $type, $ref) {
 
+		$models = [];
 		$already_entered = false;
 
 		$feedback = new Feedback();

@@ -57,11 +57,17 @@ $this->title = Yii::$app->params["slogan"];
 		</div>
 		<br><br>
 
-		<p>
-			<?= Html::a(Html::icon("calendar") . "&nbsp;" . Yii::t("app", "View all Tournaments"), ['tournament/index'], ["class" => "btn btn-lg btn-primary"]) ?>
-			&nbsp;&nbsp;or&nbsp;&nbsp;
-			<?= Html::a(Html::icon("plus") . "&nbsp;" . Yii::t("app", "Create new Tournament"), ['tournament/create'], ["class" => "btn btn-lg btn-success"]) ?>
-		</p>
+		<div class="row">
+			<div class="col-xs-12 col-sm-6 col-md-5 col-lg-4 col-lg-offset-1">
+				<?= Html::a(Html::icon("calendar") . "&nbsp;" . Yii::t("app", "View Tournaments"), ['tournament/index'], ["class" => "btn btn-lg btn-primary btn-block"]) ?>
+			</div>
+			<div class="col-xs-12 hidden-sm col-md-2 col-lg-2">
+				&nbsp;
+			</div>
+			<div class="col-xs-12 col-sm-6 col-md-5 col-lg-4">
+				<?= Html::a(Html::icon("plus") . "&nbsp;" . Yii::t("app", "Create Tournament"), ['tournament/create'], ["class" => "btn btn-lg btn-success btn-block"]) ?>
+			</div>
+		</div>
 	</div>
 
 	<div class="body-content">

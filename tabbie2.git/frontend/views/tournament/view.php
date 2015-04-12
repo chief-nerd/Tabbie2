@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 			if ($model->status === \common\models\Tournament::STATUS_RUNNING) {
 				$ref = Yii::$app->user->hasOpenFeedback($model);
-				if (is_array($ref)) {
+				if (is_array($ref) && $model->getTournamentHasQuestions()->count() > 0) {
 					echo "&nbsp;" . Html::a(Html::icon("comment") . "&nbsp;" . Yii::t('app', 'Enter Feedback'), array_merge($ref, ['feedback/create', "tournament_id" => $model->id]), ['class' => 'btn btn-success']);
 				}
 				$debate = Yii::$app->user->hasChairedLastRound($model);
