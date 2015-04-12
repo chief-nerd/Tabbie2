@@ -38,6 +38,7 @@ AppAsset::register($this);
 		echo Nav::widget([
 			'options' => ['class' => 'navbar-nav menu navbar-right'],
 			'items' => $this->context->menuItems,
+			'encodeLabels' => false,
 		]);
 		NavBar::end();
 		?>

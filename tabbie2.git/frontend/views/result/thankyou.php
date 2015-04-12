@@ -5,6 +5,7 @@ use kartik\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model common\models\Result */
 /* @var $form yii\widgets\ActiveForm */
+
 $this->title = Yii::t("app", "Thank you");
 $tournament = $this->context->_getContext();
 $this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
@@ -48,10 +49,12 @@ $this->params['breadcrumbs'][] = $this->title;
 	<hr>
 
 	<div class="row">
-		<div class="col-xs-6">
-			<?= Html::a(Html::icon("home") . "&nbsp;" . Yii::t("app", "Go to Home"), ["tournament/view", "id" => $tournament->id], ["class" => "btn btn-default center-block"]) ?>
+		<? /** @var $tournament Tournament */
+		if ($tournament->getTournamentHasQuestions()->count() > 0): ?>
+			<div class="col-xs-5">
+				<?= Html::a(Html::icon("home") . "&nbsp;" . Yii::t("app", "Go Home"), ["tournament/view", "id" => $tournament->id], ["class" => "btn btn-default center-block"]) ?>
 		</div>
-		<div class="col-xs-6">
+			<div class="col-xs-7">
 			<?
 			//Can only be chair
 			$ref = $model->debate->getChair()->id;
@@ -65,5 +68,10 @@ $this->params['breadcrumbs'][] = $this->title;
 				"tournament_id" => $tournament->id],
 				["class" => "btn btn-success center-block"]) ?>
 		</div>
+		<? else: ?>
+			<div class="col-xs-12">
+				<?= Html::a(Html::icon("home") . "&nbsp;" . Yii::t("app", "Go Home"), ["tournament/view", "id" => $tournament->id], ["class" => "btn btn-success center-block"]) ?>
+			</div>
+		<? endif; ?>
 	</div>
 </div>
