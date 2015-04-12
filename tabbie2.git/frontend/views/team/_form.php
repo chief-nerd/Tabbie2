@@ -38,7 +38,7 @@ function (element, callback) {
 }
 SCRIPT;
 
-	$urlSocietyList = Url::to(['user/societies']);
+	$urlSocietyList = Url::to(['society/list']);
 
 	// Script to initialize the selection based on the value of the select2 element
 	$initSocietyScript = <<< SCRIPT
@@ -56,7 +56,7 @@ SCRIPT;
 		'options' => ['placeholder' => Yii::t("app", 'Search for a user ...')],
 		'addon' => [
 			"prepend" => [
-				"content" => '<i class="glyphicon glyphicon-user"></i>'
+				"content" => \kartik\helpers\Html::icon("user")
 			],
 		],
 		'pluginOptions' => [
@@ -81,7 +81,7 @@ SCRIPT;
 		'options' => ['placeholder' => Yii::t("app", 'Search for a user ...')],
 		'addon' => [
 			"prepend" => [
-				"content" => '<i class="glyphicon glyphicon-user"></i>'
+				"content" => \kartik\helpers\Html::icon("user")
 			],
 		],
 		'pluginOptions' => [
@@ -103,7 +103,7 @@ SCRIPT;
 		'options' => ['placeholder' => Yii::t("app", 'Search for a society ...')],
 		'addon' => [
 			"prepend" => [
-				"content" => '<i class="glyphicon glyphicon-education"></i>'
+				"content" => \kartik\helpers\Html::icon("education")
 			],
 		],
 		'pluginOptions' => [

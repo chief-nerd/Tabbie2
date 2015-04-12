@@ -7,6 +7,7 @@ use common\models\InSociety;
 use Yii;
 use common\models\Society;
 use yii\filters\AccessControl;
+use yii\helpers\HtmlPurifier;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -25,7 +26,7 @@ class SocietyController extends BaseUserController {
 					[
 						'allow' => true,
 						'actions' => ['list'],
-						'roles' => ['@'],
+						'roles' => ['@', '?'], //Everyone
 					],
 					[
 						'allow' => true,
@@ -123,12 +124,15 @@ class SocietyController extends BaseUserController {
 	 * @param type $id
 	 */
 	public function actionList($search = null, $id = null) {
+		$search = HtmlPurifier::process($search);
+		$id = intval($id);
+
 		$out = ['more' => false];
 		if (!is_null($search)) {
 			$query = new \yii\db\Query;
 			$query->select(["id", "fullname as text"])
 			      ->from('society')
-			      ->where('fullname LIKE "%' . $search . '%"')
+				->where(["LIKE", "fullname", $search])
 			      ->limit(20);
 			$command = $query->createCommand();
 			$data = $command->queryAll();
