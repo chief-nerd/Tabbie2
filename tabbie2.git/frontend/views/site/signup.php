@@ -63,7 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		<div class="row">
 			<div class="col-lg-12">
 				<?
-				$urlUserList = Url::to(['site/list-societies']);
+				$urlUserList = Url::to(['society/list']);
 
 				// Script to initialize the selection based on the value of the select2 element
 				$initUserScript = <<< SCRIPT
