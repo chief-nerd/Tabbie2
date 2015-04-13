@@ -1,3 +1,12 @@
+.beta {
+    position: fixed;
+    top: 50px;
+    left: 0px;
+    width: 169px;
+    height: 169px;
+    background: url("../images/beta-ribbon.png");
+}
+
 .clear {
     clear: both;
 }
