@@ -431,15 +431,21 @@ class User extends ActiveRecord implements IdentityInterface {
 			return $user;
 	}
 
-	public static function getLanguageStatusLabel($id = null) {
+	public static function getLanguageStatusLabel($id = null, $short = false) {
+
+		if ($id === -1)
+			return Yii::t("app", "mixed");
+
+		if ($id === self::LANGUAGE_NONE)
+			return Yii::t("app", "Not set");
+
 		$status = [
-			self::LANGUAGE_NONE => Yii::t("app", "Not set"),
 			self::LANGUAGE_ENL => Yii::t("app", "ENL, English as a native language"),
 			self::LANGUAGE_ESL => Yii::t("app", "ESL, English as a second language"),
 			self::LANGUAGE_EFL => Yii::t("app", "EFL, English as a foreign language"),
 		];
 
-		return (isset($status[$id])) ? $status[$id] : $status;
+		return (isset($status[$id])) ? (($short) ? substr($status[$id], 0, 3) : $status[$id]) : $status;
 	}
 
 	public function getGenderIcon() {

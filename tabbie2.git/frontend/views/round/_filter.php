@@ -11,7 +11,7 @@ $form = ActiveForm::begin([
 ?>
 	<h3>Filter</h3>
 	<div class="row">
-		<div class="col-md-4">
+		<div class="col-md-3">
 			<?
 			echo $form->field($debateSearchModel, 'venue')->widget(Select2::classname(), [
 				'data' => \common\models\search\VenueSearch::getSearchArray($model->tournament_id),
@@ -27,7 +27,7 @@ $form = ActiveForm::begin([
 			]);
 			?>
 		</div>
-		<div class="col-md-4">
+		<div class="col-md-3">
 			<?
 			echo $form->field($debateSearchModel, 'team')->widget(Select2::classname(), [
 				'data' => \common\models\search\DebateSearch::getTeamSearchArray($model->tournament_id),
@@ -41,7 +41,21 @@ $form = ActiveForm::begin([
 			]);
 			?>
 		</div>
-		<div class="col-md-4">
+		<div class="col-md-3">
+			<?
+			echo $form->field($debateSearchModel, 'language_status')->widget(Select2::classname(), [
+				'data' => \common\models\User::getLanguageStatusLabel(),
+				'options' => ['placeholder' => Yii::t("app", 'Select a Language ...')],
+				'pluginOptions' => [
+					'allowClear' => true
+				],
+				"pluginEvents" => [
+					"change" => "function() { document.getElementById('filterForm').submit(); }",
+				]
+			]);
+			?>
+		</div>
+		<div class="col-md-3">
 			<?
 			echo $form->field($debateSearchModel, 'adjudicator')->widget(Select2::classname(), [
 				'data' => \common\models\search\DebateSearch::getAdjudicatorSearchArray($model->tournament_id),

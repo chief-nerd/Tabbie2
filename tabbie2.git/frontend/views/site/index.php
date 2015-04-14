@@ -6,7 +6,7 @@ use kartik\helpers\Html;
 $this->title = Yii::$app->params["slogan"];
 ?>
 <div class="site-index">
-
+	<div class="beta"></div>
 	<div class="jumbotron">
 		<h1><?= Yii::t("app", "Welcome to {appName}!", ["appName" => Yii::$app->params["appName"]]) ?></h1>
 

@@ -117,7 +117,6 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 		</div>
 		<div class="col-md-4 text-center">
 			<h3 style="margin-top:0; margin-bottom:20px;"><?= Yii::t("app", "Color Palette") ?></h3>
-
 			<?= SwitchInput::widget([
 				'name' => 'colorpattern',
 				'type' => SwitchInput::RADIO,
@@ -189,6 +188,20 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'co_team.name',
 			'label' => Yii::t("app", 'CO Team'),
+		],
+		[
+			'class' => '\kartik\grid\DataColumn',
+			'attribute' => 'highestPoints',
+			'label' => Yii::t("app", 'Points'),
+			'width' => "80px",
+		],
+		[
+			'class' => '\kartik\grid\DataColumn',
+			'attribute' => 'language_status',
+			'label' => Yii::t("app", 'Language'),
+			'value' => function ($model, $key, $index, $widget) {
+				return \common\models\User::getLanguageStatusLabel($model->getLanguage_status(), true);
+			},
 		],
 		[
 			'class' => '\kartik\grid\DataColumn',

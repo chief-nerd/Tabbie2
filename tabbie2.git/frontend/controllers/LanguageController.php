@@ -93,7 +93,7 @@ class LanguageController extends BaseTournamentController {
 					/** @var $team Team */
 					if ($team->speakerA->language_status == $team->speakerB->language_status) {
 						$team->language_status = $team->speakerA->language_status;
-						$addon = Yii::t("app", " + Team upgraded to {status}", ["status" => substr(User::getLanguageStatusLabel($team->language_status), 0, 3)]);
+						$addon = Yii::t("app", " + Team upgraded to {status}", ["status" => User::getLanguageStatusLabel($team->language_status, true)]);
 						$team->save();
 					}
 					else {

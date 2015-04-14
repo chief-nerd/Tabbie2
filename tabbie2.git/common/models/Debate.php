@@ -7,7 +7,8 @@ use Yii;
 /**
  * This is the model class for table "debate".
 
- *
+
+*
 *@property integer    $id
  * @property integer    $round_id
  * @property integer    $tournament_id
@@ -25,6 +26,10 @@ use Yii;
  * @property string     $time
  * @property string     $messages
  * @property Panel      $panel
+ * @property Team       $og_team
+ * @property Team       $oo_team
+ * @property Team       $cg_team
+ * @property Team       $co_team
  * @property Venue      $venue
  * @property Feedback[] $feedbacks
  * @property Result     $result
@@ -84,6 +89,52 @@ class Debate extends \yii\db\ActiveRecord {
 			'time' => Yii::t('app', 'Time'),
 			'messages' => Yii::t('app', 'Messages')
 		];
+	}
+
+	public function getLanguage_status() {
+		if (!isset($this->og_team) ||
+			!isset($this->oo_team) ||
+			!isset($this->cg_team) ||
+			!isset($this->co_team)
+		)
+			return User::LANGUAGE_NONE;
+
+		//Highest Status
+		$status = max([
+			$this->og_team->language_status,
+			$this->oo_team->language_status,
+			$this->cg_team->language_status,
+			$this->co_team->language_status,
+		]);
+		//Look if Equal
+		if ($status == $this->og_team->language_status &&
+			$status == $this->oo_team->language_status &&
+			$status == $this->cg_team->language_status &&
+			$status == $this->cg_team->language_status
+		) {
+			if ($status == 0)
+				$status = 1;
+			return $status;
+		}
+		else
+			return -1;
+
+	}
+
+	public function getHighestPoints() {
+		if (!isset($this->og_team) ||
+			!isset($this->oo_team) ||
+			!isset($this->cg_team) ||
+			!isset($this->co_team)
+		)
+			return 0;
+
+		return max([
+			$this->og_team->points,
+			$this->oo_team->points,
+			$this->cg_team->points,
+			$this->co_team->points,
+		]);
 	}
 
 	/**
@@ -219,10 +270,11 @@ class Debate extends \yii\db\ActiveRecord {
 
 	/**
 	 * Get the Teams in a searchable Array
+
 	 *
-	 * @param bool $onlyKeys
+*@param bool $onlyKeys
 	 *
-	 * @return array
+	 * @return Team[]|array
 	 */
 	public function getTeams($onlyKeys = false) {
 		return [

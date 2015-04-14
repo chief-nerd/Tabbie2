@@ -40,6 +40,12 @@ ul li:first-child .adj {
     font-size: 95%;
 }
 
+sup {
+    font-size: 100%;
+    top: -0.3em;
+    left: 2px;
+}
+
 #drawdisplay #motionContent h1 {
     margin-top: 80px;
 }
@@ -53,7 +59,15 @@ ul li:first-child .adj {
     font-size: 80%;
 }
 
-#debateDraw-container tbody tr td:nth-child(7) {
+.kv-grid-table td {
+    text-align: center;
+}
+
+.kv-expand-detail-row td {
+    text-align: left;
+}
+
+#debateDraw-container tbody tr td:last-child {
     padding: 0;
 }
 
@@ -113,8 +127,4 @@ ul li:first-child .adj {
 #debateDraw-container {
     overflow-x: scroll;
     overflow-y: auto;
-}
-
-#debateDraw .floatThead-wrapper {
-    position: static !important;
 }
