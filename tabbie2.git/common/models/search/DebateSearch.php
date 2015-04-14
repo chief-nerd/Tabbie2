@@ -15,6 +15,7 @@ class DebateSearch extends Debate {
 	public $venue;
 	public $adjudicator;
 	public $team;
+	public $language_status;
 
 	/**
 	 * @inheritdoc
@@ -23,7 +24,7 @@ class DebateSearch extends Debate {
 		return [
 			[['id', 'round_id', 'tournament_id', 'og_team_id', 'oo_team_id', 'cg_team_id', 'co_team_id', 'panel_id', 'venue_id', 'og_feedback', 'oo_feedback', 'cg_feedback', 'co_feedback'], 'integer'],
 			[['venue', 'team', 'adjudicator'], 'string'],
-			[['time'], 'safe'],
+			[['time', 'highestPoints', 'language_status'], 'safe'],
 		];
 	}
 
@@ -65,32 +66,35 @@ class DebateSearch extends Debate {
 		]);
 
 		$dataProvider->setSort([
-			'defaultOrder' => ['venue' => SORT_ASC],
+			'defaultOrder' => ['highestPoints' => SORT_ASC],
 			'attributes' => [
 				'venue' => [
 					'asc' => ['CHAR_LENGTH(venue.name), venue.name' => SORT_ASC],
 					'desc' => ['CHAR_LENGTH(venue.name) DESC, venue.name' => SORT_DESC],
-					'label' => 'Venue'
 				],
 				'og_team.name' => [
 					'asc' => ['ogteam.name' => SORT_ASC],
 					'desc' => ['ogteam.name' => SORT_DESC],
-					'label' => 'OG Team'
 				],
 				'oo_team.name' => [
 					'asc' => ['ooteam.name' => SORT_ASC],
 					'desc' => ['ooteam.name' => SORT_DESC],
-					'label' => 'OG Team'
 				],
 				'cg_team.name' => [
 					'asc' => ['cgteam.name' => SORT_ASC],
 					'desc' => ['cgteam.name' => SORT_DESC],
-					'label' => 'OG Team'
 				],
 				'co_team.name' => [
 					'asc' => ['coteam.name' => SORT_ASC],
 					'desc' => ['coteam.name' => SORT_DESC],
-					'label' => 'OG Team'
+				],
+				'language_status' => [
+					'asc' => ['GREATEST(ogteam.language_status, ooteam.language_status, cgteam.language_status, coteam.language_status)' => SORT_ASC],
+					'desc' => ['GREATEST(ogteam.language_status, ooteam.language_status, cgteam.language_status, coteam.language_status)' => SORT_DESC],
+				],
+				'highestPoints' => [
+					'asc' => ['GREATEST(ogteam.points, ooteam.points, cgteam.points, coteam.points)' => SORT_DESC],
+					'desc' => ['GREATEST(ogteam.points, ooteam.points, cgteam.points, coteam.points)' => SORT_ASC],
 				],
 			]
 		]);
@@ -122,9 +126,12 @@ class DebateSearch extends Debate {
 			"coteam.name LIKE '%" . $params["DebateSearch"]["team"] . "%'"
 		);
 
-		/*$query->orWhere(["like", "ooteam.name", $params["DebateSearch"]["team"]]);
-	$query->orWhere(["like", "cgteam.name", $params["DebateSearch"]["team"]]);
-	$query->orWhere(["like", "coteam.name", $params["DebateSearch"]["team"]]);*/
+		if ($this->language_status)
+			$query->andWhere("ogteam.language_status = " . $this->language_status . " OR " .
+				"ooteam.language_status = " . $this->language_status . " OR " .
+				"cgteam.language_status = " . $this->language_status . " OR " .
+				"coteam.language_status = " . $this->language_status
+			);
 
 		$query->andWhere(["like", "CONCAT(user.givenname, ' ', user.surename)", $params["DebateSearch"]["adjudicator"]]);
 		$query->andWhere(["like", "venue.name", $params["DebateSearch"]["venue"]]);
