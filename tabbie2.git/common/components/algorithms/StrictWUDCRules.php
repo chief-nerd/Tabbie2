@@ -783,7 +783,7 @@ class StrictWUDCRules extends TabAlgorithm {
 		// This will convert the level of the room into +1, +2, -1 etc. This is useful, because we want the judging to be relative to this level.
 		// The equation we use is: SD = (x-1)*log(abs((x-1)))+1, where x is the 'Room Potential' and SD is the number of SDs that average is from the mean.
 
-		$roomDifference = ($roomPotential - 1) * log(abs(($roomPotential - 1))) + 1;
+		$roomDifference = max(($roomPotential - 1) * log(abs(($roomPotential - 1))) + 1, 100);
 
 		//So now we need to work out where this sits on the scale
 
@@ -791,9 +791,9 @@ class StrictWUDCRules extends TabAlgorithm {
 
 		$penalty = intval(pow(($roomDifference - $comparison_factor), 2));
 		$line->addMessage("notice", Yii::t("app", "Steepness Comparison: {comparison_factor}, Difference: {roomDifference} (+{penalty})", [
-			$comparison_factor => round($comparison_factor, 3),
-			$roomDifference => round($roomDifference, 3),
-			$penalty => $penalty,
+			"comparison_factor" => round($comparison_factor, 3),
+			"roomDifference" => round($roomDifference, 3),
+			"penalty" => $penalty,
 		]));
 		$line->energyLevel += $penalty;
 		return $line;
