@@ -114,7 +114,3 @@ ul li:first-child .adj {
     overflow-x: scroll;
     overflow-y: auto;
 }
-
-#debateDraw .floatThead-wrapper {
-    position: static !important;
-}
