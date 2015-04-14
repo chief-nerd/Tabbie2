@@ -202,6 +202,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 			'value' => function ($model, $key, $index, $widget) {
 				return \common\models\User::getLanguageStatusLabel($model->getLanguage_status(), true);
 			},
+			'visible' => $model->tournament->has_esl,
 		],
 		[
 			'class' => '\kartik\grid\DataColumn',
