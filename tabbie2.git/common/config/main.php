@@ -7,6 +7,10 @@ return [
 	'sourceLanguage' => 'en-UK',
 	'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
 	'components' => [
+		'db' => [
+			'charset' => 'utf8',
+			'enableSchemaCache' => (YII_ENV_DEV == "prod") ? true : false,
+		],
 		'cache' => [
 			'class' => 'yii\caching\FileCache',
 		],
