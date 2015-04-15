@@ -2,6 +2,7 @@
 
 use kartik\helpers\Html;
 use yii\widgets\ActiveForm;
+use common\models\Team;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Result */
@@ -24,55 +25,54 @@ use yii\widgets\ActiveForm;
 	?>
 
 	<div class="row">
-		<div class="<?= $cols ?>">
-			<h3><?= Yii::t("app", "Opening Government") ?></h3>
-			<h4><?= $debate->og_team->name ?></h4>
-			<?= $form->field($model, 'og_A_speaks', $fieldOption)
-			         ->label($debate->og_team->speakerA->name)
-			         ->textInput($textOption) ?>
-			<?= $form->field($model, 'og_B_speaks', $fieldOption)
-			         ->label($debate->og_team->speakerB->name)
-			         ->textInput($textOption) ?>
-		</div>
-		<div class="<?= $cols ?>">
-			<h3><?= Yii::t("app", "Opening Opposition") ?></h3>
-			<h4><?= $debate->oo_team->name ?></h4>
-			<?= $form->field($model, 'oo_A_speaks', $fieldOption)
-			         ->label($debate->oo_team->speakerA->name)
-			         ->textInput($textOption) ?>
-			<?= $form->field($model, 'oo_B_speaks', $fieldOption)
-			         ->label($debate->oo_team->speakerB->name)
-			         ->textInput($textOption) ?>
-		</div>
-	</div>
-	<div class="row">
-		<div class="<?= $cols ?>">
-			<h3><?= Yii::t("app", "Closing Government") ?></h3>
-			<h4><?= $debate->cg_team->name ?></h4>
-			<?= $form->field($model, 'cg_A_speaks', $fieldOption)
-			         ->label($debate->cg_team->speakerA->name)
-			         ->textInput($textOption) ?>
-			<?= $form->field($model, 'cg_B_speaks', $fieldOption)
-			         ->label($debate->cg_team->speakerB->name)
-			         ->textInput($textOption) ?>
-		</div>
-		<div class="<?= $cols ?>">
-			<h3><?= Yii::t("app", "Closing Opposition") ?></h3>
-			<h4><?= $debate->co_team->name ?></h4>
-			<?= $form->field($model, 'co_A_speaks', $fieldOption)
-			         ->label($debate->co_team->speakerA->name)
-			         ->textInput($textOption) ?>
-			<?= $form->field($model, 'co_B_speaks', $fieldOption)
-			         ->label($debate->co_team->speakerB->name)
-			         ->textInput($textOption) ?>
-		</div>
+		<? foreach (Team::getPos() as $index => $pos): ?>
+			<div class="<?= $cols ?>">
+				<h3><?= Team::getPosLabel($index) ?></h3>
+				<h4><?= $debate->{$pos . "_team"}->name ?></h4>
+				<?= $form->field($model, $pos . '_A_speaks', $fieldOption)
+				         ->label($debate->{$pos . "_team"}->speakerA->name)
+				         ->textInput($textOption) ?>
+				<?= $form->field($model, $pos . '_B_speaks', $fieldOption)
+				         ->label($debate->{$pos . "_team"}->speakerB->name)
+				         ->textInput($textOption) ?>
+			</div>
+		<? endforeach; ?>
 	</div>
 
 	<hr>
+	<div id="irregular_options" class="collapse">
+		<h3>Irregular Options</h3>
 
+		<div class="row">
+			<div class="<?= $cols ?>">
+				<?= $form->field($model, "og_irregular")->dropDownList(\common\models\Team::getIrregularOptions()) ?>
+			</div>
+			<div class="<?= $cols ?>">
+				<?= $form->field($model, "oo_irregular")->dropDownList(\common\models\Team::getIrregularOptions()) ?>
+			</div>
+		</div>
+		<div class="row">
+			<div class="<?= $cols ?>">
+				<?= $form->field($model, "cg_irregular")->dropDownList(\common\models\Team::getIrregularOptions()) ?>
+			</div>
+			<div class="<?= $cols ?>">
+				<?= $form->field($model, "co_irregular")->dropDownList(\common\models\Team::getIrregularOptions()) ?>
+			</div>
+		</div>
+		<hr>
+	</div>
 	<div class="row">
-		<div class="col-xs-12">
-			<?= Html::submitButton(Yii::t('app', 'Enter Speaks and continue') . "&nbsp;" . Html::icon("chevron-right"), ['class' => 'btn btn-success btn-block']) ?>
+		<div class="col-xs-5">
+			<?= Html::Button(Yii::t('app', 'Options') . "&nbsp;" . Html::icon("chevron-down"), [
+				'class' => 'btn btn-default btn-block',
+				'data-toggle' => "collapse",
+				'data-target' => "#irregular_options",
+				'aria-expanded' => "false",
+				'aria-controls' => "irregular_options",
+			]) ?>
+		</div>
+		<div class="col-xs-7">
+			<?= Html::submitButton(Yii::t('app', 'Continue') . "&nbsp;" . Html::icon("chevron-right"), ['class' => 'btn btn-success btn-block']) ?>
 		</div>
 	</div>
 

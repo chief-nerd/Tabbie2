@@ -38,6 +38,46 @@ class Team extends \yii\db\ActiveRecord {
 	const CG = 2;
 	const CO = 3;
 
+	const POS_A = "A";
+	const POS_B = "B";
+
+	/**
+	 * Position Prefix
+	 *
+	 * @return array
+	 */
+	public static function getPos($id = null) {
+		$pos = ["og", "oo", "cg", "co"];
+		return (isset($pos[$id])) ? $pos[$id] : $pos;
+	}
+
+	public static function getSpeaker() {
+		return ["A", "B"];
+	}
+
+	/**
+	 * Position Labels
+	 *
+	 * @param $id
+	 *
+	 * @return array
+	 */
+	public static function getPosLabel($id) {
+		$labels = [
+			self::OG => Yii::t("app", 'Opening Government'),
+			self::OO => Yii::t("app", 'Opening Opposition'),
+			self::CG => Yii::t("app", 'Closing Government'),
+			self::CO => Yii::t("app", 'Closing Opposition'),
+		];
+
+		return (isset($labels[$id])) ? $labels[$id] : $labels;
+	}
+
+	const IRREGULAR_NORMAL   = 0;
+	const IRREGULAR_SWING    = 1;
+	const IRREGULAR_A_NOSHOW = 2;
+	const IRREGULAR_B_NOSHOW = 3;
+
 	public $positionMatrix;
 
 	/**
@@ -197,12 +237,12 @@ class Team extends \yii\db\ActiveRecord {
 
 
 			if ($debate instanceof Debate && $debate->result instanceof Result) {
-				foreach (Debate::positions() as $p) {
+				foreach (Team::getPos() as $p) {
 					if ($debate->{$p . "_team_id"} == $this->id)
 						$position = $p;
 				}
 
-				$points += (4 - $debate->result->{$position . "_place"});
+				$points += $debate->result->getPoints($position);
 
 			}
 		}
@@ -381,6 +421,17 @@ class Team extends \yii\db\ActiveRecord {
 		SELECT count(*) FROM debate WHERE tournament_id = $tournament_id && co_team_id = $id")->queryAll();
 
 		return ArrayHelper::getColumn($pos, "count(*)");
+	}
+
+	public static function getIrregularOptions($id = null) {
+		$options = [
+			self::IRREGULAR_NORMAL => Yii::t("app", "Everything normal"),
+			self::IRREGULAR_SWING => Yii::t("app", "Was replaced by swing team"),
+			self::IRREGULAR_A_NOSHOW => Yii::t("app", "Speaker A didn't show up"),
+			self::IRREGULAR_B_NOSHOW => Yii::t("app", "Speaker B didn't show up"),
+		];
+
+		return (isset($options[$id])) ? $options[$id] : $options;
 	}
 
 }

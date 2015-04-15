@@ -3,6 +3,7 @@
 use kartik\popover\PopoverX;
 use \yii\helpers\Html;
 use common\models\Result;
+use common\models\Team;
 
 /* @var $model Debate */
 
@@ -12,21 +13,21 @@ if ($model->result instanceof Result) {
 
 	$popcontent = "<table width='100%'>"
 		. "<tr>"
-		. "<th>" . $model->og_team->name . " (" . $result->og_place . ")</th>"
-		. "<th>" . $model->oo_team->name . " (" . $result->oo_place . ")</th>"
+		. "<th>" . $model->og_team->name . " (" . $result->getPlaceText(Team::getPos(Team::OG)) . ")</th>"
+		. "<th>" . $model->oo_team->name . " (" . $result->getPlaceText(Team::getPos(Team::OO)) . ")</th>"
 		. "</tr><tr>"
-		. "<td>" . $model->og_team->speakerA->name . ": " . $result->og_A_speaks . "<br/>"
-		. $model->og_team->speakerB->name . ": " . $result->og_B_speaks . "</td>"
-		. "<td>" . $model->oo_team->speakerA->name . ": " . $result->oo_A_speaks . "<br/>"
-		. $model->oo_team->speakerB->name . ": " . $result->oo_B_speaks . "</td>"
+		. "<td>" . $model->og_team->speakerA->name . ": " . $result->getSpeakerSpeaks(Team::getPos(Team::OG), Team::POS_A) . "<br/>"
+		. $model->og_team->speakerB->name . ": " . $result->getSpeakerSpeaks(Team::getPos(Team::OG), Team::POS_B) . "</td>"
+		. "<td>" . $model->oo_team->speakerA->name . ": " . $result->getSpeakerSpeaks(Team::getPos(Team::OO), Team::POS_A) . "<br/>"
+		. $model->oo_team->speakerB->name . ": " . $result->getSpeakerSpeaks(Team::getPos(Team::OO), Team::POS_B) . "</td>"
 		. "</tr><tr>"
-		. "<th>" . $model->cg_team->name . " (" . $result->cg_place . ")</th>"
-		. "<th>" . $model->co_team->name . " (" . $result->co_place . ")</th>"
+		. "<th>" . $model->cg_team->name . " (" . $result->getPlaceText(Team::getPos(Team::CG)) . ")</th>"
+		. "<th>" . $model->co_team->name . " (" . $result->getPlaceText(Team::getPos(Team::CO)) . ")</th>"
 		. "</tr><tr>"
-		. "<td>" . $model->cg_team->speakerA->name . ": " . $result->cg_A_speaks . "<br/>"
-		. $model->cg_team->speakerB->name . ": " . $result->cg_B_speaks . "</td>"
-		. "<td>" . $model->co_team->speakerA->name . ": " . $result->co_A_speaks . "<br/>"
-		. $model->co_team->speakerB->name . ": " . $result->co_B_speaks . "</td>"
+		. "<td>" . $model->cg_team->speakerA->name . ": " . $result->getSpeakerSpeaks(Team::getPos(Team::CG), Team::POS_A) . "<br/>"
+		. $model->cg_team->speakerB->name . ": " . $result->getSpeakerSpeaks(Team::getPos(Team::CG), Team::POS_B) . "</td>"
+		. "<td>" . $model->co_team->speakerA->name . ": " . $result->getSpeakerSpeaks(Team::getPos(Team::CO), Team::POS_A) . "<br/>"
+		. $model->co_team->speakerB->name . ": " . $result->getSpeakerSpeaks(Team::getPos(Team::CG), Team::POS_B) . "</td>"
 		. "</tr>"
 		. "</table>";
 }

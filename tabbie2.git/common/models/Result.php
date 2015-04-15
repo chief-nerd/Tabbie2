@@ -6,21 +6,29 @@ use Yii;
 
 /**
  * This is the model class for table "result".
- *
- * @property integer     $id
+
+
+
+
+*
+*@property integer     $id
  * @property integer     $debate_id
  * @property integer     $og_A_speaks
  * @property integer     $og_B_speaks
  * @property integer     $og_place
+ * @property integer     $og_irregular
  * @property integer     $oo_A_speaks
  * @property integer     $oo_B_speaks
  * @property integer     $oo_place
+ * @property integer     $oo_irregular
  * @property integer     $cg_A_speaks
  * @property integer     $cg_B_speaks
  * @property integer     $cg_place
+ * @property integer     $cg_irregular
  * @property integer     $co_A_speaks
  * @property integer     $co_B_speaks
  * @property integer     $co_place
+ * @property integer     $co_irregular
  * @property string      $time
  * @property integer     $entered_by_id
  * @property Debate      $debate
@@ -43,7 +51,7 @@ class Result extends \yii\db\ActiveRecord {
 	public function rules() {
 		return [
 			[['debate_id', 'og_A_speaks', 'og_B_speaks', 'og_place', 'oo_A_speaks', 'oo_B_speaks', 'oo_place', 'cg_A_speaks', 'cg_B_speaks', 'cg_place', 'co_A_speaks', 'co_B_speaks', 'co_place', 'entered_by_id'], 'required'],
-			[['debate_id', 'og_place', 'oo_place', 'cg_place', 'co_place', 'entered_by_id'], 'integer'],
+			[['debate_id', 'og_place', 'oo_place', 'cg_place', 'co_place', 'entered_by_id', 'og_irregular', 'oo_irregular', 'cg_irregular', 'co_irregular'], 'integer'],
 			[['og_A_speaks', 'og_B_speaks', 'oo_A_speaks', 'oo_B_speaks', 'cg_A_speaks', 'cg_B_speaks', 'co_A_speaks', 'co_B_speaks'],
 				"integer", "max" => Yii::$app->params["speaks_max"], "min" => Yii::$app->params["speaks_min"]],
 			['debate_id', 'validateNotEqualPlace'],
@@ -60,7 +68,6 @@ class Result extends \yii\db\ActiveRecord {
 	 * @param type $params
 	 */
 	public function validateNotEqualPlace($attribute, $params) {
-		$positions = ["og", "oo", "cg", "co"];
 		$results = [
 			"og" => $this->og_speaks,
 			"oo" => $this->oo_speaks,
@@ -70,7 +77,7 @@ class Result extends \yii\db\ActiveRecord {
 
 		$results = array_unique($results);
 
-		foreach ($positions as $pos) {
+		foreach (Team::getPos() as $pos) {
 			if (!array_key_exists($pos, $results)) {
 				$this->addError($pos . "_A_speaks", Yii::t("app", 'Equal place exist'));
 				$this->addError($pos . "_B_speaks", Yii::t("app", 'Equal place exist'));
@@ -99,23 +106,73 @@ class Result extends \yii\db\ActiveRecord {
 			'co_place' => Yii::t('app', 'CO Place'),
 			'time' => Yii::t('app', 'Time'),
 			'entered_by_id' => Yii::t('app', 'Entered by User ID'),
+			'og_irregular' => Team::getPosLabel(Team::OG),
+			'oo_irregular' => Team::getPosLabel(Team::OO),
+			'cg_irregular' => Team::getPosLabel(Team::CG),
+			'co_irregular' => Team::getPosLabel(Team::CO),
 		];
 	}
 
 	public function getOg_speaks() {
-		return $this->og_A_speaks + $this->og_B_speaks;
+		return $this->getSpeaks(Team::getPos(Team::OG));
 	}
 
 	public function getOo_speaks() {
-		return $this->oo_A_speaks + $this->oo_B_speaks;
+		return $this->getSpeaks(Team::getPos(Team::OO));
 	}
 
 	public function getCg_speaks() {
-		return $this->cg_A_speaks + $this->cg_B_speaks;
+		return $this->getSpeaks(Team::getPos(Team::CG));
 	}
 
 	public function getCo_speaks() {
-		return $this->co_A_speaks + $this->co_B_speaks;
+		return $this->getSpeaks(Team::getPos(Team::CO));
+	}
+
+	/**
+	 * Get the correct amount of speaks a team earned
+	 *
+	 * @param $p
+	 *
+	 * @return int|mixed
+	 */
+	public function getSpeaks($p) {
+		return $this->getSpeakerSpeaks($p, Team::POS_A) + $this->getSpeakerSpeaks($p, Team::POS_B);
+	}
+
+	public function getSpeakerSpeaks($p, $s) {
+		if ($this->{$p . "_irregular"} == Team::IRREGULAR_SWING) {
+			return 0;
+		}
+		return $this->{$p . "_" . $s . "_speaks"};
+	}
+
+	/**
+	 * Get the correct amount of Points a team earned
+	 *
+	 * @param string $p
+	 *
+	 * @return int
+	 */
+	public function getPoints($p) {
+		if ($this->{$p . "_irregular"} == Team::IRREGULAR_SWING) {
+			return 0;
+		}
+		return (4 - $this->{$p . "_place"});
+	}
+
+	/**
+	 * Get the Text to display in the Tab View
+	 *
+	 * @param $p
+	 *
+	 * @return mixed|string
+	 */
+	public function getPlaceText($p) {
+		if ($this->{$p . "_irregular"} == Team::IRREGULAR_SWING) {
+			return "-";
+		}
+		return $this->{$p . "_place"};
 	}
 
 	public function rankTeams() {
@@ -150,11 +207,22 @@ class Result extends \yii\db\ActiveRecord {
 	public function updateTeamCache() {
 		foreach ($this->debate->getTeams() as $pos => $team) {
 			/** @var Team $team */
-			$team->points += (4 - $this->{$pos . "_place"});
-			$team->speakerA_speaks += $this->{$pos . "_A_speaks"};
-			$team->speakerB_speaks += $this->{$pos . "_B_speaks"};
+			$team->points += $this->getPoints($pos);
+			$team->speakerA_speaks += $this->getSpeakerSpeaks($pos, Team::POS_A);
+			$team->speakerB_speaks += $this->getSpeakerSpeaks($pos, Team::POS_B);
 			$team->save();
 		}
 	}
 
+	public function getResultLabel($debate, $pos) {
+		if ($this->{$pos . "_irregular"} > 0) {
+			return Yii::t("app", "Swing Team");
+		}
+
+		return $debate->{$pos . "_team"}->name;
+	}
+
+	public static function swingIndicator() {
+		return '<sup class="swingIndicator">*</sub>';
+	}
 }

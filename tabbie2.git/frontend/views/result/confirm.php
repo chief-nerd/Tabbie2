@@ -2,6 +2,7 @@
 
 use kartik\helpers\Html;
 use yii\widgets\ActiveForm;
+use common\models\Team;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Result */
@@ -28,32 +29,17 @@ $this->params['breadcrumbs'][] = $this->title;
 	?>
 
 	<div class="row">
+		<? foreach (\common\models\Team::getPos() as $posindex => $pos): ?>
 		<div class="<?= $cols ?>">
-			<h3><?= Yii::t("app", "Opening Government") ?></h3>
-			<?= Html::activeHiddenInput($model, 'og_A_speaks'); ?>
-			<?= Html::activeHiddenInput($model, 'og_B_speaks'); ?>
-			<?= $form->field($model, 'og_place', $fieldOption)->label($debate->og_team->name)->textInput($textOption) ?>
+			<h3><?= Team::getPosLabel($posindex) ?></h3>
+			<?= Html::activeHiddenInput($model, $pos . '_A_speaks'); ?>
+			<?= Html::activeHiddenInput($model, $pos . '_B_speaks'); ?>
+			<?= Html::activeHiddenInput($model, $pos . '_irregular'); ?>
+			<?= $form->field($model, $pos . '_place', $fieldOption)
+			         ->label($model->getResultLabel($debate, $pos))
+			         ->textInput($textOption) ?>
 		</div>
-		<div class="<?= $cols ?>">
-			<h3><?= Yii::t("app", "Opening Opposition") ?></h3>
-			<?= Html::activeHiddenInput($model, 'oo_A_speaks'); ?>
-			<?= Html::activeHiddenInput($model, 'oo_B_speaks'); ?>
-			<?= $form->field($model, 'oo_place', $fieldOption)->label($debate->oo_team->name)->textInput($textOption) ?>
-		</div>
-	</div>
-	<div class="row">
-		<div class="<?= $cols ?>">
-			<h3><?= Yii::t("app", "Closing Government") ?></h3>
-			<?= Html::activeHiddenInput($model, 'cg_A_speaks'); ?>
-			<?= Html::activeHiddenInput($model, 'cg_B_speaks'); ?>
-			<?= $form->field($model, 'cg_place', $fieldOption)->label($debate->cg_team->name)->textInput($textOption) ?>
-		</div>
-		<div class="<?= $cols ?>">
-			<h3><?= Yii::t("app", "Closing Opposition") ?></h3>
-			<?= Html::activeHiddenInput($model, 'co_A_speaks'); ?>
-			<?= Html::activeHiddenInput($model, 'co_B_speaks'); ?>
-			<?= $form->field($model, 'co_place', $fieldOption)->label($debate->co_team->name)->textInput($textOption) ?>
-		</div>
+		<? endforeach; ?>
 	</div>
 
 	<?= Html::activeHiddenInput($model, "confirmed", ["value" => "true"]); ?>
