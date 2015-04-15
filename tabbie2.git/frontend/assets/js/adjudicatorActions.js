@@ -1,5 +1,5 @@
 function init() {
-    th = $("#debateDraw-container thead th:nth-child(7)");
+    th = $("#debateDraw-container thead th:last-child");
     th.html(th.html() + " <i></i>");
 
     /**
@@ -36,7 +36,7 @@ function init() {
         position = $(this).find("li").index(placeholder);
         console.log("#", window.dragid, "from Panel", window.panelid, "to", panel, "at pos", position);
 
-        th = $("#debateDraw-container thead th:nth-child(7) i");
+        th = $("#debateDraw-container thead th:last-child i");
         th[0].className = "glyphicon glyphicon-refresh";
 
         $.ajax({
@@ -51,16 +51,16 @@ function init() {
         }).success(function (data) {
             if (data == "1") {
                 //console.log("Saved!");
-                th = $("#debateDraw-container thead th:nth-child(7) i");
+                th = $("#debateDraw-container thead th:last-child i");
                 th[0].className = "glyphicon glyphicon-ok-circle text-success";
             }
             else {
-                th = $("#debateDraw-container thead th:nth-child(7) i");
+                th = $("#debateDraw-container thead th:last-child i");
                 th[0].className = "glyphicon glyphicon-remove-circle text-error";
                 console.log("ERROR Return value", data);
             }
         }).error(function (jqXHR, textStatus, errorThrown) {
-            th = $("#debateDraw-container thead th:nth-child(7) i");
+            th = $("#debateDraw-container thead th:last-child i");
             th[0].className = "glyphicon glyphicon-remove-circle text-error";
             console.error(textStatus + " : " + errorThrown);
         });
