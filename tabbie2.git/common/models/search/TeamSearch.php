@@ -26,7 +26,7 @@ class TeamSearch extends Team {
 	 */
 	public function rules() {
 		return [
-			[['id', 'active', 'tournament_id', 'speakerA_id', 'speakerB_id'], 'integer'],
+			[['id', 'active', 'tournament_id', 'speakerA_id', 'speakerB_id', 'language_status'], 'integer'],
 			[['name', 'speakerName', 'societyName'], 'string', 'max' => 255],
 		];
 	}
@@ -64,6 +64,7 @@ class TeamSearch extends Team {
 				'id',
 				'active',
 				'name',
+				'language_status',
 				'speakerName',
 				'societyName' => [
 					'asc' => ['society.fullname' => SORT_ASC],
@@ -92,6 +93,7 @@ class TeamSearch extends Team {
 		}]);
 
 		$query->andFilterWhere(['id' => $this->id]);
+		$query->andFilterWhere(['team.language_status' => $this->language_status]);
 		$query->andFilterWhere(['like', 'name', $this->name]);
 
 		//Filter for Tournament scope

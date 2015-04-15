@@ -108,6 +108,21 @@ $this->params['breadcrumbs'][] = $this->title;
 			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any Speaker ...')],
 		],
 		[
+			'class' => '\kartik\grid\DataColumn',
+			'attribute' => 'language_status',
+			'label' => Yii::t("app", 'Language'),
+			'value' => function ($model, $key, $index, $widget) {
+				return \common\models\User::getLanguageStatusLabel($model->language_status, true);
+			},
+			'visible' => $tournament->has_esl,
+			'filterType' => GridView::FILTER_SELECT2,
+			'filter' => \common\models\User::getLanguageStatusLabel(null, true),
+			'filterWidgetOptions' => [
+				'pluginOptions' => ['allowClear' => true],
+			],
+			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any Language ...')],
+		],
+		[
 			'class' => 'kartik\grid\ActionColumn',
 			'template' => '{active}&nbsp;&nbsp;{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}',
 			'dropdown' => false,
