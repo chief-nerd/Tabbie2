@@ -98,11 +98,13 @@ class PublishTabTeam extends \yii\db\ActiveRecord {
 
 		foreach ($results as $result) {
 			/* @var $result \common\models\Result */
-			foreach (\common\models\Debate::positions() as $p) {
+			foreach (Team::getPos() as $p) {
 				$line = $lines[$result->debate->{$p . "_team_id"}];
-				$line->points = $line->points + (4 - $result->{$p . "_place"});
-				$line->results_array[$result->debate->round->number] = $result->{$p . "_place"};
-				$line->speaks = $line->speaks + $result->{$p . "_A_speaks"} + $result->{$p . "_B_speaks"};
+
+				$line->points = $line->points + $result->getPoints($p);
+				$line->speaks = $line->speaks + $result->{$p . "_speaks"};
+				$line->results_array[$result->debate->round->number] = $result->getPlaceText($p);
+
 				$lines[$result->debate->{$p . "_team_id"}] = $line;
 			}
 		}

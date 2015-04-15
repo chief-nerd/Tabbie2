@@ -52,10 +52,6 @@ class Debate extends \yii\db\ActiveRecord {
 		return new TournamentQuery(get_called_class());
 	}
 
-	public static function positions() {
-		return ["og", "oo", "cg", "co"];
-	}
-
 	/**
 	 * @inheritdoc
 	 */

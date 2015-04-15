@@ -102,19 +102,16 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord {
 
 		foreach ($results as $result) {
 			/* @var $result \common\models\Result */
-			foreach (Debate::positions() as $p) {
+			foreach (Team::getPos() as $p) {
 
-				$line = $lines[$result->debate->{$p . "_team"}->speakerA_id];
-				$line->points = $line->points + (4 - $result->{$p . "_place"});
-				$line->results_array[$result->debate->round->number] = $result->{$p . "_A_speaks"};
-				$line->speaks = $line->speaks + $result->{$p . "_A_speaks"};
-				$lines[$result->debate->{$p . "_team"}->speakerA_id] = $line;
+				foreach (Team::getSpeaker() as $s) {
+					$line = $lines[$result->debate->{$p . "_team"}->{"speaker" . $s . "_id"}];
 
-				$line = $lines[$result->debate->{$p . "_team"}->speakerB_id];
-				$line->points = $line->points + (4 - $result->{$p . "_place"});
-				$line->results_array[$result->debate->round->number] = $result->{$p . "_B_speaks"};
-				$line->speaks = $line->speaks + $result->{$p . "_B_speaks"};
-				$lines[$result->debate->{$p . "_team"}->speakerB_id] = $line;
+					$line->points = $line->points + $result->getPoints($p);
+					$line->results_array[$result->debate->round->number] = $result->getSpeakerSpeaks($p, $s);
+					$line->speaks = $line->speaks + $result->getSpeakerSpeaks($p, $s);
+					$lines[$result->debate->{$p . "_team"}->{"speaker" . $s . "_id"}] = $line;
+				}
 			}
 		}
 

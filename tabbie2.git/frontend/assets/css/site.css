@@ -11,6 +11,10 @@
     clear: both;
 }
 
+.not-set {
+    display: none;
+}
+
 .help_popup {
     display: none;
 }
@@ -47,6 +51,12 @@ body {
 
 body.movedown {
     padding-top: 100px;
+}
+
+.swingIndicator {
+    font-weight: bold;
+    font-size: 105%;
+    top: -3px;
 }
 
 /** BOOTSTRAP HACKS **/

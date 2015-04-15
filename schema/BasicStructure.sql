@@ -74,10 +74,10 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `tabbie`.`society`;
 
 CREATE TABLE IF NOT EXISTS `tabbie`.`society` (
-  `id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `fullname`   VARCHAR(255) NULL,
-  `abr`        VARCHAR(45)  NULL,
-  `city`       VARCHAR(255) NULL,
+  `id`       INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `fullname` VARCHAR(255) NULL,
+  `abr`      VARCHAR(45)  NULL,
+  `city`     VARCHAR(255) NULL,
   `country_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `adr_UNIQUE` (`abr` ASC),
@@ -147,7 +147,7 @@ CREATE TABLE IF NOT EXISTS `tabbie`.`adjudicator` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `tournament_id` INT UNSIGNED NOT NULL,
   `user_id` INT UNSIGNED NOT NULL,
-  `active`    TINYINT(1) NOT NULL DEFAULT 1,
+  `active` TINYINT(1) NOT NULL DEFAULT 1,
   `strength` TINYINT NULL,
   `society_id` INT UNSIGNED NOT NULL,
   `can_chair` TINYINT(1) NOT NULL DEFAULT 1,
@@ -342,15 +342,19 @@ CREATE TABLE IF NOT EXISTS `tabbie`.`result` (
   `debate_id` INT UNSIGNED NOT NULL,
   `og_A_speaks` TINYINT NOT NULL,
   `og_B_speaks` TINYINT NOT NULL,
+  `og_irregular` TINYINT NOT NULL DEFAULT 0,
   `og_place` TINYINT NOT NULL,
   `oo_A_speaks` TINYINT NOT NULL,
   `oo_B_speaks` TINYINT NOT NULL,
+  `oo_irregular` TINYINT NOT NULL DEFAULT 0,
   `oo_place` TINYINT NOT NULL,
   `cg_A_speaks` TINYINT NOT NULL,
   `cg_B_speaks` TINYINT NOT NULL,
+  `cg_irregular` TINYINT NOT NULL DEFAULT 0,
   `cg_place` TINYINT NOT NULL,
   `co_A_speaks` TINYINT NOT NULL,
   `co_B_speaks` TINYINT NOT NULL,
+  `co_irregular` TINYINT NOT NULL DEFAULT 0,
   `co_place` TINYINT NOT NULL,
   `time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `entered_by_id` INT(11) UNSIGNED NOT NULL,
@@ -549,37 +553,20 @@ DROP TABLE IF EXISTS `tabbie`.`answer` ;
 
 CREATE TABLE IF NOT EXISTS `tabbie`.`answer` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `questions_id` INT UNSIGNED NOT NULL,
+  `feedback_id` INT UNSIGNED NOT NULL,
+  `question_id` INT UNSIGNED NOT NULL,
   `value` TEXT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_answer_questions1_idx` (`questions_id` ASC),
+  INDEX `fk_answer_questions1_idx` (`question_id` ASC),
+  INDEX `fk_answer_feedback1_idx` (`feedback_id` ASC),
   CONSTRAINT `fk_answer_questions1`
-    FOREIGN KEY (`questions_id`)
+  FOREIGN KEY (`question_id`)
     REFERENCES `tabbie`.`question` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `tabbie`.`feedback_has_answer`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `tabbie`.`feedback_has_answer` ;
-
-CREATE TABLE IF NOT EXISTS `tabbie`.`feedback_has_answer` (
-  `feedback_id` INT UNSIGNED NOT NULL,
-  `answer_id` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`feedback_id`, `answer_id`),
-  INDEX `fk_feedback_has_answer_answer1_idx` (`answer_id` ASC),
-  INDEX `fk_feedback_has_answer_feedback1_idx` (`feedback_id` ASC),
-  CONSTRAINT `fk_feedback_has_answer_feedback1`
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_answer_feedback1`
     FOREIGN KEY (`feedback_id`)
     REFERENCES `tabbie`.`feedback` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_feedback_has_answer_answer1`
-    FOREIGN KEY (`answer_id`)
-    REFERENCES `tabbie`.`answer` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -645,8 +632,8 @@ DROP TABLE IF EXISTS `tabbie`.`adjudicator_strike` ;
 
 CREATE TABLE IF NOT EXISTS `tabbie`.`adjudicator_strike` (
   `adjudicator_from_id` INT UNSIGNED NOT NULL,
-  `adjudicator_to_id`   INT UNSIGNED NOT NULL,
-  `tournament_id`       INT UNSIGNED NOT NULL,
+  `adjudicator_to_id` INT UNSIGNED NOT NULL,
+  `tournament_id`     INT UNSIGNED NOT NULL,
   PRIMARY KEY (`adjudicator_from_id`, `adjudicator_to_id`),
   INDEX `fk_adjudicator_has_adjudicator_adjudicator2_idx` (`adjudicator_to_id` ASC),
   INDEX `fk_adjudicator_has_adjudicator_adjudicator1_idx` (`adjudicator_from_id` ASC),

@@ -35,9 +35,10 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Table View");
 		], ["class" => "btn btn-default"]);
 		?>
 	</p>
+	* ... <?= Yii::t("app", "Swing Team Score") ?>
 	<!-- AJAX -->
-	<?=
-	GridView::widget([
+	<?
+	echo GridView::widget([
 		'dataProvider' => $dataProvider,
 		'filterModel' => $searchModel,
 		'id' => 'debates',
@@ -84,7 +85,9 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Table View");
 				'format' => 'raw',
 				'vAlign' => GridView::ALIGN_MIDDLE,
 				'value' => function ($model, $key, $index, $widget) {
-					return ($model->result) ? $model->result->og_place : "";
+					if ($model->result instanceof Result)
+						return $model->result->og_place . (($model->result->og_irregular > 0) ? Result::swingIndicator() : "");
+					else return "";
 				},
 			],
 			[
@@ -93,7 +96,9 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Table View");
 				'format' => 'raw',
 				'vAlign' => GridView::ALIGN_MIDDLE,
 				'value' => function ($model, $key, $index, $widget) {
-					return ($model->result) ? $model->result->oo_place : "";
+					if ($model->result instanceof Result)
+						return $model->result->oo_place . (($model->result->oo_irregular > 0) ? Result::swingIndicator() : "");
+					else return "";
 				},
 			],
 			[
@@ -102,7 +107,9 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Table View");
 				'format' => 'raw',
 				'vAlign' => GridView::ALIGN_MIDDLE,
 				'value' => function ($model, $key, $index, $widget) {
-					return ($model->result) ? $model->result->cg_place : "";
+					if ($model->result instanceof Result)
+						return $model->result->cg_place . (($model->result->cg_irregular > 0) ? Result::swingIndicator() : "");
+					else return "";
 				},
 			],
 			[
@@ -111,7 +118,9 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Table View");
 				'format' => 'raw',
 				'vAlign' => GridView::ALIGN_MIDDLE,
 				'value' => function ($model, $key, $index, $widget) {
-					return ($model->result) ? $model->result->co_place : "";
+					if ($model->result instanceof Result)
+						return $model->result->co_place . (($model->result->co_irregular > 0) ? Result::swingIndicator() : "");
+					else return "";
 				},
 			],
 			[

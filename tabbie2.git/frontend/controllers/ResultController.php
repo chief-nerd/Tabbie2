@@ -6,6 +6,7 @@ use common\components\filter\TournamentContextFilter;
 use common\models\Debate;
 use common\models\Result;
 use common\models\search\ResultSearch;
+use common\models\Team;
 use Yii;
 use yii\base\Exception;
 use yii\data\ActiveDataProvider;
@@ -147,6 +148,7 @@ class ResultController extends BaseTournamentController {
 				if ($model->confirmed == "true") {
 
 					$model->entered_by_id = Yii::$app->user->id;
+
 					if ($model->save()) {
 						$model->updateTeamCache();
 
@@ -173,6 +175,7 @@ class ResultController extends BaseTournamentController {
 				}
 				else {
 					$model->rankTeams();
+
 					return $this->render('confirm', [
 						'model' => $model,
 					]);
@@ -305,7 +308,7 @@ class ResultController extends BaseTournamentController {
 			$calculated_points = 0;
 			$calculated_A_speaks = 0;
 			$calculated_B_speaks = 0;
-			foreach (Debate::positions() as $pos) {
+			foreach (Team::getPos() as $pos) {
 
 				$results = \common\models\Result::find()
 				                                ->leftJoin("debate", "debate.id = result.debate_id")
