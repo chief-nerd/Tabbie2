@@ -9,7 +9,7 @@ return [
 	'components' => [
 		'db' => [
 			'charset' => 'utf8',
-			'enableSchemaCache' => (YII_ENV_DEV == "prod") ? true : false,
+			'enableSchemaCache' => (YII_ENV == "prod") ? true : false,
 		],
 		'cache' => [
 			'class' => 'yii\caching\FileCache',
