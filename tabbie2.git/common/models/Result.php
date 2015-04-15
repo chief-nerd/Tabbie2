@@ -169,10 +169,10 @@ class Result extends \yii\db\ActiveRecord {
 	 * @return mixed|string
 	 */
 	public function getPlaceText($p) {
-		if ($this->{$p . "_irregular"} == Team::IRREGULAR_SWING) {
-			return "-";
-		}
-		return $this->{$p . "_place"};
+		$points = $this->getPoints($p);
+		if ($points == 0)
+			$points = "-";
+		return $points;
 	}
 
 	public function rankTeams() {
