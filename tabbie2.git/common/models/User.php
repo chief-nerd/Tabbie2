@@ -587,7 +587,7 @@ class User extends ActiveRecord implements IdentityInterface {
 	public static function sendNewUserMail($user) {
 		\Yii::$app->mailer->compose('import_user_created', [
 			'user' => $user,
-		])->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->params["name"] . ' robot'])
+		])->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->params["appName"] . ' robot'])
 		                  ->setTo([$user->email => $user->name])
 			->setSubject(Yii::t("email", 'User Account for {user_name}', ["user_name" => $user->name]))
 		                  ->send();

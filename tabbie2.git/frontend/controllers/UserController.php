@@ -32,7 +32,7 @@ class UserController extends BaseUserController {
 					],
 					[
 						'allow' => true,
-						'actions' => ['view', 'list'],
+						'actions' => ['view', 'list', 'test'],
 						'roles' => ['@'],
 					],
 					[
@@ -69,6 +69,12 @@ class UserController extends BaseUserController {
 				],
 			],
 		];
+	}
+
+	public function actionTest($id) {
+		$user = $this->findModel($id);
+		User::sendNewUserMail($user);
+		return "";
 	}
 
 	/**

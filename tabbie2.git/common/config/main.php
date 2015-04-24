@@ -26,6 +26,18 @@ return [
 				],
 			],
 		],
+		'mailer' => [
+			'class' => 'yii\swiftmailer\Mailer',
+			'viewPath' => '@common/mail',
+			'transport' => [
+				'class' => 'Swift_SmtpTransport',
+				'host' => 'smtp.mandrillapp.com',
+				'username' => 'support@tabbie.org',
+				'password' => '5tcVGLeklNeL7Bk2BkWg6w',
+				'port' => '587',
+				'encryption' => 'tls',
+			],
+		],
 	],
 	'modules' => [
 		'gridview' => [
