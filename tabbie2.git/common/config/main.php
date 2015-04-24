@@ -19,10 +19,15 @@ return [
 		],
 		'i18n' => [
 			'translations' => [
+				'yii' => [
+					'class' => 'yii\i18n\PhpMessageSource',
+					'basePath' => "@vendor/yiisoft/yii2/messages",
+					'sourceLanguage' => 'en',
+				],
 				'*' => [
 					'class' => 'yii\i18n\PhpMessageSource',
 					'basePath' => '@common/messages',
-					'sourceLanguage' => 'en-UK',
+					'sourceLanguage' => 'en_UK',
 				],
 			],
 		],
