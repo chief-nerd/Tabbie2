@@ -12,9 +12,8 @@ use yii\web\IdentityInterface;
 /**
  * User model
  * This is the model class for table "user". It represents a single user in the system.
-
  *
-*@see Team
+ * @see Team
  * @see Adjudicator
  * @property integer        $id
  * @property integer        $url_slug
@@ -62,6 +61,9 @@ class User extends ActiveRecord implements IdentityInterface {
 
 	public $societies_id;
 
+	public $password;
+	public $password_repeat;
+
 	/**
 	 * @inheritdoc
 	 */
@@ -92,20 +94,32 @@ class User extends ActiveRecord implements IdentityInterface {
 	 */
 	public function rules() {
 		return [
+			[['auth_key', 'password_hash', 'email'], 'required'],
+
+			[['password', 'password_repeat'], 'string', 'on' => 'first_login'],
+			[['password', 'password_repeat'], 'required', 'on' => 'first_login'],
+
+			[['role', 'status', 'language_status', 'language_status_by_id'], 'integer'],
+			[['picture'], 'string'],
+			[['url_slug', 'password_hash', 'password_reset_token', 'email', 'givenname', 'surename'], 'string', 'max' => 255],
+
 			['status', 'default', 'value' => self::STATUS_ACTIVE],
 			['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+
 			['url_slug', 'validateIsUrlAllowed'],
+
+			['password_repeat', 'compare', 'compareAttribute' => 'password'],
+
 			['role', 'default', 'value' => self::ROLE_USER],
 			['role', 'in', 'range' => [self::ROLE_PLACEHOLDER, self::ROLE_USER, self::ROLE_TABMASTER, self::ROLE_ADMIN]],
+
 			['gender', 'default', 'value' => self::GENDER_NOTREVEALING],
 			['gender', 'in', 'range' => [self::GENDER_MALE, self::GENDER_FEMALE, self::GENDER_TRANSGENDER, self::GENDER_NOTREVEALING]],
-			[['auth_key', 'password_hash', 'email'], 'required'],
-			[['role', 'status', 'language_status', 'language_status_by_id'], 'integer'],
+
 			['language_status', 'default', 'value' => self::LANGUAGE_NONE],
 			['language_status', 'in', 'range' => [self::LANGUAGE_NONE, self::LANGUAGE_ENL, self::LANGUAGE_ESL, self::LANGUAGE_EFL]],
-			[['picture'], 'string'],
-			[['url_slug', 'auth_key', 'time', 'last_change', 'societies_id', 'language_status_update'], 'safe'],
-			[['url_slug', 'password_hash', 'password_reset_token', 'email', 'givenname', 'surename'], 'string', 'max' => 255],
+
+			[['password', 'password_repeat', 'url_slug', 'auth_key', 'time', 'last_change', 'societies_id', 'language_status_update'], 'safe'],
 		];
 	}
 
@@ -175,12 +189,11 @@ class User extends ActiveRecord implements IdentityInterface {
 
 	/**
 	 * Finds user by email
+
 	 *
-	 * @param string $email
-
-
-*
-*@return static|null
+*@param string $email
+	 *
+	 * @return static|null
 	 */
 	public static function findByEmail($email) {
 		return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
@@ -294,10 +307,6 @@ class User extends ActiveRecord implements IdentityInterface {
 	 */
 	public function setPassword($password) {
 		$this->password_hash = Yii::$app->security->generatePasswordHash($password);
-	}
-
-	public function getPassword() {
-		return null;
 	}
 
 	/**
@@ -553,12 +562,17 @@ class User extends ActiveRecord implements IdentityInterface {
 		);
 	}
 
+	public static function generateTempPass($length = 5) {
+		return substr(md5(uniqid()), 0, $length);
+	}
+
 	public static function NewViaImport($societyID, $givenname, $surename, $email) {
 		$userA = new \common\models\User();
 		$userA->givenname = $givenname;
 		$userA->surename = $surename;
 		$userA->email = $email;
-		$userA->setPassword($userA->email);
+		$password = User::generateTempPass();
+		$userA->setPassword($password);
 		$userA->generateAuthKey();
 		$userA->time = $userA->last_change = date("Y-m-d H:i:s");
 		$userA->generateUrlSlug();
@@ -569,7 +583,7 @@ class User extends ActiveRecord implements IdentityInterface {
 			$inSociety->starting = date("Y-m-d");
 			if ($inSociety->save()) {
 				//User created - WOOHOO
-				self::sendNewUserMail($userA);
+				self::sendNewUserMail($userA, $password);
 				return $userA;
 			}
 			else {
@@ -584,12 +598,19 @@ class User extends ActiveRecord implements IdentityInterface {
 		return false;
 	}
 
-	public static function sendNewUserMail($user) {
+	/**
+	 * Sends mail to the new User
+	 *
+	 * @param User   $user
+	 * @param string $password
+	 */
+	public static function sendNewUserMail($user, $password) {
 		\Yii::$app->mailer->compose('import_user_created', [
 			'user' => $user,
+			'password' => $password,
 		])->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->params["appName"] . ' robot'])
 		                  ->setTo([$user->email => $user->name])
-			->setSubject(Yii::t("email", 'User Account for {user_name}', ["user_name" => $user->name]))
+		                  ->setSubject(Yii::t("email", 'User Account for {user_name}', ["user_name" => $user->name]))
 		                  ->send();
 	}
 

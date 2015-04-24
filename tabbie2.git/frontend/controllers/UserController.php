@@ -186,7 +186,8 @@ class UserController extends BaseUserController {
 	 *
 	 * @return mixed
 	 */
-	public function actionUpdate($id) {
+	public function actionUpdate($id, $login = false) {
+
 		$model = $this->findModel($id);
 		if ($society = $model->getInSocieties()->where(["ending" => null])->one())
 			$model->societies_id = $society->society->id;
@@ -197,45 +198,51 @@ class UserController extends BaseUserController {
 			$oldpic = $model->picture;
 
 			$model->load(Yii::$app->request->post());
-			if ($file instanceof UploadedFile)
-				$model->savePicture($file);
-			else
-				$model->picture = $oldpic;
 
-			$new_pass = Yii::$app->request->post()["User"]["password"];
-			if (is_string($new_pass) && $new_pass !== "")
-				$model->setPassword($new_pass);
+			if ($model->validate()) {
 
-			if ($model->save()) {
-				if ($model->societies_id > 0) {
-					$found = false;
-					$InSociety = $model->getInSocieties()->all();
-					/* @var $in InSociety */
-					foreach ($InSociety as $in) {
-						if ($in->society_id == $model->societies_id) {
-							$found = true;
+				if ($file instanceof UploadedFile)
+					$model->savePicture($file);
+				else
+					$model->picture = $oldpic;
+
+				if (is_string($model->password) && $model->password !== "")
+					$model->setPassword($model->password);
+
+				if ($model->save()) {
+					if ($model->societies_id > 0) {
+						$found = false;
+						$InSociety = $model->getInSocieties()->all();
+						/* @var $in InSociety */
+						foreach ($InSociety as $in) {
+							if ($in->society_id == $model->societies_id) {
+								$found = true;
+							}
+							else {
+								$in->ending = date("Y-m-d");
+								$in->save();
+							}
 						}
-						else {
-							$in->ending = date("Y-m-d");
-							$in->save();
+						if (!$found) {
+							$InSociety = new InSociety();
+							$InSociety->user_id = $model->id;
+							$InSociety->society_id = $model->societies_id;
+							$InSociety->starting = date("Y-m-d");
+							if (!$InSociety->save()) {
+								Yii::warning("Error saving InSociety " . print_r($InSociety->getErrors(), true));
+								Yii::$app->session->addFlash("warning", Yii::t("app", "Society Connection not saved!"));
+							}
 						}
 					}
-					if (!$found) {
-						$InSociety = new InSociety();
-						$InSociety->user_id = $model->id;
-						$InSociety->society_id = $model->societies_id;
-						$InSociety->starting = date("Y-m-d");
-						if (!$InSociety->save()) {
-							Yii::warning("Error saving InSociety " . print_r($InSociety->getErrors(), true));
-							Yii::$app->session->addFlash("warning", Yii::t("app", "Society Connection not saved!"));
-						}
-					}
+					Yii::$app->session->addFlash("success", Yii::t("app", "User successfully updated!"));
+					return $this->redirect(['view', 'id' => $model->id]);
 				}
-				Yii::$app->session->addFlash("success", Yii::t("app", "User successfully updated!"));
-				return $this->redirect(['view', 'id' => $model->id]);
 			}
-			else
-				Yii::$app->session->setFlash("error", print_r($model->getErrors(), true));
+		}
+
+		if ($login == "first") {
+			$model->scenario = "first_login";
+			$model->addError("password", Yii::t("app", "Please enter a new password!"));
 		}
 
 		return $this->render('update', [

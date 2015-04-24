@@ -88,7 +88,8 @@ class SiteController extends Controller {
 				$user->last_change = date("Y-m-d H:i:s");
 				$user->save();
 				Yii::$app->session->setFlash('info', Yii::t("app", "Welcome! This is your first login, please check that your information are correct"));
-				return $this->goUserProfile($user);
+
+				return Yii::$app->getResponse()->redirect(["user/update", "id" => $user->id, "login" => "first"]);
 			}
 
 			return $this->goBack();
@@ -97,10 +98,6 @@ class SiteController extends Controller {
 		return $this->render('login', [
 			'model' => $model,
 		]);
-	}
-
-	private function goUserProfile($model) {
-		return Yii::$app->getResponse()->redirect(["user/" . $model->url_slug]);
 	}
 
 	public function actionLogout() {
@@ -139,7 +136,7 @@ class SiteController extends Controller {
 			if ($user !== null) {
 				if (Yii::$app->getUser()->login($user)) {
 					Yii::$app->session->addFlash("success", Yii::t("app", "User registered! Welcome {user}", ["user" => $user->name]));
-					return $this->goUserProfile($user);
+					return Yii::$app->getResponse()->redirect(["user/" . $user->url_slug]);
 				}
 				else
 					Yii::$app->session->addFlash("error", Yii::t("app", "Login failed"));

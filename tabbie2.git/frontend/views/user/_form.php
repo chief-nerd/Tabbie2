@@ -19,12 +19,27 @@ use yii\web\JsExpression;
 	<?= $form->field($model, 'email', ['addon' => ['prepend' => ['content' => '<b>@</b>']]])
 	         ->textInput(['maxlength' => 255]) ?>
 
-	<?= $form->field($model, 'password', ['addon' => ['prepend' => ['content' => "<span class='glyphicon glyphicon-lock'></span>"]]])
-	         ->passwordInput(['maxlength' => 255]) ?>
+	<div class="row">
+		<div class="col-sm-6">
+			<?= $form->field($model, 'password', ['addon' => ['prepend' => ['content' => "<span class='glyphicon glyphicon-lock'></span>"]]])
+			         ->passwordInput(['maxlength' => 255]) ?>
 
-	<?= $form->field($model, 'givenname')->textInput(['maxlength' => 255]) ?>
+		</div>
+		<div class="col-sm-6">
+			<?= $form->field($model, 'password_repeat')
+			         ->passwordInput(['maxlength' => 255]) ?>
+		</div>
+	</div>
 
-	<?= $form->field($model, 'surename')->textInput(['maxlength' => 255]) ?>
+	<div class="row">
+		<div class="col-sm-6">
+			<?= $form->field($model, 'givenname')->textInput(['maxlength' => 255]) ?>
+		</div>
+		<div class="col-sm-6">
+			<?= $form->field($model, 'surename')->textInput(['maxlength' => 255]) ?>
+
+		</div>
+	</div>
 
 	<div class="row">
 		<div class="col-sm-2">
