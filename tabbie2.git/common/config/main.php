@@ -35,7 +35,6 @@ return [
 				'username' => 'support@tabbie.org',
 				'password' => '5tcVGLeklNeL7Bk2BkWg6w',
 				'port' => '587',
-				'encryption' => 'tls',
 			],
 		],
 	],
