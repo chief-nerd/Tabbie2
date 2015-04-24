@@ -28,7 +28,7 @@ class TournamentController extends BaseTournamentController {
 				'rules' => [
 					[
 						'allow' => true,
-						'actions' => ['index', 'view', 'checkin'],
+						'actions' => ['index', 'archive', 'view', 'checkin'],
 						'roles' => [],
 					],
 					[
@@ -64,6 +64,21 @@ class TournamentController extends BaseTournamentController {
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 		return $this->render('index', [
+			'searchModel' => $searchModel,
+			'dataProvider' => $dataProvider,
+		]);
+	}
+
+	/**
+	 * Lists all Tournament models.
+	 *
+	 * @return mixed
+	 */
+	public function actionArchive() {
+		$searchModel = new TournamentSearch();
+		$dataProvider = $searchModel->searchArchive(Yii::$app->request->queryParams);
+
+		return $this->render('archive', [
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
 		]);

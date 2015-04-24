@@ -22,8 +22,6 @@ class TournamentUrlRule extends UrlRule {
 			$url = "";
 			if ($parts[1] == "index")
 				$url = "tournaments";
-			if ($parts[1] == "create")
-				$url = "tournament/create";
 
 			if (isset($params['id'])) {
 				$tournament = Tournament::findByPk($params['id']);
@@ -34,6 +32,9 @@ class TournamentUrlRule extends UrlRule {
 				$url = $tournament->url_slug . "/" . $parts[1];
 				unset($parts[1]);
 				//Yii::trace("Returning Base: " . $ret, __METHOD__);
+			}
+			else {
+				$url = "tournament/" . $parts[1];
 			}
 
 			$paramsString = "";
@@ -97,9 +98,14 @@ class TournamentUrlRule extends UrlRule {
 		$parts = explode("/", $pathInfo);
 		//Yii::trace("Request URL Parts: " . print_r($parts, true), __METHOD__);
 
-		if ($parts[0] == "tournaments") {
-			$route = "tournament/index";
-			for ($i = 1; $i < count($parts); $i = $i + 2) {
+		if (strpos($parts[0], "tournament") === 0) {
+
+			if ($parts[0] == "tournaments")
+				$parts[1] = "index";
+
+			$route = "tournament/" . $parts[1];
+
+			for ($i = 2; $i < count($parts); $i = $i + 2) {
 				if (isset($parts[$i + 1]))
 					$params[$parts[$i]] = $parts[$i + 1];
 				else

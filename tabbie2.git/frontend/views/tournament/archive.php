@@ -7,7 +7,7 @@ use yii\widgets\ListView;
 /* @var $searchModel common\models\search\TournamentSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Tournaments');
+$this->title = Yii::t('app', 'Tournament Archive');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tournament-index">
@@ -17,15 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			<h1><?= Html::encode($this->title) ?></h1>
 		</div>
 	</div>
-
-	<div class="row">
-		<div class="col-xs-10">
-			<?php echo $this->render('_search', ['model' => $searchModel]); ?>
-		</div>
-		<div class="col-xs-2">
-			<?php echo Html::a(Yii::t("app", "Archive"), ["tournament/archive"], ["class" => "btn btn-default btn-block"]) ?>
-		</div>
-	</div>
+	<?php echo $this->render('_search', ['model' => $searchModel]); ?>
 
 	<div class="tournaments">
 		<?= ListView::widget([
