@@ -63,7 +63,7 @@ class SiteController extends Controller {
 			],
 		];
 	}
-	
+
 
 	public function actionIndex() {
 
@@ -81,13 +81,26 @@ class SiteController extends Controller {
 
 		$model = new LoginForm();
 		if ($model->load(Yii::$app->request->post()) && $model->login()) {
+
+			if ($model->getUser()->time == $model->getUser()->last_change) {
+				//First Login -> go to Profile
+				$user = $model->getUser();
+				$user->last_change = date("Y-m-d H:i:s");
+				$user->save();
+				Yii::$app->session->setFlash('info', Yii::t("app", "Welcome! This is your first login, please check that your information are correct"));
+				return $this->goUserProfile($user);
+			}
+
 			return $this->goBack();
 		}
-		else {
-			return $this->render('login', [
-				'model' => $model,
-			]);
-		}
+
+		return $this->render('login', [
+			'model' => $model,
+		]);
+	}
+
+	private function goUserProfile($model) {
+		return Yii::$app->getResponse()->redirect(["user/" . $model->url_slug]);
 	}
 
 	public function actionLogout() {
@@ -126,8 +139,10 @@ class SiteController extends Controller {
 			if ($user !== null) {
 				if (Yii::$app->getUser()->login($user)) {
 					Yii::$app->session->addFlash("success", Yii::t("app", "User registered! Welcome {user}", ["user" => $user->name]));
-					return $this->goHome();
+					return $this->goUserProfile($user);
 				}
+				else
+					Yii::$app->session->addFlash("error", Yii::t("app", "Login failed"));
 			}
 			else
 				Yii::$app->session->addFlash("error", print_r($model->getErrors(), true));
