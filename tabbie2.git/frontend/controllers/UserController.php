@@ -71,12 +71,6 @@ class UserController extends BaseUserController {
 		];
 	}
 
-	public function actionTest($id) {
-		$user = $this->findModel($id);
-		User::sendNewUserMail($user);
-		return "";
-	}
-
 	/**
 	 * Lists all User models.
 	 *
