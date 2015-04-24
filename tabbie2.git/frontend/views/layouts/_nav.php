@@ -26,11 +26,11 @@ if (Yii::$app->user->isGuest) {
 }
 else {
 	$menuItems[] = [
-		'label' => Html::icon("user") . "&nbsp;" . Yii::t("app", "{user}'s Profile", ["user" => Yii::$app->user->getModel()->surename]),
+		'label' => Html::icon("user") . "&nbsp;" . Yii::t("app", "{user}'s Profile", ["user" => Yii::$app->user->getModel()->givenname]),
 		'url' => ['user/view', 'id' => Yii::$app->user->id],
 	];
 	$menuItems[] = [
-		'label' => Html::icon("tags") . "&nbsp;" . Yii::t("app", "{user}'s History", ["user" => Yii::$app->user->getModel()->surename]),
+		'label' => Html::icon("tags") . "&nbsp;" . Yii::t("app", "{user}'s History", ["user" => Yii::$app->user->getModel()->givenname]),
 		'url' => ['history/index', 'user_id' => Yii::$app->user->id],
 	];
 	$menuItems[] = [

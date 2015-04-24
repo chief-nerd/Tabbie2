@@ -23,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 		<div class="row">
 			<div class="col-lg-12">
-				<?= $form->field($model, 'username')->textInput() ?>
+				<?= $form->field($model, 'email') ?>
 			</div>
 		</div>
 		<div class="row">
@@ -42,11 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				<?= $form->field($model, 'surename')->textInput() ?>
 			</div>
 		</div>
-
 		<div class="row">
-			<div class="col-lg-6">
-				<?= $form->field($model, 'email') ?>
-			</div>
 			<div class="col-lg-6">
 				<div class="help_popup" title="Why do we ask for this?">
 					<?= Yii::t("app", "Most tournament allocation algorithm in this system try also to take panel diversity into account.
@@ -58,10 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				</div>
 				<?= $form->field($model, 'gender')->dropDownList(\common\models\User::genderOptions()) ?>
 			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-lg-12">
+			<div class="col-lg-6">
 				<?
 				$urlUserList = Url::to(['society/list']);
 

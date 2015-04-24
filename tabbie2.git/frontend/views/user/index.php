@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		],
 		[
 			'class' => 'kartik\grid\DataColumn',
-			'attribute' => 'username',
+			'attribute' => 'url_slug',
 			'vAlign' => 'middle',
 		],
 		[

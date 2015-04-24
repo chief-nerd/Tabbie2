@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		<div class="col-sm-8">
 			<p>
 				<? if (Yii::$app->user->id == Yii::$app->request->get("id") || Yii::$app->user->isAdmin()): ?>
-					<?= Html::a(Yii::t('app', 'Update sser profile'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+					<?= Html::a(\kartik\helpers\Html::icon("cog") . "&nbsp" . Yii::t('app', 'Update User profile'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
 				<? endif; ?>
 			</p>
 			<?=
@@ -25,7 +25,6 @@ $this->params['breadcrumbs'][] = $this->title;
 				'model' => $model,
 				'attributes' => [
 					'id',
-					'username',
 					'name',
 					'email:email',
 				],
@@ -42,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<p>
 		<? if (Yii::$app->user->id == Yii::$app->request->get("id") || Yii::$app->user->isAdmin()): ?>
-			<?= Html::a(Yii::t('app', 'Add new society to history'), ['society/create', 'user_id' => $model->id], ['class' => 'btn btn-primary']) ?>
+			<?= Html::a(\kartik\helpers\Html::icon("plus") . "&nbsp" . Yii::t('app', 'Add new society to history'), ['society/create', 'user_id' => $model->id], ['class' => 'btn btn-primary']) ?>
 		<? endif; ?>
 	</p>
 

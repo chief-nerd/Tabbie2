@@ -12,11 +12,12 @@ use yii\web\IdentityInterface;
 /**
  * User model
  * This is the model class for table "user". It represents a single user in the system.
+
  *
- * @see Team
+*@see Team
  * @see Adjudicator
  * @property integer        $id
- * @property string         $username
+ * @property integer        $url_slug
  * @property string         $auth_key
  * @property string         $password_hash
  * @property string         $password_reset_token
@@ -93,18 +94,18 @@ class User extends ActiveRecord implements IdentityInterface {
 		return [
 			['status', 'default', 'value' => self::STATUS_ACTIVE],
 			['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
-			['username', 'validateIsUrlAllowed'],
+			['url_slug', 'validateIsUrlAllowed'],
 			['role', 'default', 'value' => self::ROLE_USER],
 			['role', 'in', 'range' => [self::ROLE_PLACEHOLDER, self::ROLE_USER, self::ROLE_TABMASTER, self::ROLE_ADMIN]],
 			['gender', 'default', 'value' => self::GENDER_NOTREVEALING],
 			['gender', 'in', 'range' => [self::GENDER_MALE, self::GENDER_FEMALE, self::GENDER_TRANSGENDER, self::GENDER_NOTREVEALING]],
-			[['username', 'auth_key', 'password_hash', 'email'], 'required'],
+			[['auth_key', 'password_hash', 'email'], 'required'],
 			[['role', 'status', 'language_status', 'language_status_by_id'], 'integer'],
 			['language_status', 'default', 'value' => self::LANGUAGE_NONE],
 			['language_status', 'in', 'range' => [self::LANGUAGE_NONE, self::LANGUAGE_ENL, self::LANGUAGE_ESL, self::LANGUAGE_EFL]],
 			[['picture'], 'string'],
-			[['auth_key', 'time', 'last_change', 'societies_id', 'language_status_update'], 'safe'],
-			[['username', 'password_hash', 'password_reset_token', 'email', 'givenname', 'surename'], 'string', 'max' => 255],
+			[['url_slug', 'auth_key', 'time', 'last_change', 'societies_id', 'language_status_update'], 'safe'],
+			[['url_slug', 'password_hash', 'password_reset_token', 'email', 'givenname', 'surename'], 'string', 'max' => 255],
 		];
 	}
 
@@ -132,7 +133,7 @@ class User extends ActiveRecord implements IdentityInterface {
 		}
 
 		if (in_array($this->$attribute, $actions)) {
-			$this->addError($attribute, Yii::t("app", 'This Username is not allowed.'));
+			$this->addError($attribute, Yii::t("app", 'This URL-slug is not allowed.'));
 		}
 	}
 
@@ -142,7 +143,7 @@ class User extends ActiveRecord implements IdentityInterface {
 	public function attributeLabels() {
 		return [
 			'id' => Yii::t('app', 'User ID'),
-			'username' => Yii::t('app', 'Username'),
+			'url_slug' => Yii::t('app', 'URL Slug'),
 			'auth_key' => Yii::t('app', 'Auth Key'),
 			'password_hash' => Yii::t('app', 'Password Hash'),
 			'password_reset_token' => Yii::t('app', 'Password Reset Token'),
@@ -173,14 +174,27 @@ class User extends ActiveRecord implements IdentityInterface {
 	}
 
 	/**
-	 * Finds user by username
+	 * Finds user by email
 	 *
-	 * @param string $username
+	 * @param string $email
+
+
+*
+*@return static|null
+	 */
+	public static function findByEmail($email) {
+		return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
+	}
+
+	/**
+	 * Finds user by url_slug
+	 *
+	 * @param string $slug
 	 *
 	 * @return static|null
 	 */
-	public static function findByUsername($username) {
-		return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+	public static function findbyUrlSlug($slug) {
+		return static::findOne(['url_slug' => $slug, 'status' => self::STATUS_ACTIVE]);
 	}
 
 	/**
@@ -291,6 +305,19 @@ class User extends ActiveRecord implements IdentityInterface {
 	 */
 	public function generateAuthKey() {
 		$this->auth_key = Yii::$app->security->generateRandomString();
+	}
+
+	public function generateUrlSlug() {
+		$candidate = $this->givenname . "." . $this->surename;
+		$counter = 0;
+		do {
+			$found = static::findbyUrlSlug($candidate);
+			if (count($found) > 0) {
+				$counter++;
+				$candidate = $candidate . "." . $counter;
+			}
+		} while ($found > 0);
+		return $this->url_slug = $candidate;
 	}
 
 	/**
@@ -530,11 +557,11 @@ class User extends ActiveRecord implements IdentityInterface {
 		$userA = new \common\models\User();
 		$userA->givenname = $givenname;
 		$userA->surename = $surename;
-		$userA->username = $userA->givenname . $userA->surename;
 		$userA->email = $email;
 		$userA->setPassword($userA->email);
 		$userA->generateAuthKey();
 		$userA->time = $userA->last_change = date("Y-m-d H:i:s");
+		$userA->generateUrlSlug();
 		if ($userA->save()) {
 			$inSociety = new \common\models\InSociety();
 			$inSociety->user_id = $userA->id;

@@ -14,7 +14,6 @@ use yii\web\UploadedFile;
  */
 class SignupForm extends Model {
 
-	public $username;
 	public $email;
 	public $password;
 	public $password_repeat;
@@ -29,15 +28,14 @@ class SignupForm extends Model {
 	 */
 	public function rules() {
 		return [
-			[['username', 'password', 'password_repeat', 'email', 'givenname', 'surename', 'societies_id'], 'required'],
-			['username', 'validateIsUrlAllowed'],
+			[['password', 'password_repeat', 'email', 'givenname', 'surename', 'societies_id'], 'required'],
 			['email', 'email'],
 			['password_repeat', 'compare', 'compareAttribute' => 'password'],
 			['gender', 'default', 'value' => User::GENDER_NOTREVEALING],
 			['gender', 'in', 'range' => [User::GENDER_MALE, User::GENDER_FEMALE, User::GENDER_TRANSGENDER, User::GENDER_NOTREVEALING]],
 			[['picture'], 'string'],
 			[['societies_id'], 'safe'],
-			[['username', 'email', 'givenname', 'surename'], 'string', 'max' => 255],
+			[['email', 'givenname', 'surename'], 'string', 'max' => 255],
 		];
 	}
 
@@ -55,7 +53,7 @@ class SignupForm extends Model {
 		}
 
 		if (in_array($this->$attribute, $actions)) {
-			$this->addError($attribute, Yii::t("app", 'This Username is not allowed.'));
+			$this->addError($attribute, Yii::t("app", 'This URL is not allowed.'));
 		}
 	}
 
@@ -64,7 +62,7 @@ class SignupForm extends Model {
 	 */
 	public function attributeLabels() {
 		return [
-			'username' => Yii::t('app', 'Username'),
+			'url_slug' => Yii::t('app', 'Username'),
 			'email' => Yii::t('app', 'Email'),
 			'givenname' => Yii::t('app', 'Givenname'),
 			'surename' => Yii::t('app', 'Surename'),
@@ -86,7 +84,6 @@ class SignupForm extends Model {
 			$pic = UploadedFile::getInstance($this, "picture");
 
 			$user = new User();
-			$user->username = $this->username;
 			$user->email = $this->email;
 			$user->setPassword($this->password);
 			$user->generateAuthKey();
@@ -94,6 +91,7 @@ class SignupForm extends Model {
 			$user->surename = $this->surename;
 			$user->givenname = $this->givenname;
 			$user->gender = $this->gender;
+			$user->url_slug = $user->generateUrlSlug();
 
 			if ($pic instanceof UploadedFile)
 				$user->savePicture($pic);

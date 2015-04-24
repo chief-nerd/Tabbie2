@@ -29,7 +29,7 @@ class UserUrlRule extends UrlRule {
 					if ($parts[1] == "view")
 						$parts[1] = null;
 
-					$route = "user/" . $user->username . "/" . $parts[1];
+					$route = "user/" . $user->url_slug . "/" . $parts[1];
 				}
 				else
 					return "user/#";
@@ -83,7 +83,7 @@ class UserUrlRule extends UrlRule {
 				else
 					$paramsString .= "/" . $key . "/" . $value;
 			}
-			$ret = "user/" . $user->username . "/" . implode("/", $parts) . $paramsString;
+			$ret = "user/" . $user->url_slug . "/" . implode("/", $parts) . $paramsString;
 			//Yii::trace("Returning Sub: " . $ret, __METHOD__);
 			return $ret;
 		}
@@ -109,8 +109,8 @@ class UserUrlRule extends UrlRule {
 
 		//Yii::trace("Request URL Parts: " . print_r($parts, true), __METHOD__);
 		if ($parts[0] == "user") {
-			$potential_username = $parts[1];
-			$user = User::findByUsername($potential_username);
+			$potential_slug = $parts[1];
+			$user = User::findbyUrlSlug($potential_slug);
 			if ($user !== null) {
 				//Yii::trace("User found with id: #" . $user->id . " named " . $user->name, __METHOD__);
 

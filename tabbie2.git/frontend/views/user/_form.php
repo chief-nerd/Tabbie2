@@ -16,17 +16,15 @@ use yii\web\JsExpression;
 
 	<?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
-	<? $form->field($model, 'username')->textInput(['maxlength' => 255]) ?>
-
-	<?= $form->field($model, 'givenname')->textInput(['maxlength' => 255]) ?>
-
-	<?= $form->field($model, 'surename')->textInput(['maxlength' => 255]) ?>
-
 	<?= $form->field($model, 'email', ['addon' => ['prepend' => ['content' => '<b>@</b>']]])
 	         ->textInput(['maxlength' => 255]) ?>
 
 	<?= $form->field($model, 'password', ['addon' => ['prepend' => ['content' => "<span class='glyphicon glyphicon-lock'></span>"]]])
 	         ->passwordInput(['maxlength' => 255]) ?>
+
+	<?= $form->field($model, 'givenname')->textInput(['maxlength' => 255]) ?>
+
+	<?= $form->field($model, 'surename')->textInput(['maxlength' => 255]) ?>
 
 	<div class="row">
 		<div class="col-sm-2">
@@ -45,7 +43,7 @@ use yii\web\JsExpression;
 
 	<div class="form-group">
 		<?= Html::a(Yii::t('app', 'Cancel'), ["view", "id" => $model->id], ["class" => "btn btn-default"]) ?>
-		<?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+		<?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : (\kartik\helpers\Html::icon("send") . "&nbsp" . Yii::t('app', 'Update')), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
 	</div>
 
 	<?php ActiveForm::end(); ?>
