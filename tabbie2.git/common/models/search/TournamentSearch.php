@@ -37,7 +37,7 @@ class TournamentSearch extends Tournament {
 	 * @return ActiveDataProvider
 	 */
 	public function search($params) {
-		$query = Tournament::find()->joinWith('hostedby')->where("end_date > now()");
+		$query = Tournament::find()->joinWith('hostedby')->where("end_date >= now()");
 
 		$dataProvider = new ActiveDataProvider([
 			'query' => $query,
@@ -87,7 +87,7 @@ class TournamentSearch extends Tournament {
 		]);
 
 		$dataProvider->setSort([
-			'defaultOrder' => ['start_date' => SORT_ASC],
+			'defaultOrder' => ['start_date' => SORT_DESC],
 		]);
 
 		if (!($this->load($params) && $this->validate())) {
