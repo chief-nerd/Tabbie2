@@ -93,8 +93,10 @@ class ResultController extends BaseTournamentController {
 			],
 		]);
 
-		if ($dataProvider->getCount() == 0)
-			throw new Exception(Yii::t("app", "No Debates found"));
+		if ($dataProvider->getCount() == 0) {
+			Yii::$app->session->addFlash("info", Yii::t("app", "No debates found in that round"));
+			$this->redirect(["result/index", "tournament_id" => $this->_tournament->id]);
+		}
 
 		$number = $dataProvider->getModels()[0]->round->number;
 
