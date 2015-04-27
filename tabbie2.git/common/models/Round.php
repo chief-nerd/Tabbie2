@@ -178,8 +178,8 @@ class Round extends \yii\db\ActiveRecord {
 			$active_rooms = (count($teams) / 4);
 			if (count($teams) < 4)
 				throw new Exception(Yii::t("app", "Not enough Teams to fill a single room - (active: {teams_count})", ["teams_count" => count($teams)]), "500");
-			if (count($adjudicatorsObjects) < 1)
-				throw new Exception(Yii::t("app", "At least a single Adjudicator is necessary - (active: {count_adju})", ["count_adju" => count($adjudicatorsObjects)]), "500");
+			if (count($adjudicatorsObjects) < 2)
+				throw new Exception(Yii::t("app", "At least two Adjudicators are necessary - (active: {count_adju})", ["count_adju" => count($adjudicatorsObjects)]), "500");
 			if (count($teams) % 4 != 0)
 				throw new Exception(Yii::t("app", "Amount of active Teams must be divided by 4 ;) - (active: {count_teams})", ["count_teams" => count($teams)]), "500");
 			if ($active_rooms > count($venues))
