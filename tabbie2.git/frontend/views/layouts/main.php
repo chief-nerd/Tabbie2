@@ -11,7 +11,7 @@ use common\models\Tournament;
 /* @var $this \yii\web\View */
 /* @var $content string */
 
-AppAsset::register($this);
+$assetBundle = AppAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <?
@@ -37,6 +37,13 @@ if ($this->context->hasMethod("_getContext")) {
 
 <div class="flashes">
 	<?= Alert::widget() ?>
+</div>
+
+<div id="bugtracker" class="text-center">
+	<a href="http://bug.tabbie.org" title="Report a Bug" target="_blank">
+		<?= Html::img($assetBundle->baseUrl . '/images/bug.png', ['alt' => 'Report Bug', 'width' => '40px']); ?><br>
+		Report
+	</a>
 </div>
 
 <div class="wrap">

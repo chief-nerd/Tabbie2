@@ -33,7 +33,7 @@ class ResultController extends BaseTournamentController {
 						'matchCallback' => function ($rule, $action) {
 							$debate = Yii::$app->user->hasChairedLastRound($this->_tournament);
 							if (($debate instanceof Debate) && $debate->id == Yii::$app->request->get("id")) {
-									return true;
+								return true;
 							}
 							return false;
 						},
