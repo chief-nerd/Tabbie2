@@ -16,7 +16,7 @@ function init() {
                 url: href,
             }).success(function (data) {
                 $(contentdiv).html(data);
-                root.style.top = (parseInt(root.style.top) - 60) + "px";
+                root.style.top = (parseInt(root.style.top)) + "px";
             }).error(function (jqXHR, textStatus, errorThrown) {
                 console.error(textStatus + " : " + errorThrown);
             });

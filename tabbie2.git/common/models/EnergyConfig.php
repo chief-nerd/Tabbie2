@@ -78,10 +78,14 @@ class EnergyConfig extends \yii\db\ActiveRecord {
 	}
 
 	public static function get($key, $tournament_id) {
-		return EnergyConfig::findByCondition([
+		$conf = EnergyConfig::findByCondition([
 			"key" => $key,
 			"tournament_id" => $tournament_id,
-		])->one()->value;
+		])->one();
+		if ($conf)
+			return $conf->value;
+		else
+			return null;
 	}
 
 	public static function loadArray($tournament_id) {
