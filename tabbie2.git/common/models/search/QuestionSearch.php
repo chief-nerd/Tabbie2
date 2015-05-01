@@ -5,12 +5,12 @@ namespace common\models\search;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\question;
+use common\models\Question;
 
 /**
  * QuestionSearch represents the model behind the search form about `\common\models\question`.
  */
-class QuestionSearch extends question {
+class QuestionSearch extends Question {
 
 	/**
 	 * @inheritdoc
