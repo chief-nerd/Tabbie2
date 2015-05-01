@@ -6,12 +6,12 @@ use common\models\Answer;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\feedback;
+use common\models\Feedback;
 
 /**
  * FeedbackSearch represents the model behind the search form about `\common\models\feedback`.
  */
-class AnswerSearch extends feedback {
+class AnswerSearch extends Feedback {
 	/**
 	 * @inheritdoc
 	 */
