@@ -41,6 +41,9 @@ class FeedbackSearch extends Feedback {
 
 		$dataProvider = new ActiveDataProvider([
 			'query' => $query,
+			'pagination' => [
+				'pageSize' => 20,
+			],
 		]);
 
 		if (!($this->load($params) && $this->validate())) {

@@ -49,6 +49,9 @@ class AnswerSearch extends feedback {
 
 		$dataProvider = new ActiveDataProvider([
 			'query' => $query,
+			'pagination' => [
+				'pageSize' => 9999,
+			],
 		]);
 
 		if (!($this->load($params) && $this->validate())) {
