@@ -5,12 +5,12 @@ namespace common\models\search;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\feedback;
+use common\models\Feedback;
 
 /**
  * FeedbackSearch represents the model behind the search form about `\common\models\feedback`.
  */
-class FeedbackSearch extends feedback {
+class FeedbackSearch extends Feedback {
 	/**
 	 * @inheritdoc
 	 */
@@ -37,7 +37,7 @@ class FeedbackSearch extends feedback {
 	 * @return ActiveDataProvider
 	 */
 	public function search($params) {
-		$query = feedback::find();
+		$query = Feedback::find();
 
 		$dataProvider = new ActiveDataProvider([
 			'query' => $query,

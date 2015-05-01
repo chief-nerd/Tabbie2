@@ -44,7 +44,7 @@ class FeedbackController extends BaseTournamentController {
 					],
 					[
 						'allow' => true,
-						'actions' => ['index', 'view', 'create', 'adjudicator'],
+						'actions' => ['index', 'view', 'create', 'adjudicator', 'tournament', 'tabbie'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->isTabMaster($this->_tournament));
 						}
@@ -229,6 +229,14 @@ class FeedbackController extends BaseTournamentController {
 		else {
 			throw new NotFoundHttpException('The requested page does not exist.');
 		}
+	}
+
+	public function actionTournament() {
+		return "Soon";
+	}
+
+	public function actionTabbie() {
+		return "Soon";
 	}
 
 }
