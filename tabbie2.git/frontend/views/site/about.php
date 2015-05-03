@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				<ul>
 					<li><?= Html::a(Yii::t("app", "Sample Venue CSV"), $asset . "/Sample_Venues.csv") ?></li>
 					<li><?= Html::a(Yii::t("app", "Sample Team CSV"), $asset . "/Sample_Teams.csv") ?></li>
-					<li><?= Html::a(Yii::t("app", "Sample Adjudicator CSV"), $asset . "/Sample_Adjudicator.csv") ?></li>
+					<li><?= Html::a(Yii::t("app", "Sample Adjudicator CSV"), $asset . "/Sample_Adjudicators.csv") ?></li>
 				</ul>
 			<?
 			}

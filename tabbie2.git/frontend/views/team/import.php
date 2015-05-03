@@ -118,7 +118,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	<div class="form-group">
 		<?= Html::hiddenInput("csvFile", serialize($model->tempImport)); ?>
 		<?= Html::hiddenInput("makeItSo", "true"); ?>
-		<?= Html::submitButton(Yii::t('app', 'Make it so'), ['class' => 'btn btn-success'])
+		<?= Html::submitButton(Yii::t('app', 'Make it so'), ['class' => 'btn btn-block btn-success loading'])
 		?>
 	</div>
 
