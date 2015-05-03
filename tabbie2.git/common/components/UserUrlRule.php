@@ -116,7 +116,7 @@ class UserUrlRule extends UrlRule {
 
 				$modul = "other";
 
-				if (count($parts) <= 3)
+				if (count($parts) <= 3 || $parts[3] == "login")
 					$modul = "user";
 
 				if (isset($parts[3]) && $parts[3] == "")
