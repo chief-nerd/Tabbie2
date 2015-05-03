@@ -81,6 +81,7 @@ if ($this->context->hasMethod("_getContext")) {
 </div>
 
 <?php $this->endBody() ?>
+<? if (YII_ENV == "prod") echo $this->render("_ga") ?>
 </body>
 </html>
 <?php $this->endPage() ?>
