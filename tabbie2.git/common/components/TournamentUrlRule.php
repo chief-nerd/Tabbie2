@@ -3,6 +3,7 @@
 namespace common\components;
 
 Use Yii;
+use yii\helpers\ArrayHelper;
 use yii\web\UrlRule;
 use common\models\Tournament;
 
@@ -143,8 +144,10 @@ class TournamentUrlRule extends UrlRule {
 
 					//Further Params
 					for ($i = $startParam; $i < count($parts); $i = $i + 2) {
-						if (isset($parts[$i + 1]))
-							$params[$parts[$i]] = $parts[$i + 1];
+						if (isset($parts[$i + 1])) {
+							parse_str($parts[$i] . "=" . $parts[$i + 1], $new_param);
+							$params = ArrayHelper::merge($params, $new_param);
+						}
 						else
 							$params[$parts[$i]] = null;
 					}

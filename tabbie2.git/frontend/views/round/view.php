@@ -232,9 +232,10 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 							'size' => 'md',
 							'placement' => PopoverX::ALIGN_BOTTOM,
 							'content' => $popcontent,
-							'footer' =>
+							'footer' => "" .
 							//Html::a(\kartik\helpers\Html::icon("move") . "&nbsp;" . Yii::t("app", 'Move'), ["adjudicator/move", "id" => $adj->id, "debate" => $model->id, "tournament_id" => $model->tournament_id], ['class' => 'moveAdj btn btn-sm btn-primary']) .
-								Html::a(\kartik\helpers\Html::icon("folder-open") . "&nbsp;" . Yii::t("app", 'View more'), ["adjudicator/view", "id" => $adj->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-sm btn-default']),
+								Html::a(\kartik\helpers\Html::icon("folder-open") . "&nbsp;" . Yii::t("app", 'View Feedback'), ["feedback/adjudicator", "tournament_id" => $model->tournament_id, "AnswerSearch" => ["id" => $adj->id]], ['class' => 'btn btn-sm btn-default', 'target' => '_blank', 'data-pjax' => "0"]) .
+								Html::a(\kartik\helpers\Html::icon("folder-open") . "&nbsp;" . Yii::t("app", 'View User'), ["adjudicator/view", "id" => $adj->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-sm btn-default', 'target' => '_blank', 'data-pjax' => "0"]),
 							'toggleButton' => [
 								'label' => $adj->user->name,
 								'class' => 'btn btn-sm adj ' . $class,

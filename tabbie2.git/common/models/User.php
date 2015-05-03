@@ -496,7 +496,7 @@ class User extends ActiveRecord implements IdentityInterface {
 				$class = "fa fa-transgender";
 				break;
 			case static::GENDER_NOTREVEALING:
-				$class = "";
+				$class = "fa fa-circle-thin";
 				break;
 		}
 
