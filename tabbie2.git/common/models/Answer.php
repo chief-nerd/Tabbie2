@@ -12,14 +12,14 @@ use yii\widgets\ActiveForm;
 
 
 
+
 *
 *@property integer             $id
  * @property integer             $question_id
  * @property integer             $feedback_id
  * @property string              $value
- * @property Question           $questions
- * @property FeedbackHasAnswer[] $feedbackHasAnswers
- * @property Feedback[]          $feedbacks
+ * @property Question            $question
+ * @property Feedback[]          $feedback
  */
 class Answer extends \yii\db\ActiveRecord {
 	/**

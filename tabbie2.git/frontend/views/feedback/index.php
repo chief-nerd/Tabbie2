@@ -1,5 +1,6 @@
 <?php
 
+use common\models\search\VenueSearch;
 use yii\helpers\Html;
 use kartik\grid\GridView;
 
@@ -22,8 +23,34 @@ $this->params['breadcrumbs'][] = $this->title;
 		[
 			'class' => '\kartik\grid\SerialColumn'
 		],
-		'debate.round.number',
-		'debate.venue.name',
+		[
+			'class' => '\kartik\grid\DataColumn',
+			'attribute' => 'round_number',
+			'format' => 'raw',
+			'value' => function ($model, $key, $index, $widget) {
+				return $model->debate->round->number;
+			},
+			'filter' => \common\models\search\TournamentSearch::getRoundOptions($tournament->id),
+			'filterType' => GridView::FILTER_SELECT2,
+			'filterWidgetOptions' => [
+				'pluginOptions' => ['allowClear' => true],
+			],
+			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any Round ...')],
+		],
+		[
+			'class' => '\kartik\grid\DataColumn',
+			'attribute' => 'venue_name',
+			'format' => 'raw',
+			'value' => function ($model, $key, $index, $widget) {
+				return $model->debate->venue->name;
+			},
+			'filter' => VenueSearch::getSearchArray($tournament->id),
+			'filterType' => GridView::FILTER_SELECT2,
+			'filterWidgetOptions' => [
+				'pluginOptions' => ['allowClear' => true],
+			],
+			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any Venue ...')],
+		],
 		'time',
 		[
 			'class' => 'kartik\grid\ActionColumn',

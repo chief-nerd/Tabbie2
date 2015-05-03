@@ -7,19 +7,32 @@ use yii\widgets\DetailView;
 /* @var $model common\models\feedback */
 
 $this->title = "Feedback";
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Feedbacks'), 'url' => ['index']];
+$tournament = $this->context->_getContext();
+$this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Feedback'), 'url' => ['index', "tournament_id" => $tournament->id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="feedback-view">
 
 	<h1><?= Html::encode($this->title) ?></h1>
 
+	<?
+	$att = [
+		'debate.venue.name:text:Room',
+		'time',
+	];
+
+	foreach ($model->answers as $answer) {
+		array_push($att, [
+			'label' => $answer->question->text,
+			'value' => $answer->value,
+		]);
+	}
+	?>
+
 	<?= DetailView::widget([
 		'model' => $model,
-		'attributes' => [
-			'debate.venue.name:text:Room',
-			'time',
-		],
+		'attributes' => $att,
 	]) ?>
 
 </div>

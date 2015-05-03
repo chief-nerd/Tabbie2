@@ -59,15 +59,7 @@ class Feedback extends \yii\db\ActiveRecord {
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getFeedbackHasAnswers() {
-		return $this->hasMany(FeedbackHasAnswer::className(), ['feedback_id' => 'id']);
-	}
-
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
 	public function getAnswers() {
-		return $this->hasMany(Answer::className(), ['id' => 'answer_id'])
-		            ->viaTable('feedback_has_answer', ['feedback_id' => 'id']);
+		return $this->hasMany(Answer::className(), ['feedback_id' => 'id']);
 	}
 }

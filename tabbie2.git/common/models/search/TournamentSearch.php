@@ -2,6 +2,7 @@
 
 namespace common\models\search;
 
+use common\models\Round;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -107,5 +108,15 @@ class TournamentSearch extends Tournament {
 		      ->andFilterWhere(['like', 'logo', $this->logo]);
 
 		return $dataProvider;
+	}
+
+	public function getRoundOptions($tournament) {
+		$t = Round::find()->where(["tournament_id" => $tournament])->asArray()->all();
+
+		$filter = [];
+		foreach ($t as $v) {
+			$filter[$v["number"]] = $v["number"];
+		}
+		return $filter;
 	}
 }
