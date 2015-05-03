@@ -67,7 +67,7 @@ class FeedbackController extends BaseTournamentController {
 	 */
 	public function actionIndex() {
 		$searchModel = new FeedbackSearch();
-		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+		$dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->_tournament->id);
 
 		return $this->render('index', [
 			'searchModel' => $searchModel,

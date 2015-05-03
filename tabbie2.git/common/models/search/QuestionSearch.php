@@ -38,7 +38,7 @@ class QuestionSearch extends Question {
 	 * @return ActiveDataProvider
 	 */
 	public function search($params, $tournament_id) {
-		$query = question::find()->joinWith("tournamentHasQuestion");
+		$query = Question::find()->joinWith("tournamentHasQuestion")->where(["tournament_id" => $tournament_id]);
 
 		$dataProvider = new ActiveDataProvider([
 			'query' => $query,

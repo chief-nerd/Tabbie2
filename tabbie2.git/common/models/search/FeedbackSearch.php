@@ -41,11 +41,11 @@ class FeedbackSearch extends Feedback {
 	 *
 	 * @return ActiveDataProvider
 	 */
-	public function search($params) {
+	public function search($params, $tournament_id) {
 		$query = Feedback::find()->joinWith(['debate' => function ($query) {
 			$query->joinWith(['round']);
 			$query->joinWith(['venue']);
-		}]);
+		}])->where(["debate.tournament_id" => $tournament_id]);
 
 		$dataProvider = new ActiveDataProvider([
 			'query' => $query,
@@ -77,6 +77,7 @@ class FeedbackSearch extends Feedback {
 			'debate_id' => $this->debate_id,
 			'time' => $this->time,
 			'round.number' => $this->round_number,
+			'debate.tournament_id' => $tournament_id,
 		]);
 
 		$query->andWhere(['like', 'venue.name', $this->venue_name]);
