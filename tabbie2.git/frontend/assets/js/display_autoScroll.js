@@ -1,21 +1,23 @@
 window.DoScroll = false;
 window.ScrollSpeed = 5;
-window.ScrollUntil = $("#w0-container")[0].offsetHeight;
+window.current_top = 0;
+window.ScrollUntil = $("#team-table-container")[0].offsetHeight;
+$('#team-table-container .table').css("position", "relative");
+
 notEnd = true;
 
 function pageScroll() {
-    window.scrollBy(0, 1); // horizontal and vertical scroll increments
-    if (window.pageYOffset <= window.ScrollUntil) {
+    window.current_top--;
+    $('#team-table-container .table').css("top", window.current_top);
+
+    if ((window.current_top * -1) < (window.ScrollUntil - 38)) {
         notEnd = true;
     }
     else {
         notEnd = false;
+        $('#drawdisplay').css("display", "block");
         if ($("#infoslide").length > 0)
             $("#infoslide").removeAttr("disabled");
-        else {
-            if ($("#motion").length > 0)
-                $("#motion").removeAttr("disabled");
-        }
     }
 
     if (window.DoScroll == true && notEnd)
@@ -25,10 +27,6 @@ function pageScroll() {
 $("a.run").on("click", function (e) {
     e.preventDefault();
     startScroll();
-});
-
-$(document).on("ready", function () {
-    setTimeout('startScroll()', 8000);
 });
 
 function startScroll() {

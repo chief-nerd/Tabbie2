@@ -25,3 +25,12 @@
 .tournament-search .buttons {
     padding-top: 25px;
 }
+
+#team-table-container {
+    position: relative;
+}
+
+#drawdisplay {
+    position: absolute;
+    top: 10%;
+}
