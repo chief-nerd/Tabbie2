@@ -11,50 +11,52 @@ $this->title = Yii::$app->params["slogan"];
 		<h1><?= Yii::t("app", "Welcome to {appName}!", ["appName" => Yii::$app->params["appName"]]) ?></h1>
 
 		<p class="lead"><?= Yii::$app->params["slogan"] ?></p>
-		<h4><?= Yii::t("app", "Current {count, plural, =0{Tournament} =1{Tournament} other{Tournaments}}", ["count" => count($tournaments)]) ?>
-			:</h4>
+		<? if (count($tournaments) > 0): ?>
+			<h4><?= Yii::t("app", "Current {count, plural, =0{Tournament} =1{Tournament} other{Tournaments}}", ["count" => count($tournaments)]) ?>
+				:</h4>
 
-		<div class="tournaments row">
-			<?
-			$amount = count($tournaments);
-			$full_cols = "col-xs-12 col-sm-6 col-md-4 col-lg-3";
-			$posCorrect = "";
-			$fix = false;
+			<div class="tournaments row">
+				<?
+				$amount = count($tournaments);
+				$full_cols = "col-xs-12 col-sm-6 col-md-4 col-lg-3";
+				$posCorrect = "";
+				$fix = false;
 
-			foreach ($tournaments as $index => $t):
-				?>
-				<a href="<?= \yii\helpers\Url::to(["tournament/view", "id" => $t->id]) ?>">
-					<?
-					$left = $amount % 4;
-					if (($amount - $index) >= $left + 1)
-						$cols = $full_cols;
-					else {
-						if ($left == 3 && !$fix) {
-							$cols = "col-xs-12 col-sm-6 col-md-4 col-lg-4";
-							$fix = true;
-						}
-						if ($left == 2 && !$fix) {
-							$cols = "col-xs-12 col-sm-6 col-md-6 col-lg-6";
-							$fix = true;
-						}
-						if ($left == 1 && !$fix) {
-							$cols = "col-xs-12 col-sm-12 col-md-12 col-lg-12";
-							$fix = true;
-						}
-						if ($left == 0 && !$fix) {
-							$cols = $full_cols;
-							$fix = true;
-						}
-					}
+				foreach ($tournaments as $index => $t):
 					?>
-					<div class="tournament <?= $cols ?> <?= $posCorrect ?>">
-						<?= $t->getLogoImage(null, 100) ?>
+					<a href="<?= \yii\helpers\Url::to(["tournament/view", "id" => $t->id]) ?>">
+						<?
+						$left = $amount % 4;
+						if (($amount - $index) >= $left + 1)
+							$cols = $full_cols;
+						else {
+							if ($left == 3 && !$fix) {
+								$cols = "col-xs-12 col-sm-6 col-md-4 col-lg-4";
+								$fix = true;
+							}
+							if ($left == 2 && !$fix) {
+								$cols = "col-xs-12 col-sm-6 col-md-6 col-lg-6";
+								$fix = true;
+							}
+							if ($left == 1 && !$fix) {
+								$cols = "col-xs-12 col-sm-12 col-md-12 col-lg-12";
+								$fix = true;
+							}
+							if ($left == 0 && !$fix) {
+								$cols = $full_cols;
+								$fix = true;
+							}
+						}
+						?>
+						<div class="tournament <?= $cols ?> <?= $posCorrect ?>">
+							<?= $t->getLogoImage(null, 100) ?>
 
-						<h2><?= $t->name ?></h2>
-					</div>
-				</a>
-			<? endforeach; ?>
-		</div>
+							<h2><?= $t->name ?></h2>
+						</div>
+					</a>
+				<? endforeach; ?>
+			</div>
+		<? endif; ?>
 		<br><br>
 
 		<div class="row">
