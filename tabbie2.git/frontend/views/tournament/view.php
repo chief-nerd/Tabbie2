@@ -48,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				if ($debate instanceof common\models\Debate && !$debate->result instanceof \common\models\Result) {
 					echo "&nbsp;" . Html::a(Html::icon("envelope") . "&nbsp;" . Yii::t('app', 'Enter Result'), ['result/create', "id" => $debate->id, "tournament_id" => $model->id], ['class' => 'btn btn-success']);
 				}
-				if (Yii::$app->user->isConvenor($model))
+				if (Yii::$app->user->isConvenor($model) || Yii::$app->user->isTabMaster($model))
 					echo "&nbsp;" . Html::a(Html::icon("film") . "&nbsp;" . Yii::t('app', 'Display Draw'), ['display/index', "tournament_id" => $model->id], ['class' => 'btn btn-default']);
 			}
 
