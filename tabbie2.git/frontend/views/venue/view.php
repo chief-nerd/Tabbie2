@@ -8,7 +8,7 @@ use yii\widgets\DetailView;
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => $model->tournament->fullname, 'url' => ['tournament/view', "id" => $model->tournament->id]];
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Venues'), 'url' => ['index', "tournament_id" => 1]];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Venues'), 'url' => ['index', "tournament_id" => $model->tournament->id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="venue-view">
