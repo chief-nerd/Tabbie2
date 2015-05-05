@@ -45,7 +45,7 @@ use yii\web\JsExpression;
 		<div class="col-sm-2">
 			<?= $model->getPictureImage(150, 150, ["id" => "previewImageUpload"]) ?>
 		</div>
-		<div class="col-sm-10">
+		<div class="col-sm-4">
 			<?= $form->field($model, 'picture')->fileInput() ?>
 			<script>
 				var s = document.getElementById('user-picture');
@@ -53,6 +53,9 @@ use yii\web\JsExpression;
 					document.getElementById('previewImageUpload').src = URL.createObjectURL(event.target.files[0]);
 				}
 			</script>
+		</div>
+		<div class="col-sm-6">
+			<?= $form->field($model, 'gender')->dropDownList(\common\models\User::genderOptions()) ?>
 		</div>
 	</div>
 

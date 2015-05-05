@@ -32,7 +32,7 @@ class SignupForm extends Model {
 			['email', 'email'],
 			['password_repeat', 'compare', 'compareAttribute' => 'password'],
 			['gender', 'default', 'value' => User::GENDER_NOTREVEALING],
-			['gender', 'in', 'range' => [User::GENDER_MALE, User::GENDER_FEMALE, User::GENDER_TRANSGENDER, User::GENDER_NOTREVEALING]],
+			['gender', 'in', 'range' => [User::GENDER_MALE, User::GENDER_FEMALE, User::GENDER_OTHER, User::GENDER_NOTREVEALING]],
 			[['picture'], 'string'],
 			[['societies_id'], 'safe'],
 			[['email', 'givenname', 'surename'], 'string', 'max' => 255],

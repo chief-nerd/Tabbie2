@@ -52,7 +52,7 @@ class User extends ActiveRecord implements IdentityInterface {
 	const GENDER_NOTREVEALING = 0;
 	const GENDER_MALE         = 1;
 	const GENDER_FEMALE       = 2;
-	const GENDER_TRANSGENDER  = 3;
+	const GENDER_OTHER = 3;
 
 	const LANGUAGE_NONE = 0;
 	const LANGUAGE_ENL  = 1;
@@ -114,7 +114,7 @@ class User extends ActiveRecord implements IdentityInterface {
 			['role', 'in', 'range' => [self::ROLE_PLACEHOLDER, self::ROLE_USER, self::ROLE_TABMASTER, self::ROLE_ADMIN]],
 
 			['gender', 'default', 'value' => self::GENDER_NOTREVEALING],
-			['gender', 'in', 'range' => [self::GENDER_MALE, self::GENDER_FEMALE, self::GENDER_TRANSGENDER, self::GENDER_NOTREVEALING]],
+			['gender', 'in', 'range' => [self::GENDER_MALE, self::GENDER_FEMALE, self::GENDER_OTHER, self::GENDER_NOTREVEALING]],
 
 			['language_status', 'default', 'value' => self::LANGUAGE_NONE],
 			['language_status', 'in', 'range' => [self::LANGUAGE_NONE, self::LANGUAGE_ENL, self::LANGUAGE_ESL, self::LANGUAGE_EFL]],
@@ -443,7 +443,7 @@ class User extends ActiveRecord implements IdentityInterface {
 			self::GENDER_NOTREVEALING => Yii::t("app", "Not revealing"),
 			self::GENDER_FEMALE => Yii::t("app", "Female"),
 			self::GENDER_MALE => Yii::t("app", "Male"),
-			self::GENDER_TRANSGENDER => Yii::t("app", "Transgender"),
+			self::GENDER_OTHER => Yii::t("app", "Other"),
 		];
 	}
 
@@ -492,7 +492,7 @@ class User extends ActiveRecord implements IdentityInterface {
 			case static::GENDER_FEMALE:
 				$class = "fa fa-venus";
 				break;
-			case static::GENDER_TRANSGENDER:
+			case static::GENDER_OTHER:
 				$class = "fa fa-transgender";
 				break;
 			case static::GENDER_NOTREVEALING:
@@ -507,7 +507,7 @@ class User extends ActiveRecord implements IdentityInterface {
 		$genders = [
 			static::GENDER_MALE => "MALE",
 			static::GENDER_FEMALE => "FEMA",
-			static::GENDER_TRANSGENDER => "TRAN",
+			static::GENDER_OTHER => "OTHE",
 			static::GENDER_NOTREVEALING => "NORE",
 		];
 		return $genders[$id];
