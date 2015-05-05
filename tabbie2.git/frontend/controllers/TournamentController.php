@@ -128,6 +128,7 @@ class TournamentController extends BaseTournamentController {
 		}
 		//Preset variables
 		$model->tabmaster_user_id = Yii::$app->user->id;
+		$model->tabAlgorithmClass = Yii::$app->params["stdTabAlgorithm"];
 		return $this->render('create', ['model' => $model,]);
 	}
 

@@ -7,12 +7,7 @@ return [
 	'appName' => 'Tabbie2',
 	'appUrl' => 'http://www.tabbie.org',
 	'slogan' => 'BP Tabbing so easy a fresher can do it',
-	'tabAlgorithmOptions' => [
-		//Installed Algorithm Options as class => description
-		"StrictWUDCRules" => "Strict WUDC Constitution - Local Optima Algorithm",
-		//"StrictWUDCRulesGlobalOptima" => "Strict WUDC Constitution - Global Optima Algorithm",
-		"DummyTest" => "Dummy Algorithm for Software Testing",
-	],
+	'stdTabAlgorithm' => "StrictWUDCRules",
 	'speaks_max' => 99,
 	'speaks_min' => 50,
 	'venues_per_page' => 100,

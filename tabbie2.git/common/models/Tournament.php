@@ -7,12 +7,12 @@ use yii\base\Exception;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use algorithm\algorithms;
 
 /**
  * This is the model class for table "tournament".
-
  *
-*@property integer                  $id
+ * @property integer                  $id
  * @property string                   $url_slug
  * @property integer                  $status
  * @property integer                  $convenor_user_id
@@ -98,12 +98,10 @@ class Tournament extends \yii\db\ActiveRecord {
 
 	/**
 	 * Find a Tournament by Primary Key
-
 	 *
-*@param integer $id
-
+	 * @param integer $id
 	 *
-*@uses Tournamnet::findOne
+	 * @uses Tournamnet::findOne
 	 * @return null|Tournamnet
 	 */
 	public static function findByPk($id) {
@@ -318,7 +316,16 @@ class Tournament extends \yii\db\ActiveRecord {
 	}
 
 	public static function getTabAlgorithmOptions() {
-		return Yii::$app->params["tabAlgorithmOptions"];
+		$algos = [];
+		$files = scandir(Yii::getAlias("@algorithm/algorithms/"));
+		foreach ($files as $className) {
+			if ($className == ".." || $className == ".") continue;
+			$filename = pathinfo($className)['filename'];
+			$class = Tournament::getTabAlgorithm($filename);
+			if ($class::version() !== null)
+				$algos[$filename] = $class::title() . " (v" . $class::version() . ")";
+		}
+		return $algos;
 	}
 
 	/**
@@ -327,8 +334,11 @@ class Tournament extends \yii\db\ActiveRecord {
 	 * @return \common\components\TabAlgorithm
 	 */
 	public function getTabAlgorithmInstance() {
-		$algoClass = $this->tabAlgorithmClass;
-		$algoName = "common\components\algorithms\\" . $algoClass;
+		return Tournament::getTabAlgorithm($this->tabAlgorithmClass);
+	}
+
+	public static function getTabAlgorithm($algoClass) {
+		$algoName = 'algorithm\\algorithms\\' . $algoClass;
 		return new $algoName();
 	}
 
