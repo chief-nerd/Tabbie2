@@ -13,20 +13,22 @@ use yii\base\Exception;
 
 class StrictWUDCRules extends TabAlgorithm {
 
+	/**
+	 * Local optima variables
+	 */
 	private $uphill_probability = 0.5;
 	private $alpha = 0.0005;
 	private $determination = 500;
 
 	/**
-	 * Function to calculate a draw based on WUDC strict Rules
+	 * Function to calculate a draw based on WUDC strict rules
 	 *
-	 * @param Venue[] $venues
-	 * @param Team[]         $teams
+	 * @param Venue[]        $venues Array of active venues for this tournament and round
+	 * @param Team[]         $teams  Array of active Teams
 	 * @param Adjudicators[] $adjudicators
-	 * @param type           $preset_panels
-
+	 * @param Panel[]        $preset_panels
 	 *
-*@return type
+	 * @return array
 	 * @throws Exception
 	 */
 	public function makeDraw($venues, $teams, $adjudicators, $preset_panels = array()) {
@@ -279,7 +281,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	}
 
 	/**
-	 * Sortiert Teams
+	 * Sort Teams
 	 *
 	 * @param Team[] $teams
 	 *
@@ -293,7 +295,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	}
 
 	/**
-	 * Sortiert Adjudicator
+	 * Sort Adjudicator
 	 *
 	 * @param Adjudicator[] $adj
 	 *
@@ -319,7 +321,7 @@ class StrictWUDCRules extends TabAlgorithm {
 	}
 
 	/**
-	 * Randomises the Teams within Teampoints
+	 * Randomises the Teams within Team point brackets
 	 *
 	 * @param Team[] $teams
 	 *
@@ -382,6 +384,8 @@ class StrictWUDCRules extends TabAlgorithm {
 	}
 
 	/**
+	 * Finds the best team swap for a team
+	 *
 	 * @param DrawLine $line_a
 	 * @param integer  $pos_a
 	 *
@@ -432,6 +436,8 @@ class StrictWUDCRules extends TabAlgorithm {
 	}
 
 	/**
+	 * Finds the best adjudicator swap
+	 *
 	 * @param DrawLine $line_a
 	 * @param integer  $pos_a
 	 *
@@ -486,10 +492,11 @@ class StrictWUDCRules extends TabAlgorithm {
 	/**
 	 * Sets up the variables in the EnergyConfig
 	 *
-	 * @param Tournament
-
+	 * @param \common\models\Tournament $tournament
 	 *
-*@return boolean
+	 * @return bool
+	 * @throws \yii\base\Exception
+	 * @internal param $Tournament
 	 */
 	public function setup($tournament) {
 		$tid = $tournament->id;
@@ -549,6 +556,8 @@ class StrictWUDCRules extends TabAlgorithm {
 	}
 
 	/**
+	 * Calculates an Energy Level based on all Methods that start with "energyRule_"
+	 *
 	 * @param DrawLine $line
 	 *
 	 * @return DrawLine
