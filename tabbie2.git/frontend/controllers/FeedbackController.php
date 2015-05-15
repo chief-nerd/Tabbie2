@@ -6,7 +6,7 @@ use common\components\filter\TournamentContextFilter;
 use common\models\AdjudicatorInPanel;
 use common\models\Answer;
 use common\models\Debate;
-use common\models\feedback;
+use common\models\Feedback;
 use common\models\FeedbackHasAnswer;
 use common\models\search\AnswerSearch;
 use common\models\search\FeedbackSearch;
