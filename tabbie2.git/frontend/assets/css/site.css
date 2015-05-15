@@ -237,6 +237,10 @@ a.desc:after {
     padding: 3px;
 }
 
+#team-table-container b {
+    text-decoration: underline;
+}
+
 /** LOADER */
 #loader {
     display: none;

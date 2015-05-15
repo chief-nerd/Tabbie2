@@ -15,6 +15,7 @@ function pageScroll() {
     }
     else {
         notEnd = false;
+        $('#team-table').hide(); //Hide Table to reduce clutter
         $('#drawdisplay').css("display", "block");
         if ($("#infoslide").length > 0)
             $("#infoslide").removeAttr("disabled");
