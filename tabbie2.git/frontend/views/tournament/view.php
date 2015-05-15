@@ -45,7 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
 					echo "&nbsp;" . Html::a(Html::icon("comment") . "&nbsp;" . Yii::t('app', 'Enter Feedback'), array_merge($ref, ['feedback/create', "tournament_id" => $model->id]), ['class' => 'btn btn-success']);
 				}
 				$debate = Yii::$app->user->hasChairedLastRound($model);
-				if ($debate instanceof common\models\Debate && !$debate->result instanceof \common\models\Result) {
+				if ($debate instanceof common\models\Debate && !($debate->result instanceof \common\models\Result)) {
 					echo "&nbsp;" . Html::a(Html::icon("envelope") . "&nbsp;" . Yii::t('app', 'Enter Result'), ['result/create', "id" => $debate->id, "tournament_id" => $model->id], ['class' => 'btn btn-success']);
 				}
 				if (Yii::$app->user->isConvenor($model) || Yii::$app->user->isTabMaster($model))
