@@ -8,6 +8,7 @@ use common\models\search\TeamSearch;
 use common\models\Team;
 use common\models\User;
 use Yii;
+use yii\base\Exception;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
@@ -233,8 +234,12 @@ class TeamController extends BaseTournamentController {
 
 					//UserA
 					if (count($row[2]) == 1) { //NEW
-						$userA = User::NewViaImport($societyID, $row[2][0], $row[3][0], $row[4][0]);
-						$userAID = $userA->id;
+						if ($row[2][0] != "" && $row[3][0] != "" && $row[4][0] != "") {
+							$userA = User::NewViaImport($societyID, $row[2][0], $row[3][0], $row[4][0]);
+							$userAID = $userA->id;
+						}
+						else
+							$userAID = null;
 					}
 					else if (count($row[2]) == 2) {
 						$userAID = $row[2][1]["id"];
@@ -242,8 +247,12 @@ class TeamController extends BaseTournamentController {
 
 					//UserB
 					if (count($row[5]) == 1) { //NEW
-						$userB = User::NewViaImport($societyID, $row[5][0], $row[6][0], $row[7][0]);
-						$userBID = $userB->id;
+						if ($row[5][0] != "" && $row[6][0] != "" && $row[7][0] != "") {
+							$userB = User::NewViaImport($societyID, $row[5][0], $row[6][0], $row[7][0]);
+							$userBID = $userB->id;
+						}
+						else
+							$userBID = null;
 					}
 					else if (count($row[5]) == 2) {
 						$userBID = $row[5][1]["id"];
@@ -255,7 +264,7 @@ class TeamController extends BaseTournamentController {
 					$team->speakerA_id = $userAID;
 					$team->speakerB_id = $userBID;
 					$team->society_id = $societyID;
-					if (!$team->save()) {
+					if (!$team->save(false)) {
 						Yii::$app->session->addFlash("error", Yii::t("app", "Error saving team {name}!", ["{name}" => $team->name]));
 						Yii::error("Import Errors userB: " . print_r($team->getErrors(), true) . "Attributes:" . print_r($team->attributes, true), __METHOD__);
 					}
@@ -277,10 +286,10 @@ class TeamController extends BaseTournamentController {
 						}
 
 						if (($num = count($data)) != 8) {
-							throw new \yii\base\Exception("500", Yii::t("app", "File Syntax Wrong"));
+							throw new Exception("500", Yii::t("app", "File Syntax Wrong"));
 						}
 						for ($c = 0; $c < $num; $c++) {
-							$model->tempImport[$row][$c][0] = trim($data[$c]);
+							$model->tempImport[$row][$c][0] = utf8_encode(trim($data[$c]));
 						}
 						$row++;
 					}
@@ -308,8 +317,9 @@ class TeamController extends BaseTournamentController {
 						$givenname = $model->tempImport[$i][2][0];
 						$surename = $model->tempImport[$i][3][0];
 						$email = $model->tempImport[$i][4][0];
+
 						$user = \common\models\User::find()
-						                           ->where("(givenname LIKE '%$givenname%' AND surename LIKE '%$surename%') OR surename LIKE '%$email%'")
+							->where("(givenname = '$givenname' AND surename = '$surename') OR email = '$email'")
 						                           ->all();
 						$a = 1;
 						foreach ($user as $u) {
@@ -325,8 +335,9 @@ class TeamController extends BaseTournamentController {
 						$givenname = $model->tempImport[$i][5][0];
 						$surename = $model->tempImport[$i][6][0];
 						$email = $model->tempImport[$i][7][0];
+
 						$user = \common\models\User::find()
-						                           ->where("(givenname LIKE '%$givenname%' AND surename LIKE '%$surename%') OR surename LIKE '%$email%'")
+							->where("(givenname = '$givenname' AND surename = '$surename') OR email = '$email'")
 						                           ->all();
 						$a = 1;
 						foreach ($user as $u) {

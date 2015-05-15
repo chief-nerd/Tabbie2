@@ -8,9 +8,8 @@ use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "team".
-
  *
-*@property integer       $id
+ * @property integer       $id
  * @property string        $name
  * @property integer       $active
  * @property integer       $tournament_id
@@ -116,13 +115,17 @@ class Team extends \yii\db\ActiveRecord {
 		if (parent::beforeSave($insert)) {
 			if ($insert === true) //Do only on new Record
 			{
-				if ($this->speakerA->language_status == User::LANGUAGE_ENL && $this->speakerB->language_status == User::LANGUAGE_ENL)
-					$this->language_status = User::LANGUAGE_ENL;
-				else if ($this->speakerA->language_status == User::LANGUAGE_ESL && $this->speakerB->language_status == User::LANGUAGE_ESL)
-					$this->language_status = User::LANGUAGE_ESL;
-				else if ($this->speakerA->language_status == User::LANGUAGE_EFL && $this->speakerB->language_status == User::LANGUAGE_EFL)
-					$this->language_status = User::LANGUAGE_EFL;
-				else $this->language_status = User::LANGUAGE_NONE;
+				if ($this->speakerA && $this->speakerB) {
+					if ($this->speakerA->language_status == User::LANGUAGE_ENL && $this->speakerB->language_status == User::LANGUAGE_ENL)
+						$this->language_status = User::LANGUAGE_ENL;
+					else if ($this->speakerA->language_status == User::LANGUAGE_ESL && $this->speakerB->language_status == User::LANGUAGE_ESL)
+						$this->language_status = User::LANGUAGE_ESL;
+					else if ($this->speakerA->language_status == User::LANGUAGE_EFL && $this->speakerB->language_status == User::LANGUAGE_EFL)
+						$this->language_status = User::LANGUAGE_EFL;
+					else $this->language_status = User::LANGUAGE_NONE;
+				}
+				else
+					$this->language_status = User::LANGUAGE_NONE;
 			}
 			return true;
 		}
@@ -378,12 +381,11 @@ class Team extends \yii\db\ActiveRecord {
 
 	/**
 	 * Gets an integer value representing how BAD the current position is for the Team
-
 	 *
-*@param integer $pos
-	 * @param Array $team
+	 * @param integer $pos
+	 * @param Array   $team
 	 *
-*@return integer
+	 * @return integer
 	 */
 	public static function getPositionBadness($pos, $team) {
 

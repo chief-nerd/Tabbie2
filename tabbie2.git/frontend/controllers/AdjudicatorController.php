@@ -387,7 +387,7 @@ class AdjudicatorController extends BaseTournamentController {
 							throw new \yii\base\Exception("500", Yii::t("app", "File Syntax Wrong"));
 						}
 						for ($c = 0; $c < $num; $c++) {
-							$model->tempImport[$row][$c][0] = trim($data[$c]);
+							$model->tempImport[$row][$c][0] = utf8_encode(trim($data[$c]));
 						}
 						$row++;
 					}
@@ -416,7 +416,7 @@ class AdjudicatorController extends BaseTournamentController {
 						$surename = $model->tempImport[$i][2][0];
 						$email = $model->tempImport[$i][3][0];
 						$user = \common\models\User::find()
-						                           ->where("(givenname LIKE '%$givenname%' AND surename LIKE '%$surename%') OR surename LIKE '%$email%'")
+							->where("(givenname LIKE '%$givenname%' AND surename LIKE '%$surename%') OR email LIKE '%$email%'")
 						                           ->all();
 						$a = 1;
 						foreach ($user as $u) {

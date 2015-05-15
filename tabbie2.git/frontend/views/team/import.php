@@ -58,10 +58,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
 			<?
 			$userField = $model->tempImport[$i][2];
-			$class = "";
+			$class = "none";
+			$value = "#";
+
 			if (count($userField) == 1) { //NEW
 				$class = "new";
-				$value = $userField[0];
+				$value = $userField[0] . " " . $model->tempImport[$i][3][0];
 			}
 			else if (count($userField) == 2) { //Found 1 - easy
 				$class = "green";
@@ -76,7 +78,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			?>
 			<div class="col-sm-3 <?= $class ?>">
 				<?
-				if ($class == "green" OR $class == "new") {
+				if ($class == "green" OR $class == "new" OR $class == "none") {
 					echo $value;
 				}
 				else {
@@ -87,10 +89,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
 			<?
 			$userField = $model->tempImport[$i][5];
-			$class = "";
+			$class = "none";
+			$value = "#";
+
 			if (count($userField) == 1) { //NEW
 				$class = "new";
-				$value = $userField[0];
+				$value = $userField[0] . " " . $model->tempImport[$i][6][0];
 			}
 			else if (count($userField) == 2) { //Found 1 - easy
 				$class = "green";
@@ -103,9 +107,10 @@ $this->params['breadcrumbs'][] = $this->title;
 				}
 			}
 			?>
+
 			<div class="col-sm-3 <?= $class ?>">
 				<?
-				if ($class == "green" OR $class == "new") {
+				if ($class == "green" OR $class == "new" OR $class == "none") {
 					echo $value;
 				}
 				else {

@@ -97,8 +97,10 @@ $this->params['breadcrumbs'][] = $this->title;
 			'format' => 'raw',
 			'value' => function ($model, $key, $index, $widget) {
 				return Html::ul([
-					Html::a($model->speakerA->name, ["user/view", "id" => $model->speakerA->id]),
-					Html::a($model->speakerB->name, ["user/view", "id" => $model->speakerB->id])], ["encode" => false]);
+					($model->speakerA) ? Html::a($model->speakerA->name, ["user/view", "id" => $model->speakerA->id]) : "(not set)",
+					($model->speakerB) ? Html::a($model->speakerB->name, ["user/view", "id" => $model->speakerB->id]) : "(not set)"
+				],
+					["encode" => false]);
 			},
 			'filterType' => GridView::FILTER_SELECT2,
 			'filter' => \common\models\search\TeamSearch::getSpeakerSearchArray($tournament->id),
