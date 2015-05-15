@@ -59,6 +59,8 @@ class User extends ActiveRecord implements IdentityInterface {
 	const LANGUAGE_ESL  = 2;
 	const LANGUAGE_EFL  = 3;
 
+	const NONE = "(not set)";
+
 	public $societies_id;
 
 	public $password;

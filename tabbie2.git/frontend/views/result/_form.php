@@ -29,11 +29,15 @@ use common\models\Team;
 			<div class="<?= $cols ?>">
 				<h3><?= Team::getPosLabel($index) ?></h3>
 				<h4><?= $debate->{$pos . "_team"}->name ?></h4>
+				<?
+				$A = $debate->{$pos . "_team"}->speakerA;
+				$B = $debate->{$pos . "_team"}->speakerB;
+				?>
 				<?= $form->field($model, $pos . '_A_speaks', $fieldOption)
-				         ->label($debate->{$pos . "_team"}->speakerA->name)
+					->label(($A) ? $A->name : \common\models\User::NONE)
 				         ->textInput($textOption) ?>
 				<?= $form->field($model, $pos . '_B_speaks', $fieldOption)
-				         ->label($debate->{$pos . "_team"}->speakerB->name)
+					->label(($B) ? $B->name : \common\models\User::NONE)
 				         ->textInput($textOption) ?>
 			</div>
 		<? endforeach; ?>
