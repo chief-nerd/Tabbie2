@@ -337,7 +337,7 @@ class ResultController extends BaseTournamentController {
 
 				]));
 				$team->points = $calculated_points;
-				$team->save();
+				$team->save(false);
 				$found = true;
 			}
 
@@ -349,7 +349,7 @@ class ResultController extends BaseTournamentController {
 
 				]));
 				$team->speakerA_speaks = $calculated_A_speaks;
-				$team->save();
+				$team->save(false);
 				$found = true;
 			}
 
@@ -361,7 +361,7 @@ class ResultController extends BaseTournamentController {
 
 				]));
 				$team->speakerB_speaks = $calculated_B_speaks;
-				$team->save();
+				$team->save(false);
 				$found = true;
 			}
 		}
