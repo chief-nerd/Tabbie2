@@ -102,9 +102,9 @@ $this->params['breadcrumbs'][] = $this->title;
 						</div>
 					</div>
 				</div>
+				<hr>
 			<? endif; ?>
 
-			<hr>
 			<h3><?php echo Yii::t("app", "Rounds") ?></h3>
 			<ul class="list-group">
 				<? foreach ($model->getRounds()->where(["displayed" => 1])->all() as $round): ?>
