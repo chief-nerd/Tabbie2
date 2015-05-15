@@ -7,7 +7,6 @@ use yii\base\Exception;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use algorithm\algorithms;
 
 /**
  * This is the model class for table "tournament".
@@ -338,7 +337,7 @@ class Tournament extends \yii\db\ActiveRecord {
 	}
 
 	public static function getTabAlgorithm($algoClass) {
-		$algoName = 'algorithm\\algorithms\\' . $algoClass;
+		$algoName = 'algorithms\\algorithms\\' . $algoClass;
 		return new $algoName();
 	}
 
