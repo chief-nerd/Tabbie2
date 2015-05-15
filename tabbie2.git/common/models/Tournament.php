@@ -197,7 +197,7 @@ class Tournament extends \yii\db\ActiveRecord {
 	 * @return Round
 	 */
 	public function getLastRound() {
-		return $this->getRounds()->where(["displayed" => 1])->orderBy(['id' => SORT_ASC])->one();
+		return $this->getRounds()->where(["displayed" => 1])->orderBy(['id' => SORT_DESC])->one();
 	}
 
 	/**
