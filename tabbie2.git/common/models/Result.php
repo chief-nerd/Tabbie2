@@ -215,8 +215,16 @@ class Result extends \yii\db\ActiveRecord {
 	}
 
 	public function getResultLabel($debate, $pos) {
-		if ($this->{$pos . "_irregular"} > 0) {
-			return Yii::t("app", "Swing Team");
+		switch ($this->{$pos . "_irregular"}) {
+			case 1:
+				return Yii::t("app", "Swing Team");
+				break;
+			case 2:
+				return Yii::t("app", "Ironman by") . " " . $debate->{$pos . "_team"}->speakerB->name;
+				break;
+			case 3:
+				return Yii::t("app", "Ironman by") . " " . $debate->{$pos . "_team"}->speakerA->name;
+				break;
 		}
 
 		return $debate->{$pos . "_team"}->name;
