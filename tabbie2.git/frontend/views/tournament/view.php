@@ -97,8 +97,6 @@ $this->params['breadcrumbs'][] = $this->title;
 						<div class="col-xs-12 col-sm-6"><?php echo Yii::t("app", "Round starts at: {time}", [
 								"time" => Yii::$app->formatter->asTime(strtotime($info["debate"]->round->prep_started . " +15min"), "short"),
 							]) ?>
-							<?php echo " | " . Yii::t("app", "Time remaining: ") ?>
-							<span class="remaining">0min 0sec</span>
 						</div>
 					</div>
 				</div>
