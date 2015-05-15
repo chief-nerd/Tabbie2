@@ -109,7 +109,7 @@ class UserIdentity extends \yii\web\User {
 	 */
 	public function hasOpenFeedback($model) {
 		$lastRound = $model->getLastRound();
-		if ($lastRound) {
+		if ($lastRound && $this->id > 0) {
 			/* @var $debate Debate */
 			foreach ($lastRound->getDebates()->all() as $debate) {
 				/** check teams* */
