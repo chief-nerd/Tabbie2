@@ -5,6 +5,7 @@ namespace common\components;
 use common\models\Feedback;
 use common\models\LanguageOfficer;
 use common\models\Panel;
+use common\models\Team;
 use \common\models\Tournament;
 use \common\models\User;
 use common\models\Debate;
@@ -86,52 +87,46 @@ class UserIdentity extends \yii\web\User {
 	}
 
 	/**
-	 * @param Tournament $model
+	 * @param Round $lastRound
 	 *
-	 * @return boolean
+*@return boolean
 	 */
-	public function hasChairedLastRound($model) {
-		$lastRound = $model->getLastRound();
-		if ($lastRound) {
-			/* @var $debate Debate */
-			foreach ($lastRound->getDebates()->all() as $debate) {
-				if ($debate->getChair() && $debate->getChair()->user_id == $this->id)
-					return $debate;
-			}
+	public function hasChairedLastRound($info) {
+		if ($info['type'] == 'judge' && $info['pos'] == 1) {
+			return true;
 		}
 		return false;
 	}
 
 	/**
-	 * @param Tournament $model
+	 * @param Round $lastRound
+
 	 *
-	 * @return Debate
+*@return Debate
 	 */
-	public function hasOpenFeedback($model) {
-		$lastRound = $model->getLastRound();
-		if ($lastRound && $this->id > 0) {
-			/* @var $debate Debate */
-			foreach ($lastRound->getDebates()->all() as $debate) {
-				/** check teams* */
-				if ($debate->og_feedback == 0 && $debate->isOGTeamMember($this->id))
-					return ["type" => Feedback::FROM_TEAM, "id" => $debate->id, "ref" => $debate->og_team_id];
-				if ($debate->oo_feedback == 0 && $debate->isOOTeamMember($this->id))
-					return ["type" => Feedback::FROM_TEAM, "id" => $debate->id, "ref" => $debate->oo_team_id];
-				if ($debate->cg_feedback == 0 && $debate->isCGTeamMember($this->id))
-					return ["type" => Feedback::FROM_TEAM, "id" => $debate->id, "ref" => $debate->cg_team_id];
-				if ($debate->co_feedback == 0 && $debate->isCOTeamMember($this->id))
-					return ["type" => Feedback::FROM_TEAM, "id" => $debate->id, "ref" => $debate->co_team_id];
+	public function hasOpenFeedback($info) {
 
-				/** check judges * */
-				foreach ($debate->panel->adjudicatorInPanels as $judge) {
-					if ($judge->got_feedback == 0 && $judge->adjudicator->user_id == $this->id) {
-						if ($judge->function == Panel::FUNCTION_CHAIR)
-							$type = Feedback::FROM_CHAIR;
-						else
-							$type = Feedback::FROM_WING;
+		$debate = $info['debate'];
+		if ($debate && $this->id > 0) {
+			/** check teams* */
+			if ($debate->og_feedback == 0 && $debate->isOGTeamMember($this->id))
+				return ["type" => Feedback::FROM_TEAM, "id" => $debate->id, "ref" => $debate->og_team_id];
+			if ($debate->oo_feedback == 0 && $debate->isOOTeamMember($this->id))
+				return ["type" => Feedback::FROM_TEAM, "id" => $debate->id, "ref" => $debate->oo_team_id];
+			if ($debate->cg_feedback == 0 && $debate->isCGTeamMember($this->id))
+				return ["type" => Feedback::FROM_TEAM, "id" => $debate->id, "ref" => $debate->cg_team_id];
+			if ($debate->co_feedback == 0 && $debate->isCOTeamMember($this->id))
+				return ["type" => Feedback::FROM_TEAM, "id" => $debate->id, "ref" => $debate->co_team_id];
 
-						return ["type" => $type, "id" => $debate->id, "ref" => $judge->adjudicator->id];
-					}
+			/** check judges * */
+			foreach ($debate->panel->adjudicatorInPanels as $judge) {
+				if ($judge->got_feedback == 0 && $judge->adjudicator->user_id == $this->id) {
+					if ($judge->function == Panel::FUNCTION_CHAIR)
+						$type = Feedback::FROM_CHAIR;
+					else
+						$type = Feedback::FROM_WING;
+
+					return ["type" => $type, "id" => $debate->id, "ref" => $judge->adjudicator->id];
 				}
 			}
 		}

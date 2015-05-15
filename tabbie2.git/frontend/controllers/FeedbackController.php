@@ -35,7 +35,8 @@ class FeedbackController extends BaseTournamentController {
 						'actions' => ['create'],
 						'matchCallback' => function ($rule, $action) {
 							/** @var Debate $debate */
-							$ref = Yii::$app->user->hasOpenFeedback($this->_tournament);
+							$info = $this->_tournament->getLastDebateInfo(Yii::$app->user->id);
+							$ref = Yii::$app->user->hasOpenFeedback($info);
 							if (is_array($ref) && $ref["id"] == Yii::$app->request->get("id")) {
 								return true;
 							}

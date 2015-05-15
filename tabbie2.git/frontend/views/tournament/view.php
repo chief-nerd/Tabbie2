@@ -3,6 +3,8 @@
 
 use yii\widgets\DetailView;
 use kartik\helpers\Html;
+use \common\models\Team;
+use common\models\Panel;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Tournament */
@@ -36,33 +38,74 @@ $this->params['breadcrumbs'][] = $this->title;
 				<h1><?= Html::encode($this->title) ?></h1>
 			</div>
 		</div>
-		<div class="col-xs-12 col-sm-4 text-right">
-			<?
-
-			if ($model->status === \common\models\Tournament::STATUS_RUNNING) {
-				$ref = Yii::$app->user->hasOpenFeedback($model);
-				if (is_array($ref) && $model->getTournamentHasQuestions()->count() > 0) {
-					echo "&nbsp;" . Html::a(Html::icon("comment") . "&nbsp;" . Yii::t('app', 'Enter Feedback'), array_merge($ref, ['feedback/create', "tournament_id" => $model->id]), ['class' => 'btn btn-success']);
-				}
-				$debate = Yii::$app->user->hasChairedLastRound($model);
-				if ($debate instanceof common\models\Debate && !($debate->result instanceof \common\models\Result)) {
-					echo "&nbsp;" . Html::a(Html::icon("envelope") . "&nbsp;" . Yii::t('app', 'Enter Result'), ['result/create', "id" => $debate->id, "tournament_id" => $model->id], ['class' => 'btn btn-success']);
-				}
-				if (Yii::$app->user->isConvenor($model) || Yii::$app->user->isTabMaster($model))
-					echo "&nbsp;" . Html::a(Html::icon("film") . "&nbsp;" . Yii::t('app', 'Display Draw'), ['display/index', "tournament_id" => $model->id], ['class' => 'btn btn-default']);
-			}
-
-			if ($model->status != \common\models\Tournament::STATUS_CLOSED) {
-				if (Yii::$app->user->isTabMaster($model) || Yii::$app->user->isConvenor($model)) {
-					echo "&nbsp;" . Html::a(Html::icon("cog") . "&nbsp;" . Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
-				}
-			}
-
-			?>
-		</div>
 	</div>
 	<div class="row">
 		<div class="col-xs-12 col-md-8 leftcolumn">
+
+			<?php
+			$info = $model->getLastDebateInfo(Yii::$app->user->id);
+			if ($info && $model->status === \common\models\Tournament::STATUS_RUNNING): ?>
+				<?
+				$button_output_buffer = "";
+				if (Yii::$app->user->hasChairedLastRound($info)) {
+					$button_output_buffer .= "&nbsp;" . Html::a(Html::icon("envelope") . "&nbsp;" . Yii::t('app', 'Enter Result'), ['result/create', "id" => $info['debate']->id, "tournament_id" => $model->id], ['class' => 'btn btn-success']);
+				}
+				$ref = Yii::$app->user->hasOpenFeedback($info);
+				if (is_array($ref) && $model->getTournamentHasQuestions()->count() > 0) {
+					$button_output_buffer .= "&nbsp;" . Html::a(Html::icon("comment") . "&nbsp;" . Yii::t('app', 'Enter Feedback'), array_merge($ref, ['feedback/create', "tournament_id" => $model->id]), ['class' => 'btn btn-success']);
+				}
+
+				if (Yii::$app->user->isConvenor($model) || Yii::$app->user->isTabMaster($model))
+					$button_output_buffer .= "&nbsp;" . Html::a(Html::icon("film") . "&nbsp;" . Yii::t('app', 'Display Draw'), ['display/index', "tournament_id" => $model->id], ['class' => 'btn btn-default']);
+
+				if ($model->status != \common\models\Tournament::STATUS_CLOSED) {
+					if (Yii::$app->user->isTabMaster($model) || Yii::$app->user->isConvenor($model)) {
+						$button_output_buffer .= "&nbsp;" . Html::a(Html::icon("cog") . "&nbsp;" . Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
+					}
+				}
+
+				if (strlen($button_output_buffer) > 0):
+					?>
+					<div class="panel panel-success">
+						<div class="panel-heading">
+							<h3 class="panel-title"><?php echo Yii::t("app", "Your Actions") ?></h3>
+						</div>
+						<div class="panel-body">
+							<?php echo $button_output_buffer ?>
+						</div>
+					</div>
+				<? endif; ?>
+
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title"><?php echo Yii::t("app", "Round #{num} Info", ["num" => $info["debate"]->round->number]) ?></h3>
+					</div>
+					<div class="panel-body">
+						<?php
+						if ($info["type"] == "team") {
+							$pos = Team::getPosLabel($info["pos"]);
+						}
+
+						if ($info["type"] == "judge") {
+							$pos = Panel::getFunctionLabel($info["pos"]);
+						}
+						?>
+						<div class="col-xs-12 col-sm-6"><?php echo Yii::t("app", "You are '{pos}' in room '{room}'", [
+								"pos" => $pos,
+								"room" => $info["debate"]->venue->name,
+							]) ?></div>
+						<div class="col-xs-12 col-sm-6"><?php echo Yii::t("app", "Round starts at: {time}", [
+								"time" => Yii::$app->formatter->asTime(strtotime($info["debate"]->round->prep_started . " +15min"), "short"),
+							]) ?>
+							<?php echo " | " . Yii::t("app", "Time remaining: ") ?>
+							<span class="remaining">0min 0sec</span>
+						</div>
+					</div>
+				</div>
+			<? endif; ?>
+
+			<hr>
+			<h3><?php echo Yii::t("app", "Rounds") ?></h3>
 			<ul class="list-group">
 				<? foreach ($model->getRounds()->where(["displayed" => 1])->all() as $round): ?>
 					<li class="list-group-item">

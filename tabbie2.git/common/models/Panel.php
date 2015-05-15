@@ -25,6 +25,15 @@ class Panel extends \yii\db\ActiveRecord {
 	const FUNCTION_CHAIR = 1;
 	const FUNCTION_WING  = 0;
 
+	public static function getFunctionLabel($id) {
+		$label = [
+			self::FUNCTION_CHAIR => Yii::t("app", "Chair"),
+			self::FUNCTION_WING => Yii::t("app", "Wing"),
+		];
+
+		return $label[$id];
+	}
+
 	/**
 	 * @inheritdoc
 	 */

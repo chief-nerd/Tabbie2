@@ -314,6 +314,44 @@ class Tournament extends \yii\db\ActiveRecord {
 		return Html::img($this->getLogo(), $img_options);
 	}
 
+	/**
+	 * @param Tournament $model
+	 *
+	 * @return array|false
+	 */
+	public function getLastDebateInfo($id) {
+		$lastRound = $this->getLastRound();
+
+		if ($lastRound) {
+			foreach ($lastRound->getDebates()->all() as $debate) {
+
+				/** check teams* */
+				if ($debate->isOGTeamMember($id))
+					return ['type' => 'team', 'debate' => $debate, 'pos' => Team::OG];
+				if ($debate->isOOTeamMember($id))
+					return ['type' => 'team', 'debate' => $debate, 'pos' => Team::OO];
+				if ($debate->isCGTeamMember($id))
+					return ['type' => 'team', 'debate' => $debate, 'pos' => Team::CG];
+				if ($debate->isCOTeamMember($id))
+					return ['type' => 'team', 'debate' => $debate, 'pos' => Team::CO];
+
+				/** check judges * */
+				foreach ($debate->panel->adjudicatorInPanels as $judge) {
+					if ($judge->adjudicator->user_id == $id) {
+						if ($judge->function == Panel::FUNCTION_CHAIR)
+							$pos = Panel::FUNCTION_CHAIR;
+						else
+							$pos = Panel::FUNCTION_WING;
+
+						return ['type' => 'judge', 'debate' => $debate, 'pos' => $pos];
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
 	public static function getTabAlgorithmOptions() {
 		$algos = [];
 		$files = scandir(Yii::getAlias("@algorithms/algorithms/"));
