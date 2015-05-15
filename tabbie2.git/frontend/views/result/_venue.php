@@ -19,7 +19,7 @@ if ($model->result instanceof Result) {
 		. "<td>" . (($model->og_team->speakerA) ? $model->og_team->speakerA->name : \common\models\User::NONE) . ": " . $result->getSpeakerSpeaks(Team::getPos(Team::OG), Team::POS_A) . "<br/>"
 		. (($model->og_team->speakerB) ? $model->og_team->speakerB->name : \common\models\User::NONE) . ": " . $result->getSpeakerSpeaks(Team::getPos(Team::OG), Team::POS_B) . "</td>"
 		. "<td>" . (($model->oo_team->speakerA) ? $model->og_team->speakerA->name : \common\models\User::NONE) . ": " . $result->getSpeakerSpeaks(Team::getPos(Team::OO), Team::POS_A) . "<br/>"
-		. (($model->oo_team->speakerA) ? $model->oo_team->speakerB->name : \common\models\User::NONE) . ": " . $result->getSpeakerSpeaks(Team::getPos(Team::OO), Team::POS_B) . "</td>"
+		. (($model->oo_team->speakerB) ? $model->oo_team->speakerB->name : \common\models\User::NONE) . ": " . $result->getSpeakerSpeaks(Team::getPos(Team::OO), Team::POS_B) . "</td>"
 		. "</tr><tr>"
 		. "<th>" . $model->cg_team->name . " (" . $result->getPlaceText(Team::getPos(Team::CG)) . ")</th>"
 		. "<th>" . $model->co_team->name . " (" . $result->getPlaceText(Team::getPos(Team::CO)) . ")</th>"
