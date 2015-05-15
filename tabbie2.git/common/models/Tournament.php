@@ -316,7 +316,7 @@ class Tournament extends \yii\db\ActiveRecord {
 
 	public static function getTabAlgorithmOptions() {
 		$algos = [];
-		$files = scandir(Yii::getAlias("@algorithm/algorithms/"));
+		$files = scandir(Yii::getAlias("@algorithms/algorithms/"));
 		foreach ($files as $className) {
 			if ($className == ".." || $className == ".") continue;
 			$filename = pathinfo($className)['filename'];
