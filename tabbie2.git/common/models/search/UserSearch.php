@@ -27,8 +27,8 @@ class UserSearch extends User {
 	 */
 	public function rules() {
 		return [
-			[['language_status'], 'integer'],
-			[['name'], 'string'],
+			[['language_status', 'role', 'id'], 'integer'],
+			[['name', 'email'], 'string'],
 		];
 	}
 
@@ -57,6 +57,20 @@ class UserSearch extends User {
 			],
 		]);
 
+		$dataProvider->setSort([
+			'attributes' => [
+				'id',
+				'url_slug',
+				'email',
+				'role',
+				'name' => [
+					'asc' => ["CONCAT(givenname, ' ', surename)" => SORT_ASC],
+					'desc' => ["CONCAT(givenname, ' ', surename)" => SORT_DESC],
+					'label' => 'Name'
+				]
+			]
+		]);
+
 		if (!($this->load($params) && $this->validate())) {
 			return $dataProvider;
 		}
@@ -69,8 +83,7 @@ class UserSearch extends User {
 			'time' => $this->time,
 		]);
 
-		$query->andFilterWhere(['like', 'username', $this->username])
-		      ->andFilterWhere(['like', 'email', $this->email])
+		$query->andFilterWhere(['like', 'email', $this->email])
 		      ->andFilterWhere(['like', "CONCAT(givenname, ' ', surename)", $this->name]);
 
 		return $dataProvider;

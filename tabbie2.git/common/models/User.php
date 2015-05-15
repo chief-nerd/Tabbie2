@@ -101,7 +101,7 @@ class User extends ActiveRecord implements IdentityInterface {
 			[['password', 'password_repeat'], 'string', 'on' => 'first_login'],
 			[['password', 'password_repeat'], 'required', 'on' => 'first_login'],
 
-			[['role', 'status', 'language_status', 'language_status_by_id'], 'integer'],
+			[['id', 'role', 'status', 'language_status', 'language_status_by_id'], 'integer'],
 			[['picture'], 'string'],
 			[['url_slug', 'password_hash', 'password_reset_token', 'email', 'givenname', 'surename'], 'string', 'max' => 255],
 
@@ -158,7 +158,7 @@ class User extends ActiveRecord implements IdentityInterface {
 	 */
 	public function attributeLabels() {
 		return [
-			'id' => Yii::t('app', 'User ID'),
+			'id' => Yii::t('app', 'ID'),
 			'url_slug' => Yii::t('app', 'URL Slug'),
 			'auth_key' => Yii::t('app', 'Auth Key'),
 			'password_hash' => Yii::t('app', 'Password Hash'),
@@ -403,18 +403,21 @@ class User extends ActiveRecord implements IdentityInterface {
 
 	public static function getRoleOptions($none = false) {
 		$options = [
+			self::ROLE_PLACEHOLDER => self::getRoleLabel(User::ROLE_PLACEHOLDER),
 			self::ROLE_USER => self::getRoleLabel(User::ROLE_USER),
 			self::ROLE_TABMASTER => self::getRoleLabel(User::ROLE_TABMASTER),
 			self::ROLE_ADMIN => self::getRoleLabel(User::ROLE_ADMIN),
 		];
 		if ($none) {
-			$options = array_merge(["" => ''], $options);
+			$options = ["" => " "] + $options;
 		}
 		return $options;
 	}
 
 	public static function getRoleLabel($id) {
 		switch ($id) {
+			case self::ROLE_PLACEHOLDER:
+				return Yii::t("app", "Placeholder");
 			case self::ROLE_USER:
 				return Yii::t("app", "User");
 			case self::ROLE_TABMASTER:
