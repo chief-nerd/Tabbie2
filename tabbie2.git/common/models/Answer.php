@@ -98,6 +98,7 @@ class Answer extends \yii\db\ActiveRecord {
 			case Question::TYPE_STAR:
 				$element = StarRating::widget([
 					"name" => "Answer[" . $q_id . "]",
+					"id" => "Answer_" . $q_id,
 					"pluginOptions" => [
 						"stars" => 5,
 						"min" => 0,
