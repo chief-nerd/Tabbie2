@@ -8,9 +8,6 @@
 }
 
 #bugtracker {
-    position: fixed;
-    right: 0px;
-    top: 30%;
     border: 1px solid gray;
     padding: 2px;
     border-top-left-radius: 5px;

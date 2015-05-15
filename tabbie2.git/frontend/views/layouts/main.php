@@ -39,13 +39,6 @@ if ($this->context->hasMethod("_getContext")) {
 	<?= Alert::widget() ?>
 </div>
 
-<div id="bugtracker" class="text-center">
-	<a href="http://bug.tabbie.org" title="Report a Bug" target="_blank">
-		<?= Html::img($assetBundle->baseUrl . '/images/bug.png', ['alt' => 'Report Bug', 'width' => '40px']); ?><br>
-		Report
-	</a>
-</div>
-
 <div class="wrap">
 	<?
 	/* @var $tournament common\models\Tournament */
@@ -74,7 +67,11 @@ if ($this->context->hasMethod("_getContext")) {
 		<div class="container">
 			<p class="pull-left"><?= Yii::$app->params["appName"] ?> &copy; <?= date('Y') ?></p>
 
-			<p class="pull-right"><?= HTML::a(Yii::t("app", "Contact"), 'mailto:' . Yii::$app->params["adminEmail"]) ?></p>
+			<p class="pull-right">
+				<?= HTML::a(Html::img($assetBundle->baseUrl . '/images/bug.png', ['alt' => 'Report Bug', 'height' => '20px']) . " " . Yii::t("app", "Report a Bug"), 'http://bug.tabbie.org', ["target" => "_blank"]) ?>
+				<?= " | " ?>
+				<?= HTML::a(Yii::t("app", "Contact"), 'mailto:' . Yii::$app->params["adminEmail"]) ?>
+			</p>
 		</div>
 	</footer>
 	<?= $this->render("_loader") ?>
