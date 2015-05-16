@@ -6,7 +6,7 @@ use common\models\Team;
 
 ?>
 <div class="row" id="tournament_title">
-	<div class="col-xs-12 col-md-9">
+	<div class="col-xs-12 col-md-9" style="margin-bottom: 20px">
 		<div class="col-xs-12 col-sm-2 block-center">
 			<?= $model->getLogoImage() ?>
 		</div>
