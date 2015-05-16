@@ -67,7 +67,7 @@ class VenueSearch extends Venue {
 		return $dataProvider;
 	}
 
-	public function getSearchArray($tid, $keys = false) {
+	public static function getSearchArray($tid, $keys = false) {
 
 		$venues = Venue::find()->where(["tournament_id" => $tid])->asArray()->all();
 

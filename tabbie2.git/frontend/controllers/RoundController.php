@@ -117,25 +117,22 @@ class RoundController extends BaseTournamentController {
 	/**
 	 * Function called when move results are sent
 	 */
-	public function actionChangevenue($id, $debateid) {
+	public function actionChangevenue($id, $debateid, $new_venue) {
 		$old_debate = \common\models\Debate::findOne($debateid);
 
-		if ($params = Yii::$app->request->get()) {
-			$used_debate = \common\models\Debate::findOne(["venue_id" => $params["new_venue"], "round_id" => $old_debate->round_id]);
-			if ($used_debate instanceof \common\models\Debate) {
-				$old_debate_venue = $old_debate->venue_id;
-				$old_debate->venue_id = $used_debate->venue_id;
-				$used_debate->venue_id = $old_debate_venue;
-				if ($old_debate->save() && $used_debate->save()) {
-					Yii::$app->session->setFlash('success', Yii::t("app", 'Venues switched'));
-				}
-				else {
-					Yii::$app->session->setFlash('error', Yii::t("app", 'Error while switching'));
-				}
+		$used_debate = \common\models\Debate::findOne(["venue_id" => $new_venue, "round_id" => $old_debate->round_id]);
+		if ($used_debate instanceof \common\models\Debate) {
+			$old_debate_venue = $old_debate->venue_id;
+			$old_debate->venue_id = $used_debate->venue_id;
+			$used_debate->venue_id = $old_debate_venue;
+			if ($old_debate->save() && $used_debate->save()) {
+				Yii::$app->session->setFlash('success', Yii::t("app", 'Venues switched'));
 			}
-			else Yii::$app->session->setFlash('error', Yii::t("app", 'No Debate selected'));
+			else {
+				Yii::$app->session->setFlash('error', Yii::t("app", 'Error while switching'));
+			}
 		}
-		else Yii::$app->session->setFlash('error', Yii::t("app", 'No Parameters'));
+		else Yii::$app->session->setFlash('error', Yii::t("app", 'No Debate selected'));
 
 		return $this->redirect(["view", "id" => $id, "tournament_id" => $old_debate->tournament_id, "view" => "#draw"]);
 	}
