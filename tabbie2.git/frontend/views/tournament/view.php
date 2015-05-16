@@ -44,17 +44,18 @@ $this->params['breadcrumbs'][] = $this->title;
 
 			<?php
 			$info = $model->getLastDebateInfo(Yii::$app->user->id);
-			if ($info && $model->status === \common\models\Tournament::STATUS_RUNNING): ?>
+			if ($model->status === \common\models\Tournament::STATUS_RUNNING): ?>
 				<?
 				$button_output_buffer = "";
-				if (Yii::$app->user->hasChairedLastRound($info)) {
-					$button_output_buffer .= "&nbsp;" . Html::a(Html::icon("envelope") . "&nbsp;" . Yii::t('app', 'Enter Result'), ['result/create', "id" => $info['debate']->id, "tournament_id" => $model->id], ['class' => 'btn btn-success']);
+				if ($info) {
+					if (Yii::$app->user->hasChairedLastRound($info)) {
+						$button_output_buffer .= "&nbsp;" . Html::a(Html::icon("envelope") . "&nbsp;" . Yii::t('app', 'Enter Result'), ['result/create', "id" => $info['debate']->id, "tournament_id" => $model->id], ['class' => 'btn btn-success']);
+					}
+					$ref = Yii::$app->user->hasOpenFeedback($info);
+					if (is_array($ref) && $model->getTournamentHasQuestions()->count() > 0) {
+						$button_output_buffer .= "&nbsp;" . Html::a(Html::icon("comment") . "&nbsp;" . Yii::t('app', 'Enter Feedback'), array_merge($ref, ['feedback/create', "tournament_id" => $model->id]), ['class' => 'btn btn-success']);
+					}
 				}
-				$ref = Yii::$app->user->hasOpenFeedback($info);
-				if (is_array($ref) && $model->getTournamentHasQuestions()->count() > 0) {
-					$button_output_buffer .= "&nbsp;" . Html::a(Html::icon("comment") . "&nbsp;" . Yii::t('app', 'Enter Feedback'), array_merge($ref, ['feedback/create', "tournament_id" => $model->id]), ['class' => 'btn btn-success']);
-				}
-
 				if (Yii::$app->user->isConvenor($model) || Yii::$app->user->isTabMaster($model))
 					$button_output_buffer .= "&nbsp;" . Html::a(Html::icon("film") . "&nbsp;" . Yii::t('app', 'Display Draw'), ['display/index', "tournament_id" => $model->id], ['class' => 'btn btn-default']);
 
