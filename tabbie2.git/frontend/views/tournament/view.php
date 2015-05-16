@@ -31,7 +31,7 @@ $this->registerJs("
 			}
 
 			// With HTML5 history API, we can easily prevent scrolling!
-			$('.nav-tabs a').on('shown', function (e) {
+			$('.nav-tabs a').on('shown.bs.tab', function (e) {
 				if(history.pushState) {
 					history.pushState(null, null, e.target.hash);
 				} else {
