@@ -1,36 +1,39 @@
 <?php
-
+use common\models\PublishTabSpeaker;
+use yii\data\ArrayDataProvider;
 use kartik\grid\GridView;
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $searchModel common\models\search\DrawSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+$lines = PublishTabSpeaker::generateSpeakerTab($model);
 
-$this->title = Yii::t('app', 'Speaker Tab');
-$tournament = $this->context->_getContext();
-$this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
-$this->params['breadcrumbs'][] = $this->title;
+$dataProvider = new ArrayDataProvider([
+	'allModels' => $lines,
+	'sort' => [
+		'attributes' => ['enl_place'],
+	],
+	'pagination' => [
+		'pageSize' => 99999,
+	],
+]);
 ?>
+
 <div class="tab-team-container">
 
-	<h1><?= Html::encode($this->title) ?></h1>
-	<?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
+	<h3><?= Html::encode(Yii::t("app", "Speaker Tab")) ?></h3>
 	<?
 	$columns = [
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'enl_place',
-			'label' => ($tournament->has_esl) ? Yii::t("app", 'ENL Place') : Yii::t("app", 'Place'),
-			'width' => '80px',
+			'label' => ($model->has_esl) ? Yii::t("app", 'ENL Place') : Yii::t("app", 'Place'),
+			'width' => '100px',
 		],
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'esl_place',
 			'label' => Yii::t("app", 'ESL Place'),
-			'width' => '80px',
-			'visible' => $tournament->has_esl,
+			'width' => '100px',
+			'visible' => $model->has_esl,
 			'value' => function ($model, $key, $index, $widget) {
 				return ($model->esl_place) ? $model->esl_place : "";
 			},
@@ -48,17 +51,17 @@ $this->params['breadcrumbs'][] = $this->title;
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'points',
 			'label' => Yii::t("app", 'Team Points'),
-			'width' => "20px",
+			'width' => "100px",
 		],
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'speaks',
 			'label' => Yii::t("app", 'Speaker Points'),
-			'width' => "20px",
+			'width' => "120px",
 		],
 	];
 
-	foreach ($tournament->rounds as $r) {
+	foreach ($model->rounds as $r) {
 		$columns[] = [
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'results_array.' . $r->number,
@@ -79,7 +82,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		'responsive' => false,
 		'floatHeader' => true,
 		'floatHeaderOptions' => ['scrollingTop' => 100],
-		'id' => 'team-tab',
+		'id' => 'team-speaker',
 		'striped' => true,
 	])
 	?>

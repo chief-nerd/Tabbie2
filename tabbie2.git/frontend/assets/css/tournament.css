@@ -1,10 +1,12 @@
-.leftcolumn {
-    padding-top: 20px;
+#tournament_title {
+    margin: 20px 0;
 }
 
-.leftcolumn .row {
-    padding: 10px 0;
-    font-size: 16px;
+.balance-frame {
+    width: 60px;
+    height: 60px;
+    border: 1px solid #AAAAAA;
+    border-radius: 3px;
 }
 
 .tournament-index .tournament {

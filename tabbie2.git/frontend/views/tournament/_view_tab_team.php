@@ -1,20 +1,25 @@
 <?php
-
+use common\models\PublishTabTeam;
+use yii\data\ArrayDataProvider;
 use kartik\grid\GridView;
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $searchModel common\models\search\DrawSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+$lines = PublishTabTeam::generateTeamTab($model);
 
-$this->title = Yii::t('app', 'Speaker Tab');
-$tournament = $this->context->_getContext();
-$this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
-$this->params['breadcrumbs'][] = $this->title;
+$dataProvider = new ArrayDataProvider([
+	'allModels' => $lines,
+	'sort' => [
+		'attributes' => ['enl_place'],
+	],
+	'pagination' => [
+		'pageSize' => 99999,
+	],
+]);
+
 ?>
 <div class="tab-team-container">
 
-	<h1><?= Html::encode($this->title) ?></h1>
+	<h3><?= Html::encode(Yii::t("app", "Team Tab")) ?></h3>
 	<?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
 	<?
@@ -22,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'enl_place',
-			'label' => ($tournament->has_esl) ? Yii::t("app", 'ENL Place') : Yii::t("app", 'Place'),
+			'label' => ($model->has_esl) ? Yii::t("app", 'ENL Place') : Yii::t("app", 'Place'),
 			'width' => '80px',
 		],
 		[
@@ -30,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'attribute' => 'esl_place',
 			'label' => Yii::t("app", 'ESL Place'),
 			'width' => '80px',
-			'visible' => $tournament->has_esl,
+			'visible' => $model->has_esl,
 			'value' => function ($model, $key, $index, $widget) {
 				return ($model->esl_place) ? $model->esl_place : "";
 			},
@@ -38,10 +43,10 @@ $this->params['breadcrumbs'][] = $this->title;
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'object.name',
-			'label' => Yii::t("app", 'Speaker'),
+			'label' => Yii::t("app", 'Team'),
 			'format' => 'raw',
 			'value' => function ($model, $key, $index, $widget) {
-				return ($model->object) ? Html::a($model->object->name, ["user/view", "id" => $model->object->id]) : "(not set)";
+				return Html::a($model->object->name, ["team/view", "id" => $model->object->id, "tournament_id" => $model->object->tournament_id]);
 			},
 		],
 		[
@@ -58,7 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		],
 	];
 
-	foreach ($tournament->rounds as $r) {
+	foreach ($model->rounds as $r) {
 		$columns[] = [
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'results_array.' . $r->number,
@@ -80,7 +85,11 @@ $this->params['breadcrumbs'][] = $this->title;
 		'floatHeader' => true,
 		'floatHeaderOptions' => ['scrollingTop' => 100],
 		'id' => 'team-tab',
-		'striped' => true,
+		'striped' => false,
+		'rowOptions' => function ($model, $key, $index, $grid) {
+			return ["class" => ($model->enl_place <= $this->context->_getContext()
+			                                                       ->getAmountBreakingTeams()) ? "bg-success" : ""];
+		},
 	])
 	?>
 

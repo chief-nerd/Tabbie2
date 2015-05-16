@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'enl_place',
-			'label' => Yii::t("app", 'ENL Place'),
+			'label' => ($tournament->has_esl) ? Yii::t("app", 'ENL Place') : Yii::t("app", 'Place'),
 			'width' => '80px',
 		],
 		[
