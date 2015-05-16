@@ -121,7 +121,7 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord {
 		$jumpover = 0;
 		foreach ($lines as $index => $line) {
 			if (isset($lines[$index - 1]))
-				if (!($lines[$index - 1]->points == $lines[$index]->points && $lines[$index - 1]->speaks == $lines[$index]->speaks)) {
+				if (!($lines[$index - 1]->speaks == $lines[$index]->speaks)) {
 					$i++;
 					if ($jumpover > 0) {
 						$i = $i + $jumpover;
