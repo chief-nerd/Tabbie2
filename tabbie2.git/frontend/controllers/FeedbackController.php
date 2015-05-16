@@ -155,7 +155,7 @@ class FeedbackController extends BaseTournamentController {
 				$models[$question->id]->feedback_id = $feedback->id;
 
 				if ($models[$question->id]->save()) {
-						$allGood = false;
+					$allGood = true;
 				}
 				else {
 					$allGood = false;

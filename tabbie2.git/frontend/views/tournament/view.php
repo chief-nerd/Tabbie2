@@ -52,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
 						$button_output_buffer .= "&nbsp;" . Html::a(Html::icon("envelope") . "&nbsp;" . Yii::t('app', 'Enter Result'), ['result/create', "id" => $info['debate']->id, "tournament_id" => $model->id], ['class' => 'btn btn-success']);
 					}
 					$ref = Yii::$app->user->hasOpenFeedback($info);
-					if (is_array($ref) && $existFeedback && $model->getTournamentHasQuestions()->count() > 0) {
+					if (is_array($ref) && $model->getTournamentHasQuestions()->count() > 0) {
 						$button_output_buffer .= "&nbsp;" . Html::a(Html::icon("comment") . "&nbsp;" . Yii::t('app', 'Enter Feedback'), array_merge($ref, ['feedback/create', "tournament_id" => $model->id]), ['class' => 'btn btn-success']);
 					}
 				}
