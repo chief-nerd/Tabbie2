@@ -22,7 +22,7 @@ echo Select2::widget([
 	'data' => $venueOptions,
 	'options' => ['placeholder' => Yii::t("app", 'Select a Venue ...')],
 	"pluginEvents" => [
-		"change" => "function() { document.getElementById('changeVenueForm').submit(); }",
+		"select2:close" => "function() { document.getElementById('changeVenueForm').submit(); }",
 	]
 ]);
 $form->end();
