@@ -77,30 +77,33 @@ $this->params['breadcrumbs'][] = $this->title;
 					</div>
 				<? endif; ?>
 
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<h3 class="panel-title"><?php echo Yii::t("app", "Round #{num} Info", ["num" => $info["debate"]->round->number]) ?></h3>
-					</div>
-					<div class="panel-body">
-						<?php
-						if ($info["type"] == "team") {
-							$pos = Team::getPosLabel($info["pos"]);
-						}
+				<? if ($info): ?>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title"><?php echo Yii::t("app", "Round #{num} Info", ["num" => $info["debate"]->round->number]) ?></h3>
+						</div>
+						<div class="panel-body">
+							<?php
+							if ($info["type"] == "team") {
+								$pos = Team::getPosLabel($info["pos"]);
+							}
 
-						if ($info["type"] == "judge") {
-							$pos = Panel::getFunctionLabel($info["pos"]);
-						}
-						?>
-						<div class="col-xs-12 col-sm-6"><?php echo Yii::t("app", "You are '{pos}' in room '{room}'", [
-								"pos" => $pos,
-								"room" => $info["debate"]->venue->name,
-							]) ?></div>
-						<div class="col-xs-12 col-sm-6"><?php echo Yii::t("app", "Round starts at: {time}", [
-								"time" => Yii::$app->formatter->asTime(strtotime($info["debate"]->round->prep_started . " +15min"), "short"),
-							]) ?>
+							if ($info["type"] == "judge") {
+								$pos = Panel::getFunctionLabel($info["pos"]);
+							}
+							?>
+							<div
+								class="col-xs-12 col-sm-6"><?php echo Yii::t("app", "You are '{pos}' in room '{room}'", [
+									"pos" => $pos,
+									"room" => $info["debate"]->venue->name,
+								]) ?></div>
+							<div class="col-xs-12 col-sm-6"><?php echo Yii::t("app", "Round starts at: {time}", [
+									"time" => Yii::$app->formatter->asTime(strtotime($info["debate"]->round->prep_started . " +15min"), "short"),
+								]) ?>
+							</div>
 						</div>
 					</div>
-				</div>
+				<? endif; ?>
 				<hr>
 			<? endif; ?>
 
