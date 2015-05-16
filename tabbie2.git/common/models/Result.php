@@ -6,12 +6,8 @@ use Yii;
 
 /**
  * This is the model class for table "result".
-
-
-
-
-*
-*@property integer     $id
+ *
+ * @property integer     $id
  * @property integer     $debate_id
  * @property integer     $og_A_speaks
  * @property integer     $og_B_speaks
@@ -141,10 +137,27 @@ class Result extends \yii\db\ActiveRecord {
 	}
 
 	public function getSpeakerSpeaks($p, $s) {
-		if ($this->{$p . "_irregular"} == Team::IRREGULAR_SWING) {
+		if ($this->{$p . "_irregular"} == Team::IRREGULAR_A_NOSHOW && $s == Team::POS_A)
 			return 0;
-		}
+		else if ($this->{$p . "_irregular"} == Team::IRREGULAR_B_NOSHOW && $s == Team::POS_B)
+			return 0;
+		else if ($this->{$p . "_irregular"} == Team::IRREGULAR_SWING)
+			return 0;
+
 		return $this->{$p . "_" . $s . "_speaks"};
+	}
+
+	public function getSpeakerSpeaksText($p, $s) {
+		$points = $this->getSpeakerSpeaks($p, $s);
+
+		if ($this->{$p . "_irregular"} == Team::IRREGULAR_A_NOSHOW && $s == Team::POS_A)
+			$points = "-";
+		else if ($this->{$p . "_irregular"} == Team::IRREGULAR_B_NOSHOW && $s == Team::POS_B)
+			$points = "-";
+		else if ($this->{$p . "_irregular"} == Team::IRREGULAR_SWING)
+			$points = "-";
+
+		return $points;
 	}
 
 	/**
@@ -170,7 +183,7 @@ class Result extends \yii\db\ActiveRecord {
 	 */
 	public function getPlaceText($p) {
 		$points = $this->getPoints($p);
-		if ($this->{$p . "_irregular"} > 0)
+		if ($this->{$p . "_irregular"} > Team::IRREGULAR_NORMAL)
 			$points = "-";
 		return $points;
 	}
@@ -216,13 +229,13 @@ class Result extends \yii\db\ActiveRecord {
 
 	public function getResultLabel($debate, $pos) {
 		switch ($this->{$pos . "_irregular"}) {
-			case 1:
+			case Team::IRREGULAR_SWING:
 				return Yii::t("app", "Swing Team");
 				break;
-			case 2:
+			case Team::IRREGULAR_A_NOSHOW:
 				return Yii::t("app", "Ironman by") . " " . $debate->{$pos . "_team"}->speakerB->name;
 				break;
-			case 3:
+			case Team::IRREGULAR_B_NOSHOW:
 				return Yii::t("app", "Ironman by") . " " . $debate->{$pos . "_team"}->speakerA->name;
 				break;
 		}

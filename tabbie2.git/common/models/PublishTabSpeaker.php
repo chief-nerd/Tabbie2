@@ -113,8 +113,9 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord {
 						$line = $lines[$result->debate->{$p . "_team"}->{"speaker" . $s . "_id"}];
 
 						$line->points = $line->points + $result->getPoints($p);
-						$line->results_array[$result->debate->round->number] = $result->getSpeakerSpeaks($p, $s);
+						$line->results_array[$result->debate->round->number] = $result->getSpeakerSpeaksText($p, $s);
 						$line->speaks = $line->speaks + $result->getSpeakerSpeaks($p, $s);
+
 						$lines[$result->debate->{$p . "_team"}->{"speaker" . $s . "_id"}] = $line;
 					}
 				}
