@@ -133,7 +133,10 @@ class RoundController extends BaseTournamentController {
 					Yii::$app->session->setFlash('error', Yii::t("app", 'Error while switching'));
 				}
 			}
+			else Yii::$app->session->setFlash('error', Yii::t("app", 'No Debate selected'));
 		}
+		else Yii::$app->session->setFlash('error', Yii::t("app", 'No Parameters'));
+
 		return $this->redirect(["view", "id" => $id, "tournament_id" => $old_debate->tournament_id, "view" => "#draw"]);
 	}
 

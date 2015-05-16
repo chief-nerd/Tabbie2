@@ -25,6 +25,6 @@ echo Select2::widget([
 		"change" => "function() { document.getElementById('changeVenueForm').submit(); }",
 	]
 ]);
-ActiveForm::end();
+$form->end();
 Modal::end();
 ?>
