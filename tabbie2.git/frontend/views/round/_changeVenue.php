@@ -19,7 +19,6 @@ $venueOptions = \common\models\search\VenueSearch::getSearchArray($model->tourna
 
 echo Select2::widget([
 	'name' => 'new_venue',
-	'id' => 'new_venue',
 	'data' => $venueOptions,
 	'options' => ['placeholder' => Yii::t("app", 'Select a Venue ...')],
 	"pluginEvents" => [
