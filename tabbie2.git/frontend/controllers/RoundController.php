@@ -117,24 +117,35 @@ class RoundController extends BaseTournamentController {
 	/**
 	 * Function called when move results are sent
 	 */
-	public function actionChangevenue($id, $debateid, $new_venue) {
-		$old_debate = \common\models\Debate::findOne($debateid);
+	public function actionChangevenue($id, $debateid) {
+		$selected_debate = \common\models\Debate::findOne($debateid);
 
-		$used_debate = \common\models\Debate::findOne(["venue_id" => $new_venue, "round_id" => $old_debate->round_id]);
-		if ($used_debate instanceof \common\models\Debate) {
-			$old_debate_venue = $old_debate->venue_id;
-			$old_debate->venue_id = $used_debate->venue_id;
-			$used_debate->venue_id = $old_debate_venue;
-			if ($old_debate->save() && $used_debate->save()) {
-				Yii::$app->session->setFlash('success', Yii::t("app", 'Venues switched'));
+		if ($params = Yii::$app->request->get()) {
+
+			$used_debate = \common\models\Debate::findOne(["venue_id" => $params["new_venue"], "round_id" => $selected_debate->round_id]);
+			if ($used_debate instanceof \common\models\Debate) {
+				$old_debate_venue = $selected_debate->venue_id;
+				$selected_debate->venue_id = $used_debate->venue_id;
+				$used_debate->venue_id = $old_debate_venue;
+				if ($selected_debate->save() && $used_debate->save()) {
+					Yii::$app->session->setFlash('success', Yii::t("app", 'Venues switched'));
+				}
+				else {
+					Yii::$app->session->setFlash('error', Yii::t("app", 'Error while switching'));
+				}
 			}
 			else {
-				Yii::$app->session->setFlash('error', Yii::t("app", 'Error while switching'));
+				$selected_debate->venue_id = $params["new_venue"];
+				if ($selected_debate->save()) {
+					Yii::$app->session->setFlash('success', Yii::t("app", 'New Venues set'));
+				}
+				else {
+					Yii::$app->session->setFlash('error', Yii::t("app", 'Error while setting new Venue'));
+				}
 			}
 		}
-		else Yii::$app->session->setFlash('error', Yii::t("app", 'No Debate selected'));
 
-		return $this->redirect(["view", "id" => $id, "tournament_id" => $old_debate->tournament_id, "view" => "#draw"]);
+		return $this->redirect(["view", "id" => $id, "tournament_id" => $selected_debate->tournament_id, "view" => "#draw"]);
 	}
 
 	/**
