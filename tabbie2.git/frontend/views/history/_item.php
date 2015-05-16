@@ -65,7 +65,7 @@
 					"user_id" => $model->speakerB_id,
 				])->one();
 
-				if ($tab_A && $tab_B):
+				if ($tab_A || $tab_B):
 					?>
 					<div class="col-md-12">
 						<table class="table">
@@ -77,35 +77,39 @@
 									<th width="200"><? Yii::t("app", "ESL Place") ?></th>
 								<? endif; ?>
 								<th width="250"><? Yii::t("app", "Speaker Points") ?></th>
-								<?
-								$results_A = json_decode($tab_A->cache_results);
-								$results_B = json_decode($tab_B->cache_results);
-								?>
 							</tr>
 							</thead>
 							<tbody>
-							<tr>
-								<td><?= $model->speakerA->name ?></td>
-								<td><?= $tab_A->enl_place ?></td>
-								<? if ($model->tournament->has_esl && $tab->esl_place): ?>
-									<td><?= $tab_A->esl_place ?></td>
-								<? endif; ?>
-								<td><?= $tab_A->speaks ?></td>
-								<? foreach ($results_A as $round => $result): ?>
-									<td><?= $result ?></td>
-								<? endforeach; ?>
-							</tr>
-							<tr>
-								<td><?= $model->speakerB->name ?></td>
-								<td><?= $tab_B->enl_place ?></td>
-								<? if ($model->tournament->has_esl && $tab->esl_place): ?>
-									<td><?= $tab_B->esl_place ?></td>
-								<? endif; ?>
-								<td><?= $tab_B->speaks ?></td>
-								<? foreach ($results_B as $round => $result): ?>
-									<td width="50"><?= $result ?></td>
-								<? endforeach; ?>
-							</tr>
+							<? if ($tab_A):
+								$results_A = json_decode($tab_A->cache_results);
+								?>
+								<tr>
+									<td><?= $model->speakerA->name ?></td>
+									<td><?= $tab_A->enl_place ?></td>
+									<? if ($model->tournament->has_esl && $tab->esl_place): ?>
+										<td><?= $tab_A->esl_place ?></td>
+									<? endif; ?>
+									<td><?= $tab_A->speaks ?></td>
+									<? foreach ($results_A as $round => $result): ?>
+										<td><?= $result ?></td>
+									<? endforeach; ?>
+								</tr>
+							<? endif;
+							if ($tab_B):
+								$results_B = json_decode($tab_B->cache_results);
+								?>
+								<tr>
+									<td><?= $model->speakerB->name ?></td>
+									<td><?= $tab_B->enl_place ?></td>
+									<? if ($model->tournament->has_esl && $tab->esl_place): ?>
+										<td><?= $tab_B->esl_place ?></td>
+									<? endif; ?>
+									<td><?= $tab_B->speaks ?></td>
+									<? foreach ($results_B as $round => $result): ?>
+										<td width="50"><?= $result ?></td>
+									<? endforeach; ?>
+								</tr>
+							<? endif; ?>
 							</tbody>
 						</table>
 					</div>
