@@ -113,16 +113,18 @@ class TabController extends BaseTournamentController {
 		$lines_speaker = PublishTabSpeaker::generateSpeakerTab($this->_tournament);
 
 		foreach ($lines_speaker as $line) {
-			$ptt = new PublishTabSpeaker([
-				"tournament_id" => $this->_tournament->id,
-				"user_id" => $line->object->id,
-				"enl_place" => $line->enl_place,
-				"esl_place" => $line->esl_place,
-				"cache_results" => json_encode($line->results_array),
-				"speaks" => $line->speaks,
-			]);
-			if (!$ptt->save())
-				throw new Exception("Save Error " . print_r($ptt->getErrors(), true));
+			if ($line->object) {
+				$ptt = new PublishTabSpeaker([
+					"tournament_id" => $this->_tournament->id,
+					"user_id" => $line->object->id,
+					"enl_place" => $line->enl_place,
+					"esl_place" => $line->esl_place,
+					"cache_results" => json_encode($line->results_array),
+					"speaks" => $line->speaks,
+				]);
+				if (!$ptt->save())
+					throw new Exception("Save Error " . print_r($ptt->getErrors(), true));
+			}
 		}
 
 		/** Close Tournament */
