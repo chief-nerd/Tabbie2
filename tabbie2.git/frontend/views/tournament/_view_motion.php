@@ -13,7 +13,7 @@ use common\models\Round;
 				?>
 				<li class="list-group-item">
 					<div class="row">
-						<div class="col-xs-12 col-md-2">
+						<div class="col-xs-12 col-sm-12 col-md-2">
 							<?
 							$linktext = Yii::t("app", "Round #{number}:", ["number" => $round->number]);
 							if (Yii::$app->user->isTabMaster($model) || Yii::$app->user->isConvenor($model)):
@@ -23,7 +23,7 @@ use common\models\Round;
 								<?= $linktext ?>
 							<? endif; ?>
 						</div>
-						<div class="col-xs-10 col-md-8">
+						<div class="col-xs-12 col-sm-10 col-md-8">
 							<?= Html::encode($round->motion) ?>
 						</div>
 						<?
@@ -56,7 +56,7 @@ use common\models\Round;
 							$posMatrix["cg_x"] = $base * ($posMatrix["cg_percent"]) + $base;
 							$posMatrix["cg_y"] = $base * (1 - $posMatrix["cg_percent"]);
 							?>
-							<div class="col-xs-2 col-md-2">
+							<div class="col-xs-12 col-sm-2 col-md-2">
 								<div class="balance-frame center-block">
 									<svg height="100%" width="100%">
 										<polygon points="
