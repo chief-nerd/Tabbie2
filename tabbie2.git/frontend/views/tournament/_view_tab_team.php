@@ -83,7 +83,7 @@ $dataProvider = new ArrayDataProvider([
 		'hover' => true,
 		'responsive' => false,
 		'floatHeader' => true,
-		'floatHeaderOptions' => ['scrollingTop' => 100],
+		'floatHeaderOptions' => ['scrollingTop' => (Yii::$app->user->isTabMaster($model) ? 100 : 50)],
 		'id' => 'team-tab',
 		'striped' => false,
 		'rowOptions' => function ($model, $key, $index, $grid) {

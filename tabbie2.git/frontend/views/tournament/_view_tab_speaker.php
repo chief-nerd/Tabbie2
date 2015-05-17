@@ -81,7 +81,7 @@ $dataProvider = new ArrayDataProvider([
 		'hover' => true,
 		'responsive' => false,
 		'floatHeader' => true,
-		'floatHeaderOptions' => ['scrollingTop' => 100],
+		'floatHeaderOptions' => ['scrollingTop' => (Yii::$app->user->isTabMaster($model) ? 100 : 50)],
 		'id' => 'team-speaker',
 		'striped' => true,
 	])
