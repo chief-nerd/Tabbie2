@@ -25,7 +25,7 @@ class UserContextFilter extends ActionFilter {
 				throw new \yii\web\HttpException(500, 'This filter was not properly setup');
 			}
 		}
-		if ($action->controller->id == "user" || $action->id == "list") {
+		if ($action->controller->id == "user" || $action->id == "list" || $action->id == "list-country") {
 			Yii::trace("Context Controller = user", __METHOD__);
 			return true;
 		}

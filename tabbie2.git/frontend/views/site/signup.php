@@ -69,7 +69,18 @@ function (element, callback) {
     }
 }
 SCRIPT;
-
+				$newDataScript = <<< SCRIPT
+function (term, data) {
+	if ($(data).filter(function () {
+		return this.text.localeCompare(term) === 0;
+		}).length === 0) {
+			return {
+				id: term,
+                text: term
+            };
+        }
+        }
+SCRIPT;
 				echo $form->field($model, 'societies_id')->widget(Select2::classname(), [
 					'options' => [
 						'placeholder' => Yii::t("app", 'Search for a society ...'),
@@ -84,7 +95,8 @@ SCRIPT;
 							'data' => new JsExpression('function(term,page) { return {search:term}; }'),
 							'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
 						],
-						'initSelection' => new JsExpression($initUserScript)
+						'initSelection' => new JsExpression($initUserScript),
+						'createSearchChoice' => new JsExpression($newDataScript)
 					],
 				]);
 				?>

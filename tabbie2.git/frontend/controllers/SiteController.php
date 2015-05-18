@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\LoginForm;
+use common\models\Society;
 use frontend\models\ContactForm;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
@@ -133,9 +134,52 @@ class SiteController extends Controller {
 		return $this->render('how-to');
 	}
 
+	public function actionAddNewSociety() {
+		$model = new Society();
+
+		if ($model->load(Yii::$app->request->post())) {
+			$form = unserialize(Yii::$app->session["signup"]);
+			if ($form instanceof SignupForm && $model->save()) {
+				$form->societies_id = $model->id;
+				$this->finishSignup($form);
+			}
+			else
+				Yii::$app->session->addFlash("error", Yii::t("app", "Error in wakeup"));
+		}
+
+		$model->fullname = ($model->fullname) ? $model->fullname : unserialize(Yii::$app->session["signup"])->societies_id;
+
+		return $this->render("newSociety", [
+			"model" => $model,
+		]);
+	}
+
 	public function actionSignup() {
 		$model = new SignupForm();
+
+		$socid = Yii::$app->request->post("SignupForm")["societies_id"];
+		if (!is_numeric($socid) && $socid != "") {
+			$model->load(Yii::$app->request->post());
+			Yii::$app->session["signup"] = serialize($model);
+			return $this->redirect(["site/add-new-society"]);
+		}
+
 		if ($model->load(Yii::$app->request->post())) {
+			$this->finishSignup($model, Yii::$app->request->post());
+		}
+
+		return $this->render('signup', [
+			'model' => $model,
+		]);
+	}
+
+	/**
+	 * @param SignupForm $model
+	 *
+	 * @return static
+	 */
+	private function finishSignup($model) {
+		if ($model) {
 			$user = $model->signup();
 			if ($user !== null) {
 				if (Yii::$app->getUser()->login($user)) {
@@ -148,10 +192,6 @@ class SiteController extends Controller {
 			else
 				Yii::$app->session->addFlash("error", print_r($model->getErrors(), true));
 		}
-
-		return $this->render('signup', [
-			'model' => $model,
-		]);
 	}
 
 	public function actionRequestPasswordReset() {
@@ -165,7 +205,7 @@ class SiteController extends Controller {
 			}
 			else {
 				Yii::$app->getSession()
-					->setFlash('error', Yii::t("app", 'Sorry, we are unable to reset password for email provided.<br>{message}', ["message" => print_r($model->getErrors(), true)]));
+				         ->setFlash('error', Yii::t("app", 'Sorry, we are unable to reset password for email provided.<br>{message}', ["message" => print_r($model->getErrors(), true)]));
 			}
 		}
 

@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\components\filter\UserContextFilter;
+use common\models\Country;
 use common\models\InSociety;
 use Yii;
 use common\models\Society;
@@ -25,7 +26,7 @@ class SocietyController extends BaseUserController {
 				'rules' => [
 					[
 						'allow' => true,
-						'actions' => ['list'],
+						'actions' => ['list', 'list-country'],
 						'roles' => ['@', '?'], //Everyone
 					],
 					[
@@ -140,6 +141,36 @@ class SocietyController extends BaseUserController {
 		}
 		elseif ($id > 0) {
 			$out['results'] = ['id' => $id, 'text' => Society::findOne($id)->fullname];
+		}
+		else {
+			$out['results'] = ['id' => 0, 'text' => Yii::t("app", 'No matching records found')];
+		}
+		echo \yii\helpers\Json::encode($out);
+	}
+
+	/**
+	 * Returns 20 societies in an JSON List
+	 *
+	 * @param type $search
+	 * @param type $id
+	 */
+	public function actionListCountry($search = null, $cid = null) {
+		$search = HtmlPurifier::process($search);
+		$cid = intval($cid);
+
+		$out = ['more' => false];
+		if (!is_null($search) && $search != "") {
+			$query = new \yii\db\Query;
+			$query->select(["id", "name as text"])
+			      ->from('country')
+			      ->where(["LIKE", "name", $search])
+			      ->limit(20);
+			$command = $query->createCommand();
+			$data = $command->queryAll();
+			$out['results'] = array_values($data);
+		}
+		elseif ($cid > 0) {
+			$out['results'] = ['id' => $cid, 'text' => Country::findOne($cid)->name];
 		}
 		else {
 			$out['results'] = ['id' => 0, 'text' => Yii::t("app", 'No matching records found')];
