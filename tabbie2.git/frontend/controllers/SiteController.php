@@ -129,6 +129,10 @@ class SiteController extends Controller {
 		return $this->render('about');
 	}
 
+	public function actionHowTo() {
+		return $this->render('how-to');
+	}
+
 	public function actionSignup() {
 		$model = new SignupForm();
 		if ($model->load(Yii::$app->request->post())) {

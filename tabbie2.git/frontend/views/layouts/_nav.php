@@ -13,6 +13,7 @@ NavBar::begin([
 $menuItems = [
 	['label' => Yii::t("app", 'Home'), 'url' => ['/site/index']],
 	['label' => Yii::t("app", 'About'), 'url' => ['/site/about']],
+	['label' => Yii::t("app", 'How-To'), 'url' => ['/site/how-to']],
 	['label' => Html::icon("calendar") . "&nbsp;" . Yii::t("app", 'Tournaments'), 'url' => ['tournament/index']],
 ];
 
