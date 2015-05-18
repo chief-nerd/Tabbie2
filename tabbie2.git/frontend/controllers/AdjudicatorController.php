@@ -7,6 +7,7 @@ use common\models\Adjudicator;
 use common\models\Country;
 use common\models\Panel;
 use common\models\search\AdjudicatorSearch;
+use common\models\Society;
 use common\models\User;
 use common\models\Venue;
 use Yii;
@@ -309,9 +310,14 @@ class AdjudicatorController extends BaseTournamentController {
 				for ($r = 1; $r <= count($model->tempImport); $r++) {
 					$row = $model->tempImport[$r];
 
-					$societyID = null;
-//Society
-					if (count($row[0]) == 1) { //NEW
+					//Society
+					$temp_society = Society::findOne(["name" => $row[0][0]]);
+					if ($temp_society instanceof Society)
+						$societyID = $temp_society->id;
+					else
+						$societyID = null;
+
+					if (count($row[0]) == 1 && is_null($societyID)) { //NEW
 						$society = new \common\models\Society();
 						$society->fullname = $row[0][0];
 						$society->abr = \common\models\Society::generateAbr($society->fullname);
@@ -319,7 +325,7 @@ class AdjudicatorController extends BaseTournamentController {
 						$society->save();
 						$societyID = $society->id;
 					}
-					else if (count($row[0]) == 2) {
+					else if (count($row[0]) == 2 && is_null($societyID)) {
 						$societyID = $row[0][1]["id"];
 					}
 

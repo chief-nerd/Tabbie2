@@ -214,10 +214,14 @@ class TeamController extends BaseTournamentController {
 				for ($r = 1; $r <= count($model->tempImport); $r++) {
 					$row = $model->tempImport[$r];
 
-					$societyID = null;
-
 					//Society
-					if (count($row[1]) == 1) { //NEW
+					$temp_society = Society::findOne(["name" => $row[1][0]]);
+					if ($temp_society instanceof Society)
+						$societyID = $temp_society->id;
+					else
+						$societyID = null;
+
+					if (count($row[1]) == 1 && is_null($societyID)) { //NEW
 						$society = new \common\models\Society();
 						$society->fullname = $row[1][0];
 						$society->abr = \common\models\Society::generateAbr($society->fullname);
@@ -228,7 +232,7 @@ class TeamController extends BaseTournamentController {
 						}
 						$societyID = $society->id;
 					}
-					else if (count($row[1]) == 2) {
+					else if (count($row[1]) == 2 && is_null($societyID)) {
 						$societyID = $row[1][1]["id"];
 					}
 
