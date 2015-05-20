@@ -39,6 +39,7 @@
 # Settings to hide index.php and ensure pretty urls
 RewriteEngine on
 
+RewriteBase /master
 # if a directory or a file exists, use it directly
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
