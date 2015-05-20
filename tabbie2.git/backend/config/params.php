@@ -1,4 +1,4 @@
 <?php
 return [
-    'adminEmail' => 'admin@example.com',
+	'hookSecret' => 'fIWcBkRQHu8sD6jB37QgpOpu1',
 ];

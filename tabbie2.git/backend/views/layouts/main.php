@@ -41,7 +41,7 @@ AppAsset::register($this);
                 $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
             } else {
                 $menuItems[] = [
-                    'label' => 'Logout (' . Yii::$app->user->identity->username . ')',
+	                'label' => 'Logout (' . Yii::$app->user->identity->givenname . ')',
                     'url' => ['/site/logout'],
                     'linkOptions' => ['data-method' => 'post']
                 ];
@@ -65,7 +65,7 @@ AppAsset::register($this);
 
         <footer class="footer">
             <div class="container">
-                <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
+	            <p class="pull-left">&copy; Tabbie2 <?= date('Y') ?></p>
                 <p class="pull-right"><?= Yii::powered() ?></p>
             </div>
         </footer>
