@@ -29,10 +29,19 @@
 			'fullname',
 			'abr',
 			'city',
-			'country.name:text:Country',
 			[
 				'class' => '\kartik\grid\DataColumn',
-				'attribute' => 'country.region_id',
+				'attribute' => 'country_name',
+				'label' => 'Country',
+				'format' => 'raw',
+				'value' => function ($model, $key, $index, $widget) {
+					return $model->country->name;
+				},
+			],
+			[
+				'class' => '\kartik\grid\DataColumn',
+				'attribute' => 'country_region',
+				'label' => 'UN Region',
 				'format' => 'raw',
 				'value' => function ($model, $key, $index, $widget) {
 					if (isset($model->country->region_id))
