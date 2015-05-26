@@ -7,9 +7,8 @@ use Yii;
 
 /**
  * This is the model class for table "panel".
-
  *
-*@property integer              $id
+ * @property integer              $id
  * @property integer              $strength
  * @property string               $time
  * @property integer              $tournament_id
@@ -24,6 +23,8 @@ class Panel extends \yii\db\ActiveRecord {
 
 	const FUNCTION_CHAIR = 1;
 	const FUNCTION_WING  = 0;
+
+	public $set_adjudicators = [];
 
 	public static function getFunctionLabel($id) {
 		$label = [
@@ -55,7 +56,7 @@ class Panel extends \yii\db\ActiveRecord {
 	public function rules() {
 		return [
 			[['strength', 'tournament_id', 'used', 'is_preset'], 'integer'],
-			[['time'], 'safe'],
+			[['time', 'set_adjudicators'], 'safe'],
 			[['tournament_id'], 'required']
 		];
 	}
@@ -87,6 +88,14 @@ class Panel extends \yii\db\ActiveRecord {
 	public function getAdjudicators() {
 		return $this->hasMany(Adjudicator::className(), ['id' => 'adjudicator_id'])
 		            ->viaTable('adjudicator_in_panel', ['panel_id' => 'id']);
+	}
+
+	public function getAdjudicatorsObjects() {
+		return Adjudicator::find()
+		                  ->joinWith('adjudicatorInPanels')
+		                  ->where(["panel_id" => $this->id])
+		                  ->orderBy(['function' => SORT_DESC])
+		                  ->all();
 	}
 
 	/**
@@ -223,6 +232,40 @@ class Panel extends \yii\db\ActiveRecord {
 			$adj->save();
 		}
 		return true;
+	}
+
+
+	public function generateStrength() {
+		$strength = 0;
+		foreach ($this->adjudicators as $adj) {
+			$strength += $adj->strength;
+		}
+
+		$this->strength = intval($strength / count($this->adjudicators));
+		return $this->strength;
+	}
+
+
+	public function createAIP() {
+		//Clean
+		AdjudicatorInPanel::deleteAll(["panel_id" => $this->id]);
+
+		//Set new
+		$first = true;
+		foreach ($this->set_adjudicators as $new_adju) {
+			if ($new_adju != "") {
+				$aip = new AdjudicatorInPanel();
+				$aip->adjudicator_id = $new_adju;
+				$aip->panel_id = $this->id;
+				$aip->function = ($first) ? 1 : 0;
+				$aip->save();
+
+				$first = false;
+			}
+		}
+
+		$this->generateStrength();
+		return $this->save();
 	}
 
 }

@@ -52,7 +52,8 @@ $menuItems = [
 			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Yii::t("app", 'Create Adjudicator'), 'url' => ['adjudicator/create', "tournament_id" => $tournament->id]] : ""),
 			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Yii::t("app", 'Import Adjudicator'), 'url' => ['adjudicator/import', "tournament_id" => $tournament->id]] : ""),
 			'<li class="divider"></li>',
-			['label' => Yii::t("app", 'Preset Adj. Panels'), 'url' => ["panel/create", "tournament_id" => $tournament->id]],
+			['label' => Yii::t("app", 'View Preset Panels'), 'url' => ["panel/index", "tournament_id" => $tournament->id]],
+			(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Yii::t("app", 'Create Preset Panel'), 'url' => ["panel/create", "tournament_id" => $tournament->id]] : ""),
 			'<li class="divider"></li>',
 			['label' => Yii::t("app", 'Strike Adjudicator'), 'url' => ['strike/adjudicator_index', "tournament_id" => $tournament->id]],
 		]
