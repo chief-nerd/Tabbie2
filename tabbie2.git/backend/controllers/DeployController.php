@@ -51,6 +51,7 @@ class DeployController extends Controller {
 		// set the secret key
 		$hookSecret = Yii::$app->params["hookSecret"];
 
+
 		// set the exception handler to get error messages
 		set_exception_handler(function ($e) {
 			header('HTTP/1.1 500 Internal Server Error');
@@ -74,8 +75,17 @@ class DeployController extends Controller {
 		if ($hash !== hash_hmac($algo, $rawPost, $hookSecret))
 			throw new \Exception('Hook secret does not match.');
 
+		$git_root = Yii::$app->basePath . "/../../";
+
+		//exec("cd $git_root && pwd", $out);
+
 		// execute
-		exec('cd /home/tabbie/html && git pull', $out);
+		exec("cd $git_root && git pull", $out);
+
+		//make migrations
+		exec("php $git_root/tabbie2.git/yii migrate/up", $out);
+
+		//output
 		print_r($out);
 	}
 }
