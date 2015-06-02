@@ -50,7 +50,24 @@
 						return Country::getRegionLabel(0);
 				},
 			],
-			['class' => 'yii\grid\ActionColumn']
+			[
+				'class' => '\kartik\grid\ActionColumn',
+				'width' => '120px',
+				'vAlign' => 'middle',
+				'template' => '{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{merge}&nbsp;&nbsp;{delete}',
+				'buttons' => [
+					"merge" => function ($url, $model) {
+
+						return $this->render("_merge", ["model" => $model]);
+					},
+				],
+				'urlCreator' => function ($action, $model, $key, $index) {
+					return \yii\helpers\Url::to(["society/" . $action, "id" => $model->id]);
+				},
+				'viewOptions' => ['label' => \kartik\helpers\Html::icon("folder-open"), 'title' => Yii::t("app", 'View {modelClass}', ['modelClass' => 'Adjudicator']), 'data-toggle' => 'tooltip'],
+				'updateOptions' => ['title' => Yii::t("app", 'Update {modelClass}', ['modelClass' => 'Adjudicator']), 'data-toggle' => 'tooltip'],
+				'deleteOptions' => ['title' => Yii::t("app", 'Delete {modelClass}', ['modelClass' => 'Adjudicator']), 'data-toggle' => 'tooltip'],
+			]
 		];
 
 		echo GridView::widget([

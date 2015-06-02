@@ -89,7 +89,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'societyName',
 			'filterType' => GridView::FILTER_SELECT2,
-			'filter' => \common\models\search\SocietySearch::getSearchArray($tournament->id),
+			'filter' => \common\models\search\SocietySearch::getTournamentSearchArray($tournament->id),
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],

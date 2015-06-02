@@ -100,9 +100,13 @@ class SocietySearch extends Society {
 		return $dataProvider;
 	}
 
-	public static function getSearchArray($tid) {
+	public static function getTournamentSearchArray($tid) {
 		$tournament = \common\models\Tournament::findByPk($tid);
 		return \yii\helpers\ArrayHelper::map($tournament->societies, "fullname", "fullname");
 	}
 
+	public static function getSearchArray() {
+		$society = Society::find()->asArray()->all();
+		return \yii\helpers\ArrayHelper::map($society, "id", "fullname");
+	}
 }
