@@ -135,7 +135,11 @@ class Panel extends \yii\db\ActiveRecord {
 		if ($amount > 0 && $amount_chairs == 1)
 			return true;
 		else
-			echo "ID:" . $this->id . " Amount:" . $amount . " & Chairs:" . $amount_chairs . "<br>\n";
+			throw new Exception(Yii::t("app", "Panel #{id} has {chairs} chairs", [
+				"id" => $this->id,
+				"chairs" => $amount_chairs,
+			]));
+
 		return false;
 	}
 
@@ -186,7 +190,7 @@ class Panel extends \yii\db\ActiveRecord {
 		if ($chair->save())
 			return true;
 		else
-			return $chair->getErrors();
+			throw new \yii\base\Exception(print_r($chair->getErrors(), true));
 	}
 
 	/**
@@ -202,7 +206,7 @@ class Panel extends \yii\db\ActiveRecord {
 			if ($adj->save())
 				return true;
 			else
-				return $adj->getErrors();
+				throw new \yii\base\Exception(print_r($adj->getErrors(), true));
 		}
 		else
 			throw new Exception("getSpecificAdjudicatorInPanel with ID " . $id . " NOT found");
@@ -217,19 +221,21 @@ class Panel extends \yii\db\ActiveRecord {
 			                                         ->joinWith("adjudicator")->orderBy("strength")->one();
 			$id = $nextHighestAdjNotID->adjudicator_id;
 			$this->setChair($id);
+
+			$adj->function = Panel::FUNCTION_WING;
+			if ($adj->save())
+				return true;
+			else
+				throw new \yii\base\Exception(print_r($adj->getErrors(), true));
 		}
-		//Read again if save has been done
-		$adj->refresh();
-		if ($adj->function == Panel::FUNCTION_WING)
-			return true;
-		else
-			return false;
+		return true;
 	}
 
 	public function setAllWings() {
 		foreach ($this->adjudicatorInPanels as $adj) {
 			$adj->function = Panel::FUNCTION_WING;
-			$adj->save();
+			if (!$adj->save())
+				throw new \yii\base\Exception(print_r($adj->getErrors(), true));
 		}
 		return true;
 	}

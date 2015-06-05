@@ -27,6 +27,7 @@ class RoundviewAsset extends AssetBundle {
 	];
 	public $depends = [
 		'frontend\assets\AppAsset',
+		'\kartik\sortable\SortableAsset',
 		'yii\web\YiiAsset',
 		'yii\bootstrap\BootstrapAsset',
 	];

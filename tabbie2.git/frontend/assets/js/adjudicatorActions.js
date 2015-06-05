@@ -13,7 +13,7 @@ function init() {
             this.classList.remove('toLoad');
             $.ajax({
                 type: "GET",
-                url: href,
+                url: href
             }).success(function (data) {
                 $(contentdiv).html(data);
                 root.style.top = (parseInt(root.style.top)) + "px";
@@ -23,14 +23,23 @@ function init() {
         }
     });
 
-    $(".adj_panel li").on("dragstart", function () {
-        window.dragid = $(this.children[1]).data("id");
-        window.panelid = $(this.parentNode).data("panel");
+    /**
+     * Drag and Drop Function
+     */
+    $(".adj_panel li").on("dragstart", function (e) {
+        if ($(this.parentNode).find('li').length > 1) {
+            window.dragid = $(this.children[1]).data("id");
+            window.panelid = $(this.parentNode).data("panel");
+        }
+        else {
+            addFlash('info', 'There has to be at least 1 adjudicatur per room');
+            e.preventDefault();
+        }
     });
 
     $(".adj_panel").on("drop", function (event) {
         //console.log(event);
-        href = $("#adjudicatorActionsJS").data("href");
+        href = $("#debateDraw").data("href");
         panel = $(this).data("panel");
         placeholder = $(this).find("li.sortable-placeholder");
         position = $(this).find("li").index(placeholder);
@@ -47,7 +56,7 @@ function init() {
                 old_panel: window.panelid,
                 new_panel: panel,
                 pos: position
-            },
+            }
         }).success(function (data) {
             if (data == "1") {
                 //console.log("Saved!");
@@ -56,17 +65,21 @@ function init() {
             }
             else {
                 th = $("#debateDraw-container thead th:last-child i");
-                th[0].className = "glyphicon glyphicon-remove-circle text-error";
-                console.log("ERROR Return value", data);
+                th[0].className = "glyphicon glyphicon-warning-sign text-warning";
+                console.log("Return ERROR data", data);
             }
         }).error(function (jqXHR, textStatus, errorThrown) {
             th = $("#debateDraw-container thead th:last-child i");
-            th[0].className = "glyphicon glyphicon-remove-circle text-error";
+            th[0].className = "glyphicon glyphicon-remove-circle text-danger";
             console.error(textStatus + " : " + errorThrown);
+            console.error(jqXHR.responseText);
         });
     });
 }
 $("#debateDraw-pjax").on("pjax:end", function () {
     init();
 });
-init();
+
+$(document).ready(function () {
+    init();
+});

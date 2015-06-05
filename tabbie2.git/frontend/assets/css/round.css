@@ -31,6 +31,14 @@ ul li:first-child .adj {
     text-decoration: underline;
 }
 
+ul.adj_panel li:only-child {
+    margin-left: 15px;
+}
+
+ul.adj_panel li:only-child .handle {
+    display: none;
+}
+
 .sortable.grid li {
     padding: 5px 5px;
     min-height: 30px;

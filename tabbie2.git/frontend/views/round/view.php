@@ -216,7 +216,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 				$panel = common\models\Panel::findOne($model->panel_id);
 				if ($panel && count($panel->adjudicators) > 0) {
 					$panel_chair_id = $model->getChair()->id;
-					foreach ($panel->adjudicators as $adj) {
+					foreach ($panel->getAdjudicators()->orderBy(['strength' => SORT_DESC])->all() as $adj) {
 
 						$popcontent = \kartik\helpers\Html::icon("refresh") . "&nbsp;" . Yii::t("app", "Loading ...");
 
@@ -300,6 +300,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 		'id' => 'debateDraw',
 		'options' => [
 			'class' => 'strength',
+			'data-href' => \yii\helpers\Url::to(["adjudicator/replace", "tournament_id" => $tournament->id]),
 		]
 
 	])

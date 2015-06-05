@@ -95,18 +95,6 @@ class RoundController extends BaseTournamentController {
 			return $out;
 		}
 
-		$publishpath = Yii::$app->assetManager->publish(Yii::getAlias("@frontend/assets/js/adjudicatorActions.js"));
-		$this->view->registerJsFile($publishpath[1], [
-			"depends" => [
-				\yii\web\JqueryAsset::className(),
-				\kartik\sortable\SortableAsset::className(),
-				\yii\bootstrap\BootstrapAsset::className(),
-				\yii\bootstrap\BootstrapPluginAsset::className()
-			],
-			"data-href" => \yii\helpers\Url::to(["adjudicator/replace", "tournament_id" => $model->tournament_id]),
-			"id" => "adjudicatorActionsJS",
-		]);
-
 		return $this->render('view', [
 			'model' => $model,
 			'debateSearchModel' => $debateSearchModel,

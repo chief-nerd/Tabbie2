@@ -1,7 +1,7 @@
 /**
  * Flash functions
  */
-function setFlash(type, msg) {
+function addFlash(type, msg) {
     $("div.flashes").append("<div class='alert alert-" + type + " fade in'>" + msg + "</div>");
     triggerFlash();
 }
@@ -24,10 +24,7 @@ $(document).ready(function () {
 });
 
 $(document).on("click", "div.flashes .alert", function () {
-    console.log("click");
-    $(this).slideUp(100, function () {
-        $(this).remove();
-    });
+    $(this).remove();
 });
 
 /**
