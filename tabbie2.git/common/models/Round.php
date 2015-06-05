@@ -175,7 +175,75 @@ class Round extends \yii\db\ActiveRecord {
 
 			$adjudicatorsObjects = $adjudicators_Query->all();
 
+			$panel = [];
+			$panelsObjects = Panel::find()->where([
+				'is_preset' => 1,
+				'used' => 0,
+				'tournament_id' => $this->tournament_id])->all();
+
 			$active_rooms = (count($teams) / 4);
+
+			$AdjIDsalreadyinPanels = [];
+
+			foreach ($panelsObjects as $p) {
+				$panelAdju = [];
+				$total = 0;
+
+				/** @var Panel $p */
+				foreach ($p->getAdjudicatorsObjects() as $adju) {
+					/** @var Adjudicator $adju */
+					$AdjIDsalreadyinPanels[] = $adju->id;
+
+					$adjudicator = $adju->attributes;
+					$adjudicator["name"] = $adju->name;
+
+					$strikedAdju = $adju->getStrikedAdjudicators()->asArray()->all();
+					$adjudicator["strikedAdjudicators"] = $strikedAdju;
+
+					$strikedTeam = $adju->getStrikedTeams()->asArray()->all();
+					$adjudicator["strikedTeams"] = $strikedTeam;
+
+					$adjudicator["pastAdjudicatorIDs"] = $adju->getPastAdjudicatorIDs();
+					$adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs();
+
+					$total += $adju->strength;
+
+					$panelAdju[] = $adjudicator;
+				}
+
+				$panel[] = [
+					"id" => $p->id,
+					"strength" => intval($total / count($panelAdju)),
+					"adju" => $panelAdju,
+				];
+			}
+
+			$adjudicators = [];
+			for ($i = 0; $i < count($adjudicatorsObjects); $i++) {
+
+				if (!in_array($adjudicatorsObjects[$i]->id, $AdjIDsalreadyinPanels)) {
+					//Only add if not already in Preset Panel
+
+					$adjudicators[$i] = $adjudicatorsObjects[$i]->attributes;
+					$adjudicators[$i]["name"] = $adjudicatorsObjects[$i]->name;
+
+					$strikedAdju = $adjudicatorsObjects[$i]->getStrikedAdjudicators()->asArray()->all();
+					$adjudicators[$i]["strikedAdjudicators"] = $strikedAdju;
+
+					$strikedTeam = $adjudicatorsObjects[$i]->getStrikedTeams()->asArray()->all();
+					$adjudicators[$i]["strikedTeams"] = $strikedTeam;
+
+					$adjudicators[$i]["pastAdjudicatorIDs"] = $adjudicatorsObjects[$i]->getPastAdjudicatorIDs();
+					$adjudicators[$i]["pastTeamIDs"] = $adjudicatorsObjects[$i]->getPastTeamIDs();
+				}
+			}
+
+			$adjudicators_strengthArray = ArrayHelper::getColumn(
+				$adjudicators_Query->select("strength")->asArray()->all(),
+				"strength"
+			);
+
+			/* Check variables */
 			if (count($teams) < 4)
 				throw new Exception(Yii::t("app", "Not enough Teams to fill a single room - (active: {teams_count})", ["teams_count" => count($teams)]), "500");
 			if (count($adjudicatorsObjects) < 2)
@@ -192,28 +260,12 @@ class Round extends \yii\db\ActiveRecord {
 					"active" => count($adjudicatorsObjects),
 					"required" => $active_rooms,
 				]), "500");
-
-
-			$adjudicators = [];
-			for ($i = 0; $i < count($adjudicatorsObjects); $i++) {
-				$adjudicators[$i] = $adjudicatorsObjects[$i]->attributes;
-				$adjudicators[$i]["name"] = $adjudicatorsObjects[$i]->name;
-
-				$strikedAdju = $adjudicatorsObjects[$i]->getStrikedAdjudicators()->asArray()->all();
-				$adjudicators[$i]["strikedAdjudicators"] = $strikedAdju;
-
-				$strikedTeam = $adjudicatorsObjects[$i]->getStrikedTeams()->asArray()->all();
-				$adjudicators[$i]["strikedTeams"] = $strikedTeam;
-
-				$adjudicators[$i]["pastAdjudicatorIDs"] = $adjudicatorsObjects[$i]->getPastAdjudicatorIDs();
-				$adjudicators[$i]["pastTeamIDs"] = $adjudicatorsObjects[$i]->getPastTeamIDs();
-			}
-
-
-			$adjudicators_strengthArray = ArrayHelper::getColumn(
-				$adjudicators_Query->select("strength")->asArray()->all(),
-				"strength"
-			);
+			if ($active_rooms > (count($adjudicators) + count($panel)))
+				throw new Exception(Yii::t("app",
+					"Not enough free adjudicators with this preset panel configuration. (fillable rooms: {active}  min-required: {required})", [
+						"active" => (count($adjudicatorsObjects) + count($panelsObjects)),
+						"required" => $active_rooms,
+					]), "500");
 
 			/* Setup */
 			$algo = $this->tournament->getTabAlgorithmInstance();
@@ -223,7 +275,7 @@ class Round extends \yii\db\ActiveRecord {
 			$algo->average_adjudicator_strength = array_sum($adjudicators_strengthArray) / count($adjudicators_strengthArray);
 			$algo->SD_of_adjudicators = $this->stats_standard_deviation($adjudicators_strengthArray);
 
-			$draw = $algo->makeDraw($venues, $teams, $adjudicators);
+			$draw = $algo->makeDraw($venues, $teams, $adjudicators, $panel);
 			$this->saveDraw($draw);
 
 			$this->lastrun_temp = $algo->temp;
@@ -244,6 +296,7 @@ class Round extends \yii\db\ActiveRecord {
 				$panel = new Panel();
 				$panel->tournament_id = $this->tournament_id;
 				$panel->strength = $line->strength;
+
 				//Save Panel
 				if (!$panel->save())
 					throw new Exception(Yii::t("app", "Can't save Panel {message}", ["message" => print_r($panel->getErrors(), true)]));

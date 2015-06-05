@@ -241,7 +241,11 @@ class Panel extends \yii\db\ActiveRecord {
 			$strength += $adj->strength;
 		}
 
-		$this->strength = intval($strength / count($this->adjudicators));
+		if ($strength > 0)
+			$this->strength = intval($strength / count($this->adjudicators));
+		else
+			$this->strength = $strength;
+
 		return $this->strength;
 	}
 
@@ -249,6 +253,8 @@ class Panel extends \yii\db\ActiveRecord {
 	public function createAIP() {
 		//Clean
 		AdjudicatorInPanel::deleteAll(["panel_id" => $this->id]);
+
+		$result = $this->save();
 
 		//Set new
 		$first = true;
@@ -263,7 +269,7 @@ class Panel extends \yii\db\ActiveRecord {
 				$first = false;
 			}
 		}
-
+		$this->refresh();
 		$this->generateStrength();
 		return $this->save();
 	}

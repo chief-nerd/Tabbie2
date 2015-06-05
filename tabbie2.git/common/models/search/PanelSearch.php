@@ -37,7 +37,7 @@ class PanelSearch extends Panel {
 	 * @return ActiveDataProvider
 	 */
 	public function search($params, $tournament_id) {
-		$query = Panel::find()->where(["tournament_id" => $tournament_id, "is_preset" => true]);
+		$query = Panel::find()->where(["tournament_id" => $tournament_id, "is_preset" => true, 'used' => 0]);
 
 		$dataProvider = new ActiveDataProvider([
 			'query' => $query,

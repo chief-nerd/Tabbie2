@@ -7,7 +7,7 @@ use kartik\grid\GridView;
 /* @var $searchModel common\models\search\PanelSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Panels');
+$this->title = Yii::t('app', 'Preset Panels for next round');
 $tournament = $this->context->_getContext();
 $this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
 $this->params['breadcrumbs'][] = $this->title;

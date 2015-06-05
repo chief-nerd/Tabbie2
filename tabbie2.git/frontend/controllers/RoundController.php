@@ -229,6 +229,8 @@ class RoundController extends BaseTournamentController {
 		$model->published = 1;
 		$model->save();
 
+		Panel::updateAll(["used" => 1], ["tournament_id" => $this->_tournament->id]);
+
 		return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
 	}
 
@@ -256,14 +258,20 @@ class RoundController extends BaseTournamentController {
 		if ($model instanceof Round) {
 
 			$time = microtime(true);
+
 			foreach ($model->debates as $debate) {
 				/** @var Debate $debate * */
-				foreach ($debate->panel->adjudicatorInPanels as $aj)
-					$aj->delete();
+				if (!$debate->panel->is_preset) { //Only delete non-preset panels
+					foreach ($debate->panel->adjudicatorInPanels as $aj)
+						$aj->delete();
 
-				$panelid = $debate->panel_id;
-				$debate->delete();
-				Panel::deleteAll(["id" => $panelid]);
+					$panelid = $debate->panel_id;
+					$debate->delete();
+					Panel::deleteAll(["id" => $panelid]);
+				}
+				else {
+					$debate->delete();
+				}
 			}
 
 			if (!$model->generateWorkingDraw()) {

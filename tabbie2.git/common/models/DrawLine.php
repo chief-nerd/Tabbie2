@@ -203,6 +203,10 @@ class DrawLine extends Model {
 		$this->adj[$i] = $adjudicator;
 	}
 
+	public function overrideAdjudicators($adjudicators) {
+		$this->adj = $adjudicators;
+	}
+
 	/**
 	 * Get the "Debate Level" aka the highest points of team in that debate
 	 *
