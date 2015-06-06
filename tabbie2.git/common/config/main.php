@@ -10,6 +10,9 @@ return [
 		'db' => [
 			'charset' => 'utf8',
 			'enableSchemaCache' => (YII_ENV == "prod") ? true : false,
+			'schemaCache' => 'cache',
+			'schemaCacheDuration' => '3600',
+			'emulatePrepare' => true,
 		],
 		'cache' => [
 			'class' => 'yii\caching\FileCache',
