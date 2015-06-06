@@ -83,7 +83,7 @@ class DeployController extends Controller {
 		exec("cd $git_root && git pull", $out);
 
 		//make migrations
-		exec("php $git_root/tabbie2.git/yii migrate/up", $out);
+		exec("php $git_root/tabbie2.git/yii migrate/up --interactive=0", $out);
 
 		//output
 		print_r($out);
