@@ -45,7 +45,10 @@ $this->params['breadcrumbs'][] = $this->title;
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'name',
-			'pageSummary' => 'Page Total',
+		],
+		[
+			'class' => '\kartik\grid\DataColumn',
+			'attribute' => 'group',
 		],
 		[
 			'class' => 'kartik\grid\ActionColumn',

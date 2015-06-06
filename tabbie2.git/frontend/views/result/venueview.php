@@ -38,8 +38,9 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Venue View");
 	<!-- AJAX -->
 	<? \yii\widgets\Pjax::begin(["id" => "debates-pjax"]) ?>
 	<?=
-	\yii\widgets\ListView::widget([
+	\common\components\widgets\GroupListView::widget([
 		"dataProvider" => $dataProvider,
+		"groupBy" => "venue.group",
 		"itemOptions" => ["class" => "venue col-xs-2"],
 		"itemView" => "_venue",
 		"id" => "debates",

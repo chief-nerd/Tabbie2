@@ -194,6 +194,7 @@ class VenueController extends BaseTournamentController {
 					$venue = new Venue();
 					$venue->name = $row[0];
 					$venue->active = $row[1];
+					$venue->group = $row[2];
 					$venue->tournament_id = $this->_tournament->id;
 					$venue->save();
 				}
@@ -212,7 +213,7 @@ class VenueController extends BaseTournamentController {
 							continue;
 						}
 
-						if (($num = count($data)) != 2) {
+						if (($num = count($data)) != 3) {
 							throw new \yii\base\Exception("500", Yii::t("app", "File Syntax Wrong"));
 						}
 

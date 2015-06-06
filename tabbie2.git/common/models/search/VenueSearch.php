@@ -23,7 +23,7 @@ class VenueSearch extends Venue {
 	public function rules() {
 		return [
 			[['id', 'tournament_id', 'active'], 'integer'],
-			[['name'], 'safe'],
+			[['name', 'group'], 'safe'],
 		];
 	}
 
@@ -43,7 +43,7 @@ class VenueSearch extends Venue {
 	 * @return ActiveDataProvider
 	 */
 	public function search($params) {
-		$query = Venue::find()->tournament($this->tournament_id);
+		$query = Venue::find()->tournament($this->tournament_id)->orderBy(["group" => SORT_ASC, "name" => SORT_ASC]);
 
 		$dataProvider = new ActiveDataProvider([
 			'query' => $query,
@@ -63,6 +63,7 @@ class VenueSearch extends Venue {
 		]);
 
 		$query->andFilterWhere(['like', 'name', $this->name]);
+		$query->andFilterWhere(['like', 'group', $this->group]);
 
 		return $dataProvider;
 	}

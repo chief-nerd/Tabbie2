@@ -6,11 +6,13 @@ use Yii;
 
 /**
  * This is the model class for table "venue".
+
  *
- * @property integer                     $id
+*@property integer                     $id
  * @property integer                     $tournament_id
  * @property string                      $name
  * @property boolean                     $active
+ * @property string                      $group
  * @property Debate[]                    $debates
  * @property Tournament                  $tournament
  * @property VenueProvidesSpecialNeeds[] $venueProvidesSpecialNeeds
@@ -32,7 +34,7 @@ class Venue extends \yii\db\ActiveRecord {
 		return [
 			[['tournament_id', 'name'], 'required'],
 			[['tournament_id', 'active'], 'integer'],
-			[['name'], 'string', 'max' => 100]
+			[['name', 'group'], 'string', 'max' => 100]
 		];
 	}
 
@@ -52,6 +54,7 @@ class Venue extends \yii\db\ActiveRecord {
 			'id' => Yii::t('app', 'ID'),
 			'tournament_id' => Yii::t('app', 'Tournament ID'),
 			'name' => Yii::t('app', 'Name'),
+			'group' => Yii::t('app', 'Group'),
 			'active' => Yii::t('app', 'Active Room'),
 		];
 	}

@@ -38,7 +38,7 @@ else
 
 PopoverX::widget([
 	'header' => Yii::t("app", "Results in Room: {venue}", ["venue" => $model->venue->name]),
-	'size' => 'md',
+	'size' => 'lg',
 	'placement' => PopoverX::ALIGN_TOP,
 	'content' => $popcontent,
 	'toggleButton' => [

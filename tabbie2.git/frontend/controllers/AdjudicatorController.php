@@ -7,9 +7,9 @@ use common\models\Adjudicator;
 use common\models\Country;
 use common\models\Panel;
 use common\models\search\AdjudicatorSearch;
-use common\models\Society;
 use common\models\User;
 use common\models\Venue;
+use common\models\Society;
 use Yii;
 use yii\base\Exception;
 use yii\filters\AccessControl;
@@ -311,7 +311,7 @@ class AdjudicatorController extends BaseTournamentController {
 					$row = $model->tempImport[$r];
 
 					//Society
-					$temp_society = Society::findOne(["name" => $row[0][0]]);
+					$temp_society = \common\models\Society::findOne(["fullname" => $row[0][0]]);
 					if ($temp_society instanceof Society)
 						$societyID = $temp_society->id;
 					else

@@ -215,7 +215,7 @@ class TeamController extends BaseTournamentController {
 					$row = $model->tempImport[$r];
 
 					//Society
-					$temp_society = Society::findOne(["name" => $row[1][0]]);
+					$temp_society = \common\models\Society::findOne(["fullname" => $row[1][0]]);
 					if ($temp_society instanceof Society)
 						$societyID = $temp_society->id;
 					else

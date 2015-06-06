@@ -32,6 +32,10 @@ $this->params['breadcrumbs'][] = $this->title;
 			<div class="col-sm-2 green">
 				<?= $model->tempImport[$i][1] ?>
 			</div>
+
+			<div class="col-sm-2 green">
+				<?= $model->tempImport[$i][2] ?>
+			</div>
 		</div>
 	<? endfor; ?>
 	<div class="form-group">

@@ -40,6 +40,7 @@ class ResultSearch extends Result {
 	public function search($params, $tournament_id, $roundid) {
 		$query = \common\models\Debate::find()
 		                              ->joinWith("result")
+			->joinWith("venue")
 		                              ->where(["debate.round_id" => $roundid, "debate.tournament_id" => $tournament_id]);
 
 		$dataProvider = new ActiveDataProvider([

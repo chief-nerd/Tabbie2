@@ -37,14 +37,15 @@ class SampledataController extends Controller {
 // use the factory to create a Faker\Generator instance
 		$faker = Faker\Factory::create();
 
-		$output_venue = "Name;Active\n";
+		$output_venue = "Name;Active;Group\n";
 		$output_teams = "Team Name;Society Name;A.Givenname;A.Surename;A.Email;B.Givenname;B.Surename;B.Email\n";
 		$output_adjudicator = "Society;Givenname;Surename;Email;Strength\n";
 		$save = [];
 
 		echo "\nVenues:";
 		for ($v = 0; $v < $amount_venues; $v++) {
-			$line = "Room " . ($v + 1) . ";1\n";
+			$group = ($v < $amount_venues / 2) ? "1 Floor" : "2 Floor";
+			$line = "Room " . ($v + 1) . ";1;$group\n";
 			//echo $line;
 			$output_venue .= $line;
 			echo ".";
