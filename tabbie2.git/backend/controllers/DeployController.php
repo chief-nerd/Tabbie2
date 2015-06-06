@@ -85,6 +85,9 @@ class DeployController extends Controller {
 		//make migrations
 		exec("php $git_root/tabbie2.git/yii migrate/up --interactive=0", $out);
 
+		//Flush Caches
+		exec("php $git_root/tabbie2.git/yii cache/flush-all", $out);
+
 		//output
 		print_r($out);
 	}
