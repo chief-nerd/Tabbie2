@@ -15,7 +15,7 @@ use common\models\Venue;
 use Yii;
 
 class GroupListView extends ListView {
-	public $groupBy = null;
+	public $groupBy = "venue.group";
 
 	public $panelClass = "panel-default";
 
@@ -30,21 +30,27 @@ class GroupListView extends ListView {
 		$rows = [];
 		$output = "";
 
+		$exploded_path = explode(".", $this->groupBy);
+		$path = "";
+		foreach ($exploded_path as $part) {
+			$path .= "['$part']";
+		}
 
 		foreach (array_values($models) as $index => $model) {
 			/** @var Venue $model */
-			$rows[$model->relatedRecords["venue"]["group"]][] = $this->renderItem($model, $keys[$index], $index);
+			$heading = eval('return $model->relatedRecords' . $path . ";");
+			$rows[($heading) ? $heading : null][] = $this->renderItem($model, $keys[$index], $index);
 		}
 
 		asort($rows);
 
 		foreach ($rows as $heading => $group) {
 			$output .= Html::tag("div",
-				Html::tag(
+				(($heading) ? Html::tag(
 					"div",
 					Yii::t("app", "Group:") . " " . $heading,
 					["class" => "panel-heading"]
-				) .
+				) : "") .
 				Html::tag(
 					"div",
 					implode($this->separator, $group),
