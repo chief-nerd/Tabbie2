@@ -524,7 +524,7 @@ class User extends ActiveRecord implements IdentityInterface {
 	 * @param \yii\web\UploadedFile $file
 	 */
 	public function savePicture($file) {
-		$path = "/uploads/users/User-" . $this->username . "." . $file->extension;
+		$path = "/uploads/users/User-" . $this->url_slug . "." . $file->extension;
 		$this->picture = $file->saveAs(Yii::getAlias("@frontend/web") . $path) ? $path : null;
 	}
 
