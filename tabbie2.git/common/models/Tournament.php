@@ -10,8 +10,9 @@ use yii\helpers\Url;
 
 /**
  * This is the model class for table "tournament".
+
  *
- * @property integer                  $id
+*@property integer                  $id
  * @property string                   $url_slug
  * @property integer                  $status
  * @property integer                  $convenor_user_id
@@ -29,6 +30,7 @@ use yii\helpers\Url;
  * @property integer                  $has_semifinal
  * @property integer                  $has_quarterfinal
  * @property integer                  $has_octofinal
+ * @property string                   $accessToken
  * @property Adjudicator[]            $adjudicators
  * @property Panel[]                  $panels
  * @property Round[]                  $rounds
@@ -60,7 +62,7 @@ class Tournament extends \yii\db\ActiveRecord {
 			[['url_slug', 'convenor_user_id', 'tabmaster_user_id', 'hosted_by_id', 'name', 'start_date', 'end_date'], 'required'],
 			[['convenor_user_id', 'tabmaster_user_id', 'hosted_by_id', 'expected_rounds', 'status'], 'integer'],
 			[['start_date', 'end_date', 'time', 'has_esl', 'has_final', 'has_semifinal', 'has_octofinal', 'has_quarterfinal'], 'safe'],
-			[['url_slug', 'name', 'tabAlgorithmClass'], 'string', 'max' => 100],
+			[['url_slug', 'name', 'tabAlgorithmClass', 'accessToken'], 'string', 'max' => 100],
 			[['logo'], 'string', 'max' => 255],
 			[['url_slug'], 'unique']
 		];
@@ -88,6 +90,7 @@ class Tournament extends \yii\db\ActiveRecord {
 			'has_semifinal' => Yii::t("app", 'Is there a semifinal'),
 			'has_quarterfinal' => Yii::t("app", 'Is there a quarterfinal'),
 			'has_octofinal' => Yii::t("app", 'Is there a octofinal'),
+			'accessToken' => Yii::t("app", 'Access Token'),
 		];
 	}
 
@@ -143,6 +146,28 @@ class Tournament extends \yii\db\ActiveRecord {
 	}
 
 	/**
+	 * Generate an accessURL for Runners and DrawDisplay
+	 *
+	 * @return string
+	 */
+	public function generateAccessToken() {
+		return $this->accessToken = substr(md5(uniqid(mt_rand(), true)), 0, 10);
+	}
+
+	/**
+	 * Validate an AccessToken with the object
+	 *
+	 * @param $testToken
+	 *
+	 * @return bool
+	 */
+	public function validateAccessToken($testToken) {
+		if ($testToken == $this->accessToken)
+			return true;
+		return false;
+	}
+
+	/**
 	 * Call before model save
 	 *
 	 * @param type $insert
@@ -152,7 +177,10 @@ class Tournament extends \yii\db\ActiveRecord {
 	public function beforeSave($insert) {
 		if (parent::beforeSave($insert)) {
 			if ($insert === true) //Do only on new Records
+			{
 				$this->generateUrlSlug();
+				$this->generateAccessToken();
+			}
 			return true;
 		}
 

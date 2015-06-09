@@ -24,62 +24,84 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 	<h1><?= Html::encode($this->title) ?></h1>
 
 	<div class="row">
-		<div class="col-md-12">
-
-			<? if (!$model->published && $tournament->status < \common\models\Tournament::STATUS_CLOSED): ?>
-
-				<?
-				if ($debateDataProvider->getCount() > 0)
-					echo Html::a(\kartik\helpers\Html::icon("thumbs-up") . "&nbsp" . Yii::t('app', 'Publish Tab'), ['publish', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success']);
-				else
-					echo Html::a(\kartik\helpers\Html::icon("repeat") . "&nbsp" . Yii::t('app', 'Retry to generate Draw'), ['redraw', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success loading']);
-				?>
-
-				<!-- Split button -->
-				<div class="btn-group">
-					<?= Html::a(\kartik\helpers\Html::icon("cog") . "&nbsp" . Yii::t('app', 'Update Round'), ['update', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-primary']) ?>
-
-					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
-					        aria-expanded="false">
-						<span class="caret"></span>
-						<span class="sr-only"><?= Yii::t("app", "Toggle Dropdown") ?></span>
-					</button>
-					<ul class="dropdown-menu" role="menu">
+		<div class="<?= (!$model->published) ? "col-md-12" : "col-md-6" ?>">
+			<div class="panel panel-default">
+				<div class="panel-body round-actions">
+					<? if (!$model->published && $tournament->status < \common\models\Tournament::STATUS_CLOSED): ?>
 						<?
-						$runs = \common\models\EnergyConfig::get("max_iterations", $tournament->id) / 2;
-						for ($i = 1; $i <= 3; $i++): ?>
-							<li>
-								<?=
-								Html::a(\kartik\helpers\Html::icon("refresh") . "&nbsp" . Yii::t('app', 'Continue Improving by') . " " . ($runs * $i / 1000) . "k", [
-									'improve',
-									'id' => $model->id,
-									'runs' => ($runs * $i),
-									'tournament_id' => $tournament->id],
-									[
-										'class' => 'loading'
+						if ($debateDataProvider->getCount() > 0)
+							echo Html::a(\kartik\helpers\Html::icon("thumbs-up") . "&nbsp" . Yii::t('app', 'Publish Tab'), ['publish', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success']);
+						else
+							echo Html::a(\kartik\helpers\Html::icon("repeat") . "&nbsp" . Yii::t('app', 'Retry to generate Draw'), ['redraw', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success loading']);
+						?>
+
+						<!-- Split button -->
+						<div class="btn-group">
+							<?= Html::a(\kartik\helpers\Html::icon("cog") . "&nbsp" . Yii::t('app', 'Update Round'), ['update', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-primary']) ?>
+
+							<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+							        aria-expanded="false">
+								<span class="caret"></span>
+								<span class="sr-only"><?= Yii::t("app", "Toggle Dropdown") ?></span>
+							</button>
+							<ul class="dropdown-menu" role="menu">
+								<?
+								$runs = \common\models\EnergyConfig::get("max_iterations", $tournament->id) / 2;
+								for ($i = 1; $i <= 3; $i++): ?>
+									<li>
+										<?=
+										Html::a(\kartik\helpers\Html::icon("refresh") . "&nbsp" . Yii::t('app', 'Continue Improving by') . " " . ($runs * $i / 1000) . "k", [
+											'improve',
+											'id' => $model->id,
+											'runs' => ($runs * $i),
+											'tournament_id' => $tournament->id],
+											[
+												'class' => 'loading'
+											])
+										?>
+									</li>
+								<? endfor; ?>
+								<li class="divider"></li>
+								<li>
+									<?=
+									Html::a(\kartik\helpers\Html::icon("file") . "&nbsp" . Yii::t('app', 'Generate new draw from blank'), ['redraw', 'id' => $model->id, "tournament_id" => $tournament->id], [
+										'class' => 'loading',
+										'data' => [
+											'confirm' => Yii::t('app', 'Are you sure you want to re-draw the round? All information will be lost!'),
+											'method' => 'post',
+										],
 									])
-								?>
-							</li>
-						<? endfor; ?>
-						<li class="divider"></li>
-						<li>
-							<?=
-							Html::a(\kartik\helpers\Html::icon("file") . "&nbsp" . Yii::t('app', 'Generate new draw from blank'), ['redraw', 'id' => $model->id, "tournament_id" => $tournament->id], [
-								'class' => 'loading',
-								'data' => [
-									'confirm' => Yii::t('app', 'Are you sure you want to re-draw the round? All information will be lost!'),
-									'method' => 'post',
-								],
-							])
-							?>
-						</li>
-					</ul>
+									?>
+								</li>
+							</ul>
+						</div>
+					<? endif; ?>
+					<?= Html::a(\kartik\helpers\Html::icon("print") . "&nbsp" . Yii::t('app', 'Print Ballots'), ['printballots', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-default']) ?>
+
 				</div>
-
-			<? endif; ?>
-			<?= Html::a(\kartik\helpers\Html::icon("print") . "&nbsp" . Yii::t('app', 'Print Ballots'), ['printballots', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-default']) ?>
-
+			</div>
 		</div>
+		<? if ($model->published): ?>
+			<div class="col-md-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<?= Yii::t("app", "Draw Access URL"); ?>
+					</div>
+					<div class="panel-body">
+						<?
+						$url = \yii\helpers\Url::to(["public/draw",
+							"id" => $model->number,
+							"tournament_id" => $model->tournament_id,
+							"accessToken" => $tournament->accessToken
+						], true);
+						?>
+						<a href="<?= $url ?>" target="_blank">
+							<?= $url ?>
+						</a>
+					</div>
+				</div>
+			</div>
+		<? endif; ?>
 	</div>
 	<br>
 
@@ -233,7 +255,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 							'placement' => PopoverX::ALIGN_BOTTOM,
 							'content' => $popcontent,
 							'footer' => "" .
-							//Html::a(\kartik\helpers\Html::icon("move") . "&nbsp;" . Yii::t("app", 'Move'), ["adjudicator/move", "id" => $adj->id, "debate" => $model->id, "tournament_id" => $model->tournament_id], ['class' => 'moveAdj btn btn-sm btn-primary']) .
+								//Html::a(\kartik\helpers\Html::icon("move") . "&nbsp;" . Yii::t("app", 'Move'), ["adjudicator/move", "id" => $adj->id, "debate" => $model->id, "tournament_id" => $model->tournament_id], ['class' => 'moveAdj btn btn-sm btn-primary']) .
 								Html::a(\kartik\helpers\Html::icon("folder-open") . "&nbsp;" . Yii::t("app", 'View Feedback'), ["feedback/adjudicator", "tournament_id" => $model->tournament_id, "AnswerSearch" => ["id" => $adj->id]], ['class' => 'btn btn-sm btn-default', 'target' => '_blank', 'data-pjax' => "0"]) .
 								Html::a(\kartik\helpers\Html::icon("folder-open") . "&nbsp;" . Yii::t("app", 'View User'), ["adjudicator/view", "id" => $adj->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-sm btn-default', 'target' => '_blank', 'data-pjax' => "0"]),
 							'toggleButton' => [

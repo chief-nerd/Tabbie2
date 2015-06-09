@@ -136,3 +136,7 @@ sup {
     overflow-x: scroll;
     overflow-y: auto;
 }
+
+.panel-body.round-actions {
+    min-height: 91px;
+}

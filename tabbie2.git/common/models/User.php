@@ -168,7 +168,7 @@ class User extends ActiveRecord implements IdentityInterface {
 			'status' => Yii::t('app', 'Account Status'),
 			'last_change' => Yii::t('app', 'Last Change'),
 			'givenname' => Yii::t('app', 'Givenname'),
-			'surename' => Yii::t('app', 'Surename'),
+			'surename' => Yii::t('app', 'Surname'),
 			'language_status' => Yii::t('app', 'Language Status'),
 			'picture' => Yii::t('app', 'Picture'),
 			'time' => Yii::t('app', 'Time'),

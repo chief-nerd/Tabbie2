@@ -84,7 +84,7 @@ $menuItems = [
 					"confirm" => Yii::t("app", "Publishing the Tab will close and archive the tournament!! Are you sure you want to continue?")
 				]]] : ""),
 			(($tournament->status < Tournament::STATUS_CLOSED) ? '<li class="divider"></li>' : ""),
-			['label' => Yii::t("app", 'Missing User'), 'url' => ['display/missinguser', "tournament_id" => $tournament->id], 'linkOptions' => ['target' => '_blank']],
+			['label' => Yii::t("app", 'Missing User'), 'url' => ['public/missing-user', "tournament_id" => $tournament->id, "accessToken" => $tournament->accessToken], 'linkOptions' => ['target' => '_blank']],
 			['label' => Yii::t("app", 'Checkin Form'), 'url' => ['tournament/checkin', "id" => $tournament->id]],
 			['label' => Yii::t("app", 'Reset Checkin'), 'url' => ['tournament/checkinreset', "id" => $tournament->id],
 				'linkOptions' => ['data' => [

@@ -3,6 +3,7 @@
 use kartik\grid\GridView;
 
 $this->context->menuItems = [
+	['label' => Yii::t("app", 'Overview'), 'url' => ["public/rounds", "tournament_id" => $round->tournament_id, "accessToken" => $round->tournament->accessToken]],
 	['label' => Yii::t("app", 'Run'), 'url' => "#run", "linkOptions" => ["class" => "run"]],
 ];
 
@@ -16,6 +17,7 @@ $this->title = "Round " . $round->number . " Draw";
 				'class' => '\kartik\grid\DataColumn',
 				'attribute' => 'venue.name',
 				'label' => Yii::t("app", 'Venue'),
+				'width' => "15%",
 			],
 			[
 				'class' => '\kartik\grid\DataColumn',
@@ -93,7 +95,11 @@ $this->title = "Round " . $round->number . " Draw";
 			<h2><?= $round->infoslide ?></h2>
 		</div>
 		<div class="col-sm-12 text-center" id="motionContent"
-		     data-href="<?= yii\helpers\Url::to(["display/start", "id" => $round->id, "tournament_id" => $round->tournament_id]) ?>"
+		     data-href="<?= yii\helpers\Url::to(["public/start-round",
+			     "id" => $round->id,
+			     "tournament_id" => $round->tournament_id,
+			     "accessToken" => $round->tournament->accessToken
+		     ]) ?>"
 		     style="display:none; margin-top: 20px;">
 			<h1><?= $round->motion ?></h1>
 		</div>
@@ -104,7 +110,11 @@ $this->title = "Round " . $round->number . " Draw";
 			<?= yii\helpers\Html::button(Yii::t("app", "Show Motion"), ["class" => "btn btn-success", "id" => 'motion']) ?>
 		</center>
 		<div class="col-sm-12 text-center" id="motionContent"
-		     data-href="<?= yii\helpers\Url::to(["display/start", "id" => $round->id, "tournament_id" => $round->tournament_id]) ?>"
+		     data-href="<?= yii\helpers\Url::to(["public/start-round",
+			     "id" => $round->id,
+			     "tournament_id" => $round->tournament_id,
+			     "accessToken" => $round->tournament->accessToken
+		     ]) ?>"
 		     style="display:none; margin-top: 50px;">
 			<h1><?= $round->motion ?></h1>
 		</div>

@@ -38,7 +38,7 @@ class TournamentController extends BaseTournamentController {
 					],
 					[
 						'allow' => true,
-						'actions' => ['update', 'checkinreset', 'missinguser'],
+						'actions' => ['update', 'checkinreset'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->isTabMaster($this->_tournament) || Yii::$app->user->isConvenor($this->_tournament));
 						}

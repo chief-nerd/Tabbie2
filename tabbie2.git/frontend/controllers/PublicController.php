@@ -13,7 +13,7 @@ use common\models\Team;
 /**
  * TournamentController implements the CRUD actions for Tournament model.
  */
-class DisplayController extends BaseTournamentController {
+class PublicController extends BaseTournamentController {
 
 	//Override Layout
 	public $layout = "public";
@@ -30,9 +30,9 @@ class DisplayController extends BaseTournamentController {
 				'rules' => [
 					[
 						'allow' => true,
-						'actions' => ['index', 'view', 'start', 'missinguser'],
+						'actions' => ['rounds', 'draw', 'start-round', 'missing-user'],
 						'matchCallback' => function ($rule, $action) {
-							return (Yii::$app->user->isTabMaster($this->_tournament) || Yii::$app->user->isConvenor($this->_tournament));
+							return $this->_tournament->validateAccessToken(Yii::$app->request->get("accessToken", ""));
 						}
 					],
 					[
@@ -53,7 +53,7 @@ class DisplayController extends BaseTournamentController {
 		];
 	}
 
-	public function actionIndex() {
+	public function actionRounds() {
 
 		$rounds = \common\models\Round::find()->where([
 			"tournament_id" => $this->_tournament->id,
@@ -63,9 +63,10 @@ class DisplayController extends BaseTournamentController {
 		$buttons = "";
 		foreach ($rounds as $round) {
 			$buttons .= \yii\helpers\Html::a(Yii::t("app", "Show Round {number}", ["number" => $round->number]), [
-				"display/view",
+				"public/draw",
 				"id" => $round->id,
-				"tournament_id" => $round->tournament_id], ["class" => "btn btn-lg btn-success"]);
+				"tournament_id" => $round->tournament_id,
+				"accessToken" => $round->tournament->accessToken], ["class" => "btn btn-lg btn-success"]);
 		}
 
 		if (Yii::$app->getRequest()->isAjax) {
@@ -80,14 +81,14 @@ class DisplayController extends BaseTournamentController {
 				],
 			]);
 
-			return $this->render("index", [
+			return $this->render("rounds", [
 				"tournament" => $this->_tournament,
 				"already" => $buttons
 			]);
 		}
 	}
 
-	public function actionView($id) {
+	public function actionDraw($id) {
 		$round = \common\models\Round::findOne($id);
 		$searchModel = new DebateSearch();
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->_tournament->id, $id);
@@ -99,14 +100,14 @@ class DisplayController extends BaseTournamentController {
 			],
 		]);
 
-		return $this->render("view", [
+		return $this->render("draw", [
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
 			'round' => $round,
 		]);
 	}
 
-	public function actionStart($id) {
+	public function actionStartRound($id) {
 		$round = \common\models\Round::findOne($id);
 		if ($round instanceof \common\models\Round) {
 			$round->displayed = 1;
@@ -122,7 +123,7 @@ class DisplayController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionMissinguser() {
+	public function actionMissingUser() {
 
 		$teams = Team::find()
 		             ->tournament($this->_tournament->id)

@@ -30,7 +30,7 @@ use common\models\Team;
 				}
 			}
 			if (Yii::$app->user->isConvenor($model) || Yii::$app->user->isTabMaster($model))
-				$button_output_buffer .= "&nbsp;" . Html::a(Html::icon("film") . "&nbsp;" . Yii::t('app', 'Display Draw'), ['display/index', "tournament_id" => $model->id], ['class' => 'btn btn-default']);
+				$button_output_buffer .= "&nbsp;" . Html::a(Html::icon("film") . "&nbsp;" . Yii::t('app', 'Display Draw'), ['public/rounds', "tournament_id" => $model->id], ['class' => 'btn btn-default']);
 
 			if ($model->status != \common\models\Tournament::STATUS_CLOSED) {
 				if (Yii::$app->user->isTabMaster($model) || Yii::$app->user->isConvenor($model)) {

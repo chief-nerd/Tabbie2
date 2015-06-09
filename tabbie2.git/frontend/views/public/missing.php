@@ -22,7 +22,7 @@ $this->registerJs('
 
 if (Yii::$app->user->isTabMaster($tournament)) {
 	$this->context->menuItems = [
-		['label' => \kartik\helpers\Html::icon("fire") . "&nbsp;" . Yii::t("app", 'Mark missing as inactive'), 'url' => "markmissing", "linkOptions" => ["class" => "btn btn-default"]],
+		['label' => \kartik\helpers\Html::icon("fire") . "&nbsp;" . Yii::t("app", 'Mark missing as inactive'), 'url' => ["public/mark-missing", "tournament_id" => $tournament->id, "accessToken" => $tournament->accessToken], "linkOptions" => ["class" => "btn btn-default"]],
 	];
 }
 
@@ -37,8 +37,14 @@ if (Yii::$app->user->isTabMaster($tournament)) {
 				<table class="table">
 					<? foreach ($teams as $team): ?>
 						<tr>
-							<td><?= $team->speakerA->name; ?></td>
-							<td><?= $team->speakerB->name; ?></td>
+							<?
+							if (isset($team->speakerA->name)) {
+								echo '<td>' . $team->speakerA->name . '</td>';
+							}
+							if (isset($team->speakerB->name)) {
+								echo '<td>' . $team->speakerB->name . '</td>';
+							}
+							?>
 						</tr>
 					<? endforeach; ?>
 				</table>
