@@ -51,7 +51,6 @@ class DeployController extends Controller {
 		// set the secret key
 		$hookSecret = Yii::$app->params["hookSecret"];
 
-
 		// set the exception handler to get error messages
 		set_exception_handler(function ($e) {
 			header('HTTP/1.1 500 Internal Server Error');
@@ -79,17 +78,31 @@ class DeployController extends Controller {
 
 		//exec("cd $git_root && pwd", $out);
 
+		$out[] = "=== Git Pull ===";
 		// execute
 		exec("cd $git_root && git pull", $out);
 
 		//make migrations
+		$out[] = "=== Migrate ===";
 		exec("php $git_root/tabbie2.git/yii migrate/up --interactive=0", $out);
 
 		//Flush Caches
+		$out[] = "=== Flush Cache ===";
 		exec("php $git_root/tabbie2.git/yii cache/flush-schema --interactive=0", $out);
 		exec("php $git_root/tabbie2.git/yii cache/flush-all --interactive=0", $out);
 
 		//output
 		print_r($out);
+
+		$html = "<h2>Git Pull Report</h2>\n";
+		$html .= implode("<br>\n", $out);
+
+		Yii::$app->mailer->compose()
+		                 ->setFrom(['git-report@tabbie.org' => "Git Pull Report"])
+		                 ->setTo(Yii::$app->params["supportEmail"])
+		                 ->setSubject('Git Pull Report: ' . $out[1])
+		                 ->setHtmlBody($html)
+		                 ->send();
+
 	}
 }
