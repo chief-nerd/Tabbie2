@@ -136,4 +136,33 @@ class UserSearch extends User {
 		return ArrayHelper::map($user, "name", "name");
 	}
 
+	/**
+	 * Creates data provider instance with search query applied
+	 *
+	 * @param array $params
+	 *
+	 * @return ActiveDataProvider
+	 */
+	public function searchBySociety($params, $society_id) {
+		$query = User::find()->joinWith("inSocieties")->where(["society_id" => $society_id]);
+
+		$dataProvider = new ActiveDataProvider([
+			'query' => $query,
+			'pagination' => [
+				'pageSize' => Yii::$app->params["users_per_page"],
+			],
+		]);
+
+		if (!($this->load($params) && $this->validate())) {
+			return $dataProvider;
+		}
+
+		$query->andFilterWhere([
+			'user.language_status' => $this->language_status,
+		]);
+		$query->andFilterWhere(['like', "CONCAT(givenname, ' ', surename)", $this->name]);
+
+		return $dataProvider;
+	}
+
 }

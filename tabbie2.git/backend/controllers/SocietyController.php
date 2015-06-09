@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use common\models\InSociety;
+use common\models\search\UserSearch;
 use Yii;
 use common\models\Society;
 use common\models\search\SocietySearch;
@@ -51,8 +52,13 @@ class SocietyController extends Controller {
 	 * @return mixed
 	 */
 	public function actionView($id) {
+		$searchModel = new UserSearch();
+		$dataProvider = $searchModel->searchBySociety(Yii::$app->request->queryParams, $id);
+
 		return $this->render('view', [
 			'model' => $this->findModel($id),
+			'memberSearchModel' => $searchModel,
+			'memberDataProvider' => $dataProvider,
 		]);
 	}
 
@@ -102,7 +108,7 @@ class SocietyController extends Controller {
 		$model = $this->findModel($id);
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
-			return $this->redirect(['view', 'id' => $model->id]);
+			return $this->redirect(['index']);
 		}
 		else {
 			return $this->render('update', [

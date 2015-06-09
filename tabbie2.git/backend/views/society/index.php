@@ -64,9 +64,9 @@
 				'urlCreator' => function ($action, $model, $key, $index) {
 					return \yii\helpers\Url::to(["society/" . $action, "id" => $model->id]);
 				},
-				'viewOptions' => ['label' => \kartik\helpers\Html::icon("folder-open"), 'title' => Yii::t("app", 'View {modelClass}', ['modelClass' => 'Adjudicator']), 'data-toggle' => 'tooltip'],
-				'updateOptions' => ['title' => Yii::t("app", 'Update {modelClass}', ['modelClass' => 'Adjudicator']), 'data-toggle' => 'tooltip'],
-				'deleteOptions' => ['title' => Yii::t("app", 'Delete {modelClass}', ['modelClass' => 'Adjudicator']), 'data-toggle' => 'tooltip'],
+				'viewOptions' => ['label' => \kartik\helpers\Html::icon("folder-open"), 'title' => Yii::t("app", 'View {modelClass}', ['modelClass' => 'Society']), 'data-toggle' => 'tooltip'],
+				'updateOptions' => ['title' => Yii::t("app", 'Update {modelClass}', ['modelClass' => 'Society']), 'data-toggle' => 'tooltip'],
+				'deleteOptions' => ['title' => Yii::t("app", 'Delete {modelClass}', ['modelClass' => 'Society']), 'data-toggle' => 'tooltip'],
 			]
 		];
 
