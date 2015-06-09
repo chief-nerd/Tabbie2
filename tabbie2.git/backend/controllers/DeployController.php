@@ -82,12 +82,10 @@ class DeployController extends Controller {
 		exec("cd $git_root && git pull", $out);
 
 		//make migrations
-		$out[] = ""; //empty line
 		$out[] = "<h3>=== Migrate ===</h3>";
 		exec("php $git_root/tabbie2.git/yii migrate/up --interactive=0", $out);
 
 		//Flush Caches
-		$out[] = ""; //empty line
 		$out[] = "<h3>=== Flush Cache ===</h3>";
 		exec("php $git_root/tabbie2.git/yii cache/flush-schema --interactive=0", $out);
 		exec("php $git_root/tabbie2.git/yii cache/flush-all --interactive=0", $out);
