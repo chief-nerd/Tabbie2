@@ -77,23 +77,25 @@ class DeployController extends Controller {
 		/** @var string $git_root BasePath to the Root git directory */
 		$git_root = Yii::$app->basePath . "/../../";
 
-		$out[] = "=== Git Pull ===";
+		$out[] = "<h3>=== Git Pull ===</h3>";
 		// execute
 		exec("cd $git_root && git pull", $out);
 
 		//make migrations
-		$out[] = "=== Migrate ===";
+		$out[] = ""; //empty line
+		$out[] = "<h3>=== Migrate ===</h3>";
 		exec("php $git_root/tabbie2.git/yii migrate/up --interactive=0", $out);
 
 		//Flush Caches
-		$out[] = "=== Flush Cache ===";
+		$out[] = ""; //empty line
+		$out[] = "<h3>=== Flush Cache ===</h3>";
 		exec("php $git_root/tabbie2.git/yii cache/flush-schema --interactive=0", $out);
 		exec("php $git_root/tabbie2.git/yii cache/flush-all --interactive=0", $out);
 
 		//output
 		print_r($out);
 
-		$html = "<h2>Git Pull Report</h2>\n";
+		$html = "<h2>Git Pull Report $out[1]</h2>\n";
 		$html .= implode("<br>\n", $out);
 
 		Yii::$app->mailer->compose()
