@@ -99,7 +99,7 @@ class DeployController extends Controller {
 		Yii::$app->mailer->compose()
 		                 ->setFrom(['git-report@tabbie.org' => "Git Pull Report"])
 		                 ->setTo(Yii::$app->params["supportEmail"])
-		                 ->setSubject('Git Pull Report: ' . $out[1])
+			->setSubject($out[1] . " " . $out[2])
 		                 ->setHtmlBody($html)
 		                 ->send();
 
