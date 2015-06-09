@@ -74,9 +74,8 @@ class DeployController extends Controller {
 		if ($hash !== hash_hmac($algo, $rawPost, $hookSecret))
 			throw new \Exception('Hook secret does not match.');
 
+		/** @var string $git_root BasePath to the Root git directory */
 		$git_root = Yii::$app->basePath . "/../../";
-
-		//exec("cd $git_root && pwd", $out);
 
 		$out[] = "=== Git Pull ===";
 		// execute
