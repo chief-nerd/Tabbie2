@@ -332,29 +332,6 @@ class AdjudicatorController extends BaseTournamentController {
 //User
 					if (count($row[1]) == 1) { //NEW
 						$userA = User::NewViaImport($societyID, $row[1][0], $row[2][0], $row[3][0]);
-						/*
-						$userA = new \common\models\User();
-						$userA->givenname = $row[1][0];
-						$userA->surename = $row[2][0];
-						$userA->username = $userA->givenname . $userA->surename;
-						$userA->email = $row[3][0];
-						$userA->setPassword($userA->email);
-						$userA->generateAuthKey();
-						$userA->time = $userA->last_change = date("Y-m-d H:i:s");
-						if ($userA->save()) {
-							$inSociety = new \common\models\InSociety();
-							$inSociety->user_id = $userA->id;
-							$inSociety->society_id = $societyID;
-							$inSociety->starting = date("Y-m-d");
-							if (!$inSociety->save()) {
-								Yii::error("Import Errors inSociety: " . print_r($inSociety->getErrors(), true), __METHOD__);
-								Yii::$app->session->addFlash("error", "Error saving InSociety Relation for " . $userA->username);
-							}
-						}
-						else {
-							Yii::error("Import Errors userA: " . print_r($userA->getErrors(), true), __METHOD__);
-							Yii::$app->session->addFlash("error", "Error Saving User " . $userA->username);
-						}*/
 						$userAID = $userA->id;
 					}
 					else if (count($row[1]) == 2) {
@@ -368,7 +345,7 @@ class AdjudicatorController extends BaseTournamentController {
 					$adj = new Adjudicator();
 					$adj->user_id = $userAID;
 					$adj->tournament_id = $this->_tournament->id;
-					$adj->strength = $row[4][0];
+					$adj->strength = intval($row[4][0]);
 					$adj->society_id = $societyID;
 					if (!$adj->save())
 						Yii::$app->session->addFlash("error", Yii::t("app", "Save error: {message}", ["message" => print_r($adj->getErrors(), true)]));
