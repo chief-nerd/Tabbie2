@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use common\models\InSociety;
 use common\models\search\UserSearch;
+use common\models\Tournament;
 use Yii;
 use common\models\Society;
 use common\models\search\SocietySearch;
@@ -72,6 +73,7 @@ class SocietyController extends Controller {
 	public function actionMerge($id, $other) {
 
 		InSociety::updateAll(["society_id" => $other], ["society_id" => $id]);
+		Tournament::updateAll(["hosted_by_id" => $other], ["hosted_by_id" => $id]);
 		Society::deleteAll(["id" => $id]);
 
 		return $this->redirect("index");
