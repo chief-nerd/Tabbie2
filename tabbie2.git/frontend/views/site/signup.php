@@ -71,9 +71,7 @@ function (element, callback) {
 SCRIPT;
 				$newDataScript = <<< SCRIPT
 function (term, data) {
-	if ($(data).filter(function () {
-		return this.text.localeCompare(term) === 0;
-		}).length === 0) {
+	if ($(data).length === 0) {
 			return {
 				id: term,
                 text: term

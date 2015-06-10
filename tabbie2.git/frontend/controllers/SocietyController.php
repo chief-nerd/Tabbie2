@@ -131,9 +131,10 @@ class SocietyController extends BaseUserController {
 		$out = ['more' => false];
 		if (!is_null($search)) {
 			$query = new \yii\db\Query;
-			$query->select(["id", "fullname as text"])
+			$query->select(["id", "CONCAT(fullname,' (',abr,')') as text"])
 			      ->from('society')
-				->where(["LIKE", "fullname", $search])
+			      ->andWhere(["LIKE", "fullname", $search])
+			      ->orWhere(["LIKE", "abr", $search])
 			      ->limit(20);
 			$command = $query->createCommand();
 			$data = $command->queryAll();
