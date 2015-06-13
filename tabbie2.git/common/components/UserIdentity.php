@@ -2,6 +2,7 @@
 
 namespace common\components;
 
+use common\models\Adjudicator;
 use common\models\Feedback;
 use common\models\LanguageOfficer;
 use common\models\Panel;
@@ -10,6 +11,7 @@ use \common\models\Tournament;
 use \common\models\User;
 use common\models\Debate;
 use yii\base\Exception;
+use Yii;
 
 class UserIdentity extends \yii\web\User {
 
@@ -87,9 +89,65 @@ class UserIdentity extends \yii\web\User {
 	}
 
 	/**
+	 * @param Tournament $tournament
+	 *
+	 * @return bool
+	 */
+	public function isRegistered($tournament) {
+
+		if ($this->isAdmin() || $this->isConvenor($tournament) || $this->isLanguageOfficer($tournament) || $this->isTabMaster($tournament))
+			return true;
+
+		if ($this->isTeam($tournament) || $this->isAdjudicator($tournament))
+			return true;
+
+		return false;
+
+	}
+
+	public function isTeam($tournament) {
+		if ($this->isTeamA($tournament) || $this->isTeamB($tournament))
+			return true;
+		return false;
+	}
+
+	public function isTeamA($tournament) {
+		//check if Team
+		$team = Team::find()->tournament($tournament->id)
+		            ->andWhere(["speakerA_id" => Yii::$app->user->id])
+		            ->count();
+		if ($team > 0)
+			return true;
+
+		return false;
+	}
+
+	public function isTeamB($tournament) {
+		//check if Team
+		$team = Team::find()->tournament($tournament->id)
+		            ->andWhere(["speakerB_id" => Yii::$app->user->id])
+		            ->count();
+		if ($team > 0)
+			return true;
+
+		return false;
+	}
+
+	public function isAdjudicator($tournament) {
+		//check if Adjudicator
+		$adju = Adjudicator::find()->tournament($tournament->id)
+		                   ->andWhere(["user_id" => Yii::$app->user->id])
+		                   ->count();
+		if ($adju > 0)
+			return true;
+
+		return false;
+	}
+
+	/**
 	 * @param Round $lastRound
 	 *
-*@return boolean
+	 * @return boolean
 	 */
 	public function hasChairedLastRound($info) {
 		if ($info['type'] == 'judge' && $info['pos'] == 1) {
@@ -100,9 +158,8 @@ class UserIdentity extends \yii\web\User {
 
 	/**
 	 * @param Round $lastRound
-
 	 *
-*@return Debate
+	 * @return Debate
 	 */
 	public function hasOpenFeedback($info) {
 

@@ -56,14 +56,14 @@ $this->params['breadcrumbs'][] = $this->title;
 			</div>
 			<div class="col-lg-6">
 				<?
-				$urlUserList = Url::to(['society/list']);
+				$urlSocietyList = Url::to(['society/list']);
 
 				// Script to initialize the selection based on the value of the select2 element
-				$initUserScript = <<< SCRIPT
+				$initSocietyScript = <<< SCRIPT
 function (element, callback) {
     var id=\$(element).val();
     if (id !== "") {
-        \$.ajax("{$urlUserList}?id=" + id, {
+        \$.ajax("{$urlSocietyList}?sid=" + id, {
         dataType: "json"
         }).done(function(data) { callback(data.results);});
     }
@@ -88,12 +88,12 @@ SCRIPT;
 						'allowClear' => true,
 						'minimumInputLength' => 3,
 						'ajax' => [
-							'url' => $urlUserList,
+							'url' => $urlSocietyList,
 							'dataType' => 'json',
 							'data' => new JsExpression('function(term,page) { return {search:term}; }'),
 							'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
 						],
-						'initSelection' => new JsExpression($initUserScript),
+						'initSelection' => new JsExpression($initSocietyScript),
 						'createSearchChoice' => new JsExpression($newDataScript)
 					],
 				]);

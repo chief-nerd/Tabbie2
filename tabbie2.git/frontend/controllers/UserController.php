@@ -270,13 +270,13 @@ class UserController extends BaseUserController {
 	 * @param type $search
 	 * @param type $id
 	 */
-	public function actionList($search = null, $id = null) {
+	public function actionList(array $search = null, $id = null) {
 		$out = ['more' => false];
-		if (!is_null($search)) {
+		if (!is_null($search["term"])) {
 			$query = new \yii\db\Query;
 			$query->select(["id", "concat(givenname, ' ', surename) as text", "picture"])
 			      ->from('user')
-			      ->where('concat(givenname, \' \', surename) LIKE "%' . $search . '%"')
+				->where('concat(givenname, \' \', surename) LIKE "%' . $search["term"] . '%"')
 			      ->limit(20);
 			$command = $query->createCommand();
 			$data = $command->queryAll();

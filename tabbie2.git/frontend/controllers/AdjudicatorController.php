@@ -466,14 +466,14 @@ class AdjudicatorController extends BaseTournamentController {
 	 * @param type $search
 	 * @param type $id
 	 */
-	public function actionList($search = null, $id = null, $tournament_id) {
+	public function actionList(array $search = null, $id = null, $tournament_id) {
 		$out = ['more' => false];
-		if (!is_null($search)) {
+		if (!is_null($search["term"])) {
 			$query = new \yii\db\Query;
 			$query->select(["adjudicator.id", "CONCAT(user.givenname, ' ', user.surename) as text"])
 			      ->from('adjudicator')
 			      ->leftJoin("user", "adjudicator.user_id = user.id")
-			      ->where('tournament_id = "' . $tournament_id . '" AND CONCAT(user.givenname, " ", user.surename) LIKE "%' . $search . '%"')
+				->where('tournament_id = "' . $tournament_id . '" AND CONCAT(user.givenname, " ", user.surename) LIKE "%' . $search["term"] . '%"')
 			      ->limit(20);
 			$command = $query->createCommand();
 			$data = $command->queryAll();

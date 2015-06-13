@@ -45,7 +45,7 @@ SCRIPT;
 function (element, callback) {
     var id=\$(element).val();
     if (id !== "") {
-        \$.ajax("{$urlSocietyList}?id=" + id, {
+        \$.ajax("{$urlSocietyList}?sid=" + id, {
         dataType: "json"
         }).done(function(data) { callback(data.results);});
     }

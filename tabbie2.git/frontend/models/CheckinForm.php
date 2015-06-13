@@ -35,6 +35,18 @@ class CheckinForm extends Model {
 		];
 	}
 
+	public static function generateKey($user_id, $tournament) {
+		$type = 0;
+		if (Yii::$app->user->isAdjudicator($tournament))
+			$type = 1;
+		elseif (Yii::$app->user->isTeamA($tournament))
+			$type = 2;
+		elseif (Yii::$app->user->isTeamA($tournament))
+			$type = 3;
+
+		return $type . $user_id;
+	}
+
 	public function save() {
 		$messages = [];
 		$type = substr($this->number, 0, 1);

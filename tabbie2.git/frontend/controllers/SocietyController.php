@@ -124,17 +124,17 @@ class SocietyController extends BaseUserController {
 	 * @param type $search
 	 * @param type $id
 	 */
-	public function actionList($search = null, $id = null) {
-		$search = HtmlPurifier::process($search);
-		$id = intval($id);
+	public function actionList(array $search = null, $sid = null) {
+		$search["term"] = HtmlPurifier::process($search["term"]);
+		$id = intval($sid);
 
 		$out = ['more' => false];
-		if (!is_null($search)) {
+		if (!is_null($search["term"])) {
 			$query = new \yii\db\Query;
 			$query->select(["id", "CONCAT(fullname,' (',abr,')') as text"])
 			      ->from('society')
-			      ->andWhere(["LIKE", "fullname", $search])
-			      ->orWhere(["LIKE", "abr", $search])
+				->andWhere(["LIKE", "fullname", $search["term"]])
+				->orWhere(["LIKE", "abr", $search["term"]])
 			      ->limit(20);
 			$command = $query->createCommand();
 			$data = $command->queryAll();
@@ -155,16 +155,16 @@ class SocietyController extends BaseUserController {
 	 * @param type $search
 	 * @param type $id
 	 */
-	public function actionListCountry($search = null, $cid = null) {
-		$search = HtmlPurifier::process($search);
+	public function actionListCountry(array $search = null, $cid = null) {
+		$search["term"] = HtmlPurifier::process($search["term"]);
 		$cid = intval($cid);
 
 		$out = ['more' => false];
-		if (!is_null($search) && $search != "") {
+		if (!is_null($search["term"]) && $search["term"] != "") {
 			$query = new \yii\db\Query;
 			$query->select(["id", "name as text"])
 			      ->from('country')
-			      ->where(["LIKE", "name", $search])
+				->where(["LIKE", "name", $search["term"]])
 			      ->limit(20);
 			$command = $query->createCommand();
 			$data = $command->queryAll();

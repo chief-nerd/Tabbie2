@@ -393,13 +393,13 @@ class TeamController extends BaseTournamentController {
 	 * @param type $search
 	 * @param type $id
 	 */
-	public function actionList($search = null, $id = null, $tournament_id) {
+	public function actionList(array $search = null, $id = null, $tournament_id) {
 		$out = ['more' => false];
-		if (!is_null($search)) {
+		if (!is_null($search["term"])) {
 			$query = new \yii\db\Query;
 			$query->select(["id", "name as text"])
 			      ->from('team')
-			      ->where('tournament_id = "' . $tournament_id . '" AND name LIKE "%' . $search . '%"')
+				->where('tournament_id = "' . $tournament_id . '" AND name LIKE "%' . $search["term"] . '%"')
 			      ->limit(20);
 			$command = $query->createCommand();
 			$data = $command->queryAll();
