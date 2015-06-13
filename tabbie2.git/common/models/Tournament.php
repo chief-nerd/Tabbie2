@@ -348,6 +348,8 @@ class Tournament extends \yii\db\ActiveRecord {
 	 * @return array|false
 	 */
 	public function getLastDebateInfo($id) {
+		if (!is_int($id)) return false;
+
 		$lastRound = $this->getLastRound();
 
 		if ($lastRound) {
