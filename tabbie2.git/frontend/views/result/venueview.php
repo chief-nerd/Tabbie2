@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Venue View");
 	\common\components\widgets\GroupListView::widget([
 		"dataProvider" => $dataProvider,
 		"groupBy" => "venue.group",
-		"itemOptions" => ["class" => "venue col-xs-2"],
+		"itemOptions" => ["class" => "venue col-xs-12 col-sm-3 col-md-2 col-lg-2"],
 		"itemView" => "_venue",
 		"id" => "debates",
 	]);

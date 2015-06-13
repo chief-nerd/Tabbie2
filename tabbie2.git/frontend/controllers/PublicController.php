@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use common\components\filter\TournamentContextFilter;
 use common\models\search\DebateSearch;
+use common\models\search\ResultSearch;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -30,7 +31,7 @@ class PublicController extends BaseTournamentController {
 				'rules' => [
 					[
 						'allow' => true,
-						'actions' => ['rounds', 'draw', 'start-round', 'missing-user'],
+						'actions' => ['rounds', 'draw', 'start-round', 'missing-user', 'runner-view'],
 						'matchCallback' => function ($rule, $action) {
 							return $this->_tournament->validateAccessToken(Yii::$app->request->get("accessToken", ""));
 						}
@@ -153,6 +154,34 @@ class PublicController extends BaseTournamentController {
 		Yii::$app->session->addFlash("info", $team . " Teams and " . $adju . " Adjudicators set as inactive");
 
 		return $this->redirect(["tournament/view", "id" => $this->_tournament->id]);
+	}
+
+	public function actionRunnerView($id) {
+		$searchModel = new ResultSearch();
+		$dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->_tournament->id, $id);
+
+		$publishpath = Yii::$app->assetManager->publish(Yii::getAlias("@frontend/assets/js/result_poll.js"));
+		$this->view->registerJsFile($publishpath[1], [
+			"depends" => [
+				\yii\web\JqueryAsset::className(),
+				\yii\widgets\PjaxAsset::className(),
+			],
+		]);
+
+		if ($dataProvider->getCount() == 0) {
+			Yii::$app->session->addFlash("info", Yii::t("app", "No debates found in that round"));
+			$this->redirect(["result/index", "tournament_id" => $this->_tournament->id]);
+		}
+
+		$number = $dataProvider->getModels()[0]->round->number;
+
+
+		return $this->render("runner", [
+			'round_id' => $id,
+			'round_number' => $number,
+			'searchModel' => $searchModel,
+			'dataProvider' => $dataProvider,
+		]);
 	}
 
 }

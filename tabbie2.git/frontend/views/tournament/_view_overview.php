@@ -4,6 +4,7 @@ use yii\widgets\DetailView;
 use common\models\Panel;
 use common\models\Team;
 
+/** @var common\models\Tournament $model */
 ?>
 <div class="row" id="tournament_title">
 	<div class="col-xs-12 col-md-9" style="margin-bottom: 20px">

@@ -24,8 +24,11 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 	<h1><?= Html::encode($this->title) ?></h1>
 
 	<div class="row">
-		<div class="<?= (!$model->published) ? "col-md-12" : "col-md-6" ?>">
+		<div class="<?= (!$model->published) ? "col-md-12" : "col-md-4" ?>">
 			<div class="panel panel-default">
+				<div class="panel-heading">
+					<?= Yii::t("app", "Actions"); ?>
+				</div>
 				<div class="panel-body round-actions">
 					<? if (!$model->published && $tournament->status < \common\models\Tournament::STATUS_CLOSED): ?>
 						<?
@@ -82,7 +85,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 			</div>
 		</div>
 		<? if ($model->published): ?>
-			<div class="col-md-6">
+			<div class="col-md-4">
 				<div class="panel panel-default">
 					<div class="panel-heading">
 						<?= Yii::t("app", "Draw Access URL"); ?>
@@ -90,6 +93,25 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 					<div class="panel-body">
 						<?
 						$url = \yii\helpers\Url::to(["public/draw",
+							"id" => $model->number,
+							"tournament_id" => $model->tournament_id,
+							"accessToken" => $tournament->accessToken
+						], true);
+						?>
+						<a href="<?= $url ?>" target="_blank">
+							<?= $url ?>
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<?= Yii::t("app", "Runner Monitor URL"); ?>
+					</div>
+					<div class="panel-body">
+						<?
+						$url = \yii\helpers\Url::to(["public/runner-view",
 							"id" => $model->number,
 							"tournament_id" => $model->tournament_id,
 							"accessToken" => $tournament->accessToken
