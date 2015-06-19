@@ -75,6 +75,11 @@ body.movedown {
     max-height: 500px !important;
 }
 
+.navbar-sub .navbar-brand {
+    width: 79%;
+    overflow: hidden;
+}
+
 /* Give me full with! */
 @media (min-width: 1300px) {
     .container {
