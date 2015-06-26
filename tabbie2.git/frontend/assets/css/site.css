@@ -1,12 +1,3 @@
-.beta {
-    position: fixed;
-    top: 50px;
-    left: 0px;
-    width: 169px;
-    height: 169px;
-    background: url("../images/beta-ribbon.png");
-}
-
 #bugtracker {
     border: 1px solid gray;
     padding: 2px;
@@ -72,11 +63,10 @@ body.movedown {
 /** BOOTSTRAP HACKS **/
 
 .navbar-fixed-top .navbar-collapse {
-    max-height: 500px !important;
+    max-height: 50px !important;
 }
 
 .navbar-sub .navbar-brand {
-    width: 79%;
     overflow: hidden;
 }
 
@@ -97,13 +87,27 @@ body.movedown {
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
-    .navbar-sub .navbar-header {
+    .navbar .navbar-header, .navbar-sub .navbar-header {
         display: none;
     }
 
     .nav > li > a {
         padding: 15px 7px !important;
     }
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
+    .navbar-sub .navbar-header {
+        width: 230px;
+    }
+
+}
+
+@media (min-width: 1200px) {
+    .navbar-sub .navbar-header {
+        width: 332px;
+    }
+
 }
 
 /***********************/

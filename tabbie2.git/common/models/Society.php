@@ -32,11 +32,11 @@ class Society extends \yii\db\ActiveRecord {
 	 */
 	public function rules() {
 		return [
-			[['country_id'], 'required'],
+			[['country_id', 'fullname'], 'required'],
 			[['country_id'], 'integer'],
 			[['fullname', 'city'], 'string', 'max' => 255],
 			[['abr'], 'string', 'max' => 45],
-			[['abr'], 'unique']
+			[['abr'], 'unique'],
 		];
 	}
 

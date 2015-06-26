@@ -35,7 +35,24 @@ use common\models\Team;
 
 			if ($model->status != \common\models\Tournament::STATUS_CLOSED) {
 				if (Yii::$app->user->isTabMaster($model) || Yii::$app->user->isConvenor($model)) {
-					$button_output_buffer .= "&nbsp;" . Html::a(Html::icon("cog") . "&nbsp;" . Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']);
+
+					$button_output_buffer .= '&nbsp;<div class="btn-group">' .
+						Html::a(Html::icon("cog") . "&nbsp;" . Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) .
+						'<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
+							        aria-expanded="false">
+								<span class="caret"></span>
+								<span class="sr-only"><?= Yii::t("app", "Toggle Dropdown") ?></span>
+							</button>
+							<ul class="dropdown-menu" role="menu">
+							<li>' .
+						Html::a(Html::icon("transfer") . "&nbsp;" . Yii::t('app', 'Sync with DebReg'), ["tournament/debreg-sync", "id" => $model->id]) .
+						'</li>
+							<li>' .
+						Html::a(Html::icon("export") . "&nbsp;" . Yii::t('app', 'Migrate to Tabbie 1'), ["tournament/migrate-tabbie", "id" => $model->id]) .
+						'</li>
+							</ul>
+							</div>';
+
 				}
 			}
 
@@ -97,6 +114,12 @@ use common\models\Team;
 				'id',
 				'hostedby.fullname:text:Hosted By',
 				'convenorUser.name:text:Convenor',
+				[
+					"attribute" => 'CATeam',
+					'label' => "CA Team",
+					'format' => 'raw',
+					'value' => $model->getCATeamText(),
+				],
 				'tabmasterUser.name:text:Tabmaster',
 				[
 					"attribute" => 'start_date',

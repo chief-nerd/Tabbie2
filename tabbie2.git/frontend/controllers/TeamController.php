@@ -239,7 +239,7 @@ class TeamController extends BaseTournamentController {
 					//UserA
 					if (count($row[2]) == 1) { //NEW
 						if ($row[2][0] != "" && $row[3][0] != "" && $row[4][0] != "") {
-							$userA = User::NewViaImport($societyID, $row[2][0], $row[3][0], $row[4][0]);
+							$userA = User::NewViaImport($row[2][0], $row[3][0], $row[4][0], $societyID);
 							$userAID = $userA->id;
 						}
 						else
@@ -252,7 +252,7 @@ class TeamController extends BaseTournamentController {
 					//UserB
 					if (count($row[5]) == 1) { //NEW
 						if ($row[5][0] != "" && $row[6][0] != "" && $row[7][0] != "") {
-							$userB = User::NewViaImport($societyID, $row[5][0], $row[6][0], $row[7][0]);
+							$userB = User::NewViaImport($row[5][0], $row[6][0], $row[7][0], $societyID);
 							$userBID = $userB->id;
 						}
 						else

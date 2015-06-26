@@ -7,9 +7,11 @@ use common\models;
 use common\models\search\TournamentSearch;
 use common\models\Tournament;
 use frontend\models\CheckinForm;
+use frontend\models\DebregsyncForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
 
@@ -28,7 +30,7 @@ class TournamentController extends BaseTournamentController {
 				'rules' => [
 					[
 						'allow' => true,
-						'actions' => ['index', 'archive', 'view', 'checkin'],
+						'actions' => ['index', 'archive', 'view', 'checkin', 'testimport'],
 						'roles' => [],
 					],
 					[
@@ -38,9 +40,16 @@ class TournamentController extends BaseTournamentController {
 					],
 					[
 						'allow' => true,
-						'actions' => ['update', 'checkinreset'],
+						'actions' => ['update', 'checkinreset', 'debreg-sync'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->isTabMaster($this->_tournament) || Yii::$app->user->isConvenor($this->_tournament));
+						}
+					],
+					[
+						'allow' => true,
+						'actions' => ['migrate-tabbie'],
+						'matchCallback' => function ($rule, $action) {
+							return (Yii::$app->user->isTabMaster($this->_tournament));
 						}
 					],
 				],
@@ -262,4 +271,57 @@ class TournamentController extends BaseTournamentController {
 		return $this->redirect(["tournament/view", "id" => $this->_tournament->id]);
 	}
 
+	/**
+	 * Sync with DebReg System
+	 *
+	 * @param integer $id
+	 *
+	 * @return string|\yii\web\Response
+	 * @throws \yii\web\NotFoundHttpException
+	 */
+	public function actionDebregSync($id) {
+
+		$tournament = $this->findModel($id);
+		$model = new DebregsyncForm();
+
+		if (Yii::$app->request->isPost) {
+
+			$a_fix = $t_fix = $s_fix = [];
+
+			if (Yii::$app->request->post("mode") == "refactor") {
+				$a_fix = Yii::$app->request->post("Adju", []);
+				$t_fix = Yii::$app->request->post("Team", []);
+				$s_fix = Yii::$app->request->post("Soc", []);
+			}
+
+			$model->load(Yii::$app->request->post());
+			$model->tournament = $this->_tournament;
+			$unresolved = $model->doSync($a_fix, $t_fix, $s_fix);
+
+			if (count($unresolved) == 0) {
+				Yii::$app->session->addFlash("success", Yii::t("app", "DebReg Syncing successful"));
+				return $this->redirect(['view', 'id' => $tournament->id]);
+			}
+			else
+				return $this->render('sync_resolve', [
+					'unresolved' => $unresolved,
+					'tournament' => $tournament,
+					'model' => $model
+				]);
+
+		}
+
+		return $this->render('sync', [
+			'model' => $model,
+			'tournament' => $tournament]);
+	}
+
+	/**
+	 * Migrate back to Tabbie v1
+	 *
+	 * @param    integer $id
+	 */
+	public function actionMigrateTabbie($id) {
+
+	}
 }

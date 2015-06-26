@@ -28,7 +28,7 @@ use yii\helpers\ArrayHelper;
 class Adjudicator extends \yii\db\ActiveRecord {
 
 
-	const MAX_RATING = 10;
+	const MAX_RATING = 9;
 
 	/**
 	 * @inheritdoc
@@ -170,7 +170,7 @@ class Adjudicator extends \yii\db\ActiveRecord {
 			8 => Yii::t("adjudicator", 'Breaking Chair'),
 			9 => Yii::t("adjudicator", 'Chief Adjudicator'),
 		];
-		return ($id !== null) ? $table[$id] : $table;
+		return (isset($table[$id])) ? $table[$id] : $table;
 	}
 
 	public static function starLabels($id = null) {

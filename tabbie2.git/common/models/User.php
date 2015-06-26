@@ -191,11 +191,10 @@ class User extends ActiveRecord implements IdentityInterface {
 
 	/**
 	 * Finds user by email
-
 	 *
-*@param string $email
+	 * @param string $email
 	 *
-	 * @return static|null
+*@return static|null
 	 */
 	public static function findByEmail($email) {
 		return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
@@ -571,7 +570,7 @@ class User extends ActiveRecord implements IdentityInterface {
 		return substr(md5(uniqid()), 0, $length);
 	}
 
-	public static function NewViaImport($societyID, $givenname, $surename, $email) {
+	public static function NewViaImport($givenname, $surename, $email, $societyID = null) {
 		$userA = new \common\models\User();
 		$userA->givenname = $givenname;
 		$userA->surename = $surename;
@@ -581,20 +580,22 @@ class User extends ActiveRecord implements IdentityInterface {
 		$userA->generateAuthKey();
 		$userA->time = $userA->last_change = date("Y-m-d H:i:s");
 		$userA->generateUrlSlug();
+
 		if ($userA->save()) {
-			$inSociety = new \common\models\InSociety();
-			$inSociety->user_id = $userA->id;
-			$inSociety->society_id = $societyID;
-			$inSociety->starting = date("Y-m-d");
-			if ($inSociety->save()) {
-				//User created - WOOHOO
-				self::sendNewUserMail($userA, $password);
-				return $userA;
+
+			if ($societyID != null) {
+				$inSociety = new \common\models\InSociety();
+				$inSociety->user_id = $userA->id;
+				$inSociety->society_id = $societyID;
+				$inSociety->starting = date("Y-m-d");
+				if (!$inSociety->save()) {
+					Yii::error("Import Errors inSociety: " . print_r($inSociety->getErrors(), true), __METHOD__);
+					Yii::$app->session->addFlash("error", Yii::t("app", "Error saving InSociety Relation for {user}", ["user" => $userA->username]));
+				}
 			}
-			else {
-				Yii::error("Import Errors inSociety: " . print_r($inSociety->getErrors(), true), __METHOD__);
-				Yii::$app->session->addFlash("error", Yii::t("app", "Error saving InSociety Relation for {user}", ["user" => $userA->username]));
-			}
+
+			self::sendNewUserMail($userA, $password);
+			return $userA;
 		}
 		else {
 			Yii::error("Import Errors userA: " . print_r($userA->getErrors(), true), __METHOD__);

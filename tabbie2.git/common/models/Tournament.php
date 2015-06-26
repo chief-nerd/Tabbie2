@@ -308,6 +308,21 @@ class Tournament extends \yii\db\ActiveRecord {
 		return $this->hasMany(Venue::className(), ['tournament_id' => 'id']);
 	}
 
+	public function getCAs() {
+		return Adjudicator::find()->tournament($this->id)->andWhere(["strength" => Adjudicator::MAX_RATING]);
+	}
+
+	public function getCATeamText() {
+		$string = "";
+		$first = true;
+		foreach ($this->getCAs()->all() as $ca) {
+			if (!$first) $string .= ", ";
+			$string .= $ca->user->givenname . " " . $ca->user->surename;
+			$first = false;
+		}
+		return $string;
+	}
+
 	/**
 	 * Get the panels in that tournament
 	 *

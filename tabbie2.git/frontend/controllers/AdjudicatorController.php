@@ -331,7 +331,7 @@ class AdjudicatorController extends BaseTournamentController {
 
 //User
 					if (count($row[1]) == 1) { //NEW
-						$userA = User::NewViaImport($societyID, $row[1][0], $row[2][0], $row[3][0]);
+						$userA = User::NewViaImport($row[1][0], $row[2][0], $row[3][0], $societyID);
 						$userAID = $userA->id;
 					}
 					else if (count($row[1]) == 2) {
