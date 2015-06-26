@@ -570,7 +570,7 @@ class User extends ActiveRecord implements IdentityInterface {
 		return substr(md5(uniqid()), 0, $length);
 	}
 
-	public static function NewViaImport($givenname, $surename, $email, $societyID = null) {
+	public static function NewViaImport($givenname, $surename, $email, $societyID = null, $send_mail = true) {
 		$userA = new \common\models\User();
 		$userA->givenname = $givenname;
 		$userA->surename = $surename;
@@ -594,7 +594,9 @@ class User extends ActiveRecord implements IdentityInterface {
 				}
 			}
 
-			self::sendNewUserMail($userA, $password);
+			if ($send_mail) {
+				self::sendNewUserMail($userA, $password);
+			}
 			return $userA;
 		}
 		else {

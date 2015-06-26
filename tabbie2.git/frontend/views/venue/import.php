@@ -47,12 +47,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <? else: ?>
 	<div class="venue-form">
-		<?=
-		$form->field($model, 'csvFile')->fileInput([
-			'accept' => '.csv'
-		])
-		?>
-
+		<div class="row">
+			<div class="col-xs-12">
+				<?=
+				$form->field($model, 'csvFile')->fileInput([
+					'accept' => '.csv'
+				])
+				?>
+			</div>
+		</div>
+		<?= Html::activeHiddenInput($model, 'is_test', ["value" => 0]) ?>
 		<div class="form-group">
 			<?= Html::submitButton(Yii::t('app', 'Import'), ['class' => 'btn btn-success']) ?>
 		</div>

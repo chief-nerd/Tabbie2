@@ -12,6 +12,7 @@ class ImportForm extends Model {
 
 	public $csvFile;
 	public $tempImport;
+	public $is_test;
 
 	/**
 	 * @inheritdoc
@@ -20,6 +21,7 @@ class ImportForm extends Model {
 		return [
 			// name, email, subject and body are required
 			[['csvFile'], 'required'],
+			[['is_test'], 'integer']
 		];
 	}
 
@@ -29,6 +31,7 @@ class ImportForm extends Model {
 	public function attributeLabels() {
 		return [
 			'csvFile' => Yii::t("app", '*.csv File'),
+			'is_test' => Yii::t("app", 'Mark as Test Data Import (prohibits Email sending)'),
 		];
 	}
 

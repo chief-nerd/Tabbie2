@@ -129,12 +129,20 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <? else: ?>
 	<div class="team-form">
-		<?=
-		$form->field($model, 'csvFile')->fileInput([
-			'accept' => '.csv'
-		])
-		?>
-
+		<div class="row">
+			<div class="col-xs-12">
+				<?=
+				$form->field($model, 'csvFile')->fileInput([
+					'accept' => '.csv'
+				])
+				?>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<?= $form->field($model, 'is_test')->checkbox(); ?>
+			</div>
+		</div>
 		<div class="form-group">
 			<?= Html::submitButton(Yii::t('app', 'Import'), ['class' => 'btn btn-success']) ?>
 		</div>
