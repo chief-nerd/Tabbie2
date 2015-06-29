@@ -6,10 +6,12 @@ use common\components\filter\TournamentContextFilter;
 use common\models\search\DebateSearch;
 use common\models\search\ResultSearch;
 use Yii;
+use yii\data\ArrayDataProvider;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use common\models\Adjudicator;
 use common\models\Team;
+use yii\data\ActiveDataProvider;
 
 /**
  * TournamentController implements the CRUD actions for Tournament model.
@@ -92,6 +94,7 @@ class PublicController extends BaseTournamentController {
 	public function actionDraw($id) {
 		$round = \common\models\Round::findOne($id);
 		$searchModel = new DebateSearch();
+		/** @var ActiveDataProvider $dataProvider */
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->_tournament->id, $id);
 
 		$publishpath = Yii::$app->assetManager->publish(Yii::getAlias("@frontend/assets/js/display_autoScroll.js"));
@@ -101,9 +104,27 @@ class PublicController extends BaseTournamentController {
 			],
 		]);
 
+		$draw_array = [];
+		foreach ($dataProvider->models as $model) {
+			foreach (Team::getPos() as $pos) {
+				$item = clone $model;
+				$item->draw_sort = $model->{$pos . "_team"}->name;
+				$draw_array[] = $item;
+			}
+		}
+
+		$draw = new ArrayDataProvider([
+			'allModels' => $draw_array,
+			'sort' => [
+				'attributes' => ['draw_sort'],
+				'defaultOrder' => ['draw_sort' => SORT_ASC]
+			]
+		]);
+
 		return $this->render("draw", [
 			'searchModel' => $searchModel,
-			'dataProvider' => $dataProvider,
+			//'dataProvider' => $dataProvider,
+			'dataProvider' => $draw,
 			'round' => $round,
 		]);
 	}

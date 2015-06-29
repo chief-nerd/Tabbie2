@@ -12,39 +12,49 @@ $this->title = "Round " . $round->number . " Draw";
 <div class="row" id="table">
 	<div class="col-sm-12">
 		<?
+		$team_width = "13%";
 		$gridColumns = [
+			[
+				'class' => '\kartik\grid\DataColumn',
+				'attribute' => 'draw_sort',
+				'label' => "",
+				'width' => $team_width,
+			],
 			[
 				'class' => '\kartik\grid\DataColumn',
 				'attribute' => 'venue.name',
 				'label' => Yii::t("app", 'Venue'),
-				'width' => "15%",
+				'width' => '10%',
 			],
 			[
 				'class' => '\kartik\grid\DataColumn',
 				'attribute' => 'og_team.name',
-				'label' => Yii::t("app", "OG Team"),
+				'label' => Yii::t("app", "Opening Gov"),
+				'width' => $team_width,
 			],
 			[
 				'class' => '\kartik\grid\DataColumn',
 				'attribute' => 'oo_team.name',
-				'label' => Yii::t("app", "OO Team"),
+				'label' => Yii::t("app", "Opening Opp"),
+				'width' => $team_width,
 			],
 			[
 				'class' => '\kartik\grid\DataColumn',
 				'attribute' => 'cg_team.name',
-				'label' => Yii::t("app", 'CG Team'),
+				'label' => Yii::t("app", 'Closing Gov'),
+				'width' => $team_width,
 			],
 			[
 				'class' => '\kartik\grid\DataColumn',
 				'attribute' => 'co_team.name',
-				'label' => Yii::t("app", 'CO Team'),
+				'label' => Yii::t("app", 'Closing Opp'),
+				'width' => $team_width,
 			],
 			[
 				'class' => '\kartik\grid\DataColumn',
 				'attribute' => 'panel',
-				'label' => Yii::t("app", 'Adjudicator'),
+				'label' => Yii::t("app", 'Adjudicators'),
 				'format' => 'raw',
-				'width' => '40%',
 				'value' => function ($model, $key, $index, $widget) {
 					$list = array();
 					$panel = common\models\Panel::findOne($model->panel_id);

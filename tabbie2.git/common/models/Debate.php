@@ -37,6 +37,8 @@ use Yii;
  */
 class Debate extends \yii\db\ActiveRecord {
 
+	public $draw_sort = "";
+
 	/**
 	 * @inheritdoc
 	 */
