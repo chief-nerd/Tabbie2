@@ -74,7 +74,7 @@ $menuItems = [
 			'<li class="divider"></li>',
 		], $results),
 	],
-	['label' => Html::icon("stats", $icon_class) . "&nbsp;" . Yii::t("app", 'Current Tab'), 'url' => "#",
+	['label' => Html::icon("stats", $icon_class) . "&nbsp;" . Yii::t("app", 'Tournament'), 'url' => "#",
 		"items" => [
 			['label' => Yii::t("app", 'Team Tab'), 'url' => ['tab/live-team', "tournament_id" => $tournament->id]],
 			['label' => Yii::t("app", 'Speaker Tab'), 'url' => ['tab/live-speaker', "tournament_id" => $tournament->id]],
@@ -90,6 +90,8 @@ $menuItems = [
 				'linkOptions' => ['data' => [
 					"confirm" => Yii::t("app", "Are you sure you want to reset the checkin?")
 				]]],
+			(($tournament->status < Tournament::STATUS_CLOSED) ? '<li class="divider"></li>' : ""),
+			['label' => Yii::t("app", 'Advanced Config'), 'url' => ['tournament/config', "id" => $tournament->id]],
 		]
 	],
 	['label' => Html::icon("comment", $icon_class) . "&nbsp;" . Yii::t("app", 'Feedback'), 'url' => '#',

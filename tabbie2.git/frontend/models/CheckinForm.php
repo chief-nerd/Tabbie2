@@ -12,6 +12,10 @@ use yii\base\Model;
  */
 class CheckinForm extends Model {
 
+	const ADJU  = "AA";
+	const TEAMA = "TA";
+	const TEAMB = "TB";
+
 	public $number;
 	public $key;
 
@@ -35,25 +39,25 @@ class CheckinForm extends Model {
 		];
 	}
 
-	public static function generateKey($user_id, $tournament) {
+	public static function generateKey($id, $tournament) {
 		$type = 0;
 		if (Yii::$app->user->isAdjudicator($tournament))
-			$type = 1;
+			$type = self::ADJU;
 		elseif (Yii::$app->user->isTeamA($tournament))
-			$type = 2;
-		elseif (Yii::$app->user->isTeamA($tournament))
-			$type = 3;
+			$type = self::TEAMA;
+		elseif (Yii::$app->user->isTeamB($tournament))
+			$type = self::TEAMB;
 
-		return $type . $user_id;
+		return $type . '-' . $id;
 	}
 
 	public function save() {
 		$messages = [];
-		$type = substr($this->number, 0, 1);
-		$real = substr($this->number, 1, strlen($this->number));
+		$type = substr($this->number, 0, 2);
+		$real = substr($this->number, 3, strlen($this->number));
 
 		switch ($type) {
-			case 1: //Adjudicator
+			case self::ADJU: //Adjudicator
 				$adj = Adjudicator::findOne($real);
 				if ($adj instanceof Adjudicator) {
 					$adj->checkedin = true;
@@ -65,7 +69,7 @@ class CheckinForm extends Model {
 
 				break;
 
-			case 2: //Team A
+			case self::TEAMA: //Team A
 				$team = Team::findOne($real);
 				if ($team instanceof Team) {
 					$team->speakerA_checkedin = true;
@@ -77,7 +81,7 @@ class CheckinForm extends Model {
 
 				break;
 
-			case 3: //Team B
+			case self::TEAMB: //Team B
 				$team = Team::findOne($real);
 				if ($team instanceof Team) {
 					$team->speakerB_checkedin = true;

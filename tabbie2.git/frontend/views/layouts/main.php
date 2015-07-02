@@ -57,9 +57,11 @@ if ($this->context->hasMethod("_getContext")) {
 	echo $this->render("_nav");
 	?>
 	<div class="container">
+		<div class="breadcrumbs hidden-xs">
 		<?=
 		Breadcrumbs::widget(['links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],])
 		?>
+		</div>
 		<?= $content ?>
 	</div>
 

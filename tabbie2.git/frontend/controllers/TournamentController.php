@@ -12,6 +12,7 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
 use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
 
@@ -233,7 +234,15 @@ class TournamentController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionCheckin() {
+	public function actionCheckin($id, $number = null, $camInit = false) {
+
+		if (Yii::$app->request->isAjax && $number != null) {
+			$model = new CheckinForm([
+				"number" => $number
+			]);
+			$messages = $model->save();
+			return Json::encode(["status" => 200, "msg" => $messages]);
+		}
 
 		$messages = [];
 		$model = new CheckinForm();
@@ -249,7 +258,9 @@ class TournamentController extends BaseTournamentController {
 
 		return $this->render('checkin', [
 			"model" => $model,
-			"messages" => $messages
+			"tournament" => Tournament::findOne($id),
+			"messages" => $messages,
+			"camInit" => $camInit,
 		]);
 	}
 

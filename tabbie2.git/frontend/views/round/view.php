@@ -93,7 +93,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 					<div class="panel-body">
 						<?
 						$url = \yii\helpers\Url::to(["public/draw",
-							"id" => $model->number,
+							"id" => $model->id,
 							"tournament_id" => $model->tournament_id,
 							"accessToken" => $tournament->accessToken
 						], true);
@@ -112,7 +112,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 					<div class="panel-body">
 						<?
 						$url = \yii\helpers\Url::to(["public/runner-view",
-							"id" => $model->number,
+							"id" => $model->id,
 							"tournament_id" => $model->tournament_id,
 							"accessToken" => $tournament->accessToken
 						], true);

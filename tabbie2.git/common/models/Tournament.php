@@ -460,4 +460,26 @@ class Tournament extends \yii\db\ActiveRecord {
 		$this->logo = $file && $file->saveAs(Yii::getAlias("@frontend/web") . $path) ? $path : null;
 	}
 
+	/**
+	 * @return bool
+	 */
+	public function user_role() {
+		$id = Yii::$app->user->id;
+		if (!is_int($id)) return false;
+
+		$team = Team::find()
+		            ->tournament($this->id)
+		            ->andWhere(["speakerA_id" => $id])
+		            ->orWhere(["speakerB_id" => $id])
+		            ->one();
+		if ($team instanceof Team)
+			return $team;
+
+		$adju = Adjudicator::find()->tournament($this->id)->andWhere(["user_id" => $id])->one();
+		if ($adju instanceof Adjudicator)
+			return $adju;
+
+		return false;
+	}
+
 }

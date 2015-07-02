@@ -77,9 +77,11 @@ class DeployController extends Controller {
 		/** @var string $git_root BasePath to the Root git directory */
 		$git_root = Yii::$app->basePath . "/../../";
 
-		$out[] = "<h3>=== Git Pull ===</h3>";
+		$out[] = "<h3>=== Git Pulls ===</h3>";
 		// execute
 		exec("cd $git_root && git pull", $out);
+
+		exec("cd $git_root && git submodule foreach git pull origin master", $out);
 
 		//make migrations
 		$out[] = "<h3>=== Migrate ===</h3>";

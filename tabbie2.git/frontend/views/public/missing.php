@@ -11,18 +11,25 @@ $tournament = $this->context->_getContext();
 $this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
 $this->params['breadcrumbs'][] = $this->title;
 
-$this->registerJs('
-		$.pjax.defaults.timeout = false;
-        $("#pjax_poll").on("pjax:end", function() {
-            $.pjax.reload({container:"#tournament-missing"});  //Reload GridView
-        });
-        setTimeout(function(){ $.pjax.reload({container:"#tournament-missing"}); }, 2000);
-	'
+$script = <<< JS
+$.pjax.defaults.timeout = false;
+$("#pjax_poll").on("pjax:end", function() {
+   setTimeout(function(){ reload(); }, 10000)
+});
+function reload()
+{
+    $.pjax.reload({container:"#pjax_poll"});
+};
+setTimeout(function(){ reload(); }, 10000)
+JS;
+
+$this->registerJs($script
 );
 
 if (Yii::$app->user->isTabMaster($tournament)) {
 	$this->context->menuItems = [
-		['label' => \kartik\helpers\Html::icon("fire") . "&nbsp;" . Yii::t("app", 'Mark missing as inactive'), 'url' => ["public/mark-missing", "tournament_id" => $tournament->id, "accessToken" => $tournament->accessToken], "linkOptions" => ["class" => "btn btn-default"]],
+		['label' => \kartik\helpers\Html::icon("refresh") . "&nbsp;" . 'Reload', 'url' => 'javascript:reload()'],
+		['label' => \kartik\helpers\Html::icon("fire") . "&nbsp;" . Yii::t("app", 'Mark missing as inactive'), 'url' => ["public/mark-missing", "tournament_id" => $tournament->id, "accessToken" => $tournament->accessToken], "linkOptions" => ["class" => ""]],
 	];
 }
 
@@ -30,10 +37,16 @@ if (Yii::$app->user->isTabMaster($tournament)) {
 
 <? \yii\widgets\Pjax::begin(["id" => "pjax_poll"]) ?>
 	<div id="tournament-missing">
+		<div class="row">
+			<div class="col-xs-12 text-center">
+				<h1>Missing Participants</h1>
 
+				<p>If you are on this list, this means you are not checked in and you will NOT be on the draw!</p>
+			</div>
+		</div>
+		<br>
 		<div class="row">
 			<div class="col-sm-6 text-center">
-				<h3>Missing Speaker</h3>
 				<table class="table">
 					<? foreach ($teams as $team): ?>
 						<tr>
@@ -50,7 +63,6 @@ if (Yii::$app->user->isTabMaster($tournament)) {
 				</table>
 			</div>
 			<div class="col-sm-6 text-center">
-				<h3>Missing Adjudicators</h3>
 				<table class="table">
 					<? foreach ($adjudicators as $adj): ?>
 						<tr>
