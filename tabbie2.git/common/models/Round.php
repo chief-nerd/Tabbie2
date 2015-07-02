@@ -272,8 +272,15 @@ class Round extends \yii\db\ActiveRecord {
 			$algo->tournament_id = $this->tournament->id;
 			$algo->energyConfig = EnergyConfig::loadArray($this->tournament->id);
 			$algo->round_number = $this->number;
-			$algo->average_adjudicator_strength = array_sum($adjudicators_strengthArray) / count($adjudicators_strengthArray);
-			$algo->SD_of_adjudicators = $this->stats_standard_deviation($adjudicators_strengthArray);
+
+			if (count($adjudicators_strengthArray) == 0) {
+				$algo->average_adjudicator_strength = 0;
+				$algo->SD_of_adjudicators = 0;
+			}
+			else {
+				$algo->average_adjudicator_strength = array_sum($adjudicators_strengthArray) / count($adjudicators_strengthArray);
+				$algo->SD_of_adjudicators = $this->stats_standard_deviation($adjudicators_strengthArray);
+			}
 
 			$draw = $algo->makeDraw($venues, $teams, $adjudicators, $panel);
 			$this->saveDraw($draw);
