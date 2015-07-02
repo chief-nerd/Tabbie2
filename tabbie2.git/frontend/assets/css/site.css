@@ -62,10 +62,6 @@ body.movedown {
 
 /** BOOTSTRAP HACKS **/
 
-.navbar-fixed-top .navbar-collapse {
-    max-height: 50px !important;
-}
-
 .navbar-sub .navbar-brand {
     overflow: hidden;
 }
