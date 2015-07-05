@@ -32,6 +32,7 @@
 
 			.code {
 				float: left;
+				border: 1px solid #eee;
 			}
 		</style>
 	</head>

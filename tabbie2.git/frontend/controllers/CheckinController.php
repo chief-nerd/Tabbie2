@@ -102,39 +102,44 @@ class CheckinController extends BaseTournamentController {
 	}
 
 	public function actionGenerateBarcodes() {
-		$codes = [];
 
-		$teams = models\Team::find()->tournament($this->_tournament->id)->all();
-		$adju = models\Adjudicator::find()->tournament($this->_tournament->id)->all();
+		if (Yii::$app->request->post()) {
+			$codes = [];
 
-		$len_t = strlen($teams[0]->id) + 1;
-		$len_a = strlen($adju[0]->id) + 1;
+			$teams = models\Team::find()->tournament($this->_tournament->id)->all();
+			$adju = models\Adjudicator::find()->tournament($this->_tournament->id)->all();
 
-		for ($i = 0; $i < count($teams); $i++) {
-			if ($teams[$i]->speakerA) {
+			$len_t = strlen($teams[0]->id) + 1;
+			$len_a = strlen($adju[0]->id) + 1;
+
+			for ($i = 0; $i < count($teams); $i++) {
+				if ($teams[$i]->speakerA) {
+					$codes[] = [
+						"id" => CheckinForm::TEAMA . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
+						"label" => CheckinForm::TEAMA . " - " . $teams[$i]->speakerA->name
+					];
+				}
+				if ($teams[$i]->speakerB) {
+					$codes[] = [
+						"id" => CheckinForm::TEAMB . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
+						"label" => CheckinForm::TEAMB . " - " . $teams[$i]->speakerB->name
+					];
+				}
+			}
+
+			for ($i = 0; $i < count($adju); $i++) {
 				$codes[] = [
-					"id" => CheckinForm::TEAMA . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
-					"label" => CheckinForm::TEAMA . " - " . $teams[$i]->speakerA->name
+					"id" => CheckinForm::ADJU . "-" . str_pad($adju[$i]->id, $len_a, "0", STR_PAD_LEFT),
+					"label" => CheckinForm::ADJU . " - " . $adju[$i]->user->name
 				];
 			}
-			if ($teams[$i]->speakerB) {
-				$codes[] = [
-					"id" => CheckinForm::TEAMB . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
-					"label" => CheckinForm::TEAMB . " - " . $teams[$i]->speakerB->name
-				];
-			}
+
+			return $this->renderAjax("barcodes", [
+				"codes" => $codes,
+				"tournament" => $this->_tournament,
+			]);
 		}
 
-		for ($i = 0; $i < count($adju); $i++) {
-			$codes[] = [
-				"id" => CheckinForm::ADJU . "-" . str_pad($adju[$i]->id, $len_a, "0", STR_PAD_LEFT),
-				"label" => CheckinForm::ADJU . " - " . $adju[$i]->user->name
-			];
-		}
-
-		echo $this->renderAjax("barcodes", [
-			"codes" => $codes,
-			"tournament" => $this->_tournament,
-		]);
+		return $this->render("barcode_select");
 	}
 }
