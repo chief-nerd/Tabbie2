@@ -92,12 +92,6 @@ class Team extends \yii\db\ActiveRecord {
 	public function rules() {
 		return [
 			[['tournament_id', 'name', 'society_id'], 'required'],
-			['speakerA_id', 'required', 'whenClient' => "function (attribute, value) {
-        return $('#team-isswing')[0].checked == false;
-    }"],
-			['speakerB_id', 'required', 'whenClient' => "function (attribute, value) {
-        return $('#team-isswing')[0].checked == false;
-    }"],
 			[['speakerA_id', 'speakerB_id'], 'default'],
 			[['tournament_id', 'active', 'society_id', 'isSwing', 'language_status', 'points', 'speakerA_speaks', 'speakerB_speaks'], 'integer'],
 			[['name'], 'string', 'max' => 255]

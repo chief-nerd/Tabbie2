@@ -204,7 +204,7 @@ class AdjudicatorController extends BaseTournamentController {
 		}
 
 		if (!$model->save()) {
-			Yii::$app->session->addFlash("error", $model->getErrors("active"));
+			Yii::$app->session->addFlash("error", print_r($model->getErrors(), true));
 		}
 
 		return $this->redirect(['adjudicator/index', 'tournament_id' => $this->_tournament->id]);

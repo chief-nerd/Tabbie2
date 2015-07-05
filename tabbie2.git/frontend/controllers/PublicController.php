@@ -40,7 +40,7 @@ class PublicController extends BaseTournamentController {
 					],
 					[
 						'allow' => true,
-						'actions' => ['markmissing'],
+						'actions' => ['mark-missing'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->isTabMaster($this->_tournament));
 						}
@@ -164,7 +164,7 @@ class PublicController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionMarkmissing() {
+	public function actionMarkMissing() {
 
 		$team = Team::updateAll(["active" => 0],
 			"tournament_id = :tid AND ( speakerA_checkedin = 0 OR speakerB_checkedin = 0 )",

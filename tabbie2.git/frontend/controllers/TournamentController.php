@@ -6,13 +6,10 @@ use common\components\filter\TournamentContextFilter;
 use common\models;
 use common\models\search\TournamentSearch;
 use common\models\Tournament;
-use frontend\models\CheckinForm;
 use frontend\models\DebregsyncForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Json;
 use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
 
@@ -31,7 +28,7 @@ class TournamentController extends BaseTournamentController {
 				'rules' => [
 					[
 						'allow' => true,
-						'actions' => ['index', 'archive', 'view', 'checkin', 'testimport'],
+						'actions' => ['index', 'archive', 'view', 'testimport'],
 						'roles' => [],
 					],
 					[
@@ -41,7 +38,7 @@ class TournamentController extends BaseTournamentController {
 					],
 					[
 						'allow' => true,
-						'actions' => ['update', 'checkinreset', 'debreg-sync'],
+						'actions' => ['update', 'debreg-sync'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->isTabMaster($this->_tournament) || Yii::$app->user->isConvenor($this->_tournament));
 						}
@@ -229,58 +226,6 @@ class TournamentController extends BaseTournamentController {
 		return false;
 	}
 
-	/**
-	 * Show checkin form.
-	 *
-	 * @return mixed
-	 */
-	public function actionCheckin($id, $number = null, $camInit = false) {
-
-		if (Yii::$app->request->isAjax && $number != null) {
-			$model = new CheckinForm([
-				"number" => $number
-			]);
-			$messages = $model->save();
-			return Json::encode(["status" => 200, "msg" => $messages]);
-		}
-
-		$messages = [];
-		$model = new CheckinForm();
-
-		if (Yii::$app->request->isPost) {
-
-			$model->load(Yii::$app->request->post());
-
-			$messages = $model->save();
-			$model->number = null;
-		}
-
-
-		return $this->render('checkin', [
-			"model" => $model,
-			"tournament" => Tournament::findOne($id),
-			"messages" => $messages,
-			"camInit" => $camInit,
-		]);
-	}
-
-	/**
-	 * Show checkin form.
-	 *
-	 * @return mixed
-	 */
-	public function actionCheckinreset() {
-
-		$rows = models\Team::updateAll(["speakerA_checkedin" => 0, "speakerB_checkedin" => 0], ["tournament_id" => $this->_tournament->id]);
-		$rows += models\Adjudicator::updateAll(["checkedin" => 0], ["tournament_id" => $this->_tournament->id]);
-
-		if ($rows > 0)
-			Yii::$app->session->addFlash("success", Yii::t("app", "Checking Data reseted"));
-		else
-			Yii::$app->session->addFlash("info", Yii::t("app", "Already clean"));
-
-		return $this->redirect(["tournament/view", "id" => $this->_tournament->id]);
-	}
 
 	/**
 	 * Sync with DebReg System

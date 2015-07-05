@@ -50,29 +50,6 @@ use common\models\Team;
 			if (Yii::$app->user->isConvenor($model) || Yii::$app->user->isTabMaster($model))
 				$button_output_buffer .= "&nbsp;" . Html::a(Html::icon("film") . "&nbsp;" . Yii::t('app', 'Display Draw'), ['public/rounds', "tournament_id" => $model->id, "accessToken" => $model->accessToken], ['class' => 'btn btn-default']);
 
-			if ($model->status != \common\models\Tournament::STATUS_CLOSED) {
-				if (Yii::$app->user->isTabMaster($model) || Yii::$app->user->isConvenor($model)) {
-
-					$button_output_buffer .= '&nbsp;<div class="btn-group">' .
-						Html::a(Html::icon("cog") . "&nbsp;" . Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) .
-						'<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
-							        aria-expanded="false">
-								<span class="caret"></span>
-								<span class="sr-only"><?= Yii::t("app", "Toggle Dropdown") ?></span>
-							</button>
-							<ul class="dropdown-menu" role="menu">
-							<li>' .
-						Html::a(Html::icon("transfer") . "&nbsp;" . Yii::t('app', 'Sync with DebReg'), ["tournament/debreg-sync", "id" => $model->id]) .
-						'</li>
-							<li>' .
-						Html::a(Html::icon("export") . "&nbsp;" . Yii::t('app', 'Migrate to Tabbie 1'), ["tournament/migrate-tabbie", "id" => $model->id]) .
-						'</li>
-							</ul>
-							</div>';
-
-				}
-			}
-
 			if (strlen($button_output_buffer) > 0):
 				?>
 				<div class="panel panel-success">

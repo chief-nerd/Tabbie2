@@ -101,7 +101,7 @@ class TeamController extends BaseTournamentController {
 		}
 
 		if (!$model->save()) {
-			Yii::$app->session->addFlash("error", $model->getErrors("active"));
+			Yii::$app->session->addFlash("error", print_r($model->getErrors(), true));
 		}
 
 		return $this->redirect(['team/index', 'tournament_id' => $this->_tournament->id]);

@@ -39,18 +39,6 @@ class CheckinForm extends Model {
 		];
 	}
 
-	public static function generateKey($id, $tournament) {
-		$type = 0;
-		if (Yii::$app->user->isAdjudicator($tournament))
-			$type = self::ADJU;
-		elseif (Yii::$app->user->isTeamA($tournament))
-			$type = self::TEAMA;
-		elseif (Yii::$app->user->isTeamB($tournament))
-			$type = self::TEAMB;
-
-		return $type . '-' . $id;
-	}
-
 	public function save() {
 		$messages = [];
 		$type = substr($this->number, 0, 2);
@@ -60,9 +48,15 @@ class CheckinForm extends Model {
 			case self::ADJU: //Adjudicator
 				$adj = Adjudicator::findOne($real);
 				if ($adj instanceof Adjudicator) {
-					$adj->checkedin = true;
-					$adj->save();
-					$messages[] = ["success" => Yii::t("app", "{adju} checked in!", ["adju" => $adj->name])];
+
+					if ($adj->checkedin != true) {
+						$adj->checkedin = true;
+						$adj->save();
+						$messages[] = ["success" => Yii::t("app", "{adju} checked in!", ["adju" => $adj->name])];
+					}
+					else {
+						$messages[] = ["warning" => Yii::t("app", "{adju} already checked in!", ["adju" => $adj->name])];
+					}
 				}
 				else
 					$messages[] = ["danger" => Yii::t("app", "{id} number not valid! Not an Adjudicator!", ["id" => $real])];
@@ -72,9 +66,15 @@ class CheckinForm extends Model {
 			case self::TEAMA: //Team A
 				$team = Team::findOne($real);
 				if ($team instanceof Team) {
-					$team->speakerA_checkedin = true;
-					$team->save();
-					$messages[] = ["success" => Yii::t("app", "{speaker} checked in!", ["speaker" => $team->speakerA->name])];
+
+					if ($team->speakerA_checkedin != true) {
+						$team->speakerA_checkedin = true;
+						$team->save();
+						$messages[] = ["success" => Yii::t("app", "{speaker} checked in!", ["speaker" => $team->speakerA->name])];
+					}
+					else {
+						$messages[] = ["warning" => Yii::t("app", "{speaker} already checked in!", ["speaker" => $team->speakerA->name])];
+					}
 				}
 				else
 					$messages[] = ["danger" => Yii::t("app", "{id} number not valid! Not a Team!", ["id" => $real])];
@@ -84,9 +84,15 @@ class CheckinForm extends Model {
 			case self::TEAMB: //Team B
 				$team = Team::findOne($real);
 				if ($team instanceof Team) {
-					$team->speakerB_checkedin = true;
-					$team->save();
-					$messages[] = ["success" => Yii::t("app", "{speaker} checked in!", ["speaker" => $team->speakerB->name])];
+
+					if ($team->speakerB_checkedin != true) {
+						$team->speakerB_checkedin = true;
+						$team->save();
+						$messages[] = ["success" => Yii::t("app", "{speaker} checked in!", ["speaker" => $team->speakerB->name])];
+					}
+					else {
+						$messages[] = ["warning" => Yii::t("app", "{speaker} already checked in!", ["speaker" => $team->speakerB->name])];
+					}
 				}
 				else
 					$messages[] = ["danger" => Yii::t("app", "{id} number not valid! Not a Team!", ["id" => $real])];
@@ -98,6 +104,6 @@ class CheckinForm extends Model {
 				break;
 		}
 		return $messages;
-	}
+		}
 
 }
