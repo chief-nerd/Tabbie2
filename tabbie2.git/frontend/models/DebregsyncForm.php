@@ -18,19 +18,23 @@ use yii\helpers\ArrayHelper;
  */
 class DebregsyncForm extends Model {
 
-	const ADJU = "adjudicators";
-	const TEAM = "teams";
+	const ADJU = "Adjudicator";
+	const TEAM = "Team";
 
 	const TYPE_SOC  = 1;
 	const TYPE_USER = 2;
 	const TYPE_TEAM = 3;
 	const TYPE_ADJU = 4;
 
+
+	const DEBREG_URL = "https://debreg-test.azurewebsites.net";
 	/**
 	 * @var
 	 */
-	public $url;
-	public $key;
+	public $debregId;
+	private $key;
+	public $username;
+	public $password;
 	public $tournament;
 
 	private $FIX = [];
@@ -41,7 +45,7 @@ class DebregsyncForm extends Model {
 	public function rules() {
 		return [
 			// name, email, subject and body are required
-			[['url', 'key'], 'required'],
+			[['debregId', 'username', 'password'], 'required'],
 			[['tournament'], 'safe'],
 		];
 	}
@@ -51,7 +55,7 @@ class DebregsyncForm extends Model {
 	 */
 	public function attributeLabels() {
 		return [
-			'url' => Yii::t("app", 'DebReg URL'),
+			'debregId' => Yii::t("app", 'DebReg ID'),
 		];
 	}
 
@@ -77,33 +81,73 @@ class DebregsyncForm extends Model {
 		return [];
 	}
 
-	private function readData($url, $object, $key = null) {
-
-		$data = ["key" => $key];
+	/**
+	 * @return bool
+	 * @throws \yii\base\Exception
+	 */
+	public function getAccessKey() {
+		//grant_type=password&username=alice%40example.com&password=Password1!
+		$data = [
+			"grant_type" => "password",
+			"username" => $this->username,
+			"password" => $this->password,
+		];
 		$data = http_build_query($data);
 
 		$context = stream_context_create([
 			'http' => array(
-				'method' => 'GET',
-				'Header' => 'Content-type: application/x-www-form-urlencoded\r\n' .
-					'Content-Length: ' . strlen($data) . '\r\n',
-				'Content' => $data
+				'method' => 'POST',
+				'header' => [
+					'Content-Type: application/x-www-form-urlencoded; charset=UTF-8',
+					'Content-Length: ' . strlen($data),
+				],
+				'content' => $data,
+				'ignore_errors' => true,
 			)
 		]);
-		$json_string = @file_get_contents($url . "/" . $object);
+
+		$json_string = @file_get_contents(self::DEBREG_URL . "/token", false, $context);
+
+		if (strlen($json_string) == 0) throw new Exception("No content received at: " . self::DEBREG_URL . "/token", 404);
+		$json = json_decode($json_string);
+
+		if (isset($json->access_token) && isset($json->token_type)) {
+			$this->key = $json->token_type . ' ' . $json->access_token;
+			return true;
+		}
+
+		return $json->error;
+	}
+
+	private function readData($object, $key = null) {
+
+		$context = stream_context_create([
+			'http' => array(
+				'method' => 'GET',
+				'header' => [
+					"Authorization: " . $key,
+					"Accept: json",
+				],
+				'ignore_errors' => true,
+			)
+		]);
+		$url = self::DEBREG_URL . "/api/" . $object . "?tournamentId=" . $this->debregId;
+		$json_string = @file_get_contents($url, false, $context);
 
 		if (strlen($json_string) == 0) throw new Exception("No content received for " . $object, 404);
 
 		$json = json_decode($json_string);
 
-		if ($json->status != 200) throw new Exception("No successful data received. Error: " . $json->error_msg, $json->status);
+		if (isset($json->message)) throw new Exception($json->message);
+
+		if (count($json) == 0) throw new Exception("No json data received");
 
 		return $json;
 	}
 
 	private function syncTeams() {
 		try {
-			$json = $this->readData($this->url, self::TEAM);
+			$json = $this->readData(self::TEAM, $this->key);
 
 			$oldTeams = Team::find()
 			                ->tournament($this->tournament->id)
@@ -112,105 +156,81 @@ class DebregsyncForm extends Model {
 
 			Team::deleteAll(["tournament_id" => $this->tournament->id]);
 
-			$count = count($json->items);
+			$count = count($json);
 
 			for ($i = 0; $i < $count; $i++) {
-				$item = $json->items[$i];
+				$item = $json[$i];
 
 				$society = $this->handleSociety($item);
 
-				/*** A ***/
-				/** @var User $userA */
-				$userA = User::find()
-				             ->andWhere(["CONCAT(user.givenname,' ',user.surename)" => $item->speaker[0]->firstname . " " . $item->speaker[0]->lastname])
-				             ->orWhere(["email" => $item->speaker[0]->email])
-				             ->all();
+				$user = [];
+				/*** A & B ***/
 
-				if (count($userA) > 1) {
-					$name = $item->speaker[0]->firstname . " " . $item->speaker[0]->lastname;
-					if (isset($this->FIX['t'][$name])) {
-						$userA = User::findOne($this->FIX['t'][$name]);
-						if ($userA instanceof User)
-							unset($this->FIX['t'][$name]);
-						else
-							throw new Exception("User A no resolved");
-					}
-					else {
+				foreach (["A" => 0, "B" => 1] as $key => $id) {
+					/** @var User $user [$id] */
 
-						$soc = (isset($society->fullname)) ? $society->fullname : $item->society->name;
+					if (!isset($item->speakers[$id])) continue;
 
-						$matches = [];
-						foreach ($userA as $match) {
-							$matches[$match->id] = $match->givenname . " " . $match->surename . " (" . $soc . ")";
+					$speaker = $item->speakers[$id];
+					$u_first = $speaker->firstname;
+					$u_last = $speaker->lastname;
+					$u_name = $u_first . " " . $u_last;
+					$u_email = $speaker->eMail;
+					$org_name = $item->organization->name;
+
+					$user[$id] = User::find()
+					                 ->andWhere(["CONCAT(user.givenname,' ',user.surename)" => $u_name])
+					                 ->orWhere(["email" => $u_email])
+					                 ->all();
+
+					if (count($user[$id]) > 1) {
+						if (isset($this->FIX['t'][$u_name])) {
+							$user[$id] = User::findOne($this->FIX['t'][$u_name]);
+							if ($user[$id] instanceof User)
+								unset($this->FIX['t'][$u_name]);
+							else
+								throw new Exception("User " . $key . " no resolved");
 						}
-						$this->FIX['t'][$item->speaker[0]->firstname . " " . $item->speaker[0]->lastname] = [
-							"key" => $item->speaker[0]->firstname . " " . $item->speaker[0]->lastname,
-							"matches" => $matches,
-							"msg" => "Multiple user matches for " . $item->speaker[0]->firstname . " " . $item->speaker[0]->lastname . " (" . $item->society->name . ")"
-						];
-					}
-				}
-				else {
-					if (count($userA) == 0) {
-						$userA = User::NewViaImport($item->speaker[0]->firstname, $item->speaker[0]->lastname, $item->speaker[0]->email, $society->id);
-					}
-					else {
-						$userA = $userA[0];
-					}
-				}
+						else {
 
-				/*** B ***/
-				/** @var User $userB */
-				$userB = User::find()
-				             ->andWhere(["CONCAT(user.givenname,' ',user.surename)" => $item->speaker[1]->firstname . " " . $item->speaker[1]->lastname])
-				             ->orWhere(["email" => $item->speaker[1]->email])
-				             ->all();
+							$soc = (isset($society->fullname)) ? $society->fullname : $org_name;
 
-				if (count($userB) > 1) {
-					$name = $item->speaker[1]->firstname . " " . $item->speaker[1]->lastname;
-					if (isset($this->FIX['t'][$name])) {
-						$user = User::findOne($this->FIX['t'][$name]);
-						if ($user instanceof User)
-							unset($this->FIX['t'][$name]);
-						else
-							throw new Exception("User B no resolved");
-					}
-					else {
-
-						$soc = (isset($society->fullname)) ? $society->fullname : $item->society->name;
-
-						$matches = [];
-						foreach ($userB as $match) {
-							$matches[$match->id] = $match->givenname . " " . $match->surename . " (" . $soc . ")";
+							$matches = [];
+							foreach ($user[$id] as $match) {
+								$matches[$match->id] = $match->givenname . " " . $match->surename . " (" . $soc . ")";
+							}
+							$this->FIX['t'][$u_name] = [
+								"key" => $u_name,
+								"matches" => $matches,
+								"msg" => "Multiple user matches for " . $u_name . " (" . $org_name . ")"
+							];
 						}
-						$this->FIX['t'][$item->speaker[1]->firstname . " " . $item->speaker[1]->lastname] = [
-							"key" => $item->speaker[1]->firstname . " " . $item->speaker[1]->lastname,
-							"matches" => $matches,
-							"msg" => "Multiple user matches for " . $item->speaker[1]->firstname . " " . $item->speaker[1]->lastname . " (" . $item->society->name . ")"
-						];
-					}
-				}
-				else {
-					if (count($userB) == 0) {
-						$userB = User::NewViaImport($item->speaker[1]->firstname, $item->speaker[1]->lastname, $item->speaker[1]->email, $society->id);
 					}
 					else {
-						$userB = $userB[0];
+						if (count($user[$id]) == 0) {
+							$user[$id] = User::NewViaImport($u_first, $u_last, $u_email, $society->id, true, $this->tournament);
+						}
+						else {
+							$user[$id] = $user[$id][0];
+						}
 					}
 				}
 
-				if (!is_array($userA) && !is_array($userB) && $userA instanceof User && $userB instanceof User) {
+				if ((isset($user[0]) && $user[0] instanceof User) || (isset($user[1]) && $user[1] instanceof User)) {
 					$team = null;
 
-					if ($old = $this->helperGetTeam($oldTeams, $userA->id, $userB->id)) {
+					$uAID = (isset($user[0]) && $user[0] instanceof User) ? $user[0]->id : null;
+					$uBID = (isset($user[1]) && $user[1] instanceof User) ? $user[1]->id : null;
+
+					if ($old = $this->helperGetTeam($oldTeams, $uAID, $uBID)) {
 						$team = new Team($old);
 					}
 					else if ($society instanceof Society) {
 						$team = new Team([
 							"tournament_id" => $this->tournament->id,
 							"name" => $item->name,
-							"speakerA_id" => $userA->id,
-							"speakerB_id" => $userB->id,
+							"speakerA_id" => $uAID,
+							"speakerB_id" => $uBID,
 							"society_id" => $society->id,
 						]);
 					}
@@ -226,13 +246,15 @@ class DebregsyncForm extends Model {
 		} catch (Exception $ex) {
 			Yii::$app->session->addFlash("error", $ex->getMessage() . " on " . __FUNCTION__ . ":" . $ex->getLine());
 		}
+
+		return false;
 	}
 
 	private function syncAdjudicator() {
 		try {
-			$unresolved = [];
-			$json = $this->readData($this->url, self::ADJU);
-			$count = count($json->items);
+
+			$json = $this->readData(self::ADJU, $this->key);
+			$count = count($json);
 
 			$oldAdjus = Adjudicator::find()
 			                       ->tournament($this->tournament->id)
@@ -243,39 +265,46 @@ class DebregsyncForm extends Model {
 
 
 			for ($i = 0; $i < $count; $i++) {
-				$item = $json->items[$i];
-				$item->name = $item->firstname . " " . $item->lastname;
+				$item = $json[$i];
+
+				$u = $item->user;
+
+				$u_first = $u->firstname;
+				$u_last = $u->lastname;
+				$u_name = $u_first . " " . $u_last;
+				$u_email = $u->eMail;
+
 
 				$society = $this->handleSociety($item);
 
 				$user = User::find()
-				            ->andWhere(["CONCAT(user.givenname,' ',user.surename)" => $item->name])
-				            ->orWhere(["email" => $item->email])
+					->andWhere(["CONCAT(user.givenname,' ',user.surename)" => $u_name])
+					->orWhere(["email" => $u_email])
 				            ->all();
 
 				if (count($user) > 1) {
-					if (isset($this->FIX['a'][$item->name])) {
-						$user = User::findOne($this->FIX['a'][$item->name]);
+					if (isset($this->FIX['a'][$u_name])) {
+						$user = User::findOne($this->FIX['a'][$u_name]);
 						if ($user instanceof User)
-							unset($this->FIX['a'][$item->name]);
+							unset($this->FIX['a'][$u_name]);
 						else
-							throw new Exception("User B no resolved");
+							throw new Exception("User no resolved");
 					}
 					else {
 						$matches = [];
 						foreach ($user as $match) {
 							$matches[$match->id] = $match->givenname . " " . $match->surename . " (" . $match->email . ")";
 						}
-						$this->FIX['a'][$item->name] = [
-							"key" => $item->name,
-							"msg" => "Multiple user found! Select the right " . $item->name,
+						$this->FIX['a'][$u_name] = [
+							"key" => $u_name,
+							"msg" => "Multiple user found! Select the right " . $u_name,
 							"matches" => $matches,
 						];
 					}
 				}
 				else {
 					if (count($user) == 0) {
-						$user = User::NewViaImport($item->firstname, $item->lastname, $item->email, $society->id);
+						$user = User::NewViaImport($u_first, $u_last, $u_email, $society->id, true, $this->tournament);
 					}
 					else {
 						$user = $user[0];
@@ -306,6 +335,8 @@ class DebregsyncForm extends Model {
 		(Exception $ex) {
 			Yii::$app->session->addFlash("error", $ex->getMessage() . " on " . __FUNCTION__ . ":" . $ex->getLine());
 		}
+
+		return false;
 	}
 
 	private function helperGetAdju($array, $id) {
@@ -325,15 +356,25 @@ class DebregsyncForm extends Model {
 	}
 
 	private function handleSociety($item) {
-		$societies = Society::find()->where(["fullname" => $item->society->name])->all();
+		$org = $item->organization;
+		$org_name = $org->name;
+		$org_abr = $org->address->city;
+		$org_city = $org->address->city;
+		$org_country = $org->address->country;
+
+		$societies = Society::find()->where(["fullname" => $org_name])->all();
 
 		if (count($societies) == 0) {
-			$country = Country::find()->where(["like", "name", $item->society->country])->one();
+
+			if (strlen($org_country) > 0)
+				$country = Country::find()->where(["like", "name", $org_country])->one();
+			else
+				$country = Country::COUNTRY_UNKNOWN_ID;
 
 			$society = new Society([
-				"fullname" => $item->society->name,
-				"abr" => (strlen($item->society->abr) > 0) ? $item->society->abr : Society::generateAbr($item->society->name),
-				"city" => (strlen($item->society->city) > 0) ? $item->society->city : null,
+				"fullname" => $org_name,
+				"abr" => (strlen($org_abr) > 0) ? $org_abr : Society::generateAbr($org_name),
+				"city" => (strlen($org_city) > 0) ? $org_city : null,
 				"country_id" => ($country instanceof Country) ? $country->id : Country::COUNTRY_UNKNOWN_ID,
 			]);
 			if (!$society->save())
@@ -347,10 +388,10 @@ class DebregsyncForm extends Model {
 		}
 		else {
 			//Do we find a FIX?
-			if (isset($this->FIX['s'][$item->society->name])) {
-				$society = Society::findOne($this->FIX['s'][$item->society->name]); //this has the ID
+			if (isset($this->FIX['s'][$org_name])) {
+				$society = Society::findOne($this->FIX['s'][$org_name]); //this has the ID
 				if ($society instanceof Society) {
-					unset($this->FIX['s'][$item->society->name]); //Fixed
+					unset($this->FIX['s'][$org_name]); //Fixed
 					return $society;
 				}
 			}
@@ -359,9 +400,9 @@ class DebregsyncForm extends Model {
 				foreach ($societies as $match) {
 					$matches[$match->id] = $match->fullname . " (" . $match->abr . ")";
 				}
-				$this->FIX['s'][$item->society->name] = [
-					"key" => $item->society->name,
-					"msg" => "Multiple society found! Select the right " . $item->society->name,
+				$this->FIX['s'][$org_name] = [
+					"key" => $org_name,
+					"msg" => "Multiple society found! Select the right " . $org_name,
 					"matches" => $matches,
 				];
 			}

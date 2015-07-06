@@ -252,22 +252,30 @@ class TournamentController extends BaseTournamentController {
 
 			$model->load(Yii::$app->request->post());
 			$model->tournament = $this->_tournament;
-			$unresolved = $model->doSync($a_fix, $t_fix, $s_fix);
 
-			if (count($unresolved) == 0) {
-				Yii::$app->session->addFlash("success", Yii::t("app", "DebReg Syncing successful"));
-				return $this->redirect(['view', 'id' => $tournament->id]);
+			$error = $model->getAccessKey();
+
+			if ($error === true) {
+				$unresolved = $model->doSync($a_fix, $t_fix, $s_fix);
+
+				if (count($unresolved) == 0) {
+					Yii::$app->session->addFlash("success", Yii::t("app", "DebReg Syncing successful"));
+					return $this->redirect(['view', 'id' => $tournament->id]);
+				}
+				else
+					return $this->render('sync_resolve', [
+						'unresolved' => $unresolved,
+						'tournament' => $tournament,
+						'model' => $model
+					]);
 			}
-			else
-				return $this->render('sync_resolve', [
-					'unresolved' => $unresolved,
-					'tournament' => $tournament,
-					'model' => $model
-				]);
+			else {
+				$model->addError("password", $error);
+			}
 
 		}
 
-		return $this->render('sync', [
+		return $this->render('sync_login', [
 			'model' => $model,
 			'tournament' => $tournament]);
 	}

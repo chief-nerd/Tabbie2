@@ -191,10 +191,11 @@ class User extends ActiveRecord implements IdentityInterface {
 
 	/**
 	 * Finds user by email
+
 	 *
-	 * @param string $email
+*@param string $email
 	 *
-*@return static|null
+	 * @return static|null
 	 */
 	public static function findByEmail($email) {
 		return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
@@ -570,7 +571,19 @@ class User extends ActiveRecord implements IdentityInterface {
 		return substr(md5(uniqid()), 0, $length);
 	}
 
-	public static function NewViaImport($givenname, $surename, $email, $societyID = null, $send_mail = true) {
+	/**
+	 * Creates a new User from Import and send a mail with credentials
+	 *
+	 * @param string     $givenname
+	 * @param string     $surename
+	 * @param string     $email
+	 * @param integer    $societyID
+	 * @param bool       $send_mail
+	 * @param Tournament $tournament
+	 *
+	 * @return bool|\common\models\User
+	 */
+	public static function NewViaImport($givenname, $surename, $email, $societyID = null, $send_mail = true, $tournament = null) {
 		$userA = new \common\models\User();
 		$userA->givenname = $givenname;
 		$userA->surename = $surename;
@@ -595,7 +608,7 @@ class User extends ActiveRecord implements IdentityInterface {
 			}
 
 			if ($send_mail) {
-				self::sendNewUserMail($userA, $password);
+				self::sendNewUserMail($userA, $password, $tournament);
 			}
 			return $userA;
 		}
@@ -609,13 +622,15 @@ class User extends ActiveRecord implements IdentityInterface {
 	/**
 	 * Sends mail to the new User
 	 *
-	 * @param User   $user
-	 * @param string $password
+	 * @param User       $user
+	 * @param string     $password
+	 * @param Tournament $tournament
 	 */
-	public static function sendNewUserMail($user, $password) {
+	public static function sendNewUserMail($user, $password, $tournament = null) {
 		\Yii::$app->mailer->compose('import_user_created', [
 			'user' => $user,
 			'password' => $password,
+			'tournament' => $tournament
 		])->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->params["appName"] . ' robot'])
 		                  ->setTo([$user->email => $user->name])
 		                  ->setSubject(Yii::t("email", 'User Account for {user_name}', ["user_name" => $user->name]))

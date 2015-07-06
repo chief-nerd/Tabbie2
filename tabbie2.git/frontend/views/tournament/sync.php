@@ -19,9 +19,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<?php $form = ActiveForm::begin(['id' => 'debregsync-form']); ?>
 
-	<?= $form->field($model, 'url')->textInput(['maxlength' => 255]) ?>
+	<?= $form->field($model, 'username')->textInput(['maxlength' => 255]) ?>
 
-	<?= $form->field($model, 'key')->textInput(['maxlength' => 255]) ?>
+	<?= $form->field($model, 'password')->textInput(['maxlength' => 255]) ?>
 
 	<?= Html::hiddenInput("mode", "sync") ?>
 
