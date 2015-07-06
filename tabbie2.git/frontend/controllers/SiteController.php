@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\InSociety;
 use common\models\LoginForm;
 use common\models\Society;
 use frontend\models\ContactForm;
@@ -10,6 +11,7 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use Yii;
 use yii\base\InvalidParamException;
+use yii\db\Query;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\BadRequestHttpException;
@@ -127,7 +129,15 @@ class SiteController extends Controller {
 	}
 
 	public function actionAbout() {
-		return $this->render('about');
+
+		$societies = Society::find()->asArray()->all();
+		for ($i = 0; $i < count($societies); $i++) {
+			$societies[$i]["amount"] = InSociety::find()->where(["society_id" => $societies[$i]["id"]])->count();
+		}
+
+		return $this->render('about', [
+			"societies" => $societies
+		]);
 	}
 
 	public function actionHowTo() {

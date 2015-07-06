@@ -76,26 +76,22 @@ $this->title = Yii::$app->params["slogan"];
 
 		<div class="row">
 			<div class="col-lg-4">
-				<h2>New</h2>
+				<h2>Modern BP Tabbing Solution</h2>
 
-				<p>All new on a centraliesed webserver. <br>Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
-					sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-					At vero eos et accusam et justo duo dolores et ea rebum.</p>
-
+				<p>Mobile Webapp, e-Ballots and e-Feedback all included. No setup required! Just register, import your
+					data via CSV or DebReg link and start tabbing.</p>
 			</div>
 			<div class="col-lg-4">
-				<h2>Way</h2>
+				<h2>Community Project</h2>
 
-				<p>Viewer / App / Modules ... there are many ways to perfection<br>Lorem ipsum dolor sit amet,
-					consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna
-					aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
+				<p>The Tabbie2 source code will be made open source after Vienna EUDC to help programmers from the
+					community to actively engage in the project.</p>
 			</div>
 			<div class="col-lg-4">
-				<h2>Tabbing</h2>
+				<h2>Fair and Fast</h2>
 
-				<p>Rock solid tabbing algorithm based on the famous Tabbie software<br>Lorem ipsum dolor sit amet,
-					consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna
-					aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.</p>
+				<p>Rock solid tabbing algorithm based on the famous Tabbie software. It even provides Gender Balancing
+					and other cool features.</p>
 			</div>
 		</div>
 
