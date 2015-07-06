@@ -8,23 +8,34 @@ use yii\data\ActiveDataProvider;
 use frontend\controllers\BasetournamentController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * SpecialNeedsController implements the CRUD actions for SpecialNeeds model.
  */
 class SpecialNeedsController extends BasetournamentController
 {
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
-                ],
-            ],
-        ];
-    }
+	public function behaviors() {
+		return [
+			'access' => [
+				'class' => AccessControl::className(),
+				'rules' => [
+					[
+						'allow' => true,
+						'matchCallback' => function ($rule, $action) {
+							return (Yii::$app->user->isAdmin());
+						}
+					],
+				],
+			],
+			'verbs' => [
+				'class' => VerbFilter::className(),
+				'actions' => [
+					'logout' => ['post'],
+				],
+			],
+		];
+	}
 
     /**
      * Lists all SpecialNeeds models.

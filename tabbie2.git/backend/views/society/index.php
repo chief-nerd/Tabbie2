@@ -21,6 +21,11 @@
 				'modelClass' => 'Society',
 			]), ['create'], ['class' => 'btn btn-success'])
 		?>
+		<?=
+		Html::a(Yii::t('app', 'Import {modelClass}', [
+			'modelClass' => 'Society',
+		]), ['import'], ['class' => 'btn btn-default'])
+		?>
 	</p>
 
 	<?

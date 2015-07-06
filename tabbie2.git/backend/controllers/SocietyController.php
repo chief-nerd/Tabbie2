@@ -8,11 +8,13 @@ use common\models\Tournament;
 use Yii;
 use common\models\Society;
 use common\models\search\SocietySearch;
+use yii\base\Exception;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use common\models\Country;
+use yii\filters\AccessControl;
 
 /**
  * SocietyController implements the CRUD actions for Society model.
@@ -21,10 +23,21 @@ class SocietyController extends Controller {
 
 	public function behaviors() {
 		return [
+			'access' => [
+				'class' => AccessControl::className(),
+				'rules' => [
+					[
+						'allow' => true,
+						'matchCallback' => function ($rule, $action) {
+							return (Yii::$app->user->isAdmin());
+						}
+					],
+				],
+			],
 			'verbs' => [
 				'class' => VerbFilter::className(),
 				'actions' => [
-					'delete' => ['post'],
+					'logout' => ['post'],
 				],
 			],
 		];
@@ -131,6 +144,68 @@ class SocietyController extends Controller {
 		$this->findModel($id)->delete();
 
 		return $this->redirect(['index']);
+	}
+
+	public function actionImport() {
+		if (Yii::$app->request->isPost) {
+			$file = \yii\web\UploadedFile::getInstanceByName('csvFile');
+			$import = [];
+			$row = 0;
+			if ($file && ($handle = fopen($file->tempName, "r")) !== false) {
+				while (($data = fgetcsv($handle, 1000, ";")) !== false) {
+
+					if ($row == 0) { //Don't use first column
+						$row++;
+						continue;
+					}
+
+					if (($num = count($data)) != 4) {
+						throw new \yii\base\Exception("500", Yii::t("app", "File Syntax Wrong"));
+					}
+					$import[] = [
+						"fullname" => $data[0],
+						"abr" => $data[1],
+						"city" => $data[2],
+						"country_id" => $data[3],
+					];
+					$row++;
+				}
+				fclose($handle);
+			}
+			$c_import = count($import);
+			for ($i = 0; $i < $c_import; $i++) {
+				$l = $import[$i];
+
+				$country = Country::find()->where(["LIKE", "name", $l['country_id']])->one();
+				if ($country instanceof Country)
+					$l["country_id"] = $country->id;
+				else
+					$l["country_id"] = Country::COUNTRY_UNKNOWN_ID;
+
+				$socMatch = Society::find()
+				                   ->where(["fullname" => $l['fullname']])
+				                   ->orWhere(["abr" => $l['abr']])
+				                   ->all();
+
+				if (count($socMatch) == 0) {
+					$soc = new Society($l);
+					if (!$soc->save())
+						throw new Exception(print_r($soc->getErrors(), true));
+				}
+				else if (count($socMatch) == 1) {
+					//already exist
+					$soc = $socMatch[0];
+					$soc->load($l);
+					if (!$soc->save())
+						throw new Exception(print_r($soc->getErrors(), true));
+				}
+				else {
+					throw new Exception("Multiple Matches: " . print_r($socMatch, true));
+				}
+			}
+		}
+
+		return $this->render("import");
 	}
 
 	/**
