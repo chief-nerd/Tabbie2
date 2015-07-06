@@ -319,7 +319,7 @@ class User extends ActiveRecord implements IdentityInterface {
 	}
 
 	public function generateUrlSlug() {
-		$candidate = $this->givenname . "." . $this->surename;
+		$candidate = str_replace(" ", ".", $this->givenname) . "." . str_replace(" ", ".", $this->surename);
 		$counter = 0;
 		do {
 			$found = static::findbyUrlSlug($candidate);
