@@ -47,6 +47,9 @@ class SocietySearch extends Society {
 
 		$dataProvider = new ActiveDataProvider([
 			'query' => $query,
+			'pagination' => [
+				'pageSize' => Yii::$app->params["societies_per_page"],
+			],
 		]);
 
 		$dataProvider->setSort([
