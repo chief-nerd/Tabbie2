@@ -13,13 +13,13 @@ google.setOnLoadCallback(drawMarkersMap);
 
 function drawMarkersMap() {
       var data = google.visualization.arrayToDataTable([
-        ['City', 'Amount Debaters'],
+        ['City', 'Society name', 'Registered debaters'],
         ";
 
 foreach ($societies as $s) {
 	if ($s["city"] == "") continue;
 
-	$googleMaps .= "['" . addslashes($s["city"]) . "',  " . $s["amount"] . "], ";
+	$googleMaps .= "['" . addslashes($s["city"]) . "', '" . addslashes($s["fullname"]) . "',  " . $s["amount"] . "], ";
 }
 
 $googleMaps .= "
@@ -27,7 +27,7 @@ $googleMaps .= "
 
       var options = {
         sizeAxis: { minValue: 0, maxValue: 100 },
-        region: '150', // Western Europe
+        region: '150', // Europe
         displayMode: 'markers',
         colorAxis: {colors: ['#e7711c', '#4374e0']} // orange to blue
       };
