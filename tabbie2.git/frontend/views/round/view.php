@@ -241,6 +241,30 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 		],
 		[
 			'class' => '\kartik\grid\DataColumn',
+			'label' => Yii::t("app", 'Energy'),
+			'format' => 'raw',
+			'value' => function ($model, $key, $index, $widget) {
+
+				$ret = "";
+				$found_warning = false;
+				$found_error = false;
+				$msg = json_decode($model->messages);
+				foreach ($msg as $m) {
+					if ($m->key == "error") $found_error = true;
+					if ($m->key == "warning") $found_warning = true;
+				}
+
+				if ($found_warning)
+					$ret .= "&nbsp;" . \kartik\helpers\Html::icon("warning-sign", ["class" => "text-warning"]);
+				if ($found_error)
+					$ret .= "&nbsp;" . \kartik\helpers\Html::icon("exclamation-sign", ["class" => "text-danger"]);
+
+				return $ret;
+			},
+			'width' => "20px",
+		],
+		[
+			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'language_status',
 			'label' => Yii::t("app", 'Language'),
 			'value' => function ($model, $key, $index, $widget) {
