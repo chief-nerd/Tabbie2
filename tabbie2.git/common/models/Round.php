@@ -365,7 +365,7 @@ class Round extends \yii\db\ActiveRecord {
 	}
 
 	public function improveAdjudicator($runs) {
-		//set_time_limit(0); //Prevent timeout ... this can take time
+		set_time_limit(0); //Prevent timeout ... this can take time
 
 		/** @var DrawLine[] $DRAW */
 		$DRAW = [];
@@ -380,15 +380,16 @@ class Round extends \yii\db\ActiveRecord {
 		Yii::beginProfile("Reconstruct DrawArray");
 		$models = $this->debates;
 		foreach ($models as $model) {
+
 			/** @var Debate $model */
 			$line = new DrawLine([
 				"id" => $model->id,
-				"venue" => $model->venue,
+				"venue" => $model->venue->attributes,
 				"teamsByArray" => [
-					Team::OG => $model->og_team,
-					Team::OO => $model->oo_team,
-					Team::CG => $model->cg_team,
-					Team::CO => $model->co_team,
+					Team::OG => $model->og_team->attributes,
+					Team::OO => $model->oo_team->attributes,
+					Team::CG => $model->cg_team->attributes,
+					Team::CO => $model->co_team->attributes,
 				],
 				"panelID" => $model->panel_id,
 				"energyLevel" => $model->energy,
@@ -398,10 +399,23 @@ class Round extends \yii\db\ActiveRecord {
 			/** @var Panel $panel */
 			foreach ($model->panel->adjudicatorInPanels as $inPanel) {
 
+				$adju = $inPanel->adjudicator;
+				$adjudicator = $adju->attributes;
+				$adjudicator["name"] = $adju->name;
+
+				$strikedAdju = $adju->getStrikedAdjudicators()->asArray()->all();
+				$adjudicator["strikedAdjudicators"] = $strikedAdju;
+
+				$strikedTeam = $adju->getStrikedTeams()->asArray()->all();
+				$adjudicator["strikedTeams"] = $strikedTeam;
+
+				$adjudicator["pastAdjudicatorIDs"] = $adju->getPastAdjudicatorIDs();
+				$adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs();
+
 				if ($inPanel->function == Panel::FUNCTION_CHAIR)
-					$line->addChair($inPanel->adjudicator);
+					$line->addChair($adjudicator);
 				else
-					$line->addAdjudicator($inPanel->adjudicator);
+					$line->addAdjudicator($adjudicator);
 			}
 			$DRAW[] = $line;
 		}
