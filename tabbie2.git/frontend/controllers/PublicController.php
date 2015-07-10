@@ -167,7 +167,7 @@ class PublicController extends BaseTournamentController {
 	public function actionMarkMissing() {
 
 		$team = Team::updateAll(["active" => 0],
-			"tournament_id = :tid AND ( speakerA_checkedin = 0 OR speakerB_checkedin = 0 )",
+			"tournament_id = :tid AND ( (speakerA_checkedin = 0) OR (speakerB_checkedin = 0) )",
 			[":tid" => $this->_tournament->id]
 		);
 		$adju = Adjudicator::updateAll(["active" => 0], ["tournament_id" => $this->_tournament->id, "checkedin" => 0]);

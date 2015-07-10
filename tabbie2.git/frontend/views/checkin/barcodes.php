@@ -41,7 +41,7 @@
 foreach ($codes as $c): ?>
 	<div class="code">
 		<?
-		echo \jakobreiter\quaggajs\BarcodeFactory::generateIMG($c["id"], $c["label"]);
+		echo \jakobreiter\quaggajs\BarcodeFactory::generateIMG($c["id"], $c["id"] . " " . $c["label"]);
 		?>
 	</div>
 <? endforeach; ?>

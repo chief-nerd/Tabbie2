@@ -42,7 +42,7 @@ class CheckinForm extends Model {
 	public function save() {
 		$messages = [];
 		$type = substr($this->number, 0, 2);
-		$real = substr($this->number, 3, strlen($this->number));
+		$real = intval(substr($this->number, 3, strlen($this->number)));
 
 		switch ($type) {
 			case self::ADJU: //Adjudicator
@@ -69,6 +69,7 @@ class CheckinForm extends Model {
 
 					if ($team->speakerA_checkedin != true) {
 						$team->speakerA_checkedin = true;
+						if ($team->speakerB_id === null) $team->speakerB_checkedin = true; //Ironman Team
 						$team->save();
 						$messages[] = ["success" => Yii::t("app", "{speaker} checked in!", ["speaker" => $team->speakerA->name])];
 					}
@@ -87,6 +88,7 @@ class CheckinForm extends Model {
 
 					if ($team->speakerB_checkedin != true) {
 						$team->speakerB_checkedin = true;
+						if ($team->speakerA_id === null) $team->speakerA_checkedin = true; //Ironman Team
 						$team->save();
 						$messages[] = ["success" => Yii::t("app", "{speaker} checked in!", ["speaker" => $team->speakerB->name])];
 					}

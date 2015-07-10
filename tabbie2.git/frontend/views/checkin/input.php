@@ -33,7 +33,9 @@ $this->registerJs("document.getElementById('checkinform-number').focus();", \yii
 
 		<div class="col-xs-12 col-sm-6">
 			<div class="col-xs-12">
-				<?= $form->field($model, 'number') ?>
+				<?= $form->field($model, 'number')->widget(\yii\widgets\MaskedInput::className(), [
+					'mask' => 'AA-99999999'
+				]) ?>
 			</div>
 			<div class="col-xs-12">
 				<?= Html::submitButton(Html::icon("send") . "&nbsp;" . Yii::t("app", 'Submit'), [

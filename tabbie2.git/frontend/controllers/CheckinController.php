@@ -116,13 +116,13 @@ class CheckinController extends BaseTournamentController {
 				if ($teams[$i]->speakerA) {
 					$codes[] = [
 						"id" => CheckinForm::TEAMA . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
-						"label" => CheckinForm::TEAMA . " - " . $teams[$i]->speakerA->name
+						"label" => $teams[$i]->speakerA->name
 					];
 				}
 				if ($teams[$i]->speakerB) {
 					$codes[] = [
 						"id" => CheckinForm::TEAMB . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
-						"label" => CheckinForm::TEAMB . " - " . $teams[$i]->speakerB->name
+						"label" => $teams[$i]->speakerB->name
 					];
 				}
 			}
@@ -130,7 +130,7 @@ class CheckinController extends BaseTournamentController {
 			for ($i = 0; $i < count($adju); $i++) {
 				$codes[] = [
 					"id" => CheckinForm::ADJU . "-" . str_pad($adju[$i]->id, $len_a, "0", STR_PAD_LEFT),
-					"label" => CheckinForm::ADJU . " - " . $adju[$i]->user->name
+					"label" => $adju[$i]->user->name
 				];
 			}
 
