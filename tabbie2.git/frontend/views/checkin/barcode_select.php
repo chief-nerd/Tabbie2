@@ -9,7 +9,7 @@
 use kartik\widgets\ActiveForm;
 use kartik\helpers\Html;
 use yii\web\JsExpression;
-use yii\helpers\Url
+use yii\helpers\Url;
 
 ?>
 <div id="barcodeForm">
@@ -49,7 +49,7 @@ SCRIPT;
 						'data' => new JsExpression('function(term,page) { return {search:term}; }'),
 						'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
 					],
-					'initSelection' => new JsExpression($initUserScript)
+					'initSelection' => new JsExpression($initUserScript),
 				]
 			]); ?>
 		</div>
