@@ -118,6 +118,10 @@ body.movedown {
     top: 50px;
 }
 
+.nav-tabs {
+    margin-bottom: 20px;
+}
+
 .wrap {
     min-height: 100%;
     height: auto;
