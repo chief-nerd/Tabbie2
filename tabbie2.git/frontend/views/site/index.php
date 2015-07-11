@@ -23,37 +23,39 @@ $this->title = Yii::$app->params["slogan"];
 				$fix = false;
 
 				foreach ($tournaments as $index => $t):
-					?>
-					<a href="<?= \yii\helpers\Url::to(["tournament/view", "id" => $t->id]) ?>">
-						<?
-						$left = $amount % 4;
-						if (($amount - $index) >= $left + 1)
-							$cols = $full_cols;
-						else {
-							if ($left == 3 && !$fix) {
-								$cols = "col-xs-12 col-sm-6 col-md-4 col-lg-4";
-								$fix = true;
-							}
-							if ($left == 2 && !$fix) {
-								$cols = "col-xs-12 col-sm-6 col-md-6 col-lg-6";
-								$fix = true;
-							}
-							if ($left == 1 && !$fix) {
-								$cols = "col-xs-12 col-sm-12 col-md-12 col-lg-12";
-								$fix = true;
-							}
-							if ($left == 0 && !$fix) {
-								$cols = $full_cols;
-								$fix = true;
-							}
-						}
+					if ($t instanceof \common\models\Tournament):
 						?>
-						<div class="tournament <?= $cols ?> <?= $posCorrect ?>">
-							<?= $t->getLogoImage(null, 100) ?>
+						<a href="<?= \yii\helpers\Url::to(["tournament/view", "id" => $t->id]) ?>">
+							<?
+							$left = $amount % 4;
+							if (($amount - $index) >= $left + 1)
+								$cols = $full_cols;
+							else {
+								if ($left == 3 && !$fix) {
+									$cols = "col-xs-12 col-sm-6 col-md-4 col-lg-4";
+									$fix = true;
+								}
+								if ($left == 2 && !$fix) {
+									$cols = "col-xs-12 col-sm-6 col-md-6 col-lg-6";
+									$fix = true;
+								}
+								if ($left == 1 && !$fix) {
+									$cols = "col-xs-12 col-sm-12 col-md-12 col-lg-12";
+									$fix = true;
+								}
+								if ($left == 0 && !$fix) {
+									$cols = $full_cols;
+									$fix = true;
+								}
+							}
+							?>
+							<div class="tournament <?= $cols ?> <?= $posCorrect ?>">
+								<?= $t->getLogoImage(null, 100) ?>
 
-							<h2><?= $t->name ?></h2>
-						</div>
-					</a>
+								<h2><?= $t->name ?></h2>
+							</div>
+						</a>
+					<? endif; ?>
 				<? endforeach; ?>
 			</div>
 		<? endif; ?>
