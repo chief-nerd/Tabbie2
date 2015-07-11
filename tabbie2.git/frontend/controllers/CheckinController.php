@@ -40,7 +40,7 @@ class CheckinController extends BaseTournamentController {
 						'allow' => true,
 						'actions' => ['reset', 'generate-barcodes', 'generate-badges'],
 						'matchCallback' => function ($rule, $action) {
-							return (Yii::$app->user->isTabMaster($this->_tournament));
+							return ($this->_tournament->isTabMaster(Yii::$app->user->id) || Yii::$app->user->isTabMaster($this->_tournament));
 						}
 					],
 				],
@@ -104,7 +104,10 @@ class CheckinController extends BaseTournamentController {
 	public function actionGenerateBarcodes() {
 
 		if (Yii::$app->request->post()) {
+			$offset = Yii::$app->request->post("offset", 0);
 			$codes = [];
+
+			$userID = Yii::$app->request->post("userID", null);
 
 			$teams = models\Team::find()->tournament($this->_tournament->id)->all();
 			$adju = models\Adjudicator::find()->tournament($this->_tournament->id)->all();
@@ -114,12 +117,14 @@ class CheckinController extends BaseTournamentController {
 
 			for ($i = 0; $i < count($teams); $i++) {
 				if ($teams[$i]->speakerA) {
-					$codes[] = [
-						"id" => CheckinForm::TEAMA . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
-						"label" => $teams[$i]->speakerA->name
-					];
+					if ($userID == null || $userID == $teams[$i]->speakerA_id)
+						$codes[] = [
+							"id" => CheckinForm::TEAMA . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
+							"label" => $teams[$i]->speakerA->name
+						];
 				}
 				if ($teams[$i]->speakerB) {
+					if ($userID == null || $userID == $teams[$i]->speakerA_id)
 					$codes[] = [
 						"id" => CheckinForm::TEAMB . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
 						"label" => $teams[$i]->speakerB->name
@@ -128,6 +133,7 @@ class CheckinController extends BaseTournamentController {
 			}
 
 			for ($i = 0; $i < count($adju); $i++) {
+				if ($userID == null || $userID == $adju[$i]->user_id)
 				$codes[] = [
 					"id" => CheckinForm::ADJU . "-" . str_pad($adju[$i]->id, $len_a, "0", STR_PAD_LEFT),
 					"label" => $adju[$i]->user->name
@@ -137,6 +143,7 @@ class CheckinController extends BaseTournamentController {
 			return $this->renderAjax("barcodes", [
 				"codes" => $codes,
 				"tournament" => $this->_tournament,
+				"offset" => $offset,
 			]);
 		}
 

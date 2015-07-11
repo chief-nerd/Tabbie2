@@ -40,14 +40,14 @@ class TournamentController extends BaseTournamentController {
 						'allow' => true,
 						'actions' => ['update', 'debreg-sync'],
 						'matchCallback' => function ($rule, $action) {
-							return (Yii::$app->user->isTabMaster($this->_tournament) || Yii::$app->user->isConvenor($this->_tournament));
+							return ($this->_tournament->isTabMaster(Yii::$app->user->id) || $this->_tournament->isConvenor(Yii::$app->user->id));
 						}
 					],
 					[
 						'allow' => true,
 						'actions' => ['migrate-tabbie'],
 						'matchCallback' => function ($rule, $action) {
-							return (Yii::$app->user->isTabMaster($this->_tournament));
+							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
 						}
 					],
 				],

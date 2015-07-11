@@ -10,9 +10,8 @@ use yii\helpers\Url;
 
 /**
  * This is the model class for table "tournament".
-
  *
-*@property integer                  $id
+ * @property integer                  $id
  * @property string                   $url_slug
  * @property integer                  $status
  * @property integer                  $convenor_user_id
@@ -114,6 +113,144 @@ class Tournament extends \yii\db\ActiveRecord {
 		}
 
 		return $tournament;
+	}
+
+	/**
+	 * Check if user is the tabmaster of the torunament
+	 *
+	 * @param int $userID
+	 *
+	 * @return boolean
+	 */
+	public function isTabMaster($userID) {
+		if ($this->tabmaster_user_id == $userID) {
+			\Yii::trace("User is Tab Master for Tournament #" . $this->id, __METHOD__);
+			return true;
+		}
+		else if (Yii::$app->user->isAdmin()) //Admin secure override
+			return true;
+		else
+			return false;
+	}
+
+	/**
+	 * Check if user is the convenor of the torunament
+	 *
+	 * @param int $userID
+	 *
+	 * @return boolean
+	 */
+	public function isConvenor($userID) {
+		if ($this->convenor_user_id == $userID) {
+			\Yii::trace("User is Convenor for Tournament #" . $this->id, __METHOD__);
+			return true;
+		}
+		else if (Yii::$app->user->isAdmin()) //Admin secure override
+			return true;
+		return false;
+	}
+
+	public function isLanguageOfficer($userID) {
+		if ($this->status != Tournament::STATUS_CLOSED) {
+			if (LanguageOfficer::find()->where([
+					"tournament_id" => $this->id,
+					"user_id" => $userID,
+				])->count() == 1
+			) {
+				\Yii::trace("User is LanguageOfficer for Tournament #" . $this->id, __METHOD__);
+				return true;
+			}
+			else if (Yii::$app->user->isAdmin()) //Admin secure override
+				return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Check if user is registered
+	 *
+	 * @param integer $userID
+	 *
+	 * @return bool
+	 */
+	public function isRegistered($userID) {
+
+		if (Yii::$app->user->isAdmin() || $this->isConvenor($userID) || $this->isLanguageOfficer($userID) || $this->isTabMaster($userID))
+			return true;
+
+		if ($this->isTeam($userID) || $this->isAdjudicator($userID))
+			return true;
+
+		return false;
+
+	}
+
+	/**
+	 * Check if user is Team
+	 *
+	 * @param $userID
+	 *
+	 * @return bool
+	 */
+	public function isTeam($userID) {
+		if ($this->isTeamA($userID) || $this->isTeamB($userID))
+			return true;
+		return false;
+	}
+
+	/**
+	 * Check if user is Team A
+	 *
+	 * @param $userID
+	 *
+	 * @return bool
+	 */
+	public function isTeamA($userID) {
+		//check if Team
+		$team = Team::find()->tournament($this->id)
+		            ->andWhere(["speakerA_id" => $userID])
+		            ->count();
+		if ($team > 0)
+			return true;
+
+		return false;
+	}
+
+	/**
+	 * Check if user is Team B
+	 *
+	 * @param $userID
+	 *
+	 * @return bool
+	 */
+	public function isTeamB($userID) {
+		//check if Team
+		$team = Team::find()->tournament($this->id)
+		            ->andWhere(["speakerB_id" => $userID])
+		            ->count();
+		if ($team > 0)
+			return true;
+
+		return false;
+	}
+
+	/**
+	 * Check if user is Adjudicator
+	 *
+	 * @param $userID
+	 *
+	 * @return bool
+	 */
+	public function isAdjudicator($userID) {
+		//check if Adjudicator
+		$adju = Adjudicator::find()->tournament($this->id)
+		                   ->andWhere(["user_id" => $userID])
+		                   ->count();
+		if ($adju > 0)
+			return true;
+
+		return false;
 	}
 
 	public function getStatusOptions($id = null) {

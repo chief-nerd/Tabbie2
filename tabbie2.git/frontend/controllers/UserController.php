@@ -48,7 +48,7 @@ class UserController extends BaseUserController {
 						'matchCallback' => function ($rule, $action) {
 							$tournament = Tournament::findByPk(Yii::$app->request->get("tournament"));
 							if ($tournament instanceof Tournament)
-								return Yii::$app->user->isLanguageOfficer($tournament);
+								return $tournament->isLanguageOfficer(Yii::$app->user->id);
 							else
 								return false;
 						}

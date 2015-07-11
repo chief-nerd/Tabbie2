@@ -17,7 +17,7 @@ $assetBundle = AppAsset::register($this);
 <?
 if ($this->context->hasMethod("_getContext")) {
 	$tournament = $this->context->_getContext();
-	if ($tournament instanceof Tournament && (Yii::$app->user->isTabMaster($tournament) || Yii::$app->user->isLanguageOfficer($tournament))) {
+	if ($tournament instanceof Tournament && ($tournament->isTabMaster(Yii::$app->user->id) || $tournament->isLanguageOfficer(Yii::$app->user->id))) {
 		$addclass = "movedown";
 	}
 }
@@ -46,9 +46,9 @@ if ($this->context->hasMethod("_getContext")) {
 		$tournament = $this->context->_getContext();
 		if ($tournament instanceof \common\models\Tournament) {
 
-			if (Yii::$app->user->isTabMaster($tournament))
+			if ($tournament->isTabMaster(Yii::$app->user->id))
 				echo $this->render("_nav_tabmaster", ["tournament" => $tournament]);
-			else if (Yii::$app->user->isLanguageOfficer($tournament))
+			else if ($tournament->isLanguageOfficer(Yii::$app->user->id))
 				echo $this->render("_nav_languageofficer", ["tournament" => $tournament]);
 
 		}

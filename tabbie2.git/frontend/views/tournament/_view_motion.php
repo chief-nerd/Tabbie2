@@ -16,7 +16,7 @@ use common\models\Round;
 						<div class="col-xs-12 col-sm-12 col-md-2">
 							<?
 							$linktext = Yii::t("app", "Round #{number}:", ["number" => $round->number]);
-							if (Yii::$app->user->isTabMaster($model) || Yii::$app->user->isConvenor($model)):
+							if ($model->isTabMaster(Yii::$app->user->id) || $model->isConvenor(Yii::$app->user->id)):
 								?>
 								<?= Html::a($linktext, ["round/view", "id" => $round->id, "tournament_id" => $model->id]); ?>
 							<? else: ?>

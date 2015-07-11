@@ -26,7 +26,7 @@ JS;
 $this->registerJs($script
 );
 
-if (Yii::$app->user->isTabMaster($tournament)) {
+if ($tournament->isTabMaster(Yii::$app->user->id)) {
 	$this->context->menuItems = [
 		['label' => \kartik\helpers\Html::icon("refresh") . "&nbsp;" . 'Reload', 'url' => 'javascript:reload()'],
 		['label' => \kartik\helpers\Html::icon("fire") . "&nbsp;" . Yii::t("app", 'Mark missing as inactive'), 'url' => ["public/mark-missing", "tournament_id" => $tournament->id, "accessToken" => $tournament->accessToken], "linkOptions" => ["class" => ""]],

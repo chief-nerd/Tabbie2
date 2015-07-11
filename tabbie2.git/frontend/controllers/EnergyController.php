@@ -27,7 +27,7 @@ class EnergyController extends BaseTournamentController {
 						'allow' => true,
 						'actions' => ['index', 'update'],
 						'matchCallback' => function ($rule, $action) {
-							return (Yii::$app->user->isTabMaster($this->_tournament));
+							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
 						}
 					],
 				],

@@ -47,7 +47,7 @@ use common\models\Team;
 					}
 				}
 			}
-			if (Yii::$app->user->isConvenor($model) || Yii::$app->user->isTabMaster($model))
+			if ($model->isConvenor(Yii::$app->user->id) || $model->isTabMaster(Yii::$app->user->id))
 				$button_output_buffer .= "&nbsp;" . Html::a(Html::icon("film") . "&nbsp;" . Yii::t('app', 'Display Draw'), ['public/rounds', "tournament_id" => $model->id, "accessToken" => $model->accessToken], ['class' => 'btn btn-default']);
 
 			if (strlen($button_output_buffer) > 0):

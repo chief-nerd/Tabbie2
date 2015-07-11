@@ -30,14 +30,14 @@ class TeamController extends BaseTournamentController {
 						'allow' => true,
 						'actions' => ['index', 'view'],
 						'matchCallback' => function ($rule, $action) {
-							return (Yii::$app->user->isTabMaster($this->_tournament) || Yii::$app->user->isConvenor($this->_tournament));
+							return ($this->_tournament->isTabMaster(Yii::$app->user->id) || $this->_tournament->isConvenor(Yii::$app->user->id));
 						}
 					],
 					[
 						'allow' => true,
 						'actions' => ['create', 'update', 'delete', 'import', 'active', 'list'],
 						'matchCallback' => function ($rule, $action) {
-							return (Yii::$app->user->isTabMaster($this->_tournament));
+							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
 						}
 					],
 				],

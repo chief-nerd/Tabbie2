@@ -6,6 +6,7 @@
  * @author   jareiter
  * @version
  */
+$height = 100;
 ?>
 	<!DOCTYPE html>
 	<html>
@@ -33,15 +34,20 @@
 			.code {
 				float: left;
 				border: 1px solid #eee;
+				width: 273px;
+				height: <?= $height ?>px;
 			}
 		</style>
 	</head>
 <body>
 <?php
+for ($i = 0; $i < $offset; $i++)
+	echo \kartik\helpers\Html::tag("div", "", ["class" => "code"]);
+
 foreach ($codes as $c): ?>
 	<div class="code">
 		<?
-		echo \jakobreiter\quaggajs\BarcodeFactory::generateIMG($c["id"], $c["id"] . " " . $c["label"]);
+		echo \jakobreiter\quaggajs\BarcodeFactory::generateIMG($c["id"], $c["id"] . " " . $c["label"], $height);
 		?>
 	</div>
 <? endforeach; ?>

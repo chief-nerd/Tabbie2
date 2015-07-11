@@ -32,7 +32,7 @@ class LanguageController extends BaseTournamentController {
 						'allow' => true,
 						'actions' => ['index', 'set', 'officer', 'officer-add', 'officer-delete'],
 						'matchCallback' => function ($rule, $action) {
-							return (Yii::$app->user->isLanguageOfficer($this->_tournament) || Yii::$app->user->isTabMaster($this->_tournament));
+							return ($this->_tournament->isLanguageOfficer(Yii::$app->user->id) || $this->_tournament->isTabMaster(Yii::$app->user->id));
 						}
 					],
 				],

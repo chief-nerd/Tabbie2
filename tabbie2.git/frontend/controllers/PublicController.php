@@ -42,7 +42,7 @@ class PublicController extends BaseTournamentController {
 						'allow' => true,
 						'actions' => ['mark-missing'],
 						'matchCallback' => function ($rule, $action) {
-							return (Yii::$app->user->isTabMaster($this->_tournament));
+							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
 						}
 					],
 				],
