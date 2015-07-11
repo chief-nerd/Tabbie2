@@ -4,13 +4,13 @@
 /* @var $this yii\web\View */
 /* @var $debate Debate */
 ?>
-<div id="logo">
+<div class="tournamentlogo">
 	<img src="<?= $tournament->logo ?>">
 </div>
-<div id="tournament">
+<div class="tournament">
 	<?= $tournament->fullname ?>
 </div>
-<div id="predetails">
+<div class="predetails">
 	<table>
 		<tr>
 			<th><?= Yii::t("app", "Debate ID") ?></th>
@@ -40,7 +40,7 @@
 	</table>
 </div>
 
-<div id="headline">
+<div class="headline">
 	<table>
 		<? if ($round->infoslide): ?>
 			<tr class="infoslide">
@@ -59,7 +59,7 @@
 	</table>
 </div>
 
-<div id="table">
+<div class="table">
 	<table cellpadding="0" cellspacing="0">
 		<tr class="opening">
 			<td>

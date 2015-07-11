@@ -8,6 +8,7 @@ use common\models\DrawLine;
 use common\models\Panel;
 use common\models\Round;
 use common\models\search\DebateSearch;
+use kartik\mpdf\Pdf;
 use mPDF;
 use Yii;
 use yii\data\ActiveDataProvider;
@@ -303,10 +304,21 @@ class RoundController extends BaseTournamentController {
 	public function actionPrintballots($id, $debug = false) {
 		$model = Round::findOne(["id" => $id]);
 
-		//renderAjax does the trick for no layout
-		return $this->renderAjax("ballots", [
-			"model" => $model
+		$pdf = new Pdf([
+			'mode' => Pdf::MODE_CORE, // leaner size using standard fonts
+			'format' => Pdf::FORMAT_A4,
+			'orientation' => Pdf::ORIENT_LANDSCAPE,
+			'cssFile' => '@frontend/assets/css/ballot.css',
+			'content' => $this->renderPartial("ballots", [
+				"model" => $model
+			]),
+			'options' => [
+				'title' => 'Ballots Round #' . $model->number,
+			],
 		]);
+
+		//renderAjax does the trick for no layout
+		return $pdf->render();
 	}
 
 	public function actionDebatedetails() {
