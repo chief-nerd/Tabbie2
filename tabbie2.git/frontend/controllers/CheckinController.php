@@ -38,7 +38,7 @@ class CheckinController extends BaseTournamentController {
 					],
 					[
 						'allow' => true,
-						'actions' => ['reset', 'generate-barcodes'],
+						'actions' => ['reset', 'generate-barcodes', 'generate-badges'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->isTabMaster($this->_tournament));
 						}
@@ -141,5 +141,51 @@ class CheckinController extends BaseTournamentController {
 		}
 
 		return $this->render("barcode_select");
+	}
+
+	public function actionGenerateBadges() {
+
+		$codes = [];
+
+		$teams = models\Team::find()->tournament($this->_tournament->id)->all();
+		$a_teams = [];
+		$adju = models\Adjudicator::find()->tournament($this->_tournament->id)->all();
+		$a_adjus = [];
+
+		$len_t = strlen($teams[0]->id) + 1;
+		$len_a = strlen($adju[0]->id) + 1;
+
+		for ($i = 0; $i < count($teams); $i++) {
+			$a_teams[$i] = $teams[$i]->attributes;
+			$a_teams[$i]["society"] = $teams[$i]->society->fullname;
+
+			if ($teams[$i]->speakerA) {
+				$a_teams[$i]["A"] = [
+					"code" => CheckinForm::TEAMA . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
+					"name" => $teams[$i]->speakerA->name
+				];
+			}
+			if ($teams[$i]->speakerB) {
+				$a_teams[$i]["B"] = [
+					"code" => CheckinForm::TEAMB . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
+					"name" => $teams[$i]->speakerB->name
+				];
+			}
+		}
+
+		for ($i = 0; $i < count($adju); $i++) {
+			$a_adjus[$i] = array_merge($adju[$i]->attributes, [
+				"code" => CheckinForm::ADJU . "-" . str_pad($adju[$i]->id, $len_a, "0", STR_PAD_LEFT),
+				"name" => $adju[$i]->user->name
+			]);
+			$a_adjus[$i]["society"] = $adju[$i]->society->fullname;
+
+		}
+
+		return $this->renderAjax("badges", [
+			"teams" => $a_teams,
+			"adjus" => $a_adjus,
+			"tournament" => $this->_tournament,
+		]);
 	}
 }
