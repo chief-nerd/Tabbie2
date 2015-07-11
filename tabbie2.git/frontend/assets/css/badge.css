@@ -1,0 +1,60 @@
+html {
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+}
+
+.paper {
+    background-size: cover;
+    float: left;
+    width: 14.83cm;
+    border: 0.1mm solid #333;
+}
+
+.badge {
+    float: left;
+    width: 50%;
+    height: 10.48cm;
+}
+
+.name {
+    margin-top: 4.5cm;
+    left: 0px;
+    right: 0px;
+    text-align: center;
+    font-size: 20pt;
+    font-family: "Bebas Neue";
+    color: #333;
+}
+
+.team, .society {
+    font-family: helvetica;
+    font-size: 80%;
+    color: #333;
+    text-align: right;
+    margin-right: 10%;
+}
+
+.team {
+    margin-top: 1.5cm;
+}
+
+.society {
+    margin-top: 0.1cm;
+}
+
+.code {
+    margin-top: 7.6cm;
+    margin-left: -0.8cm;
+    text-align: center;
+}
+
+.clear {
+    clear: both;
+}

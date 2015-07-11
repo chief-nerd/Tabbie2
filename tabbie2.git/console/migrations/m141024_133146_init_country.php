@@ -3,7 +3,7 @@
 	use yii\db\Schema;
 	use yii\db\Migration;
 
-	class m141024_133145_init_full_db extends Migration {
+class m141024_133146_init_country extends Migration {
 
 		public function up() {
 			$filename = Yii::getAlias("@app") . "/../../schema/Countries.sql";

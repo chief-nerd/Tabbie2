@@ -11,6 +11,7 @@ namespace frontend\controllers;
 
 use common\models;
 use common\components\filter\TournamentContextFilter;
+use kartik\mpdf\Pdf;
 use Yii;
 use yii\filters\AccessControl;
 use frontend\models\CheckinForm;
@@ -189,10 +190,32 @@ class CheckinController extends BaseTournamentController {
 
 		}
 
-		return $this->renderAjax("badges", [
-			"teams" => $a_teams,
-			"adjus" => $a_adjus,
-			"tournament" => $this->_tournament,
+		$backurl = Yii::$app->assetManager->publish(Yii::getAlias("@frontend/assets/images/Badge.jpg"))[1];
+
+		$pdf = new Pdf([
+			'mode' => Pdf::MODE_BLANK, // leaner size using standard fonts
+			'format' => Pdf::FORMAT_A4,
+			'orientation' => Pdf::ORIENT_LANDSCAPE,
+			'cssFile' => '@frontend/assets/css/badge.css',
+			'content' => $this->renderPartial("badges", [
+				"teams" => $a_teams,
+				"adjus" => $a_adjus,
+				"tournament" => $this->_tournament,
+				"backurl" => $backurl,
+			]),
+			"marginLeft" => 0,
+			"marginTop" => 0,
+			"marginRight" => 0,
+			"marginBottom" => 0,
+			"marginHeader" => 0,
+			"marginFooter" => 0,
+			'options' => [
+				'title' => 'Badgets for ' . $this->_tournament->name,
+			],
 		]);
+
+		$mpdf = $pdf->getApi();
+		$mpdf->SetDefaultFont("Bebas Neue");
+		return $pdf->render();
 	}
 }
