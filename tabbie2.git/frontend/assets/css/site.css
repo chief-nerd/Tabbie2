@@ -251,6 +251,84 @@ a.desc:after {
     text-decoration: underline;
 }
 
+/***** Tournament *******/
+
+#tournament_title {
+    margin: 0px 0;
+}
+
+.balance-frame {
+    width: 60px;
+    height: 60px;
+    border: 1px solid #AAAAAA;
+    border-radius: 3px;
+}
+
+.tournament-index .tournament {
+    border-radius: 8px;
+    border: #DDD 1px solid;
+    padding: 20px;
+    margin: 20px 5px;
+}
+
+.tournament-index .tournament h2 {
+
+}
+
+.tournament-index .tournament .details {
+    padding-top: 23px;
+}
+
+.tournament-search .buttons {
+    padding-top: 25px;
+}
+
+#team-table-container {
+    position: relative;
+}
+
+#drawdisplay {
+    position: absolute;
+    top: 10%;
+}
+
+/****** RESULT ******/
+
+.result-form input {
+    width: auto;
+    display: inline-block;
+    position: absolute;
+    right: 20px;
+}
+
+.result-confirm input {
+    width: auto;
+    display: inline-block;
+    position: absolute;
+    right: 20px;
+}
+
+#debates.list-view .venue {
+    margin: 10px 0;
+}
+
+#debates.list-view .venue .status {
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    border: 1px solid gray;
+    float: left;
+    margin-right: 5px;
+}
+
+.status.entered {
+    background: green;
+}
+
+.status.missing {
+    background: yellow;
+}
+
 /** LOADER */
 #loader {
     display: none;
