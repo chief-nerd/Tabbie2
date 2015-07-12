@@ -33,10 +33,3 @@ $(document).on("click", "div.flashes .alert", function () {
 $(document).on("click", ".loading", function () {
     $("#loader").fadeIn();
 });
-
-/**
- * Defer loading
- */
-$('img[data-src]').each(function (index, elem) {
-    elem.src = elem.dataset.src;
-});
