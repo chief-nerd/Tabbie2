@@ -1,5 +1,8 @@
 <div id="loader">
 	<div class="container">
-		<img src="https://s3.eu-central-1.amazonaws.com/tabbie-assets/Preloader.gif">
+		<?
+		$loader = Yii::getAlias("@frontend/assets/images/") . "Preloader.gif";
+		?>
+		<img src="<?= Yii::$app->assetManager->publish($loader)[1] ?>">
 	</div>
 </div>
