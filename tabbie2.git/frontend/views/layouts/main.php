@@ -31,6 +31,8 @@ if ($this->context->hasMethod("_getContext")) {
 	<?= Html::csrfMetaTags() ?>
 	<title><?= Html::encode($this->title) ?> :: <?= Html::encode(Yii::$app->params["appName"]) ?></title>
 	<?php $this->head() ?>
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+
 </head>
 <body class="<?= isset($addclass) ? $addclass : "" ?>">
 <?php $this->beginBody() ?>
@@ -80,6 +82,7 @@ if ($this->context->hasMethod("_getContext")) {
 </div>
 
 <?php $this->endBody() ?>
+<script src="//s3.eu-central-1.amazonaws.com/tabbie-assets/velocity.min.js'" async="async"></script>
 <? if (YII_ENV == "prod") echo $this->render("_ga") ?>
 </body>
 </html>

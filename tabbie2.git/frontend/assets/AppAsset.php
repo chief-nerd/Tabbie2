@@ -19,11 +19,9 @@ class AppAsset extends AssetBundle {
 	public $sourcePath = '@frontend/assets';
 	public $css = [
 		'css/site.css',
-		'//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css',
 	];
 	public $js = [
 		'js/site.js',
-		'//s3.eu-central-1.amazonaws.com/tabbie-assets/velocity.min.js',
 	];
 	public $depends = [
 		'yii\web\YiiAsset',
