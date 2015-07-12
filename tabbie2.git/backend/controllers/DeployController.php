@@ -81,6 +81,7 @@ class DeployController extends Controller {
 		// execute
 		exec("cd $git_root && git pull", $out);
 
+		$out[] = "<h4>=== Git Submodules ===</h4>";
 		exec("cd $git_root && git submodule foreach git pull origin master", $out);
 
 		//make migrations
@@ -104,6 +105,5 @@ class DeployController extends Controller {
 			->setSubject($out[1] . " " . $out[2])
 		                 ->setHtmlBody($html)
 		                 ->send();
-
 	}
 }
