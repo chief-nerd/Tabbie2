@@ -20,7 +20,7 @@ return [
 		],
 		'assetManager' => [
 			'linkAssets' => true,
-			'appendTimestamp' => true,
+			'appendTimestamp' => false,
 			'bundles' => [
 				'yii\bootstrap\BootstrapAsset' => [
 					'sourcePath' => null,   // do not publish the bundle
