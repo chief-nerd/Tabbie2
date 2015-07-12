@@ -82,7 +82,7 @@ if ($this->context->hasMethod("_getContext")) {
 </div>
 
 <?php $this->endBody() ?>
-<script src="//s3.eu-central-1.amazonaws.com/tabbie-assets/velocity.min.js'" async="async"></script>
+<script src="//s3.eu-central-1.amazonaws.com/tabbie-assets/velocity.min.js" async="async"></script>
 <? if (YII_ENV == "prod") echo $this->render("_ga") ?>
 </body>
 </html>
