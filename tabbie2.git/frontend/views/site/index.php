@@ -80,8 +80,9 @@ $this->title = Yii::$app->params["slogan"];
 			<div class="col-lg-4">
 				<h2>Modern BP Tabbing Solution</h2>
 
-				<p>Amazon AWS hosted, Mobile Responsive, e-Ballots and e-Feedback all included. No setup required! Just
-					register, import your
+				<p>Tabbie2 is Amazon AWS hosted and comes with a mobile responsive frontend, e-Ballots and e-Feedback
+					system.
+					Therefor no setup required! Just register, import your
 					data via CSV or DebReg link and start tabbing.</p>
 			</div>
 			<div class="col-lg-4">
