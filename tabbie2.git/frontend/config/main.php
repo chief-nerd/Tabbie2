@@ -22,6 +22,12 @@ return [
 			'linkAssets' => true,
 			'appendTimestamp' => true,
 			'bundles' => [
+				'yii\bootstrap\BootstrapAsset' => [
+					'sourcePath' => null,   // do not publish the bundle
+					'css' => [
+						'//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css',
+					]
+				],
 				'yii\web\JqueryAsset' => [
 					'sourcePath' => null,   // do not publish the bundle
 					'js' => [
@@ -61,16 +67,6 @@ return [
 		'errorHandler' => [
 			'errorAction' => 'site/error',
 		],
-		'view' => [
-			'class' => '\rmrevin\yii\minify\View',
-			'compress_output' => !YII_DEBUG,
-			'enableMinify' => false,
-			'base_path' => '@app/web', // path alias to web base
-			'minify_path' => '@app/web/minify', // path alias to save minify result
-			'js_position' => [\yii\web\View::POS_END], // positions of js files to be minified
-			'force_charset' => 'UTF-8', // charset forcibly assign, otherwise will use all of the files found charset
-			'expand_imports' => true, // whether to change @import on content
-		]
 	],
 	'modules' => [
 		'gii' => [

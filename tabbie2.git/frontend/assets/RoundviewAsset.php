@@ -20,7 +20,6 @@ class RoundviewAsset extends AssetBundle {
 	public $css = [
 		'css/round.css',
 		'css/color_pattern.css',
-		'//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css',
 	];
 	public $js = [
 		'js/adjudicatorActions.js',
