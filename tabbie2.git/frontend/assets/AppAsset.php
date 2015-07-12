@@ -23,7 +23,7 @@ class AppAsset extends AssetBundle {
 	];
 	public $js = [
 		'js/site.js',
-		'js/velocity.min.js',
+		'//s3.eu-central-1.amazonaws.com/tabbie-assets/velocity.min.js',
 	];
 	public $depends = [
 		'yii\web\YiiAsset',

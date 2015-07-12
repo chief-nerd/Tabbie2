@@ -28,6 +28,12 @@ return [
 						'//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css',
 					]
 				],
+				'yii\bootstrap\BootstrapPluginAsset' => [
+					'sourcePath' => null,   // do not publish the bundle
+					'js' => [
+						'//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js',
+					]
+				],
 				'yii\web\JqueryAsset' => [
 					'sourcePath' => null,   // do not publish the bundle
 					'js' => [
