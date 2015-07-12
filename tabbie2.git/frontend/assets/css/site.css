@@ -322,7 +322,7 @@ a.desc:after {
     width: 100%;
     top: 0px;
     left: 0px;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(255, 255, 255, 0.98);
     z-index: 9999999;
 }
 
@@ -342,49 +342,11 @@ a.desc:after {
     align-items: center;
 }
 
-#loader .machine {
-    width: 60vmin;
-    fill: #fff;
+#loader img {
+    position: relative;
+    width: 100%;
+    max-width: 250px;
+    max-height: 250px;
+    border-radius: 40px;
 }
-
-#loader .small-shadow, .medium-shadow, .large-shadow {
-    fill: rgba(0, 0, 0, 0.05);
-}
-
-#loader .small {
-    -webkit-transform-origin: 100.136px 225.345px;
-    -ms-transform-origin: 100.136px 225.345px;
-    transform-origin: 100.136px 225.345px;
-}
-
-#loader .small-shadow {
-    -webkit-transform-origin: 110.136px 235.345px;
-    -ms-transform-origin: 110.136px 235.345px;
-    transform-origin: 110.136px 235.345px;
-}
-
-#loader .medium {
-    -webkit-transform-origin: 254.675px 379.447px;
-    -ms-transform-origin: 254.675px 379.447px;
-    transform-origin: 254.675px 379.447px;
-}
-
-#loader .medium-shadow {
-    -webkit-transform-origin: 264.675px 389.447px;
-    -ms-transform-origin: 264.675px 389.447px;
-    transform-origin: 264.675px 389.447px;
-}
-
-#loader .large {
-    -webkit-transform-origin: 461.37px 173.694px;
-    -ms-transform-origin: 461.37px 173.694px;
-    transform-origin: 461.37px 173.694px;
-}
-
-#loader .large-shadow {
-    -webkit-transform-origin: 471.37px 183.694px;
-    -ms-transform-origin: 471.37px 183.694px;
-    transform-origin: 471.37px 183.694px;
-}
-
 /** LOADER ENDE */
