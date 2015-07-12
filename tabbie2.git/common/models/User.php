@@ -191,11 +191,10 @@ class User extends ActiveRecord implements IdentityInterface {
 
 	/**
 	 * Finds user by email
-
 	 *
-*@param string $email
+	 * @param string $email
 	 *
-	 * @return static|null
+*@return static|null
 	 */
 	public static function findByEmail($email) {
 		return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
@@ -524,8 +523,8 @@ class User extends ActiveRecord implements IdentityInterface {
 	 * @param \yii\web\UploadedFile $file
 	 */
 	public function savePicture($file) {
-		$path = "/uploads/users/User-" . $this->url_slug . "." . $file->extension;
-		$this->picture = $file->saveAs(Yii::getAlias("@frontend/web") . $path) ? $path : null;
+		$path = "users/User-" . $this->url_slug . "." . $file->extension;
+		$this->picture = Yii::$app->s3->save($file, $path);
 	}
 
 

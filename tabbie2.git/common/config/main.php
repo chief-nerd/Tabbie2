@@ -38,6 +38,14 @@ return [
 			'class' => 'yii\swiftmailer\Mailer',
 			'viewPath' => '@common/mail',
 		],
+		's3' => [
+			'dev' => (YII_ENV != "prod") ? true : false,
+			'class' => 'common\components\AmazonS3',
+			'key' => 'AKIAI3LZY3B2LAUFIX3Q',
+			'secret' => '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',
+			'bucket' => 'tabbie',
+			'region' => 'eu-central-1'
+		],
 	],
 	'modules' => [
 		'gridview' => [

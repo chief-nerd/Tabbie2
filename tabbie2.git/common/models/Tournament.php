@@ -471,7 +471,7 @@ class Tournament extends \yii\db\ActiveRecord {
 
 	public function getLogo($absolute = false) {
 		if ($this->logo !== null) {
-			if ($absolute)
+			if ($absolute && substr($this->logo, 0, 4) != "http")
 				return Url::to('@web' . $this->logo, true);
 			else
 				return $this->logo;
@@ -593,8 +593,10 @@ class Tournament extends \yii\db\ActiveRecord {
 	 * @param \yii\web\UploadedFile $file
 	 */
 	public function saveLogo($file) {
-		$path = "/uploads/tournaments/TournamentLogo-" . $this->url_slug . "." . $file->extension;
-		$this->logo = $file && $file->saveAs(Yii::getAlias("@frontend/web") . $path) ? $path : null;
+		if ($file) {
+			$path = "tournaments/TournamentLogo-" . $this->url_slug . "." . $file->extension;
+			$this->logo = Yii::$app->s3->save($file, $path);
+		}
 	}
 
 	/**
