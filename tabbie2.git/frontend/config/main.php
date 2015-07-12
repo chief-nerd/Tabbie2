@@ -20,6 +20,15 @@ return [
 		],
 		'assetManager' => [
 			'linkAssets' => true,
+			'appendTimestamp' => true,
+			'bundles' => [
+				'yii\web\JqueryAsset' => [
+					'sourcePath' => null,   // do not publish the bundle
+					'js' => [
+						'//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js',
+					]
+				],
+			],
 		],
 		'user' => [
 			'identityClass' => 'common\models\User',
