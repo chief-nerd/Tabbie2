@@ -70,7 +70,7 @@ if ($this->context->hasMethod("_getContext")) {
 			<p class="pull-left"><?= Yii::$app->params["appName"] ?> &copy; <?= date('Y') ?></p>
 
 			<p class="pull-right">
-				<?= HTML::a(Html::img($assetBundle->baseUrl . '/images/bug.png', ['alt' => 'Report Bug', 'height' => '20px']) . " " . Yii::t("app", "Report a Bug"), 'http://bug.tabbie.org', ["target" => "_blank"]) ?>
+				<?= HTML::a(Yii::t("app", "Report a Bug"), 'http://bug.tabbie.org', ["target" => "_blank"]) ?>
 				<?= " | " ?>
 				<?= HTML::a(Yii::t("app", "Contact"), 'mailto:' . Yii::$app->params["adminEmail"]) ?>
 			</p>
