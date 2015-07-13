@@ -1,8 +1,4 @@
-<div id="loader">
-	<div class="container">
-		<?
-		$loader = Yii::getAlias("@frontend/assets/images/") . "Preloader.gif";
-		?>
-		<img src="<?= Yii::$app->assetManager->publish($loader)[1] ?>" alt="Loader">
-	</div>
-</div>
+<?
+$loader = Yii::getAlias("@frontend/assets/images/") . "Preloader.gif";
+?>
+<div id="loader" data-url="<?= Yii::$app->assetManager->publish($loader)[1] ?>"></div>

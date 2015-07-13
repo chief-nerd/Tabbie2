@@ -31,5 +31,15 @@ $(document).on("click", "div.flashes .alert", function () {
  * Loading Animation fadein and start
  */
 $(document).on("click", ".loading", function () {
-    $("#loader").fadeIn();
+    var loader = $("#loader");
+    var img = document.createElement("img");
+    var cont = document.createElement("div");
+
+    img.src = loader[0].dataset.url;
+    img.alt = "Loader";
+
+    cont.className = "container";
+    cont.appendChild(img);
+    loader[0].appendChild(cont);
+    loader.fadeIn();
 });
