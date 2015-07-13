@@ -6,7 +6,7 @@ return [
 	'user.passwordResetTokenExpire' => 3600,
 	'appName' => 'Tabbie2',
 	'appUrl' => 'http://www.tabbie.org',
-	'slogan' => 'BP Tabbing so easy a fresher can do it',
+	'slogan' => 'Next generation BP tabbing',
 	'stdTabAlgorithm' => "StrictWUDCRules",
 	'speaks_max' => 99,
 	'speaks_min' => 50,

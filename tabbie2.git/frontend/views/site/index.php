@@ -2,6 +2,15 @@
 
 use kartik\helpers\Html;
 
+$fb_Banner = "https://s3.eu-central-1.amazonaws.com/tabbie-assets/FB_banner.jpg";
+$fb_Logo = "https://s3.eu-central-1.amazonaws.com/tabbie-assets/FB_logo.jpg";
+
+$this->registerMetaTag(["property" => "og:title", "content" => Yii::$app->params["appName"] . " - " . Yii::$app->params["slogan"]], "og:title");
+$this->registerMetaTag(["property" => "og:image", "content" => $fb_Banner], "og:image");
+//$this->registerMetaTag(["property" => "og:image", "content" => $fb_Logo], "og:image");
+$this->registerLinkTag(["rel" => "apple-touch-icon", "href" => $fb_Logo], "apple-touch-icon");
+
+
 /* @var $this yii\web\View */
 $this->title = Yii::$app->params["slogan"];
 ?>

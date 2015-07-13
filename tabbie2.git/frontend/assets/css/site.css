@@ -52,6 +52,12 @@ body.movedown {
 
 /** BOOTSTRAP HACKS **/
 
+.navbar-brand > img {
+    width: 40px;
+    float: left;
+    margin-top: -10px;
+}
+
 .navbar-sub .navbar-brand {
     overflow: hidden;
 }
