@@ -9,7 +9,7 @@ $params = array_merge(
 
 $baseUrl = str_replace('/frontend/web', '', (new \yii\web\Request)->getBaseUrl());
 
-return [
+$config = [
 	'id' => 'app-frontend',
 	'basePath' => dirname(__DIR__),
 	'bootstrap' => ['log'],
@@ -21,27 +21,6 @@ return [
 		'assetManager' => [
 			'linkAssets' => true,
 			'appendTimestamp' => false,
-			'bundles' => [
-				'yii\bootstrap\BootstrapAsset' => [
-					'sourcePath' => null,   // do not publish the bundle
-					'css' => [
-						'//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css',
-					]
-				],
-				'yii\bootstrap\BootstrapPluginAsset' => [
-					'sourcePath' => null,   // do not publish the bundle
-					'js' => [
-						'//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js',
-					],
-					'jsOptions' => ["async" => "async"]
-				],
-				'yii\web\JqueryAsset' => [
-					'sourcePath' => null,   // do not publish the bundle
-					'js' => [
-						'//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js',
-					]
-				],
-			],
 		],
 		'user' => [
 			'identityClass' => 'common\models\User',
@@ -83,3 +62,31 @@ return [
 	],
 	'params' => $params,
 ];
+
+if (YII_ENV == "prod") // In production change to CDN hosted
+	$config['components']['assetManager']['bundles'] = [
+		'yii\bootstrap\BootstrapAsset' => [
+			'sourcePath' => null,   // do not publish the bundle
+			'css' => [
+				'//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css',
+			]
+		],
+		'yii\bootstrap\BootstrapPluginAsset' => [
+			'sourcePath' => null,   // do not publish the bundle
+			'js' => [
+				'//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js',
+			],
+			'depends' => [
+				'yii\web\JqueryAsset',
+				'yii\bootstrap\BootstrapAsset',
+			],
+		],
+		'yii\web\JqueryAsset' => [
+			'sourcePath' => null,   // do not publish the bundle
+			'js' => [
+				'//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js',
+			]
+		],
+	];
+
+return $config;
