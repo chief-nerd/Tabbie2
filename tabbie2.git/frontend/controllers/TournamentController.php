@@ -287,5 +287,27 @@ class TournamentController extends BaseTournamentController {
 	 */
 	public function actionMigrateTabbie($id) {
 
+		$tournamnet = $this->_tournament;
+
+		$sqlFile = [];
+		$sqlFile[] = "USE database tabbie;";
+
+		$adju = models\Adjudicator::find()->tournament($tournamnet->id)->all();
+
+		$teams = models\Team::find()->tournament($tournamnet->id)->all();
+
+		$sqlFile[] = "CREATE TABLE adjudicators;";
+
+		foreach ($tournamnet->rounds as $round) {
+			foreach ($round->debates as $debate) {
+				if ($debate->result instanceof models\Result) // There might not be a result yet
+				{
+					$result = $debate->result;
+				}
+			}
+		}
+
+		echo implode("<br>\n", $sqlFile);
+		exit();
 	}
 }
