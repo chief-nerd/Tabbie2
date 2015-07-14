@@ -342,13 +342,19 @@ class AdjudicatorController extends BaseTournamentController {
 						exit();
 					}
 
-					$adj = new Adjudicator();
-					$adj->user_id = $userAID;
-					$adj->tournament_id = $this->_tournament->id;
-					$adj->strength = intval($row[4][0]);
-					$adj->society_id = $societyID;
-					if (!$adj->save())
-						Yii::$app->session->addFlash("error", Yii::t("app", "Save error: {message}", ["message" => print_r($adj->getErrors(), true)]));
+					if (Adjudicator::find()
+					               ->tournament($this->_tournament->id)
+					               ->andWhere(['user_id' => $userAID])
+					               ->count() == 0
+					) {
+						$adj = new Adjudicator();
+						$adj->user_id = $userAID;
+						$adj->tournament_id = $this->_tournament->id;
+						$adj->strength = intval($row[4][0]);
+						$adj->society_id = $societyID;
+						if (!$adj->save())
+							Yii::$app->session->addFlash("error", Yii::t("app", "Save error: {message}", ["message" => print_r($adj->getErrors(), true)]));
+					}
 				}
 				set_time_limit(30);
 				return $this->redirect(['index', "tournament_id" => $this->_tournament->id]);

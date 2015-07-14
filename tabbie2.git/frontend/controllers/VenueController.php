@@ -191,12 +191,18 @@ class VenueController extends BaseTournamentController {
 				for ($r = 1; $r <= count($model->tempImport); $r++) {
 					$row = $model->tempImport[$r];
 
-					$venue = new Venue();
-					$venue->name = $row[0];
-					$venue->active = $row[1];
-					$venue->group = $row[2];
-					$venue->tournament_id = $this->_tournament->id;
-					$venue->save();
+					if (Venue::find()
+					         ->tournament($this->_tournament->id)
+					         ->andWhere(['name' => $row[0]])
+					         ->count() == 0
+					) {
+						$venue = new Venue();
+						$venue->name = $row[0];
+						$venue->active = $row[1];
+						$venue->group = $row[2];
+						$venue->tournament_id = $this->_tournament->id;
+						$venue->save();
+					}
 				}
 				return $this->redirect(['index', "tournament_id" => $this->_tournament->id]);
 			}

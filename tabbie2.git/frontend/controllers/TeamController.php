@@ -262,15 +262,21 @@ class TeamController extends BaseTournamentController {
 						$userBID = $row[5][1]["id"];
 					}
 
-					$team = new Team();
-					$team->name = $row[0][0];
-					$team->tournament_id = $this->_tournament->id;
-					$team->speakerA_id = $userAID;
-					$team->speakerB_id = $userBID;
-					$team->society_id = $societyID;
-					if (!$team->save(false)) {
-						Yii::$app->session->addFlash("error", Yii::t("app", "Error saving team {name}!", ["{name}" => $team->name]));
-						Yii::error("Import Errors userB: " . print_r($team->getErrors(), true) . "Attributes:" . print_r($team->attributes, true), __METHOD__);
+					if (Team::find()
+					        ->tournament($this->_tournament->id)
+					        ->andWhere(['speakerA_id' => $userAID, 'speakerB_id' => $userBID])
+					        ->count() == 0
+					) {
+						$team = new Team();
+						$team->name = $row[0][0];
+						$team->tournament_id = $this->_tournament->id;
+						$team->speakerA_id = $userAID;
+						$team->speakerB_id = $userBID;
+						$team->society_id = $societyID;
+						if (!$team->save(false)) {
+							Yii::$app->session->addFlash("error", Yii::t("app", "Error saving team {name}!", ["{name}" => $team->name]));
+							Yii::error("Import Errors userB: " . print_r($team->getErrors(), true) . "Attributes:" . print_r($team->attributes, true), __METHOD__);
+						}
 					}
 				}
 				set_time_limit(30);
