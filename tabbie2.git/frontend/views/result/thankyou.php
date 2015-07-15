@@ -52,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		<? /** @var $tournament Tournament */
 		if ($tournament->getTournamentHasQuestions()->count() > 0): ?>
 			<div class="col-xs-5">
-				<?= Html::a(Html::icon("home") . "&nbsp;" . Yii::t("app", "Go Home"), ["tournament/view", "id" => $tournament->id], ["class" => "btn btn-default center-block"]) ?>
+				<?= Html::a(Html::icon("home") . "&nbsp;" . Yii::t("app", "Tournament"), ["tournament/view", "id" => $tournament->id], ["class" => "btn btn-default center-block"]) ?>
 		</div>
 			<div class="col-xs-7">
 			<?
@@ -70,7 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		</div>
 		<? else: ?>
 			<div class="col-xs-12">
-				<?= Html::a(Html::icon("home") . "&nbsp;" . Yii::t("app", "Go Home"), ["tournament/view", "id" => $tournament->id], ["class" => "btn btn-success center-block"]) ?>
+				<?= Html::a(Html::icon("home") . "&nbsp;" . Yii::t("app", "Return to Tournament"), ["tournament/view", "id" => $tournament->id], ["class" => "btn btn-success center-block"]) ?>
 			</div>
 		<? endif; ?>
 	</div>
