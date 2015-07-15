@@ -195,7 +195,9 @@ class Team extends \yii\db\ActiveRecord {
 	}
 
 	/**
-	 * @return \yii\db\ActiveQuery
+	 * Gets all Societies that the two Speakers are in
+	 *
+*@return \yii\db\ActiveQuery
 	 */
 	public function getInSocieties() {
 		return InSociety::find()->where("user_id IN (:userA, :userB) AND ending is null", [
@@ -204,6 +206,11 @@ class Team extends \yii\db\ActiveRecord {
 		]);
 	}
 
+	/**
+	 * Gets the society that the team is registered for
+	 *
+	 * @return \yii\db\ActiveQuery
+	 */
 	public function getSociety() {
 		return $this->hasOne(Society::className(), ['id' => 'society_id']);
 	}
@@ -211,9 +218,12 @@ class Team extends \yii\db\ActiveRecord {
 	/**
 	 * Get the points the team is on after the specified round.
 	 *
-	 * @param integer $number
+	 * @deprecated ?
 	 *
-	 * @return int
+*@param integer $number
+
+	 *
+*@return int
 	 */
 	public function getPointsAfterRound($number) {
 
@@ -246,6 +256,11 @@ class Team extends \yii\db\ActiveRecord {
 		return $points;
 	}
 
+	/**
+	 * Gets all Debates for a Team in the current tournament
+	 *
+	 * @return \yii\db\ActiveQuery
+	 */
 	public function getDebates() {
 		return Debate::findBySql("SELECT * FROM debate WHERE "
 			. "(og_team_id = :teamid "
@@ -258,8 +273,61 @@ class Team extends \yii\db\ActiveRecord {
 		]);
 	}
 
+	/**
+	 * Gets the Debate Object in a specific round
+	 *
+	 * @param integer $roundid
+	 *
+	 * @return Debate
+	 */
 	public function getDebate($roundid) {
 		return $this->getDebates()->andWhere(["round_id" => $roundid]);
+	}
+
+	/**
+	 * Calculates the CacheData from Scratch
+	 *
+	 * @return array
+	 */
+	public function getNewCacheData() {
+		$calculated_points = 0;
+		$calculated_A_speaks = 0;
+		$calculated_B_speaks = 0;
+		foreach (Team::getPos() as $pos) {
+
+			$results = Result::find()
+			                 ->leftJoin("debate", "debate.id = result.debate_id")
+			                 ->where([
+				                 "debate.tournament_id" => $this->tournament->id,
+				                 "debate." . $pos . "_team_id" => $this->id,
+			                 ])->all();
+			if (is_array($results)) {
+				foreach ($results as $res) {
+					/**
+					 * @var Result $res
+					 */
+					$calculated_points += (4 - $res->{$pos . "_place"});
+					$calculated_A_speaks += $res->{$pos . "_A_speaks"};
+					$calculated_B_speaks += $res->{$pos . "_B_speaks"};
+				}
+			}
+		}
+
+		return ["Points" => $calculated_points, Team::POS_A => $calculated_A_speaks, Team::POS_B => $calculated_B_speaks];
+	}
+
+	/**
+	 * Update the Team Cache Data
+	 *
+	 * @return bool
+	 */
+	public function updateCache() {
+		/** @var Team $team */
+		$data = $this->getNewCacheData();
+		$this->points = $data["Points"];
+		$this->speakerA_speaks = $data[Team::POS_A];
+		$this->speakerB_speaks = $data[Team::POS_B];
+		return $this->save();
 	}
 
 	/**

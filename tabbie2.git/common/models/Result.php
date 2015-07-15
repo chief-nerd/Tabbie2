@@ -219,11 +219,7 @@ class Result extends \yii\db\ActiveRecord {
 
 	public function updateTeamCache() {
 		foreach ($this->debate->getTeams() as $pos => $team) {
-			/** @var Team $team */
-			$team->points += $this->getPoints($pos);
-			$team->speakerA_speaks += $this->getSpeakerSpeaks($pos, Team::POS_A);
-			$team->speakerB_speaks += $this->getSpeakerSpeaks($pos, Team::POS_B);
-			$team->save();
+			$team->updateCache();
 		}
 	}
 

@@ -230,11 +230,10 @@ class ResultController extends BaseTournamentController {
 				]);
 			}
 		}
-		else {
-			return $this->render('update', [
-				'model' => $model,
-			]);
-		}
+
+		return $this->render('update', [
+			'model' => $model,
+		]);
 	}
 
 	/**
@@ -297,37 +296,17 @@ class ResultController extends BaseTournamentController {
 	}
 
 	public function actionCorrectcache() {
-		$results = \common\models\Result::find()->leftJoin("debate", "debate.id = result.debate_id")->where([
-			"debate.tournament_id" => $this->_tournament->id,
-		])->all();
-
 		$teams = \common\models\Team::find()->tournament($this->_tournament->id)->all();
 
 		$found = false;
 
 		foreach ($teams as $team) {
-			$calculated_points = 0;
-			$calculated_A_speaks = 0;
-			$calculated_B_speaks = 0;
-			foreach (Team::getPos() as $pos) {
+			/** @var $team Team * */
 
-				$results = \common\models\Result::find()
-				                                ->leftJoin("debate", "debate.id = result.debate_id")
-				                                ->where([
-					                                "debate.tournament_id" => $this->_tournament->id,
-					                                "debate." . $pos . "_team_id" => $team->id,
-				                                ])->all();
-				if (is_array($results)) {
-					foreach ($results as $res) {
-						/**
-						 * @var Result $res
-						 */
-						$calculated_points += (4 - $res->{$pos . "_place"});
-						$calculated_A_speaks += $res->{$pos . "_A_speaks"};
-						$calculated_B_speaks += $res->{$pos . "_B_speaks"};
-					}
-				}
-			}
+			$values = $team->getNewCacheData();
+			$calculated_points = $values["Points"];
+			$calculated_A_speaks = $values[Team::POS_A];
+			$calculated_B_speaks = $values[Team::POS_B];
 
 			if ($calculated_points != $team->points) {
 				Yii::$app->session->addFlash("info", Yii::t("app", "Correct Points for {team} from {old_points} to {new_points}", [
