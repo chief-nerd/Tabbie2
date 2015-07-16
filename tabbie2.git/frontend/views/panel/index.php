@@ -24,9 +24,13 @@ $this->params['breadcrumbs'][] = $this->title;
 	<?
 	$gridColumns = [
 		[
-			'class' => 'yii\grid\SerialColumn'
+            'class' => 'yii\grid\SerialColumn',
 		],
-		'strength',
+        [
+            'label' => Yii::t("app", 'Average Panel Strength'),
+            'attribute' => 'strength',
+            'width' => '100px',
+        ],
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'adjudicators',

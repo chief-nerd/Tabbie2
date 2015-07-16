@@ -92,7 +92,7 @@ class PanelController extends BaseTournamentController {
 
 		if ($model->load(Yii::$app->request->post())) {
 			if ($model->createAIP()) {
-				return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $this->_tournament->id]);
+                return $this->redirect(['panel/index', "tournament_id" => $this->_tournament->id]);
 			}
 			else {
 				Yii::$app->session->addFlash("error", Yii::t("app", "Error saving:") . print_r($model->getErrors(), true));

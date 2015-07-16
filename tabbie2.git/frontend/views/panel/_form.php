@@ -31,8 +31,13 @@ function (element, callback) {
 }
 SCRIPT;
 
+    $chairs = Yii::t("app", 'Chair');
+    $wings = Yii::t("app", 'Wing');
+
 	$first = true;
 	foreach ($model->set_adjudicators as $adj_k => $adj_v) {
+
+        echo Html::label((($first) ? $chairs : $wings), 'set_adjudicators[' . $adj_k . ']');
 
 		echo Select2::widget([
 				'model' => $model,
