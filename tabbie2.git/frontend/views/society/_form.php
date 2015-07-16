@@ -34,7 +34,7 @@ SCRIPT;
 	echo $form->field($model, 'society')->widget(Select2::classname(), [
 		'options' => [
 			'placeholder' => Yii::t("app", 'Search for a society ...'),
-			'multiple' => true,
+            'multiple' => false,
 		],
 		'pluginOptions' => [
 			'allowClear' => true,
