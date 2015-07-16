@@ -3,6 +3,9 @@
 
 /* @var $this yii\web\View */
 /* @var $debate Debate */
+
+$speaks = Yii::t("app", "Speaker Points");
+$rank = Yii::t("app", "Rank");
 ?>
 <div class="tournamentlogo">
 	<img src="<?= $tournament->logo ?>">
@@ -72,12 +75,16 @@
 					</tr>
 					<tr>
 						<td><?= ($debate->og_team->speakerA) ? $debate->og_team->speakerA->name : "" ?></td>
-						<td class="value"></td>
-						<td class="rank" rowspan="2"></td>
+                        <td class="value">
+                            <div class="help"><?= $speaks ?></td>
+                        <td class="rank" rowspan="2">
+                            <div class="help"><?= $rank ?></td>
 					</tr>
 					<tr>
 						<td><?= ($debate->og_team->speakerB) ? $debate->og_team->speakerB->name : "" ?></td>
-						<td class="value"></td>
+                        <td class="value">
+                            <div class="help"><?= $speaks ?></div>
+                        </td>
 					</tr>
 				</table>
 			</td>
@@ -91,12 +98,15 @@
 					</tr>
 					<tr>
 						<td><?= ($debate->oo_team->speakerA) ? $debate->oo_team->speakerA->name : "" ?></td>
-						<td class="value"></td>
-						<td class="rank" rowspan="2"></td>
+                        <td class="value">
+                            <div class="help"><?= $speaks ?></td>
+                        <td class="rank" rowspan="2">
+                            <div class="help"><?= $rank ?></td>
 					</tr>
 					<tr>
 						<td><?= ($debate->oo_team->speakerB) ? $debate->oo_team->speakerB->name : "" ?></td>
-						<td class="value"></td>
+                        <td class="value">
+                            <div class="help"><?= $speaks ?></td>
 					</tr>
 				</table>
 			</td>
@@ -112,12 +122,15 @@
 					</tr>
 					<tr>
 						<td><?= ($debate->cg_team->speakerA) ? $debate->cg_team->speakerA->name : "" ?></td>
-						<td class="value"></td>
-						<td class="rank" rowspan="2"></td>
+                        <td class="value">
+                            <div class="help"><?= $speaks ?></td>
+                        <td class="rank" rowspan="2">
+                            <div class="help"><?= $rank ?></td>
 					</tr>
 					<tr>
 						<td><?= ($debate->cg_team->speakerB) ? $debate->cg_team->speakerB->name : "" ?></td>
-						<td class="value"></td>
+                        <td class="value">
+                            <div class="help"><?= $speaks ?></td>
 					</tr>
 				</table>
 			</td>
@@ -131,12 +144,16 @@
 					</tr>
 					<tr>
 						<td><?= ($debate->co_team->speakerA) ? $debate->co_team->speakerA->name : "" ?></td>
-						<td class="value"></td>
-						<td class="rank" rowspan="2"></td>
+                        <td class="value">
+                            <div class="help"><?= $speaks ?></td>
+                        <td class="rank" rowspan="2">
+                            <div class="help"><?= $rank ?></div>
+                        </td>
 					</tr>
 					<tr>
 						<td><?= ($debate->co_team->speakerB) ? $debate->co_team->speakerB->name : "" ?></td>
-						<td class="value"></td>
+                        <td class="value">
+                            <div class="help"><?= $speaks ?></td>
 					</tr>
 				</table>
 			</td>

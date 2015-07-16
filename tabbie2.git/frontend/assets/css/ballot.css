@@ -74,7 +74,8 @@ table {
     left: 0;
     width: 100%;
     padding: 20px;
-    border: 1px solid black;
+    border: 1px solid #666;
+    margin-top: 50px;
 }
 
 .table table {
@@ -100,8 +101,18 @@ table {
 .table .value {
     height: 50px;
     width: 100px;
+    text-align: right;
+    vertical-align: bottom;
 }
 
 .table .rank {
     width: 100px;
+    text-align: right;
+    vertical-align: bottom;
+}
+
+.help {
+    font-size: 10px;
+    color: #CCCCCC;
+    padding-right: 3px;
 }
