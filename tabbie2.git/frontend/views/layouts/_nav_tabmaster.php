@@ -101,7 +101,9 @@ $menuItems = [
 	],
 	['label' => Html::icon("envelope", $icon_class) . "&nbsp;" . Yii::t("app", 'Results'), 'url' => '#',
 		"items" => array_merge_recursive([
-			['label' => Yii::t("app", 'List Results'), 'url' => ['result/index', "tournament_id" => $tournament->id]],
+            ['label' => Html::icon("list") . "&nbsp;" . Yii::t("app", 'List Results'), 'url' => ['result/index', "tournament_id" => $tournament->id]],
+            ['label' => Html::icon("plus") . "&nbsp;" . Yii::t("app", 'Insert Ballot'), 'url' => ['result/manual', "tournament_id" => $tournament->id]],
+            '<li class="divider"></li>',
 			['label' => Yii::t("app", 'Correct Cache'), 'url' => ['result/correctcache', "tournament_id" => $tournament->id]],
 			'<li class="divider"></li>',
 		], $results),

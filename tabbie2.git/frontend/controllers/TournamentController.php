@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\components\filter\TournamentContextFilter;
+use common\components\ObjectError;
 use common\models;
 use common\models\search\TournamentSearch;
 use common\models\Tournament;
@@ -125,12 +126,12 @@ class TournamentController extends BaseTournamentController {
 				if ($energyConf->setup($model))
 					Yii::$app->session->addFlash("success", Yii::t("app", "Tournament successfully created"));
 				else
-					Yii::$app->session->addFlash("warning", Yii::t("app", "Tournament created but Energy config failed!") . print_r($energyConf->getErrors(), true));
+                    Yii::$app->session->addFlash("warning", Yii::t("app", "Tournament created but Energy config failed!") . ObjectError::getMsg($energyConf));
 
 				return $this->redirect(['view', 'id' => $model->id]);
 			}
 			else {
-				Yii::$app->session->setFlash("error", Yii::t("app", "Can't save Tournament!") . print_r($model->getErrors(), true));
+                Yii::$app->session->setFlash("error", Yii::t("app", "Can't save Tournament!") . ObjectError::getMsg($model));
 			}
 		}
 		//Preset variables

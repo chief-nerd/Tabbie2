@@ -50,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			<?= Html::a(Html::icon("trash") . "&nbsp;" . Yii::t('app', 'start over'), ["create", "id" => $debate->id, "tournament_id" => $debate->tournament_id], ['class' => 'btn btn-default btn-block']) ?>
 		</div>
 		<div class="col-xs-7">
-			<?= Html::submitButton(Yii::t('app', 'Make it so!') . "&nbsp;" . Html::icon("send"), ['class' => 'btn btn-success btn-block']) ?>
+            <?= Html::submitButton(Yii::t('app', 'Make it so!') . "&nbsp;" . Html::icon("send"), ['class' => 'btn btn-success btn-block', 'autofocus' => 'autofocus']) ?>
 		</div>
 	</div>
 

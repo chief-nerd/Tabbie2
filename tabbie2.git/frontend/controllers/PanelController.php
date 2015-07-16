@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\components\ObjectError;
 use common\models\Adjudicator;
 use common\models\AdjudicatorInPanel;
 use Yii;
@@ -95,7 +96,7 @@ class PanelController extends BaseTournamentController {
                 return $this->redirect(['panel/index', "tournament_id" => $this->_tournament->id]);
 			}
 			else {
-				Yii::$app->session->addFlash("error", Yii::t("app", "Error saving:") . print_r($model->getErrors(), true));
+                Yii::$app->session->addFlash("error", Yii::t("app", "Error saving:") . ObjectError::getMsg($model));
 				for ($i = 0; $i < 4; $i++)
 					$model->set_adjudicators[] = Yii::$app->request->post("Panel")["set_adjudicators"][$i];
 			}

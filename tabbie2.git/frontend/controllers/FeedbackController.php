@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\components\filter\TournamentContextFilter;
+use common\components\ObjectError;
 use common\models\AdjudicatorInPanel;
 use common\models\Answer;
 use common\models\Debate;
@@ -174,7 +175,7 @@ class FeedbackController extends BaseTournamentController {
 				}
 
 				if (!$object->save())
-					throw new Exception("Save error " . print_r($object->getErrors(), true));
+                    throw new Exception("Save error " . ObjectError::getMsg($object));
 			}
 			$already_entered = true;
 		}

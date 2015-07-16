@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\components\filter\TournamentContextFilter;
+use common\components\ObjectError;
 use common\models\Adjudicator;
 use common\models\Country;
 use common\models\Panel;
@@ -204,7 +205,7 @@ class AdjudicatorController extends BaseTournamentController {
 		}
 
 		if (!$model->save()) {
-			Yii::$app->session->addFlash("error", print_r($model->getErrors(), true));
+            Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
 		}
 
 		return $this->redirect(['adjudicator/index', 'tournament_id' => $this->_tournament->id]);
@@ -353,7 +354,7 @@ class AdjudicatorController extends BaseTournamentController {
 						$adj->strength = intval($row[4][0]);
 						$adj->society_id = $societyID;
 						if (!$adj->save())
-							Yii::$app->session->addFlash("error", Yii::t("app", "Save error: {message}", ["message" => print_r($adj->getErrors(), true)]));
+                            Yii::$app->session->addFlash("error", Yii::t("app", "Save error: {message}", ["message" => ObjectError::getMsg($adj)]));
 					}
 				}
 				set_time_limit(30);

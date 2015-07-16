@@ -52,6 +52,7 @@ class Result extends \yii\db\ActiveRecord {
 				"integer", "max" => Yii::$app->params["speaks_max"], "min" => Yii::$app->params["speaks_min"]],
 			['debate_id', 'validateNotEqualPlace'],
 			['debate_id', 'unique'],
+            ['debate_id', 'exist', 'targetClass' => '\common\models\Debate', 'targetAttribute' => 'id'],
 			[['time', 'confirmed'], 'safe']
 		];
 	}

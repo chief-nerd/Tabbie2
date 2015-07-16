@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\components\filter\TournamentContextFilter;
+use common\components\ObjectError;
 use common\models\PublishTabSpeaker;
 use common\models\PublishTabTeam;
 use common\models\TabAfterRound;
@@ -107,7 +108,7 @@ class TabController extends BaseTournamentController {
 				"speaks" => $line->speaks,
 			]);
 			if (!$ptt->save())
-				throw new Exception("Save Error " . print_r($ptt->getErrors(), true));
+                throw new Exception("Save Error " . ObjectError::getMsg($ptt));
 		}
 
 		$lines_speaker = PublishTabSpeaker::generateSpeakerTab($this->_tournament);
@@ -123,7 +124,7 @@ class TabController extends BaseTournamentController {
 					"speaks" => $line->speaks,
 				]);
 				if (!$ptt->save())
-					throw new Exception("Save Error " . print_r($ptt->getErrors(), true));
+                    throw new Exception("Save Error " . ObjectError::getMsg($ptt));
 			}
 		}
 

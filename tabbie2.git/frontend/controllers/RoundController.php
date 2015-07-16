@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\components\filter\TournamentContextFilter;
+use common\components\ObjectError;
 use common\models\Debate;
 use common\models\DrawLine;
 use common\models\Panel;
@@ -157,7 +158,7 @@ class RoundController extends BaseTournamentController {
 		if ($model->load(Yii::$app->request->post())) {
 
 			if (!$model->save() || !$model->generateWorkingDraw()) {
-				Yii::$app->session->setFlash("error", print_r($model->getErrors(), true));
+                Yii::$app->session->setFlash("error", ObjectError::getMsg($model));
 			}
 			return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
 		}
@@ -264,7 +265,7 @@ class RoundController extends BaseTournamentController {
 			}
 
 			if (!$model->generateWorkingDraw()) {
-				Yii::$app->session->addFlash("error", print_r($model->getErrors(), true));
+                Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
 			}
 			else {
 				$model->save();

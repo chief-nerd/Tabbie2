@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\components\ObjectError;
 use common\models\InSociety;
 use common\models\LoginForm;
 use common\models\Society;
@@ -194,7 +195,7 @@ class SiteController extends Controller {
 					Yii::$app->session->addFlash("error", Yii::t("app", "Login failed"));
 			}
 			else
-				Yii::$app->session->addFlash("error", print_r($model->getErrors(), true));
+                Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
 		}
 	}
 
@@ -209,7 +210,7 @@ class SiteController extends Controller {
 			}
 			else {
 				Yii::$app->getSession()
-				         ->setFlash('error', Yii::t("app", 'Sorry, we are unable to reset password for email provided.<br>{message}', ["message" => print_r($model->getErrors(), true)]));
+                    ->setFlash('error', Yii::t("app", 'Sorry, we are unable to reset password for email provided.<br>{message}', ["message" => ObjectError::getMsg($model)]));
 			}
 		}
 

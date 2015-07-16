@@ -1,7 +1,8 @@
 <?php
 
-use yii\helpers\Html;
+
 use kartik\form\ActiveForm;
+use kartik\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Result */
@@ -20,61 +21,70 @@ $this->params['breadcrumbs'][] = $this->title;
 	<div id="enterform">
 		<?php $form = ActiveForm::begin(); ?>
 
-		<?= Html::activeHiddenInput($model, 'debate_id') ?>
-		<?
-		/* @var $debate Debate */
-		$debate = $model->debate;
-		$cols = "col-xs-12 col-sm-6";
-		$fieldOption = [
-			"template" => "{label} {input}\n{hint}\n{error}",
-		];
-		$textOption = ["size" => 2, "maxlength" => 2];
-		?>
+        <?
+        /* @var $debate Debate */
+        $debate = $model->debate;
+        $cols = "col-xs-12 col-sm-6";
+        $fieldOption = [
+            "template" => "{label} {input}\n{hint}\n{error}",
+        ];
+        $textOption = ["size" => 2, "maxlength" => 2];
+        ?>
+
+        <?= $form->field($model, "debate_id")->textInput(["autofocus" => "autofocus"]); ?>
 
 		<div class="row">
-			<div class="<?= $cols ?>">
-				<h3><?= Yii::t("app", "Opening Government") ?></h3>
-				<?= $form->field($model, 'og_A_speaks', $fieldOption)
-				         ->label($debate->og_team->speakerA->name)
-				         ->textInput($textOption) ?>
-				<?= $form->field($model, 'og_B_speaks', $fieldOption)
-				         ->label($debate->og_team->speakerB->name)
-				         ->textInput($textOption) ?>
-			</div>
-			<div class="<?= $cols ?>">
-				<h3><?= Yii::t("app", "Opening Opposition") ?></h3>
-				<?= $form->field($model, 'oo_A_speaks', $fieldOption)
-				         ->label($debate->oo_team->speakerA->name)
-				         ->textInput($textOption) ?>
-				<?= $form->field($model, 'oo_B_speaks', $fieldOption)
-				         ->label($debate->oo_team->speakerB->name)
-				         ->textInput($textOption) ?>
-			</div>
-		</div>
-		<div class="row">
-			<div class="<?= $cols ?>">
-				<h3><?= Yii::t("app", "Closing Government") ?></h3>
-				<?= $form->field($model, 'cg_A_speaks', $fieldOption)
-				         ->label($debate->cg_team->speakerA->name)
-				         ->textInput($textOption) ?>
-				<?= $form->field($model, 'cg_B_speaks', $fieldOption)
-				         ->label($debate->cg_team->speakerB->name)
-				         ->textInput($textOption) ?>
-			</div>
-			<div class="<?= $cols ?>">
-				<h3><?= Yii::t("app", "Closing Opposition") ?></h3>
-				<?= $form->field($model, 'co_A_speaks', $fieldOption)
-				         ->label($debate->co_team->speakerA->name)
-				         ->textInput($textOption) ?>
-				<?= $form->field($model, 'co_B_speaks', $fieldOption)
-				         ->label($debate->co_team->speakerB->name)
-				         ->textInput($textOption) ?>
-			</div>
+            <? foreach (\common\models\Team::getPos() as $index => $pos): ?>
+                <div class="<?= $cols ?>">
+                    <h3><?= \common\models\Team::getPosLabel($index) ?></h3>
+
+                    <?= $form->field($model, $pos . '_A_speaks', $fieldOption)
+                        ->label(Yii::t("app", "Speaker A"))
+                        ->textInput($textOption) ?>
+
+                    <?= $form->field($model, $pos . '_B_speaks', $fieldOption)
+                        ->label(Yii::t("app", "Speaker B"))
+                        ->textInput($textOption) ?>
+                </div>
+            <? endforeach; ?>
 		</div>
 
-		<div class="form-group">
-			<?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
-		</div>
+        <hr>
+        <div id="irregular_options" class="collapse">
+            <h3>Irregular Options</h3>
+
+            <div class="row">
+                <div class="<?= $cols ?>">
+                    <?= $form->field($model, "og_irregular")->dropDownList(\common\models\Team::getIrregularOptions()) ?>
+                </div>
+                <div class="<?= $cols ?>">
+                    <?= $form->field($model, "oo_irregular")->dropDownList(\common\models\Team::getIrregularOptions()) ?>
+                </div>
+            </div>
+            <div class="row">
+                <div class="<?= $cols ?>">
+                    <?= $form->field($model, "cg_irregular")->dropDownList(\common\models\Team::getIrregularOptions()) ?>
+                </div>
+                <div class="<?= $cols ?>">
+                    <?= $form->field($model, "co_irregular")->dropDownList(\common\models\Team::getIrregularOptions()) ?>
+                </div>
+            </div>
+            <hr>
+        </div>
+        <div class="row">
+            <div class="col-xs-5">
+                <?= Html::Button(Yii::t('app', 'Options') . "&nbsp;" . Html::icon("chevron-down"), [
+                    'class' => 'btn btn-default btn-block',
+                    'data-toggle' => "collapse",
+                    'data-target' => "#irregular_options",
+                    'aria-expanded' => "false",
+                    'aria-controls' => "irregular_options",
+                ]) ?>
+            </div>
+            <div class="col-xs-7">
+                <?= Html::submitButton(Yii::t('app', 'Continue') . "&nbsp;" . Html::icon("chevron-right"), ['class' => 'btn btn-success btn-block']) ?>
+            </div>
+        </div>
 
 		<?php ActiveForm::end(); ?>
 	</div>

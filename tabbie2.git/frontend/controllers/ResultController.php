@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\components\filter\TournamentContextFilter;
+use common\components\ObjectError;
 use common\models\Debate;
 use common\models\Result;
 use common\models\search\ResultSearch;
@@ -170,7 +171,7 @@ class ResultController extends BaseTournamentController {
 						]);
 					}
 					else {
-						Yii::error("Save Results: " . print_r($model->getErrors(), true), __METHOD__);
+                        Yii::error("Save Results: " . ObjectError::getMsg($model), __METHOD__);
 						Yii::$app->session->addFlash("error", Yii::t("app", "Error saving Results.<br>Please request a paper ballot!"));
 					}
 				}
@@ -219,7 +220,7 @@ class ResultController extends BaseTournamentController {
 					return $this->redirect(['result/round', 'id' => $model->debate->round_id, "tournament_id" => $this->_tournament->id]);
 				}
 				else {
-					Yii::error("Save Results: " . print_r($model->getErrors(), true), __METHOD__);
+                    Yii::error("Save Results: " . ObjectError::getMsg($model), __METHOD__);
 					Yii::$app->session->addFlash("error", Yii::t("app", "Error saving Results.<br>Please request a paper ballot!"));
 				}
 			}
@@ -273,21 +274,27 @@ class ResultController extends BaseTournamentController {
 		$model = new Result();
 
 		if ($model->load(Yii::$app->request->post())) {
-			if ($model->confirmed == "true") {
-				$adj = \common\models\Adjudicator::findOne(["user_id" => Yii::$app->user->id]);
-				$model->enteredBy_adjudicator_id = $adj->id;
-				if ($model->save())
-					return $this->render('thankyou', ["model" => $model]);
-				else {
-					print_r($model->getErrors());
-				}
-			}
-			else {
-				$model->rankTeams();
-				return $this->render('confirm', [
-					'model' => $model,
-				]);
-			}
+
+            if ($model->debate instanceof Debate) {
+                if ($model->confirmed == "true") {
+                    $model->entered_by_id = Yii::$app->user->id;
+                    if ($model->save()) {
+                        $model->updateTeamCache();
+                        Yii::$app->session->addFlash("success", Yii::t("app", "Result saved. Next one!"));
+                        /* Reset for next one */
+                        $model = new Result();
+                    } else {
+                        Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
+                    }
+                } else {
+                    $model->rankTeams();
+                    return $this->render('confirm', [
+                        'model' => $model,
+                    ]);
+                }
+            } else {
+                $model->addError("debate_id", Yii::t("app", "Debate #{id} does not exist", ["id" => $model->debate_id]));
+            }
 		}
 
 		return $this->render('manual', [

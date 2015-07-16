@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\components\ObjectError;
 use common\models\InSociety;
 use common\models\search\UserSearch;
 use common\models\Society;
@@ -158,7 +159,7 @@ class UserController extends BaseUserController {
 					$inSociety->society_id = $model->societies_id;
 					$inSociety->starting = date("Y-m-d");
 					if (!$inSociety->save()) {
-						Yii::warning("inSociety not saved! Errors: " . print_r($inSociety->getErrors(), true), __METHOD__);
+                        Yii::warning("inSociety not saved! Errors: " . ObjectError::getMsg($inSociety), __METHOD__);
 						Yii::$app->session->addFlash("warning", Yii::t("app", "Society connection not saved"));
 					}
 					else {
@@ -168,7 +169,7 @@ class UserController extends BaseUserController {
 				return $this->redirect(['view', 'id' => $model->id]);
 			}
 			else {
-				Yii::warning("User Model not saved! Errors: " . print_r($model->getErrors(), true), __METHOD__);
+                Yii::warning("User Model not saved! Errors: " . ObjectError::getMsg($model), __METHOD__);
 				Yii::$app->session->addFlash("error", Yii::t("app", "User not saved!"));
 			}
 		}
@@ -229,7 +230,7 @@ class UserController extends BaseUserController {
 							$InSociety->society_id = $model->societies_id;
 							$InSociety->starting = date("Y-m-d");
 							if (!$InSociety->save()) {
-								Yii::warning("Error saving InSociety " . print_r($InSociety->getErrors(), true));
+                                Yii::warning("Error saving InSociety " . ObjectError::getMsg($InSociety));
 								Yii::$app->session->addFlash("warning", Yii::t("app", "Society Connection not saved!"));
 							}
 						}
