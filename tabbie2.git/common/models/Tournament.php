@@ -538,7 +538,7 @@ class Tournament extends \yii\db\ActiveRecord {
 		$algos = [];
 		$files = scandir(Yii::getAlias("@algorithms/algorithms/"));
 		foreach ($files as $className) {
-			if ($className == ".." || $className == ".") continue;
+            if (substr($className, 0, 1) == ".") continue;
 			$filename = pathinfo($className)['filename'];
 			$class = Tournament::getTabAlgorithm($filename);
 			if ($class::version() !== null)
