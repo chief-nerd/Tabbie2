@@ -474,7 +474,7 @@ class AdjudicatorController extends BaseTournamentController {
 	 */
 	public function actionList(array $search = null, $id = null, $tournament_id) {
 		$out = ['more' => false];
-		if (!is_null($search["term"])) {
+        if (!is_null($search["term"]) && $search["term"] != "") {
 			$query = new \yii\db\Query;
 			$query->select(["adjudicator.id", "CONCAT(user.givenname, ' ', user.surename) as text"])
 			      ->from('adjudicator')

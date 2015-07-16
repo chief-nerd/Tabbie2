@@ -122,14 +122,14 @@ class SocietyController extends BaseUserController {
 	 * Returns 20 societies in an JSON List
 	 *
 	 * @param type $search
-	 * @param type $id
+     * @param type $sid
 	 */
 	public function actionList(array $search = null, $sid = null) {
 		$search["term"] = HtmlPurifier::process($search["term"]);
-		$id = intval($sid);
+        $sid = intval($sid);
 
 		$out = ['more' => false];
-		if (!is_null($search["term"])) {
+        if (!is_null($search["term"]) && $search["term"] != "") {
 			$query = new \yii\db\Query;
 			$query->select(["id", "CONCAT(fullname,' (',abr,')') as text"])
 			      ->from('society')
@@ -139,9 +139,8 @@ class SocietyController extends BaseUserController {
 			$command = $query->createCommand();
 			$data = $command->queryAll();
 			$out['results'] = array_values($data);
-		}
-		elseif ($id > 0) {
-			$out['results'] = ['id' => $id, 'text' => Society::findOne($id)->fullname];
+		} elseif ($sid > 0) {
+            $out['results'] = ['id' => $sid, 'text' => Society::findOne($sid)->fullname];
 		}
 		else {
 			$out['results'] = ['id' => 0, 'text' => Yii::t("app", 'No matching records found')];

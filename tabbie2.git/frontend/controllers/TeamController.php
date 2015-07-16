@@ -401,7 +401,7 @@ class TeamController extends BaseTournamentController {
 	 */
 	public function actionList(array $search = null, $id = null, $tournament_id) {
 		$out = ['more' => false];
-		if (!is_null($search["term"])) {
+        if (!is_null($search["term"]) && $search["term"] != "") {
 			$query = new \yii\db\Query;
 			$query->select(["id", "name as text"])
 			      ->from('team')

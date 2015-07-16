@@ -17,21 +17,21 @@ use kartik\widgets\DatePicker;
 	<?php $form = ActiveForm::begin(); ?>
 
 	<?
-	$urlUserList = Url::to(['society/list', "user_id" => $model->user_id]);
+    $urlUserList = Url::to(['society/list', "user_id" => $model->user_id, "sid" => $model->society_id]);
 
 	// Script to initialize the selection based on the value of the select2 element
 	$initUserScript = <<< SCRIPT
 function (element, callback) {
     var id=\$(element).val();
     if (id !== "") {
-        \$.ajax("{$urlUserList}?id=" + id, {
+        \$.ajax("{$urlUserList}?sid=" + id, {
         dataType: "json"
         }).done(function(data) { callback(data.results);});
     }
 }
 SCRIPT;
 
-	echo $form->field($model, 'society')->widget(Select2::classname(), [
+    echo $form->field($model, 'society_id')->widget(Select2::classname(), [
 		'options' => [
 			'placeholder' => Yii::t("app", 'Search for a society ...'),
             'multiple' => false,
