@@ -13,7 +13,6 @@ $this->title = Yii::t("app", 'Checkin');
 $this->params['breadcrumbs'][] = ['label' => $tournament->name, 'url' => ['tournament/view', "id" => $tournament->id]];
 $this->params['breadcrumbs'][] = $this->title;
 
-$this->registerJs("document.getElementById('checkinform-number').focus();", \yii\web\View::POS_READY);
 ?>
 <div class="site-checkin">
 	<h1><?= Html::encode($this->title) ?></h1>
@@ -34,7 +33,8 @@ $this->registerJs("document.getElementById('checkinform-number').focus();", \yii
 		<div class="col-xs-12 col-sm-6">
 			<div class="col-xs-12">
 				<?= $form->field($model, 'number')->widget(\yii\widgets\MaskedInput::className(), [
-					'mask' => 'AA-99999999'
+                    'mask' => 'AA-99999999',
+                    'options' => ["autofocus" => "autofocus"]
 				]) ?>
 			</div>
 			<div class="col-xs-12">
