@@ -4,7 +4,6 @@ namespace frontend\controllers;
 
 use common\components\filter\TournamentContextFilter;
 use common\components\ObjectError;
-use common\models\Country;
 use common\models\search\TeamSearch;
 use common\models\Team;
 use common\models\User;
@@ -111,7 +110,7 @@ class TeamController extends BaseTournamentController
         }
 
         if (Yii::$app->request->isAjax)
-            $this->actionIndex();
+            return $this->actionIndex();
         else
             return $this->redirect(['team/index', 'tournament_id' => $this->_tournament->id]);
     }

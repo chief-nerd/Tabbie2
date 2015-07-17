@@ -158,7 +158,7 @@ class VenueController extends BaseTournamentController {
 		}
 
         if (Yii::$app->request->isAjax)
-            $this->actionIndex();
+			return $this->actionIndex();
         else
             return $this->redirect(['venue/index', 'tournament_id' => $this->_tournament->id]);
 	}

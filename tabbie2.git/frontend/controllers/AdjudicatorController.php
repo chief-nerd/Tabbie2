@@ -207,7 +207,7 @@ class AdjudicatorController extends BaseTournamentController
         }
 
         if (Yii::$app->request->isAjax)
-            $this->actionIndex();
+			return $this->actionIndex();
         else
             return $this->redirect(['adjudicator/index', 'tournament_id' => $this->_tournament->id]);
     }
