@@ -27,7 +27,7 @@ $googleMaps .= "
 
       var options = {
         sizeAxis: { minValue: 0, maxValue: 100 },
-        region: '150', // Europe
+        //region: '150', // Europe
         displayMode: 'markers',
         colorAxis: {colors: ['#e7711c', '#4374e0']} // orange to blue
       };

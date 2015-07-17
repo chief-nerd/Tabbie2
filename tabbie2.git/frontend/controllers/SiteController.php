@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\components\ObjectError;
+use common\models\Country;
 use common\models\InSociety;
 use common\models\LoginForm;
 use common\models\Society;
