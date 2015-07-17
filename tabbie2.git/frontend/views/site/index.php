@@ -1,18 +1,18 @@
 <?php
 
-use kartik\helpers\Html;
+	use kartik\helpers\Html;
 
-$fb_Banner = "https://s3.eu-central-1.amazonaws.com/tabbie-assets/FB_banner.jpg";
-$fb_Logo = "https://s3.eu-central-1.amazonaws.com/tabbie-assets/FB_logo.jpg";
+	$fb_Banner = "https://s3.eu-central-1.amazonaws.com/tabbie-assets/FB_banner.jpg";
+	$fb_Logo = "https://s3.eu-central-1.amazonaws.com/tabbie-assets/FB_logo.jpg";
 
-$this->registerMetaTag(["property" => "og:title", "content" => Yii::$app->params["appName"] . " - " . Yii::$app->params["slogan"]], "og:title");
-$this->registerMetaTag(["property" => "og:image", "content" => $fb_Logo], "og:image1");
-$this->registerMetaTag(["property" => "og:image", "content" => $fb_Banner], "og:image2");
-$this->registerLinkTag(["rel" => "apple-touch-icon", "href" => $fb_Logo], "apple-touch-icon");
+	$this->registerMetaTag(["property" => "og:title", "content" => Yii::$app->params["appName"] . " - " . Yii::$app->params["slogan"]], "og:title");
+	$this->registerMetaTag(["property" => "og:image", "content" => $fb_Logo], "og:image1");
+	$this->registerMetaTag(["property" => "og:image", "content" => $fb_Banner], "og:image2");
+	$this->registerLinkTag(["rel" => "apple-touch-icon", "href" => $fb_Logo], "apple-touch-icon");
 
 
-/* @var $this yii\web\View */
-$this->title = Yii::$app->params["slogan"];
+	/* @var $this yii\web\View */
+	$this->title = Yii::$app->params["slogan"];
 ?>
 <div class="site-index">
 	<div class="beta"></div>
@@ -23,47 +23,50 @@ $this->title = Yii::$app->params["slogan"];
 
 			<div class="tournaments row">
 				<?
-				$amount = count($tournaments);
-				$full_cols = "col-xs-12 col-sm-6 col-md-4 col-lg-3";
-				$posCorrect = "";
-				$fix = false;
+					$amount = count($tournaments);
+					$full_cols = "col-xs-12 col-sm-6 col-md-4 col-lg-3";
+					$posCorrect = "";
+					$fix = false;
 
-				foreach ($tournaments as $index => $t):
-					if ($t instanceof \common\models\Tournament):
-						?>
-						<a href="<?= \yii\helpers\Url::to(["tournament/view", "id" => $t->id]) ?>">
-							<?
-							$left = $amount % 4;
-							if (($amount - $index) >= $left + 1)
-								$cols = $full_cols;
-							else {
-								if ($left == 3 && !$fix) {
-									$cols = "col-xs-12 col-sm-6 col-md-4 col-lg-4";
-									$fix = true;
-								}
-								if ($left == 2 && !$fix) {
-									$cols = "col-xs-12 col-sm-6 col-md-6 col-lg-6";
-									$fix = true;
-								}
-								if ($left == 1 && !$fix) {
-									$cols = "col-xs-12 col-sm-12 col-md-12 col-lg-12";
-									$fix = true;
-								}
-								if ($left == 0 && !$fix) {
-									$cols = $full_cols;
-									$fix = true;
-								}
-							}
+					foreach ($tournaments as $index => $t):
+						if ($t instanceof \common\models\Tournament):
 							?>
-							<div class="tournament <?= $cols ?> <?= $posCorrect ?>">
-								<?= $t->getLogoImage(null, 100) ?>
+							<a href="<?= \yii\helpers\Url::to(["tournament/view", "id" => $t->id]) ?>">
+								<?
+									$left = $amount % 4;
+									if (($amount - $index) >= $left + 1)
+										$cols = $full_cols;
+									else {
+										if ($left == 3 && !$fix) {
+											$cols = "col-xs-12 col-sm-6 col-md-4 col-lg-4";
+											$fix = true;
+										}
+										if ($left == 2 && !$fix) {
+											$cols = "col-xs-12 col-sm-6 col-md-6 col-lg-6";
+											$fix = true;
+										}
+										if ($left == 1 && !$fix) {
+											$cols = "col-xs-12 col-sm-12 col-md-12 col-lg-12";
+											$fix = true;
+										}
+										if ($left == 0 && !$fix) {
+											$cols = $full_cols;
+											$fix = true;
+										}
+									}
+								?>
+								<div class="tournament <?= $cols ?> <?= $posCorrect ?>">
+									<?= $t->getLogoImage(null, 100) ?>
 
-								<h2><?= $t->name ?></h2>
-							</div>
-						</a>
-					<? endif; ?>
-				<? endforeach; ?>
+									<h2><?= $t->name ?></h2>
+								</div>
+							</a>
+						<? endif; ?>
+					<? endforeach; ?>
 			</div>
+		<? else: ?>
+			<h1><?= Yii::t("app", "Welcome to {appName}!", ["appName" => Yii::$app->params["appName"]]) ?></h1>
+			<p class="lead"><?= Yii::$app->params["slogan"] ?></p>
 		<? endif; ?>
 		<br><br>
 
