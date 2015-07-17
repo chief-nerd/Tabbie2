@@ -19,7 +19,7 @@ function drawMarkersMap() {
 foreach ($societies as $s) {
 	if ($s["city"] == "") continue;
 
-	$googleMaps .= "['" . addslashes($s["city"]) . "', '" . addslashes($s["fullname"]) . "',  " . $s["amount"] . "], ";
+	$googleMaps .= "['" . addslashes($s["city"]) . ", " . addslashes($s["country"]) . "', '" . addslashes($s["fullname"]) . "',  " . $s["amount"] . "], \n";
 }
 
 $googleMaps .= "

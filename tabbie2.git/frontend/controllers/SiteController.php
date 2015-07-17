@@ -126,9 +126,10 @@ class SiteController extends Controller {
 
 	public function actionAbout() {
 
-		$societies = Society::find()->asArray()->all();
+		$societies = Society::find()->where("country_id != " . Country::COUNTRY_UNKNOWN_ID)->asArray()->all();
 		for ($i = 0; $i < count($societies); $i++) {
 			$societies[$i]["amount"] = InSociety::find()->where(["society_id" => $societies[$i]["id"]])->count();
+			$societies[$i]["country"] = Country::findOne($societies[$i]["country_id"])->name;
 		}
 
 		return $this->render('about', [
