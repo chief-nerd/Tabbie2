@@ -288,22 +288,60 @@ class TournamentController extends BaseTournamentController {
 	 */
 	public function actionMigrateTabbie($id) {
 
-		$tournamnet = $this->_tournament;
+        $tournament = $this->_tournament;
 
 		$sqlFile = [];
 		$sqlFile[] = "USE database tabbie;";
 
-		$adju = models\Adjudicator::find()->tournament($tournamnet->id)->all();
+        /** ADJUDICATORS */
+        $sqlFile[] = "CREATE TABLE adjudicators";
 
-		$teams = models\Team::find()->tournament($tournamnet->id)->all();
+        $adju = models\Adjudicator::find()->tournament($tournament->id)->all();
+        foreach ($adju as $a) {
+            $sqlFile[] = "INSERT INTO adjudicator VALUES(" . implode(",", [$a->id, $this->strquote($a->user->name)]) . ");";
+        }
 
-		$sqlFile[] = "CREATE TABLE adjudicators;";
+        /** TEAMS */
+        $sqlFile[] = "CREATE TABLE teams";
 
-		foreach ($tournamnet->rounds as $round) {
-			foreach ($round->debates as $debate) {
+        $teams = models\Team::find()->tournament($tournament->id)->all();
+        foreach ($teams as $t) {
+            $sqlFile[] = "INSERT INTO teams VALUES();";
+        }
+
+        /** Venues */
+        $sqlFile[] = "CREATE TABLE venues";
+
+        $venues = models\Venue::find()->tournament($tournament->id)->all();
+        foreach ($venues as $v) {
+            $sqlFile[] = "INSERT INTO venue VALUES();";
+        }
+
+        foreach ($tournament->rounds as $round) {
+            /** ROUND */
+            /** @var models\Round $round */
+
+            $sqlFile[] = "CREATE TABLE round_" . $round->number . " ";
+            $sqlFile[] = "CREATE TABLE result_round_" . $round->number . " ";
+
+            foreach ($round->debates as $debate) {
+                /** DEBATE */
+                /** @var models\Debate $debate */
+
+
+                /** RESULT */
 				if ($debate->result instanceof models\Result) // There might not be a result yet
 				{
+                    /** @var models\Result $result */
 					$result = $debate->result;
+
+                    $values = [$debate->id];
+                    $values[$result->og_place] = $debate->og_team_id;
+                    $values[$result->oo_place] = $debate->oo_team_id;
+                    $values[$result->cg_place] = $debate->cg_team_id;
+                    $values[$result->co_place] = $debate->co_team_id;
+
+                    $sqlFile[] = "INSERT INTO result_round_" . $round->number . " VALUES(" . implode(",", $values) . ")";
 				}
 			}
 		}
@@ -311,4 +349,9 @@ class TournamentController extends BaseTournamentController {
 		echo implode("<br>\n", $sqlFile);
 		exit();
 	}
+
+    private function strquote($str)
+    {
+        return "'" . $str . "'";
+    }
 }
