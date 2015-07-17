@@ -224,6 +224,7 @@ class TeamController extends BaseTournamentController
 
                 //INSERT DATA
                 for ($r = 1; $r <= count($model->tempImport); $r++) {
+					if (!isset($model->tempImport[$r])) continue;
                     $row = $model->tempImport[$r];
 
                     //Society
@@ -313,11 +314,15 @@ class TeamController extends BaseTournamentController
 
                     //Find Matches
                     for ($i = 1; $i <= count($model->tempImport); $i++) {
+
+						if (!isset($model->tempImport[$i])) continue;
+
+						$name = $model->tempImport[$i][1][0];
+
                         //TeamName - not match
                         //
                         //Debating Society
-                        $name = $model->tempImport[$i][1][0];
-                        $societies = \common\models\Society::find()->where(["like", "fullname", $name])->all();
+						$societies = \common\models\Society::find()->where(["like", "fullname", $name])->orWhere(["abr" => $name])->all();
                         $model->tempImport[$i][1] = array();
                         $model->tempImport[$i][1][0] = $name;
                         $a = 1;

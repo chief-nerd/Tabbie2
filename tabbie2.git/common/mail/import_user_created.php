@@ -13,7 +13,8 @@ Hi <?= Html::encode($user->givenname) ?>,<br>
 <br>
 I am writing you because you successfully registered for the <?= Html::a(Html::encode($tournament->getFullname()), $tournamentlink) ?>.
 <br>
-Since this tournament is running on <?= Html::a(Yii::$app->params["appName"], Yii::$app->params["appUrl"]) ?>, a new user account has been created for you with the following login credentials:
+Since this tournament is running on<?= Html::a(Yii::$app->params["appName"], Yii::$app->params["appUrl"]) ?>, a new user account has been created for you with the following login credentials:
+<br>
 <br>
 Username/Email: <?= $user->email ?><br>
 Temporary Password: <?= $password ?><br>
@@ -22,8 +23,8 @@ Please login and fill the remaining fields of your profile (and change your pass
 <?= Html::a(Html::encode($userlink), $userlink) ?><br>
 <br>
 Then bring your smartphone/pad/laptop to the competition to enter eBallots and Feedback directly at:<br>
-<?= Html::a(Html::encode($tournamentlink), $tournamentlink) ?>
-
+<?= Html::a(Html::encode($tournamentlink), $tournamentlink) ?><br>
+<br>
 If you have any question please feel free to write to our support team at:<br>
 <?= Html::mailto(Html::encode($support), $support) ?><br>
 <br>

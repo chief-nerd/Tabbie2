@@ -17,11 +17,8 @@ $this->title = Yii::$app->params["slogan"];
 <div class="site-index">
 	<div class="beta"></div>
 	<div class="jumbotron">
-		<h1><?= Yii::t("app", "Welcome to {appName}!", ["appName" => Yii::$app->params["appName"]]) ?></h1>
-
-		<p class="lead"><?= Yii::$app->params["slogan"] ?></p>
 		<? if (count($tournaments) > 0): ?>
-			<h4><?= Yii::t("app", "Current {count, plural, =0{Tournament} =1{Tournament} other{Tournaments}}", ["count" => count($tournaments)]) ?>
+			<h4><?= Yii::t("app", "Current BP Debate {count, plural, =0{Tournament} =1{Tournament} other{Tournaments}}", ["count" => count($tournaments)]) ?>
 				:</h4>
 
 			<div class="tournaments row">
