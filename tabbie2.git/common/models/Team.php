@@ -346,7 +346,10 @@ class Team extends \yii\db\ActiveRecord {
 	 * Helper function to determine whether teams COULD replace each other in the same bracket (are they in the same
 	 * bracket, or is one a pull up / down from their bracket?) Debate level = hightest points of teams
 	 *
-	 * @param Team $other_team
+	 * @param array $team Team A to check
+	 * @param array $other_team Team to check against
+	 * @param integer $line_a_level
+	 * @param integer $line_b_level
 	 *
 	 * @uses Team::getPoints
 	 * @uses Team::getLevel

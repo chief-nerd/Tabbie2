@@ -80,7 +80,7 @@ body.movedown {
 
 @media (max-width: 767px) {
     .tournament_title h1 {
-        margin-top: 0px;
+        margin-top: 0;
     }
 }
 
@@ -136,7 +136,7 @@ body.movedown {
     border-top: 1px solid #ddd;
     padding-top: 20px;
     position: absolute;
-    bottom: 0px;
+    bottom: 0;
     width: 100%;
 }
 
@@ -220,7 +220,7 @@ a.desc:after {
     width: 100%;
     padding: 14px;
     margin: 0;
-    border-radius: 0px;
+    border-radius: 0;
     text-align: center;
 }
 
@@ -242,10 +242,14 @@ a.desc:after {
     text-decoration: underline;
 }
 
+.kv-grid-table td ul {
+    margin-bottom: 0;
+}
+
 /***** Tournament *******/
 
 #tournament_title {
-    margin: 0px 0;
+    margin: 0 0;
 }
 
 .balance-frame {
@@ -326,8 +330,8 @@ a.desc:after {
     position: fixed;
     height: 100%;
     width: 100%;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     background-color: rgba(255, 255, 255, 0.98);
     z-index: 9999999;
 }

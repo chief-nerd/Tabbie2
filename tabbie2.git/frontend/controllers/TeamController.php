@@ -110,7 +110,10 @@ class TeamController extends BaseTournamentController
             Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
         }
 
-        return $this->redirect(['team/index', 'tournament_id' => $this->_tournament->id]);
+        if (Yii::$app->request->isAjax)
+            $this->actionIndex();
+        else
+            return $this->redirect(['team/index', 'tournament_id' => $this->_tournament->id]);
     }
 
     /**

@@ -18,6 +18,7 @@ use yii\helpers\Url;
  * @property integer                  $tabmaster_user_id
  * @property integer                  $hosted_by_id
  * @property string                   $name
+ * @property string $fullname
  * @property string                   $start_date
  * @property string                   $end_date
  * @property string                   $logo

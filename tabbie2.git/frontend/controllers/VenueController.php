@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\components\filter\TournamentContextFilter;
+use common\components\ObjectError;
 use common\models\search\VenueSearch;
 use common\models\Tournament;
 use common\models\Venue;
@@ -153,10 +154,13 @@ class VenueController extends BaseTournamentController {
 		}
 
 		if (!$model->save()) {
-			Yii::$app->session->addFlash("error", $model->getErrors("active"));
+            Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
 		}
 
-		return $this->redirect(['venue/index', 'tournament_id' => $this->_tournament->id]);
+        if (Yii::$app->request->isAjax)
+            $this->actionIndex();
+        else
+            return $this->redirect(['venue/index', 'tournament_id' => $this->_tournament->id]);
 	}
 
 	/**

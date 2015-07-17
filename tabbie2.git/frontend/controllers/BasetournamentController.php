@@ -6,6 +6,9 @@ use common\models\Tournament;
 use Yii;
 use yii\web\Controller;
 
+/**
+ * Parent Controller that need a tournament context
+ */
 class BaseTournamentController extends Controller {
 
 	/**

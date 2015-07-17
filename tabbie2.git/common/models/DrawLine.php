@@ -7,6 +7,8 @@ use yii\base\Model;
 
 /**
  * ContactForm is the model behind the contact form.
+ *
+ * @property integer level
  */
 class DrawLine extends Model {
 
@@ -24,14 +26,14 @@ class DrawLine extends Model {
 	/**
 	 * Teams in the Debate 0=>OG, 1=>OO, 2=>CG, 3=>CO,
 	 *
-	 * @var Team[]
+	 * @var array
 	 */
 	private $teams = [];
 
 	/**
 	 * Adjudicators in that debate, Position 0 is the chair
 	 *
-	 * @var Adjudicator[]
+	 * @var array
 	 */
 	private $adj = [];
 
@@ -91,7 +93,8 @@ class DrawLine extends Model {
 		$this->setCO($co);
 	}
 
-	public function setTeamsByArray($teams) {
+	public function setTeamsByArray(array $teams)
+	{
 		if (count($teams) == 4) {
 			$this->setOG($teams[0]);
 			$this->setOO($teams[1]);

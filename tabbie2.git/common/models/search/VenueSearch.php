@@ -22,8 +22,8 @@ class VenueSearch extends Venue {
 	 */
 	public function rules() {
 		return [
-			[['id', 'tournament_id', 'active'], 'integer'],
-			[['name', 'group'], 'safe'],
+            [['active'], 'integer'],
+            [['name', 'group'], 'string', 'max' => 255],
 		];
 	}
 
@@ -52,13 +52,19 @@ class VenueSearch extends Venue {
 			],
 		]);
 
+        $dataProvider->setSort([
+            'attributes' => [
+                'name',
+                'group',
+                'active'
+            ]
+        ]);
+
 		if (!($this->load($params) && $this->validate())) {
 			return $dataProvider;
 		}
 
 		$query->andFilterWhere([
-			'id' => $this->id,
-			'tournament_id' => $this->tournament_id,
 			'active' => $this->active,
 		]);
 
