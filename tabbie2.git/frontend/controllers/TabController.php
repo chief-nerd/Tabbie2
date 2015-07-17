@@ -6,7 +6,6 @@ use common\components\filter\TournamentContextFilter;
 use common\components\ObjectError;
 use common\models\PublishTabSpeaker;
 use common\models\PublishTabTeam;
-use common\models\TabAfterRound;
 use common\models\Tournament;
 use Yii;
 use yii\base\Exception;

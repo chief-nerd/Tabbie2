@@ -3,7 +3,6 @@
 namespace frontend\controllers;
 
 use common\models\AdjudicatorStrike;
-use common\models\Strikes;
 use common\models\TeamStrike;
 use Yii;
 use yii\data\ActiveDataProvider;

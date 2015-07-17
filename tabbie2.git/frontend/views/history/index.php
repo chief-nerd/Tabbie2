@@ -2,7 +2,6 @@
 
 use frontend\assets\UserAsset;
 use yii\widgets\ListView;
-use yii\widgets\LinkPager;
 
 UserAsset::register($this);
 
