@@ -246,6 +246,17 @@ a.desc:after {
     margin-bottom: 0;
 }
 
+.kv-panel-pager {
+    min-height: 0;
+    text-align: center;
+}
+
+.kv-grid-table .empty {
+    text-align: center;
+    font-size: 123%;
+    line-height: 250%;
+}
+
 /***** Tournament *******/
 
 #tournament_title {

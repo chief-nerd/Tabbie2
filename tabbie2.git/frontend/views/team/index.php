@@ -129,11 +129,21 @@ $this->params['breadcrumbs'][] = $this->title;
     if ($tournament->status < Tournament::STATUS_CLOSED) {
         $toolbar = [
             ['content' =>
-                Html::a(\kartik\helpers\Html::icon("plus") . "&nbsp" . Yii::t('app', 'Add'), ['create', "tournament_id" => $tournament->id], ['data-pjax' => 0, 'class' => 'btn btn-success'])
-                . ' ' .
-                Html::a(\kartik\helpers\Html::icon("repeat") . "&nbsp" . Yii::t('app', 'Reload'), ['index', "tournament_id" => $tournament->id], ['data-pjax' => 1, 'class' => 'btn btn-default', 'title' => Yii::t('kvgrid', 'Reload')])
-                . ' ' .
-                Html::a(\kartik\helpers\Html::icon("import") . "&nbsp" . Yii::t('app', 'Import'), ['import', "tournament_id" => $tournament->id], ['data-pjax' => 0, 'class' => 'btn btn-default'])
+				 Html::a(\kartik\helpers\Html::icon("plus"), ['create', "tournament_id" => $tournament->id], [
+					 'title'     => Yii::t('app', 'Add new element'),
+					 'data-pjax' => 0,
+					 'class'     => 'btn btn-default'
+				 ]) .
+				 Html::a(\kartik\helpers\Html::icon("repeat"), ['index', "tournament_id" => $tournament->id], [
+					 'title'     => Yii::t('app', 'Reload content'),
+					 'data-pjax' => 1,
+					 'class'     => 'btn btn-default',
+				 ]) .
+				 Html::a(\kartik\helpers\Html::icon("import"), ['import', "tournament_id" => $tournament->id], [
+					 'title'     => Yii::t('app', 'Import via CSV File'),
+					 'data-pjax' => 0,
+					 'class'     => 'btn btn-default'
+				 ])
             ],
             //'{export}',
             '{toggleData}',
@@ -149,6 +159,11 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => $gridColumns,
+		'emptyText' => Yii::t("app", "<b>This tournament has no {object}s yet.</b><br>{add} a {object} or {import} them via csv File.", [
+			"object" => "team",
+			"add"    => Html::a(\kartik\helpers\Html::icon("plus") . "&nbsp" . Yii::t('app', 'Add'), ['create', "tournament_id" => $tournament->id], ['data-pjax' => 0, 'class' => 'btn btn-success']),
+			"import" => Html::a(\kartik\helpers\Html::icon("import") . "&nbsp" . Yii::t('app', 'Import'), ['import', "tournament_id" => $tournament->id], ['data-pjax' => 0, 'class' => 'btn btn-primary'])
+		]),
         'id' => 'teams',
         'pjax' => true,
         'pjaxSettings' => [
@@ -164,7 +179,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'panel' => [
             'type' => GridView::TYPE_DEFAULT,
             'heading' => Html::encode($this->title),
-            'footer' => false,
             'before' => $stats,
         ],
         'toolbar' => $toolbar,
