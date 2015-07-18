@@ -263,7 +263,7 @@ class TournamentController extends BaseTournamentController
             $model->load(Yii::$app->request->post());
             $model->tournament = $this->_tournament;
 
-            $error = $model->getAccessKey();
+			$error = $model->getAccessKey();
 
             if ($error === true) {
                 $unresolved = $model->doSync($a_fix, $t_fix, $s_fix);

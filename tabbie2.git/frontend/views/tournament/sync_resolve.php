@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<?php $form = ActiveForm::begin(); ?>
 
-	<?= Html::hiddenInput("DebregsyncForm[url]", $model->url) ?>
+	<?= Html::hiddenInput("DebregsyncForm[debregId]", $model->debregId) ?>
 	<?= Html::hiddenInput("DebregsyncForm[key]", $model->key) ?>
 
 	<? if (count($unresolved["s_fix"]) > 0): ?>`

@@ -103,6 +103,12 @@ class Society extends \yii\db\ActiveRecord {
 			$abr .= $part[0];
 		}
 		$abr = strtoupper($abr);
+
+		return Society::uniqueAbr($abr);
+	}
+
+	public static function uniqueAbr($abr)
+	{
 		$candidate = $abr;
 		$count = 1;
 		$i = 1;
@@ -116,5 +122,4 @@ class Society extends \yii\db\ActiveRecord {
 
 		return $candidate;
 	}
-
 }
