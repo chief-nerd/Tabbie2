@@ -281,6 +281,10 @@ a.desc:after {
     padding: 0 15px;
 }
 
+.btn-group-justified > .btn, .btn-group-justified > .btn-group {
+    width: 100%;
+}
+
 /***** Tournament *******/
 
 #tournament_title {
