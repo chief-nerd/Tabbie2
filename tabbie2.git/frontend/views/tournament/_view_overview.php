@@ -63,7 +63,7 @@ use common\models\Team;
 			<? endif; ?>
 
 			<? if ($info): ?>
-				<div class="panel panel-default">
+				<div class="panel panel-default debate-info">
 					<div class="panel-heading">
 						<h3 class="panel-title"><?php echo Yii::t("app", "Round #{num} Info", ["num" => $info["debate"]->round->number]) ?></h3>
 					</div>
@@ -79,56 +79,65 @@ use common\models\Team;
 						?>
 						<div class="row">
 							<div class="col-xs-12 col-sm-6">
-								<?php echo Yii::t("app", "You are {pos} in room {room}.", [
+								<?php echo Yii::t("app", "You are <b>{pos}</b> in room <b>{room}</b>.", [
 									"pos" => strtolower($pos),
 									"room" => $info["debate"]->venue->name,
 								]) ?></div>
 							<div class="col-xs-12 col-sm-6">
-								<?php echo Yii::t("app", "Round starts at: {time}", [
+								<?php echo Yii::t("app", "Round starts at: <b>{time}</b>", [
 									"time" => Yii::$app->formatter->asTime(strtotime($info["debate"]->round->prep_started . " +15min"), "short"),
 								]) ?>
 							</div>
 						</div>
 						<div class="row" style="margin-top: 10px">
 							<div class="col-xs-12">
-								<?php echo Yii::t("app", "Motion") ?>:
+								<?php echo Yii::t("app", "Motion") ?>:<br>
 								<?php echo $info["debate"]->round->motion ?>
 							</div>
 							<? if ($info["debate"]->round->infoslide): ?>
 								<div class="col-xs-12">
-									<?php echo Yii::t("app", "InfoSlide") ?>:
+									<?php echo Yii::t("app", "InfoSlide") ?>:<br>
 									<?php echo $info["debate"]->round->motion ?>
 								</div>
 							<? endif; ?>
 						</div>
-						<? if ($info["pos"] == Panel::FUNCTION_CHAIR): ?>
+					</div>
+				</div>
+				<? if ($info["pos"] == Panel::FUNCTION_CHAIR): ?>
+					<div class="panel panel-default debate-teams">
+						<div class="panel-heading">
+							<h3 class="panel-title"><?php echo Yii::t("app", "Round #{num} Teams", ["num" => $info["debate"]->round->number]) ?></h3>
+						</div>
+						<div class="panel-body">
 							<div class="row" style="margin-top: 10px">
-								<div class="col-xs-12 col-sm-6">
-									<?= Yii::t("app", "OG") ?>: <?= $info["debate"]->og_team->name ?><br/>
+								<div class="team col-xs-12 col-sm-6">
+									<?= Yii::t("app", "Opening Government") ?>: <br>
+									<?= $info["debate"]->og_team->name ?><br/>
 									<?= $info["debate"]->og_team->speakerA->givenname ?>
 									& <?= $info["debate"]->og_team->speakerB->givenname ?>
 								</div>
-								<div class="col-xs-12 col-sm-6">
-									<?= Yii::t("app", "OO") ?>: <?= $info["debate"]->oo_team->name ?><br/>
+								<div class="team col-xs-12 col-sm-6">
+									<?= Yii::t("app", "Opening Opposition") ?>: <br>
+									<?= $info["debate"]->oo_team->name ?><br/>
 									<?= $info["debate"]->oo_team->speakerA->givenname ?>
 									& <?= $info["debate"]->oo_team->speakerB->givenname ?>
 								</div>
-							</div>
-							<div class="row" style="margin-top: 10px">
-								<div class="col-xs-12 col-sm-6">
-									<?= Yii::t("app", "CG") ?>: <?= $info["debate"]->cg_team->name ?><br/>
+								<div class="team col-xs-12 col-sm-6">
+									<?= Yii::t("app", "Closing Government") ?>: <br>
+									<?= $info["debate"]->cg_team->name ?><br/>
 									<?= $info["debate"]->cg_team->speakerA->givenname ?>
 									& <?= $info["debate"]->cg_team->speakerB->givenname ?>
 								</div>
-								<div class="col-xs-12 col-sm-6">
-									<?= Yii::t("app", "CO") ?>: <?= $info["debate"]->co_team->name ?><br/>
+								<div class="team col-xs-12 col-sm-6">
+									<?= Yii::t("app", "Closing Opposition") ?>: <br>
+									<?= $info["debate"]->co_team->name ?><br/>
 									<?= $info["debate"]->co_team->speakerA->givenname ?>
 									& <?= $info["debate"]->co_team->speakerB->givenname ?>
 								</div>
 							</div>
-						<? endif; ?>
 					</div>
 				</div>
+				<? endif; ?>
 			<? endif; ?>
 		</div>
 	<? endif; ?>

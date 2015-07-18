@@ -82,6 +82,16 @@ body.movedown {
     .tournament_title h1 {
         margin-top: 0;
     }
+
+    .debate-teams .team:nth-of-type(4) {
+        border: none;
+    }
+}
+
+@media (min-width: 768px) {
+    .debate-teams .team:nth-of-type(3), .debate-teams .team:nth-of-type(4) {
+        border: none;
+    }
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
@@ -255,6 +265,20 @@ a.desc:after {
     text-align: center;
     font-size: 123%;
     line-height: 250%;
+}
+
+.debate-teams .team {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #CCC;
+    margin-bottom: 10px;
+}
+
+.debate-teams .team:nth-of-type(even) {
+    text-align: right;
+}
+
+.debate-teams .panel-body {
+    padding: 0 15px;
 }
 
 /***** Tournament *******/
