@@ -167,34 +167,36 @@ class CheckinController extends BaseTournamentController {
 			$adju = models\Adjudicator::find()->tournament($this->_tournament->id)->all();
 			$a_adjus = [];
 
-			$len_t = strlen($teams[0]->id) + 1;
-			$len_a = strlen($adju[0]->id) + 1;
+			if (count($teams) > 0) {
+				$len_t = strlen($teams[0]->id) + 1;
+				for ($i = 0; $i < count($teams); $i++) {
+					$a_teams[$i] = $teams[$i]->attributes;
+					$a_teams[$i]["society"] = $teams[$i]->society->fullname;
 
-			for ($i = 0; $i < count($teams); $i++) {
-				$a_teams[$i] = $teams[$i]->attributes;
-				$a_teams[$i]["society"] = $teams[$i]->society->fullname;
-
-				if ($teams[$i]->speakerA) {
-					$a_teams[$i]["A"] = [
-						"code" => CheckinForm::TEAMA . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
-						"name" => $teams[$i]->speakerA->name
-					];
-				}
-				if ($teams[$i]->speakerB) {
-					$a_teams[$i]["B"] = [
-						"code" => CheckinForm::TEAMB . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
-						"name" => $teams[$i]->speakerB->name
-					];
+					if ($teams[$i]->speakerA) {
+						$a_teams[$i]["A"] = [
+							"code" => CheckinForm::TEAMA . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
+							"name" => $teams[$i]->speakerA->name
+						];
+					}
+					if ($teams[$i]->speakerB) {
+						$a_teams[$i]["B"] = [
+							"code" => CheckinForm::TEAMB . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
+							"name" => $teams[$i]->speakerB->name
+						];
+					}
 				}
 			}
+			if (count($adju) > 0) {
+				$len_a = strlen($adju[0]->id) + 1;
+				for ($i = 0; $i < count($adju); $i++) {
+					$a_adjus[$i] = array_merge($adju[$i]->attributes, [
+						"code" => CheckinForm::ADJU . "-" . str_pad($adju[$i]->id, $len_a, "0", STR_PAD_LEFT),
+						"name" => $adju[$i]->user->name
+					]);
+					$a_adjus[$i]["society"] = $adju[$i]->society->fullname;
 
-			for ($i = 0; $i < count($adju); $i++) {
-				$a_adjus[$i] = array_merge($adju[$i]->attributes, [
-					"code" => CheckinForm::ADJU . "-" . str_pad($adju[$i]->id, $len_a, "0", STR_PAD_LEFT),
-					"name" => $adju[$i]->user->name
-				]);
-				$a_adjus[$i]["society"] = $adju[$i]->society->fullname;
-
+				}
 			}
 
 			if (Yii::$app->request->post("use", false))
