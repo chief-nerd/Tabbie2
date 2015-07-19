@@ -138,7 +138,7 @@ class Adjudicator extends \yii\db\ActiveRecord {
 	 * @return \yii\db\ActiveQuery
 	 */
 	public function getInSocieties() {
-		return $this->hasMany(InSociety::className(), ['id' => 'user_id']);
+		return $this->hasMany(InSociety::className(), ['user_id' => 'user_id']);
 	}
 
 	public function getSociety() {

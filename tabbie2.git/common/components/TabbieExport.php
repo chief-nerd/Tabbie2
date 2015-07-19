@@ -24,7 +24,7 @@
 		public function generateSQL($tournament)
 		{
 			$sqlFile = [];
-			$sqlFile[] = "USE database tabbie;";
+			$sqlFile[] = "USE tabbie_" . strtolower(str_replace(" ", "_", $tournament->name)) . ";";
 			$sqlFile[] = "";
 
 			$sqlFile[] = "DROP TABLE IF EXISTS `configure_adjud_draw`;";
@@ -62,7 +62,7 @@
 					]).")";
 			}
 
-			$sqlFile[] = (!empty($values)) ? "INSERT INTO `configure_adjud_draw` VALUES ".implode(",", $values) : "";
+			$sqlFile[] = (!empty($values)) ? "INSERT INTO `configure_adjud_draw` VALUES " . implode(",", $values) . ";" : ";";
 
 			$sqlFile[] = "";
 			/** ADJUDICATORS */
@@ -95,7 +95,7 @@
 						"NULL",
 					]) . ")";
 			}
-			$sqlFile[] = (!empty($values)) ? "INSERT INTO `adjudicator` VALUES ".implode(",", $values) : "";
+			$sqlFile[] = (!empty($values)) ? "INSERT INTO `adjudicator` VALUES " . implode(",", $values) . ";" : "";
 
 			$sqlFile[] = "";
 			$sqlFile[] = "DROP TABLE IF EXISTS `judgestrikes`;";
@@ -117,7 +117,7 @@
 					]) . ")";
 				$i++;
 			}
-			$sqlFile[] = (!empty($values)) ? "INSERT INTO `adjudicator` VALUES ".implode(",", $values) : "";
+			$sqlFile[] = (!empty($values)) ? "INSERT INTO `adjudicator` VALUES " . implode(",", $values) . ";" : "";
 			/** TEAMS */
 
 			$sqlFile[] = "";
@@ -276,7 +276,7 @@
 				$sqlFile[] = "";
 
 				$sqlFile[] = "DROP TABLE IF EXISTS `adjud_round_$round->number`;";
-				$sqlFile[] = "CREATE TABLE `adjud_round_1` (
+				$sqlFile[] = "CREATE TABLE `adjud_round_$round->number` (
   `debate_id` mediumint(9) NOT NULL,
   `adjud_id` mediumint(9) NOT NULL,
   `status` enum('chair','panelist','trainee') COLLATE utf8_unicode_ci NOT NULL
@@ -303,7 +303,7 @@
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 
 				$sqlFile[] = "";
-				$sqlFile[] = "INSERT INTO `motions` VALUES (".$round->number.",'".addslashes($round->motion)."','".(($round->infoslide) ? 'Y' : 'N')."','".addslashes($round->infoslide)."')";
+				$sqlFile[] = "INSERT INTO `motions` VALUES (" . $round->number . ",'" . addslashes($round->motion) . "','" . (($round->infoslide) ? 'Y' : 'N') . "','" . addslashes($round->infoslide) . "');";
 
 				foreach ($round->debates as $debate) {
 					/** DEBATE */
@@ -315,14 +315,16 @@
 					$values[2] = $debate->oo_team_id;
 					$values[3] = $debate->cg_team_id;
 					$values[4] = $debate->co_team_id;
-					$sqlFile[] = "INSERT INTO `draw_round_$round->number` VALUES (".implode(",", $values).")";
+					$values[5] = $debate->venue_id;
+
+					$sqlFile[] = "INSERT INTO `draw_round_$round->number` VALUES (" . implode(",", $values) . ");";
 
 					$panel = $debate->panel;
 					$first = true;
 					foreach($panel->getAdjudicatorsObjects() as $adj)
 					{
 						if($first) $pos = 'chair'; else $pos="panelist";
-						$sqlFile[] = "INSERT INTO `adjud_round_$round->number` VALUES ($debate->id,$adj->id,'$pos')";
+						$sqlFile[] = "INSERT INTO `adjud_round_$round->number` VALUES ($debate->id,$adj->id,'$pos');";
 						$first = false;
 					}
 
@@ -338,7 +340,7 @@
 						$values[$result->cg_place] = $debate->cg_team_id;
 						$values[$result->co_place] = $debate->co_team_id;
 
-						$sqlFile[] = "INSERT INTO result_round_$round->number VALUES(" . implode(",", $values) . ")";
+						$sqlFile[] = "INSERT INTO result_round_$round->number VALUES(" . implode(",", $values) . ");";
 
 						foreach(models\Team::getPos() as $pos)
 						{
@@ -347,7 +349,7 @@
 								$speakerID = $debate->{$pos."_team"}->{"speaker".$sp."_id"};
 								if($speakerID) { //ironman
 									$points = $result->{$pos . "_" . $sp . "_speaks"};
-									$sqlFile[] = "INSERT INTO `speaker_round_$round->number` VALUES ($speakerID,$debate->id,$points)";
+									$sqlFile[] = "INSERT INTO `speaker_round_$round->number` VALUES ($speakerID,$debate->id,$points);";
 								}
 							}
 						}
@@ -355,6 +357,16 @@
 				}
 				$sqlFile[] = "";
 			}
+
+			$sqlFile[] = "DROP TABLE IF EXISTS `highlight`;";
+			$sqlFile[] = "CREATE TABLE `highlight` (
+  `lowerlimit` CHAR(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `upperlimit` CHAR(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `type` CHAR(50) COLLATE utf8_unicode_ci DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+
+			$sqlFile[] = "INSERT INTO `highlight` VALUES ('50','100','result');";
+			$sqlFile[] = "";
 
 			$sqlFile[] = "DROP TABLE IF EXISTS `users`;";
 			$sqlFile[] = "CREATE TABLE `users` (
@@ -366,6 +378,64 @@
   UNIQUE KEY `user_name` (`user_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='University Table';";
 			$sqlFile[] = "INSERT INTO `users` VALUES (1,'admin','d033e22ae348aeb5660fc2140aec35850c4da997','admin');";
+			$sqlFile[] = "";
+
+			$sqlFile[] = "DROP TABLE IF EXISTS `strikes`;";
+			$sqlFile[] = "CREATE TABLE `strikes` (
+  `adjud_id` INT(11) NOT NULL,
+  `team_id` INT(11) DEFAULT NULL,
+  `univ_id` INT(11) DEFAULT NULL,
+  `strike_id` INT(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`strike_id`),
+  KEY `univ_id` (`univ_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Conflict Table';";
+
+			$adjudicators = models\Adjudicator::find()->tournament($tournament->id)->all();
+			$strikes = [];
+			$i = 1;
+			foreach ($adjudicators as $a) {
+				/** @var $a models\Adjudicator */
+
+				$soc = $a->getInSocieties()->all();
+				foreach ($soc as $clash) {
+					$strikes[$a->id][] = [
+						"adju"  => $a->id,
+						"team"  => "NULL",
+						"univ"  => $clash->society_id,
+						"index" => $i,
+					];
+					$i++;
+				}
+
+				$t2a = $a->getStrikedTeams()->all();
+				foreach ($t2a as $clash) {
+					$found = false;
+					foreach ($strikes[$a->id] as $ar) {
+						if ($ar["team"] === "NULL") {
+							$found = true;
+							$ar["team"] = $clash->id;
+						}
+					}
+					if ($found === false) {
+						$strikes[$a->id][] = [
+							"adju"  => $a->id,
+							"team"  => $clash->id,
+							"univ"  => "NULL",
+							"index" => $i,
+						];
+						$i++;
+					}
+				}
+			}
+
+			$values = [];
+			foreach ($strikes as $group) {
+				foreach ($group as $s)
+					$values[] = "(" . implode(",", [$s["adju"], $s["team"], $s["univ"], $s["index"]]) . ")";
+			}
+			$sqlFile[] = "INSERT INTO `strikes` VALUES " . implode(",", $values) . ";";
+
+
 			return $sqlFile;
 		}
 	}
