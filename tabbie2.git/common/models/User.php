@@ -7,6 +7,7 @@
 	use yii\behaviors\TimestampBehavior;
 	use yii\db\ActiveRecord;
 	use yii\helpers\Html;
+	use yii\helpers\Url;
 	use yii\web\IdentityInterface;
 
 	/**
@@ -575,7 +576,10 @@
 		public function getPicture()
 		{
 			if ($this->picture !== null)
-				return $this->picture;
+				if (substr($this->picture, 0, 4) != "http")
+					return Url::to('@web/uploads/' . $this->picture, true);
+				else
+					return $this->logo;
 			else {
 				return User::defaultAvatar();
 			}
