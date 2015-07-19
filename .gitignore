@@ -1,3 +1,4 @@
 *.bak
 .idea/
 Tabbie2.iml
+tabbie2.git/composer.lock
