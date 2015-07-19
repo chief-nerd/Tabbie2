@@ -21,9 +21,11 @@ use yii\helpers\Json;
 use yii\web\UploadedFile;
 
 
-class CheckinController extends BaseTournamentController {
+class CheckinController extends BaseTournamentController
+{
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return [
 			'tournamentFilter' => [
 				'class' => TournamentContextFilter::className(),
@@ -32,17 +34,31 @@ class CheckinController extends BaseTournamentController {
 				'class' => AccessControl::className(),
 				'rules' => [
 					[
-						'allow' => true,
+						'allow'   => true,
 						'actions' => ['input'],
 						'matchCallback' => function ($rule, $action) {
 							return $this->_tournament->validateAccessToken(Yii::$app->request->get("accessToken", ""));
 						}
 					],
 					[
-						'allow' => true,
-						'actions' => ['reset', 'generate-barcodes', 'generate-badges'],
+						'allow'         => true,
+						'actions'       => ['generate-barcodes', 'generate-badges'],
 						'matchCallback' => function ($rule, $action) {
-							return ($this->_tournament->isTabMaster(Yii::$app->user->id) || $this->_tournament->isConvenor(Yii::$app->user->id));
+							return (
+								$this->_tournament->isTabMaster(Yii::$app->user->id) ||
+								$this->_tournament->isConvenor(Yii::$app->user->id) ||
+								$this->_tournament->validateAccessToken(Yii::$app->request->get("accessToken", ""))
+							);
+						}
+					],
+					[
+						'allow'         => true,
+						'actions'       => ['reset'],
+						'matchCallback' => function ($rule, $action) {
+							return (
+								$this->_tournament->isTabMaster(Yii::$app->user->id) ||
+								$this->_tournament->isConvenor(Yii::$app->user->id)
+							);
 						}
 					],
 				],
@@ -55,13 +71,15 @@ class CheckinController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionInput($tournament_id, $number = null, $camInit = false) {
+	public function actionInput($tournament_id, $number = null, $camInit = false)
+	{
 
 		if (Yii::$app->request->isAjax && $number != null) {
 			$model = new CheckinForm([
 				"number" => $number
 			]);
 			$messages = $model->save();
+
 			return Json::encode(["status" => 200, "msg" => $messages]);
 		}
 
@@ -78,10 +96,10 @@ class CheckinController extends BaseTournamentController {
 
 
 		return $this->render('input', [
-			"model" => $model,
+			"model"    => $model,
 			"tournament" => Tournament::findOne($tournament_id),
 			"messages" => $messages,
-			"camInit" => $camInit,
+			"camInit"  => $camInit,
 		]);
 	}
 
@@ -90,7 +108,8 @@ class CheckinController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionReset() {
+	public function actionReset()
+	{
 
 		$rows = models\Team::updateAll(["speakerA_checkedin" => 0, "speakerB_checkedin" => 0], ["tournament_id" => $this->_tournament->id]);
 		$rows += models\Adjudicator::updateAll(["checkedin" => 0], ["tournament_id" => $this->_tournament->id]);
@@ -103,7 +122,8 @@ class CheckinController extends BaseTournamentController {
 		return $this->redirect(["tournament/view", "id" => $this->_tournament->id]);
 	}
 
-	public function actionGenerateBarcodes() {
+	public function actionGenerateBarcodes()
+	{
 
 		if (Yii::$app->request->post()) {
 			$offset = Yii::$app->request->post("offset", 0);
@@ -127,23 +147,23 @@ class CheckinController extends BaseTournamentController {
 				}
 				if ($teams[$i]->speakerB) {
 					if ($userID == null || $userID == $teams[$i]->speakerA_id)
-					$codes[] = [
-						"id" => CheckinForm::TEAMB . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
-						"label" => $teams[$i]->speakerB->name
-					];
+						$codes[] = [
+							"id"    => CheckinForm::TEAMB . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
+							"label" => $teams[$i]->speakerB->name
+						];
 				}
 			}
 
 			for ($i = 0; $i < count($adju); $i++) {
 				if ($userID == null || $userID == $adju[$i]->user_id)
-				$codes[] = [
-					"id" => CheckinForm::ADJU . "-" . str_pad($adju[$i]->id, $len_a, "0", STR_PAD_LEFT),
-					"label" => $adju[$i]->user->name
-				];
+					$codes[] = [
+						"id"    => CheckinForm::ADJU . "-" . str_pad($adju[$i]->id, $len_a, "0", STR_PAD_LEFT),
+						"label" => $adju[$i]->user->name
+					];
 			}
 
 			return $this->renderAjax("barcodes", [
-				"codes" => $codes,
+				"codes"  => $codes,
 				"tournament" => $this->_tournament,
 				"offset" => $offset,
 			]);
@@ -152,7 +172,8 @@ class CheckinController extends BaseTournamentController {
 		return $this->render("barcode_select");
 	}
 
-	public function actionGenerateBadges() {
+	public function actionGenerateBadges()
+	{
 
 		if (Yii::$app->request->post()) {
 
