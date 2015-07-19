@@ -579,7 +579,7 @@
 				if (substr($this->picture, 0, 4) != "http")
 					return Url::to('@web/uploads/' . $this->picture, true);
 				else
-					return $this->logo;
+					return $this->picture;
 			else {
 				return User::defaultAvatar();
 			}
