@@ -168,7 +168,9 @@ class CheckinController extends BaseTournamentController {
 			$a_adjus = [];
 
 			if (count($teams) > 0) {
-				$len_t = strlen($teams[0]->id) + 1;
+				$len_t = strlen($teams[0]->id);
+				if ($teams[0]->id[0] > 7) $len_t++;
+
 				for ($i = 0; $i < count($teams); $i++) {
 					$a_teams[$i] = $teams[$i]->attributes;
 					$a_teams[$i]["society"] = $teams[$i]->society->fullname;
