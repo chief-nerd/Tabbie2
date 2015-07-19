@@ -10,39 +10,39 @@ body {
     margin: 0;
 }
 
+/* A6 105 x 148 */
 .paper {
     background-size: cover;
     float: left;
-    width: 14.83cm;
-    border: 0.1mm solid #333;
+    width: 100%;
 }
 
 .badge {
     float: left;
     width: 50%;
-    height: 10.48cm;
+    height: 100%;
 }
 
 .name {
-    margin-top: 4.5cm;
+    padding-top: 4.5cm;
     left: 0px;
     right: 0px;
     text-align: center;
-    font-size: 20pt;
-    font-family: "Bebas Neue";
+    font-size: 22pt;
+    font-family: "bebas-neue";
     color: #333;
 }
 
 .team, .society {
     font-family: helvetica;
-    font-size: 80%;
+    font-size: 90%;
     color: #333;
     text-align: right;
     margin-right: 10%;
 }
 
 .team {
-    margin-top: 1.5cm;
+    margin-top: 1cm;
 }
 
 .society {
@@ -50,7 +50,7 @@ body {
 }
 
 .code {
-    margin-top: 7.6cm;
+    padding-top: 7.6cm;
     margin-left: -0.8cm;
     text-align: center;
 }

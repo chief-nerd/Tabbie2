@@ -11,6 +11,11 @@ use kartik\helpers\Html;
 use yii\web\JsExpression;
 use yii\helpers\Url;
 
+	$this->title = Yii::t('app', 'Generate Barcodes');
+	$tournament = $this->context->_getContext();
+	$this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
+	$this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div id="barcodeForm">
 	<?php $form = ActiveForm::begin(); ?>

@@ -2,6 +2,7 @@
 
 	namespace common\models;
 
+	use JmesPath\Tests\_TestJsonStringClass;
 	use Yii;
 	use yii\base\Exception;
 	use yii\helpers\ArrayHelper;
@@ -31,6 +32,7 @@
 	 * @property integer                  $has_quarterfinal
 	 * @property integer                  $has_octofinal
 	 * @property string                   $accessToken
+	 * @property string                   $badge
 	 * @property Adjudicator[]            $adjudicators
 	 * @property Panel[]                  $panels
 	 * @property Round[]                  $rounds
@@ -66,7 +68,7 @@
 				[['convenor_user_id', 'tabmaster_user_id', 'hosted_by_id', 'expected_rounds', 'status'], 'integer'],
 				[['start_date', 'end_date', 'time', 'has_esl', 'has_final', 'has_semifinal', 'has_octofinal', 'has_quarterfinal'], 'safe'],
 				[['url_slug', 'name', 'tabAlgorithmClass', 'accessToken'], 'string', 'max' => 100],
-				[['logo'], 'string', 'max' => 255],
+				[['logo', 'badge'], 'string', 'max' => 255],
 				[['url_slug'], 'unique']
 			];
 		}
@@ -95,6 +97,7 @@
 				'has_quarterfinal'  => Yii::t("app", 'Is there a quarterfinal'),
 				'has_octofinal'     => Yii::t("app", 'Is there a octofinal'),
 				'accessToken'       => Yii::t("app", 'Access Token'),
+				'badge' => Yii::t("app", 'Participant Badge'),
 			];
 		}
 
@@ -542,6 +545,22 @@
 		}
 
 		/**
+		 * Get the Badge URL
+		 * @return mixed|string
+		 */
+		public function getBadge()
+		{
+			if ($this->badge !== null) {
+				if (substr($this->badge, 0, 4) != "http")
+					return Url::to('@web/uploads/' . $this->badge, true);
+				else
+					return $this->badge;
+			} else {
+				return "";
+			}
+		}
+
+		/**
 		 * @param Tournament $model
 		 *
 		 * @return array|false
@@ -653,6 +672,19 @@
 			if ($file) {
 				$path = "tournaments/TournamentLogo-" . $this->url_slug . "." . $file->extension;
 				$this->logo = Yii::$app->s3->save($file, $path);
+			}
+		}
+
+		/**
+		 * Save a Tournament Badge
+		 *
+		 * @param \yii\web\UploadedFile $file
+		 */
+		public function saveBadge($file)
+		{
+			if ($file) {
+				$path = "badges/Badge-" . $this->url_slug . "." . $file->extension;
+				$this->badge = Yii::$app->s3->save($file, $path);
 			}
 		}
 

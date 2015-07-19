@@ -18,6 +18,7 @@ use frontend\models\CheckinForm;
 use common\models\Tournament;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
+use yii\web\UploadedFile;
 
 
 class CheckinController extends BaseTournamentController {
@@ -41,7 +42,7 @@ class CheckinController extends BaseTournamentController {
 						'allow' => true,
 						'actions' => ['reset', 'generate-barcodes', 'generate-badges'],
 						'matchCallback' => function ($rule, $action) {
-							return ($this->_tournament->isTabMaster(Yii::$app->user->id) || Yii::$app->user->isTabMaster($this->_tournament));
+							return ($this->_tournament->isTabMaster(Yii::$app->user->id) || $this->_tournament->isConvenor(Yii::$app->user->id));
 						}
 					],
 				],
@@ -153,69 +154,81 @@ class CheckinController extends BaseTournamentController {
 
 	public function actionGenerateBadges() {
 
-		$codes = [];
+		if (Yii::$app->request->post()) {
 
-		$teams = models\Team::find()->tournament($this->_tournament->id)->all();
-		$a_teams = [];
-		$adju = models\Adjudicator::find()->tournament($this->_tournament->id)->all();
-		$a_adjus = [];
-
-		$len_t = strlen($teams[0]->id) + 1;
-		$len_a = strlen($adju[0]->id) + 1;
-
-		for ($i = 0; $i < count($teams); $i++) {
-			$a_teams[$i] = $teams[$i]->attributes;
-			$a_teams[$i]["society"] = $teams[$i]->society->fullname;
-
-			if ($teams[$i]->speakerA) {
-				$a_teams[$i]["A"] = [
-					"code" => CheckinForm::TEAMA . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
-					"name" => $teams[$i]->speakerA->name
-				];
+			$new_file = UploadedFile::getInstanceByName("badge");
+			if ($new_file instanceof UploadedFile) {
+				$this->_tournament->saveBadge($new_file);
+				$this->_tournament->save();
 			}
-			if ($teams[$i]->speakerB) {
-				$a_teams[$i]["B"] = [
-					"code" => CheckinForm::TEAMB . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
-					"name" => $teams[$i]->speakerB->name
-				];
-			}
-		}
 
-		for ($i = 0; $i < count($adju); $i++) {
-			$a_adjus[$i] = array_merge($adju[$i]->attributes, [
-				"code" => CheckinForm::ADJU . "-" . str_pad($adju[$i]->id, $len_a, "0", STR_PAD_LEFT),
-				"name" => $adju[$i]->user->name
+			$teams = models\Team::find()->tournament($this->_tournament->id)->all();
+			$a_teams = [];
+			$adju = models\Adjudicator::find()->tournament($this->_tournament->id)->all();
+			$a_adjus = [];
+
+			$len_t = strlen($teams[0]->id) + 1;
+			$len_a = strlen($adju[0]->id) + 1;
+
+			for ($i = 0; $i < count($teams); $i++) {
+				$a_teams[$i] = $teams[$i]->attributes;
+				$a_teams[$i]["society"] = $teams[$i]->society->fullname;
+
+				if ($teams[$i]->speakerA) {
+					$a_teams[$i]["A"] = [
+						"code" => CheckinForm::TEAMA . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
+						"name" => $teams[$i]->speakerA->name
+					];
+				}
+				if ($teams[$i]->speakerB) {
+					$a_teams[$i]["B"] = [
+						"code" => CheckinForm::TEAMB . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
+						"name" => $teams[$i]->speakerB->name
+					];
+				}
+			}
+
+			for ($i = 0; $i < count($adju); $i++) {
+				$a_adjus[$i] = array_merge($adju[$i]->attributes, [
+					"code" => CheckinForm::ADJU . "-" . str_pad($adju[$i]->id, $len_a, "0", STR_PAD_LEFT),
+					"name" => $adju[$i]->user->name
+				]);
+				$a_adjus[$i]["society"] = $adju[$i]->society->fullname;
+
+			}
+
+			if (Yii::$app->request->post("use", false))
+				$badgeURL = $this->_tournament->getBadge();
+			else
+				$badgeURL = "";
+
+			$pdf = new Pdf([
+				'mode'         => Pdf::MODE_BLANK, // leaner size using standard fonts
+				'format'       => 'A6',
+				'orientation'  => Pdf::ORIENT_LANDSCAPE,
+				'cssFile'      => '@frontend/assets/css/badge.css',
+				'content'      => $this->renderPartial("badges", [
+					"teams"      => $a_teams,
+					"adjus"      => $a_adjus,
+					"tournament" => $this->_tournament,
+					"backurl"    => $badgeURL,
+				]),
+				"marginLeft"   => 0,
+				"marginTop"    => 0,
+				"marginRight"  => 0,
+				"marginBottom" => 0,
+				"marginHeader" => 0,
+				"marginFooter" => 0,
+				'options'      => [
+					'title' => 'Badgets for ' . $this->_tournament->name,
+				],
 			]);
-			$a_adjus[$i]["society"] = $adju[$i]->society->fullname;
 
+			$mpdf = $pdf->getApi();
+
+			return $pdf->render();
 		}
 
-		$backurl = Yii::$app->assetManager->publish(Yii::getAlias("@frontend/assets/images/Badge.jpg"))[1];
-
-		$pdf = new Pdf([
-			'mode' => Pdf::MODE_BLANK, // leaner size using standard fonts
-			'format' => Pdf::FORMAT_A4,
-			'orientation' => Pdf::ORIENT_LANDSCAPE,
-			'cssFile' => '@frontend/assets/css/badge.css',
-			'content' => $this->renderPartial("badges", [
-				"teams" => $a_teams,
-				"adjus" => $a_adjus,
-				"tournament" => $this->_tournament,
-				"backurl" => $backurl,
-			]),
-			"marginLeft" => 0,
-			"marginTop" => 0,
-			"marginRight" => 0,
-			"marginBottom" => 0,
-			"marginHeader" => 0,
-			"marginFooter" => 0,
-			'options' => [
-				'title' => 'Badgets for ' . $this->_tournament->name,
-			],
-		]);
-
-		$mpdf = $pdf->getApi();
-		$mpdf->SetDefaultFont("Bebas Neue");
-		return $pdf->render();
+		return $this->render("badge_select");
 	}
 }

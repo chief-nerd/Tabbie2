@@ -16,7 +16,7 @@ foreach ($teams as $t): ?>
 	<? foreach (["A", "B"] as $s):
 		if (isset($t[$s])):
 			?>
-			<div class="paper" style="background-image: url(<?= $backurl ?>)">
+			<div class="paper" <? echo ($backurl != "") ? 'style="background-image: url(' . $backurl . ')"' : '' ?>>
 				<div class="badge">
 
 					<div class="name">
@@ -41,14 +41,14 @@ foreach ($teams as $t): ?>
 <? endforeach; ?>
 <?php
 foreach ($adjus as $a): ?>
-	<div class="paper" style="background-image: url(<?= $backurl ?>)">
+	<div class="paper" <? echo ($backurl != "") ? 'style="background-image: url(' . $backurl . ')"' : '' ?>>
 		<div class="badge">
 
 			<div class="name">
 				<? print_r($a["name"]) ?>
 			</div>
 			<div class="team">
-				<?= "Adjudicator" ?>
+				<?= ($a["strength"] == \common\models\Adjudicator::MAX_RATING) ? Yii::t("app", "Chief-Adjudicator") : Yii::t("app", "Adjudicator") ?>
 			</div>
 			<div class="society">
 				<?= $a["society"] ?>

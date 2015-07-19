@@ -66,6 +66,7 @@ $tournament_items = [
 	(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Html::icon("list") . "&nbsp;" . Yii::t("app", 'Missing Users'), 'url' => ['public/missing-user', "tournament_id" => $tournament->id, "accessToken" => $tournament->accessToken], 'linkOptions' => ['target' => '_blank']] : ""),
 	(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Html::icon("modal-window") . "&nbsp;" . Yii::t("app", 'Checkin Form'), 'url' => ['checkin/input', "tournament_id" => $tournament->id, "accessToken" => $tournament->accessToken]] : ""),
 	(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Html::icon("barcode") . "&nbsp;" . Yii::t("app", 'Print Barcodes'), 'url' => ['checkin/generate-barcodes', "tournament_id" => $tournament->id, "accessToken" => $tournament->accessToken]] : ""),
+	(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Html::icon("barcode") . "&nbsp;" . Yii::t("app", 'Print Badgets'), 'url' => ['checkin/generate-badges', "tournament_id" => $tournament->id, "accessToken" => $tournament->accessToken]] : ""),
 	(($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Html::icon("erase") . "&nbsp;" . Yii::t("app", 'Reset Checkin'), 'url' => ['checkin/reset', "tournament_id" => $tournament->id],
 		'linkOptions' => ['data' => [
 			"confirm" => Yii::t("app", "Are you sure you want to reset the checkin?")
