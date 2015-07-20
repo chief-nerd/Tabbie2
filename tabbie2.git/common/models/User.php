@@ -577,7 +577,7 @@
 		{
 			if ($this->picture !== null)
 				if (substr($this->picture, 0, 4) != "http")
-					return Url::to('@web/uploads/' . $this->picture, true);
+					return Url::to($this->picture, true);
 				else
 					return $this->picture;
 			else {

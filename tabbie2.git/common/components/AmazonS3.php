@@ -53,7 +53,7 @@ class AmazonS3 extends Component {
 			return $result['ObjectURL'];
 		}
 		else {
-			return $file->saveAs(\Yii::getAlias("@frontend/web/uploads/") . $path) ? $path : null;
+			return $file->saveAs(\Yii::getAlias("@frontend/web/uploads/") . $path) ? "@web/uploads/" . $path : null;
 		}
 	}
 }

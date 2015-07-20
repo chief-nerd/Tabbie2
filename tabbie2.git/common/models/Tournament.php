@@ -520,7 +520,7 @@
 		{
 			if ($this->logo !== null) {
 				if ($absolute && substr($this->logo, 0, 4) != "http")
-					return Url::to('@web' . $this->logo, true);
+					return Url::to($this->logo, true);
 				else
 					return $this->logo;
 			} else {
