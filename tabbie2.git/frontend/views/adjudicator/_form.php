@@ -98,18 +98,36 @@ SCRIPT;
 	$form->field($model, 'are_watched')->checkbox();
 	?>
 
-	<?=
-	$form->field($model, 'strength')->widget(StarRating::className(), [
-		"pluginOptions" => [
-			"stars" => 8,
-			"min" => 0,
-			"max" => 9,
-			"step" => 1,
-			"size" => "md",
-			"starCaptions" => common\models\Adjudicator::translateStrength(),
-			"starCaptionClasses" => common\models\Adjudicator::starLabels(),
-		],
-	])
+	<?
+	/*
+		$jsExpression = "function(val) { ";
+		for($i=0; $i<=100; $i=$i+10) {
+			$jsExpression .= "if (val < " . ($i + 10) . ") { return '" . \common\models\Adjudicator::translateStrength($i/10) . "'; } ";
+		}
+		$jsExpression .= " }";
+
+		echo $form->field($model, 'strength')->widget(\kartik\slider\Slider::className(), [
+			'pluginOptions'=>[
+				'min'=>0,
+				'max'=>99,
+				'step'=>1,
+				'tooltip'=>'always',
+				'formatter'=>new JsExpression($jsExpression)
+			]
+		]);
+			/*[
+			"pluginOptions" => [
+				"stars" => 8,
+				"min" => 0,
+				"max" => 9,
+				"step" => 1,
+				"size" => "md",
+				"starCaptions" => common\models\Adjudicator::translateStrength(),
+				"starCaptionClasses" => common\models\Adjudicator::starLabels(),
+			],
+		])*/
+
+	echo $form->field($model, 'strength')->textInput();
 	?>
 
 	<div class="form-group">

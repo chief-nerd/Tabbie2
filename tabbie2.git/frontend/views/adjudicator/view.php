@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'user.gender',
 			[
 				'label' => 'Strength',
-				'value' => common\models\Adjudicator::translateStrength($model->strength)
+				'value' => $model->strength, //common\models\Adjudicator::translateStrength($model->strength)
 			],
 			'can_chair',
 			'are_watched'

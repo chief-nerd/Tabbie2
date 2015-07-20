@@ -7,9 +7,8 @@ use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "adjudicator".
-
  *
-*@property integer              $id
+ * @property integer $id
  * @property integer              $tournament_id
  * @property integer              $active
  * @property integer              $user_id
@@ -25,7 +24,8 @@ use yii\helpers\ArrayHelper;
  * @property Panel[]              $panels
  * @property Team[]               $teams
  */
-class Adjudicator extends \yii\db\ActiveRecord {
+class Adjudicator extends \yii\db\ActiveRecord
+{
 
 
 	const MAX_RATING = 9;
@@ -33,17 +33,20 @@ class Adjudicator extends \yii\db\ActiveRecord {
 	/**
 	 * @inheritdoc
 	 */
-	public static function tableName() {
+	public static function tableName()
+	{
 		return 'adjudicator';
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['tournament_id', 'user_id', 'society_id'], 'required'],
-			[['tournament_id', 'active', 'user_id', 'strength', 'can_chair', 'are_watched', 'society_id'], 'integer']
+			[['tournament_id', 'active', 'user_id', 'strength', 'can_chair', 'are_watched', 'society_id'], 'integer'],
+			['strength', 'integer', 'max' => 99, 'min' => 0]
 		];
 	}
 
@@ -51,28 +54,31 @@ class Adjudicator extends \yii\db\ActiveRecord {
 	 * @inheritdoc
 	 * @return VTAQuery
 	 */
-	public static function find() {
+	public static function find()
+	{
 		return new VTAQuery(get_called_class());
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return [
-			'id' => Yii::t('app', 'ID'),
+			'id'          => Yii::t('app', 'ID'),
 			'tournament_id' => Yii::t('app', 'Tournament ID'),
-			'active' => Yii::t('app', 'Active'),
-			'user_id' => Yii::t('app', 'User ID'),
-			'strength' => Yii::t('app', 'Strength'),
+			'active'      => Yii::t('app', 'Active'),
+			'user_id'     => Yii::t('app', 'User ID'),
+			'strength'    => Yii::t('app', 'Strength'),
 			'societyName' => Yii::t('app', 'Society Name'),
-			'can_chair' => Yii::t('app', 'can Chair'),
+			'can_chair'   => Yii::t('app', 'can Chair'),
 			'are_watched' => Yii::t('app', 'are Watched'),
-			'society_id' => Yii::t('app', 'Society'),
+			'society_id'  => Yii::t('app', 'Society'),
 		];
 	}
 
-	public function getName() {
+	public function getName()
+	{
 		$key = "AdjudicatorName#" . $this->id;
 
 		if (Yii::$app->cache->exists($key)) {
@@ -85,70 +91,80 @@ class Adjudicator extends \yii\db\ActiveRecord {
 		return $name;
 	}
 
-	public function getSocietyName() {
+	public function getSocietyName()
+	{
 		return $this->society->fullname;
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getTournament() {
+	public function getTournament()
+	{
 		return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getUser() {
+	public function getUser()
+	{
 		return $this->hasOne(User::className(), ['id' => 'user_id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getAdjudicatorInPanels() {
+	public function getAdjudicatorInPanels()
+	{
 		return $this->hasMany(AdjudicatorInPanel::className(), ['adjudicator_id' => 'id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getStrikedTeams() {
+	public function getStrikedTeams()
+	{
 		return $this->hasMany(Team::className(), ['id' => 'team_id'])
-		            ->viaTable('team_strike', ['adjudicator_id' => 'id']);
+			->viaTable('team_strike', ['adjudicator_id' => 'id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getStrikedAdjudicators() {
+	public function getStrikedAdjudicators()
+	{
 		return $this->hasMany(Adjudicator::className(), ['id' => 'adjudicator_from_id'])
-		            ->viaTable('adjudicator_strike', ['adjudicator_to_id' => 'id']);
+			->viaTable('adjudicator_strike', ['adjudicator_to_id' => 'id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getPanels() {
+	public function getPanels()
+	{
 		return $this->hasMany(Panel::className(), ['id' => 'panel_id'])
-		            ->viaTable('adjudicator_in_panel', ['adjudicator_id' => 'id']);
+			->viaTable('adjudicator_in_panel', ['adjudicator_id' => 'id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getInSocieties() {
+	public function getInSocieties()
+	{
 		return $this->hasMany(InSociety::className(), ['user_id' => 'user_id']);
 	}
 
-	public function getSociety() {
+	public function getSociety()
+	{
 		return $this->hasOne(Society::className(), ['id' => 'society_id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getChair() {
+	public function getChair()
+	{
 		return $this->can_chair;
 	}
 
@@ -157,9 +173,10 @@ class Adjudicator extends \yii\db\ActiveRecord {
 	 *
 	 * @return type
 	 */
-	public static function translateStrength($id = null) {
+	public static function translateStrength($id = null)
+	{
 		$table = [
-			0 => Yii::t("adjudicator", 'Not Rated'),
+			0  => Yii::t("adjudicator", 'Really bad Judge'),
 			1 => Yii::t("adjudicator", 'Bad Judge'),
 			2 => Yii::t("adjudicator", 'Can Judge'),
 			3 => Yii::t("adjudicator", 'Decent Judge'),
@@ -169,11 +186,14 @@ class Adjudicator extends \yii\db\ActiveRecord {
 			7 => Yii::t("adjudicator", 'Good Chair'),
 			8 => Yii::t("adjudicator", 'Breaking Chair'),
 			9 => Yii::t("adjudicator", 'Chief Adjudicator'),
+			10 => Yii::t("adjudicator", 'Chief Adjudicator'),
 		];
+
 		return (isset($table[$id])) ? $table[$id] : $table;
 	}
 
-	public static function starLabels($id = null) {
+	public static function starLabels($id = null)
+	{
 		$table = [
 			0 => "label label-danger",
 			1 => "label label-danger",
@@ -190,8 +210,9 @@ class Adjudicator extends \yii\db\ActiveRecord {
 		return ($id !== null) ? $table[$id] : $table;
 	}
 
-	public static function getCSSStrength($id = null) {
-		return "st" . $id;
+	public static function getCSSStrength($id = null)
+	{
+		return "st" . intval($id / 10);
 	}
 
 	/**
@@ -202,22 +223,27 @@ class Adjudicator extends \yii\db\ActiveRecord {
 	 *
 	 * @return boolean
 	 */
-	public static function compare_strength($a, $b) {
+	public static function compare_strength($a, $b)
+	{
 		$as = $a["strength"];
 		$bs = $b["strength"];
+
 		return ($as < $bs) ? 1 : (($as > $bs) ? -1 : 0);
 	}
 
-	public function getPastAdjudicatorIDs() {
+	public function getPastAdjudicatorIDs()
+	{
 		//Works without tournament_id because adjudicator is only valid in tournament scope
 		$model = \Yii::$app->db->createCommand("SELECT a.adjudicator_id AS aid, b.adjudicator_id AS bid, a.panel_id AS pid FROM adjudicator_in_panel AS a LEFT JOIN adjudicator_in_panel AS b ON a.panel_id = b.panel_id
 		WHERE a.adjudicator_id = " . $this->id . " GROUP BY bid");
 
 		$past = $model->queryAll();
+
 		return ArrayHelper::getColumn($past, "bid");
 	}
 
-	public function getPastTeamIDs() {
+	public function getPastTeamIDs()
+	{
 		$sql = "SELECT og_team_id, oo_team_id, cg_team_id, co_team_id FROM adjudicator_in_panel AS aip LEFT JOIN panel ON panel.id = aip.panel_id RIGHT JOIN debate ON debate.panel_id = panel.id WHERE adjudicator_id = " . $this->id . " GROUP BY adjudicator_id";
 		$model = \Yii::$app->db->createCommand($sql);
 		$queryresult = $model->queryAll();
@@ -228,6 +254,7 @@ class Adjudicator extends \yii\db\ActiveRecord {
 			$pastIDs[] = $line["cg_team_id"];
 			$pastIDs[] = $line["co_team_id"];
 		}
+
 		return $pastIDs;
 	}
 

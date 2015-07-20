@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'attribute' => 'strength',
             'format' => "raw",
             'value' => function ($model, $key, $index, $widget) {
-                return "( $model->strength )&nbsp;&nbsp;" . Adjudicator::translateStrength($model->strength);
+                return "( $model->strength )&nbsp;&nbsp;"; // . Adjudicator::translateStrength($model->strength);
             },
             'width' => '15%',
         ],

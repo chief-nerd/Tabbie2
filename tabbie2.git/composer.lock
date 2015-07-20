@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a0f31557dd9c19e0a6a519039b056c0c",
+    "hash": "5642e34527fe2f7acfc6a8db6626e2d8",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -16,7 +16,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/9db359f0238356a3a9e841c520a619740959687b",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/3e11d5ccabea4bf05aa4f88d4285f60590cda968",
                 "reference": "9db359f0238356a3a9e841c520a619740959687b",
                 "shasum": ""
             },
@@ -1238,6 +1238,53 @@
                 "popover-x"
             ],
             "time": "2015-07-01 16:51:32"
+        },
+        {
+            "name": "kartik-v/yii2-slider",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kartik-v/yii2-slider.git",
+                "reference": "25b93d3db8a23f5a94b1959b4ce676c525facf57"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kartik-v/yii2-slider/zipball/25b93d3db8a23f5a94b1959b4ce676c525facf57",
+                "reference": "25b93d3db8a23f5a94b1959b4ce676c525facf57",
+                "shasum": ""
+            },
+            "require": {
+                "kartik-v/yii2-krajee-base": "*"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "kartik\\slider\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD 3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Kartik Visweswaran",
+                    "email": "kartikv2@gmail.com",
+                    "homepage": "http://www.krajee.com/"
+                }
+            ],
+            "description": "An advanced slider input for Yii Framework 2 for both touch enabled and desktop devices based on bootstrap-slider.",
+            "homepage": "https://github.com/kartik-v/yii2-slider",
+            "keywords": [
+                "bootstrap",
+                "bootstrap 3",
+                "extension",
+                "range",
+                "slider",
+                "widget",
+                "yii2"
+            ],
+            "time": "2015-05-05 11:59:53"
         },
         {
             "name": "kartik-v/yii2-sortable",
@@ -2732,7 +2779,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/b1abe41e1357ad790398d7a668b19ac733b4e1c1",
+                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/293c3609e57f7990035cb3352cd728db092d978a",
                 "reference": "b1abe41e1357ad790398d7a668b19ac733b4e1c1",
                 "shasum": ""
             },
@@ -2905,7 +2952,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-debug/zipball/ef8f6f69884b10ba1e55dce6d925a9df021d904d",
+                "url": "https://api.github.com/repos/yiisoft/yii2-debug/zipball/744db5ce956ce8de4b4b982ba0cbaa4ae5fdd2f7",
                 "reference": "ef8f6f69884b10ba1e55dce6d925a9df021d904d",
                 "shasum": ""
             },
@@ -2999,7 +3046,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-gii/zipball/4487b4600525f04b5e2e8a46593f04f62a9c3446",
+                "url": "https://api.github.com/repos/yiisoft/yii2-gii/zipball/391aa2343cd1b0e48bfc99c9061999b0d0be93cb",
                 "reference": "4487b4600525f04b5e2e8a46593f04f62a9c3446",
                 "shasum": ""
             },
