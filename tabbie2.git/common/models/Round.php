@@ -314,6 +314,13 @@ class Round extends \yii\db\ActiveRecord
 		return false;
 	}
 
+	/**
+	 * Saves a full draw
+	 *
+	 * @param DrawLine[] $draw
+	 *
+	 * @throws \yii\base\Exception
+	 */
 	private function saveDraw($draw)
 	{
 		foreach ($draw as $line) {
