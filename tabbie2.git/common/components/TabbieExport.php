@@ -446,7 +446,7 @@
 		public function generateSQL($tournament)
 		{
 			$sqlFile = [];
-			$sqlFile[] = "USE tabbie";
+			$sqlFile[] = "USE tabbie;";
 			$sqlFile[] = "";
 
 			$sqlFile[] = $this->generateINSERT([$tournament]);
