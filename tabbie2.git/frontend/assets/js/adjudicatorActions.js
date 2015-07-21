@@ -68,6 +68,7 @@ function init() {
                 console.log("Saved!");
 
                 var obj = [obj.newPanel, obj.oldPanel];
+                var noticeString = '<span class="glyphicon glyphicon-info-sign text-primary"></span>';
                 var warningString = '<span class="glyphicon glyphicon-warning-sign text-warning"></span>';
                 var errorString = '<span class="glyphicon glyphicon-exclamation-sign text-danger"></span>';
 
@@ -76,6 +77,7 @@ function init() {
 
                     var warning = false;
                     var error = false;
+                    var notice = false;
 
                     var newLine = $("#debateDraw-container tr[data-key=" + panel.id + "] > td:nth-last-child(2)");
                     for (var i = 0; i < panel.messages.length; i++) {
@@ -83,12 +85,17 @@ function init() {
                             error = true;
                         if (panel.messages[i].key == "warning" && panel.messages[i].penalty > 0)
                             warning = true;
+                        if (panel.messages[i].key == "notice" && panel.messages[i].penalty > 0)
+                            notice = true;
                     }
                     var html = "";
+                    if (notice)
+                        html += noticeString + "&nbsp;";
                     if (warning)
                         html += warningString + "&nbsp;";
                     if (error)
                         html += errorString + "&nbsp;";
+
                     newLine.html(html);
                 }
 
