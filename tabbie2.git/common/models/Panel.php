@@ -16,7 +16,7 @@ use Yii;
  * @property integer              $is_preset
  * @property AdjudicatorInPanel[] $adjudicatorInPanels
  * @property Adjudicator[]        $adjudicators
- * @property Debate[]             $debates
+ * @property Debate               $debate
  * @property Tournament           $tournament
  */
 class Panel extends \yii\db\ActiveRecord {

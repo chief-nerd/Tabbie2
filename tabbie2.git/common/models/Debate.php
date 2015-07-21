@@ -6,9 +6,7 @@ use Yii;
 
 /**
  * This is the model class for table "debate".
-
-
-*
+ *
 *@property integer    $id
  * @property integer    $round_id
  * @property integer    $tournament_id
@@ -34,6 +32,7 @@ use Yii;
  * @property Feedback[] $feedbacks
  * @property Result     $result
  * @property Tournament $tournament
+ * @property Round      $round
  */
 class Debate extends \yii\db\ActiveRecord {
 

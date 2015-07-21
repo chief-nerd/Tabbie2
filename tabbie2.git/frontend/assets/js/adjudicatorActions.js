@@ -46,7 +46,12 @@ function init() {
         console.log("#", window.dragid, "from Panel", window.panelid, "to", panel, "at pos", position);
 
         th = $("#debateDraw-container thead th:last-child i");
-        th[0].className = "glyphicon glyphicon-refresh";
+        var reloadClass = 'glyphicon glyphicon-refresh';
+        th[0].className = reloadClass;
+
+        var reloadSpan = '<span class="' + reloadClass + '"></span>';
+        $(this).parent().parent().find("td:nth-last-child(2)").html(reloadSpan);
+        $("#debateDraw-container ul[data-panel=" + window.panelid + "]").parent().parent().find("td:nth-last-child(2)").html(reloadSpan);
 
         $.ajax({
             type: "POST",
@@ -58,8 +63,35 @@ function init() {
                 pos: position
             }
         }).success(function (data) {
-            if (data == "1") {
-                //console.log("Saved!");
+            obj = JSON.parse(data);
+            if (typeof obj.newPanel != "undefined" && typeof obj.oldPanel != "undefined") {
+                console.log("Saved!");
+
+                var obj = [obj.newPanel, obj.oldPanel];
+                var warningString = '<span class="glyphicon glyphicon-warning-sign text-warning"></span>';
+                var errorString = '<span class="glyphicon glyphicon-exclamation-sign text-danger"></span>';
+
+                for (index = 0; index < obj.length; ++index) {
+                    panel = obj[index];
+
+                    var warning = false;
+                    var error = false;
+
+                    var newLine = $("#debateDraw-container tr[data-key=" + panel.id + "] > td:nth-last-child(2)");
+                    for (var i = 0; i < panel.messages.length; i++) {
+                        if (panel.messages[i].key == "error")
+                            error = true;
+                        if (panel.messages[i].key == "warning")
+                            warning = true;
+                    }
+                    var html = "";
+                    if (warning)
+                        html += warningString + "&nbsp;";
+                    if (error)
+                        html += errorString + "&nbsp;";
+                    newLine.html(html);
+                }
+
                 th = $("#debateDraw-container thead th:last-child i");
                 th[0].className = "glyphicon glyphicon-ok-circle text-success";
             }

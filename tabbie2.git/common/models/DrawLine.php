@@ -17,7 +17,9 @@ class DrawLine extends Model {
 	const CG = 3;
 	const CO = 4;
 
+	/** @var  integer DebateID */
 	public $id;
+
 	/**
 	 * @var Venue
 	 */

@@ -142,11 +142,17 @@
 						} else {
 							throw new Exception(Yii::t("app", "No condition matched"));
 						}
+
+						/** Recalculate Energy and Messages */
+
+						$round = $newPanel->debate->round;
+						$newLines = $round->updateEnergy(["newPanel" => $newPanel->debate->id, "oldPanel" => $oldPanel->debate->id]);
+
 						// Refresh Values to check
 						$oldPanel->refresh();
 						$newPanel->refresh();
 						if ($oldPanel->check() && $newPanel->check())
-							return 1;
+							return json_encode($newLines);
 						else
 							throw new Exception(Yii::t("app", "Did not pass panel check old: {old} / new: {new}", [
 								"old" => (($oldPanel->check()) ? 'true' : 'false'),

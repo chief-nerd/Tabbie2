@@ -10,10 +10,16 @@ namespace common\components;
 
 
 use yii\base\Component;
+use yii\db\ActiveRecord;
 
 class ObjectError extends Component
 {
 
+	/**
+	 * @param ActiveRecord $object
+	 *
+	 * @return string
+	 */
     public static function getMsg($object)
     {
 
