@@ -29,7 +29,7 @@
 function (element, callback) {
     var id=\$(element).val();
     if (id !== "") {
-        \$.ajax("{$countryListURL}?id=" + id, {
+        \$.ajax("{$countryListURL}?cid=" + id, {
         dataType: "json"
         }).done(function(data) { callback(data.results);});
     }

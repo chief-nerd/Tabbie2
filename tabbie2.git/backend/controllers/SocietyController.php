@@ -11,6 +11,7 @@ use Yii;
 use common\models\Society;
 use common\models\search\SocietySearch;
 use yii\base\Exception;
+use yii\helpers\HtmlPurifier;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -237,13 +238,16 @@ class SocietyController extends Controller {
 	 * @param type $search
 	 * @param type $id
 	 */
-	public function actionCountries($search = null, $id = null) {
+	public function actionCountries(array $search = null, $cid = null)
+	{
+		$search["term"] = HtmlPurifier::process($search["term"]);
+		$id = intval($cid);
 		$out = ['more' => false];
-		if (!is_null($search)) {
+		if (!is_null($search["term"])) {
 			$query = new \yii\db\Query;
 			$query->select(["id", "name as text"])
 			      ->from('country')
-			      ->where('name LIKE "%' . $search . '%"')
+				->where('name LIKE "%' . $search["term"] . '%"')
 			      ->limit(20);
 			$command = $query->createCommand();
 			$data = $command->queryAll();
