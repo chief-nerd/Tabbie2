@@ -241,9 +241,8 @@ class SocietyController extends Controller {
 	public function actionCountries(array $search = null, $cid = null)
 	{
 		$search["term"] = HtmlPurifier::process($search["term"]);
-		$id = intval($cid);
 		$out = ['more' => false];
-		if (!is_null($search["term"])) {
+		if (!is_null($search["term"]) && $search["term"] != "") {
 			$query = new \yii\db\Query;
 			$query->select(["id", "name as text"])
 			      ->from('country')
@@ -252,9 +251,8 @@ class SocietyController extends Controller {
 			$command = $query->createCommand();
 			$data = $command->queryAll();
 			$out['results'] = array_values($data);
-		}
-		elseif ($id > 0) {
-			$out['results'] = ['id' => $id, 'text' => Country::findOne($id)->name];
+		} elseif ($cid > 0) {
+			$out['results'] = ['id' => $cid, 'text' => Country::findOne($cid)->name];
 		}
 		else {
 			$out['results'] = ['id' => 0, 'text' => 'No matching records found'];
