@@ -505,6 +505,14 @@ class Round extends \yii\db\ActiveRecord
 		return $drawline;
 	}
 
+	/**
+	 * Update the Energy of certain lines and updates the database with the new energy and messages.
+	 *
+	 * @param array $updateLines
+	 *
+	 * @return array
+	 * @throws \yii\base\Exception
+	 */
 	public function updateEnergy($updateLines = [])
 	{
 		/** @var DrawLine[] $DRAW */
