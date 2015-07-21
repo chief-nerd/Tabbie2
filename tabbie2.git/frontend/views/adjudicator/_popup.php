@@ -18,7 +18,7 @@ $this->context->layout = null;
 	</colgroup>
 	<tr>
 		<th><?= Yii::t("app", "Strength") ?></th>
-		<td><?= $model->strength ?> (<?= Adjudicator::translateStrength($model->strength) ?>)</td>
+		<td><?= $model->getStrengthOutput() ?></td>
 	</tr>
 	<tr>
 		<th><?= Yii::t("app", "Region") ?></th>

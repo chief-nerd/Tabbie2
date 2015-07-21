@@ -28,7 +28,7 @@ class Adjudicator extends \yii\db\ActiveRecord
 {
 
 
-	const MAX_RATING = 9;
+	const MAX_RATING = 99;
 
 	/**
 	 * @inheritdoc
@@ -46,7 +46,7 @@ class Adjudicator extends \yii\db\ActiveRecord
 		return [
 			[['tournament_id', 'user_id', 'society_id'], 'required'],
 			[['tournament_id', 'active', 'user_id', 'strength', 'can_chair', 'are_watched', 'society_id'], 'integer'],
-			['strength', 'integer', 'max' => 99, 'min' => 0]
+			['strength', 'integer', 'max' => self::MAX_RATING, 'min' => 0]
 		];
 	}
 
@@ -173,23 +173,32 @@ class Adjudicator extends \yii\db\ActiveRecord
 	 *
 	 * @return type
 	 */
-	public static function translateStrength($id = null)
+	public static function getStrengthLabel($strength = null)
 	{
+		if ($strength !== null) {
+			if ($strength === 0) return Yii::t("adjudicator", 'Not rated');
+			$strength = intval($strength / 10);
+		}
+
 		$table = [
-			0  => Yii::t("adjudicator", 'Really bad Judge'),
+			0 => Yii::t("adjudicator", 'Punished Judge'),
 			1 => Yii::t("adjudicator", 'Bad Judge'),
 			2 => Yii::t("adjudicator", 'Can Judge'),
 			3 => Yii::t("adjudicator", 'Decent Judge'),
 			4 => Yii::t("adjudicator", 'Average Judge'),
 			5 => Yii::t("adjudicator", 'High Potential'),
-			6 => Yii::t("adjudicator", 'Chair'),
+			6 => Yii::t("adjudicator", 'Average Chair'),
 			7 => Yii::t("adjudicator", 'Good Chair'),
 			8 => Yii::t("adjudicator", 'Breaking Chair'),
 			9 => Yii::t("adjudicator", 'Chief Adjudicator'),
-			10 => Yii::t("adjudicator", 'Chief Adjudicator'),
 		];
 
-		return (isset($table[$id])) ? $table[$id] : $table;
+		return (isset($table[$strength])) ? $table[$strength] : $table;
+	}
+
+	public function getStrengthOutput()
+	{
+		return Adjudicator::getStrengthLabel($this->strength) . " (" . $this->strength . ")";
 	}
 
 	public static function starLabels($id = null)

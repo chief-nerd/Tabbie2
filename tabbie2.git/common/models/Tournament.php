@@ -490,7 +490,7 @@
 
 		public function getCAs()
 		{
-			return Adjudicator::find()->tournament($this->id)->andWhere(["strength" => Adjudicator::MAX_RATING]);
+			return Adjudicator::find()->tournament($this->id)->andWhere("strength >=" . (intval(Adjudicator::MAX_RATING / 10) * 10));
 		}
 
 		public function getCATeamText()

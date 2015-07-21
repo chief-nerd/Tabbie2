@@ -6,6 +6,8 @@ use yii\helpers\Url;
 use kartik\widgets\Select2;
 use yii\web\JsExpression;
 use kartik\widgets\StarRating;
+use kartik\slider\Slider;
+use common\models\Adjudicator;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Adjudicator */
@@ -99,17 +101,18 @@ SCRIPT;
 	?>
 
 	<?
-	/*
 		$jsExpression = "function(val) { ";
-		for($i=0; $i<=100; $i=$i+10) {
-			$jsExpression .= "if (val < " . ($i + 10) . ") { return '" . \common\models\Adjudicator::translateStrength($i/10) . "'; } ";
+	for ($i = 0; $i <= (Adjudicator::MAX_RATING / 10) + 1; $i++) {
+		$jsExpression .= "if (val < " . ($i * 10) . ") { return '" . Adjudicator::getStrengthLabel($i * 10 - 1) . " ('+val+')'; } ";
 		}
-		$jsExpression .= " }";
+	$jsExpression .= "}";
 
 		echo $form->field($model, 'strength')->widget(\kartik\slider\Slider::className(), [
+			'handleColor'  => Slider::TYPE_INFO,
+			'sliderColor'  => Slider::TYPE_PRIMARY,
 			'pluginOptions'=>[
 				'min'=>0,
-				'max'=>99,
+				'max' => Adjudicator::MAX_RATING,
 				'step'=>1,
 				'tooltip'=>'always',
 				'formatter'=>new JsExpression($jsExpression)
@@ -127,7 +130,7 @@ SCRIPT;
 			],
 		])*/
 
-	echo $form->field($model, 'strength')->textInput();
+	//echo $form->field($model, 'strength')->textInput();
 	?>
 
 	<div class="form-group">
