@@ -19,7 +19,7 @@
 		<table>
 			<?php
 			foreach ($model->getMessages() as $msg) {
-				echo "<tr><th>" . $msg->key . "</th><td>" . $msg->msg . "</td>";
+				echo "<tr><th>" . $msg->key . "</th><td>" . $msg->msg . "</td><td>" . ((isset($msg->penalty)) ? $msg->penalty : "") . "</td>";
 			}
 			?>
 		</table>

@@ -240,6 +240,15 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 			'width' => "80px",
 		],
 		[
+			'class'     => '\kartik\grid\DataColumn',
+			'attribute' => 'language_status',
+			'label'     => Yii::t("app", 'Language'),
+			'value'     => function ($model, $key, $index, $widget) {
+				return \common\models\User::getLanguageStatusLabel($model->getLanguage_status(), true);
+			},
+			'visible'   => $model->tournament->has_esl,
+		],
+		[
 			'class' => '\kartik\grid\DataColumn',
 			'label' => Yii::t("app", 'Energy'),
 			'format' => 'raw',
@@ -250,8 +259,10 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 				$found_error = false;
 				$msg = json_decode($model->messages);
 				foreach ($msg as $m) {
-					if ($m->key == "error") $found_error = true;
-					if ($m->key == "warning") $found_warning = true;
+					if (isset($m->penalty)) { //Legacy
+						if ($m->key == "error" && $m->penalty > 0) $found_error = true;
+						if ($m->key == "warning" && $m->penalty > 0) $found_warning = true;
+					}
 				}
 
 				if ($found_warning)
@@ -262,15 +273,6 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 				return $ret;
 			},
 			'width' => "20px",
-		],
-		[
-			'class' => '\kartik\grid\DataColumn',
-			'attribute' => 'language_status',
-			'label' => Yii::t("app", 'Language'),
-			'value' => function ($model, $key, $index, $widget) {
-				return \common\models\User::getLanguageStatusLabel($model->getLanguage_status(), true);
-			},
-			'visible' => $model->tournament->has_esl,
 		],
 		[
 			'class' => '\kartik\grid\DataColumn',

@@ -81,10 +81,12 @@ class DrawLine extends Model {
 		return intval($total / $n);
 	}
 
-	public function addMessage($key, $msg) {
+	public function addMessage($key, $msg, $penalty = null)
+	{
 		$this->messages[] = [
 			"key" => $key,
 			"msg" => $msg,
+			"penalty" => $penalty,
 		];
 	}
 
