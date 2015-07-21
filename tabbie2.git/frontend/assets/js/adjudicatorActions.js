@@ -79,9 +79,9 @@ function init() {
 
                     var newLine = $("#debateDraw-container tr[data-key=" + panel.id + "] > td:nth-last-child(2)");
                     for (var i = 0; i < panel.messages.length; i++) {
-                        if (panel.messages[i].key == "error")
+                        if (panel.messages[i].key == "error" && panel.messages[i].penalty > 0)
                             error = true;
-                        if (panel.messages[i].key == "warning")
+                        if (panel.messages[i].key == "warning" && panel.messages[i].penalty > 0)
                             warning = true;
                     }
                     var html = "";
