@@ -11,6 +11,7 @@
 
 	use yii\base\Component;
 	use common\models;
+	use yii\db\ActiveRecord;
 	use yii\helpers\ArrayHelper;
 
 	class TabbieExport extends Component
@@ -21,7 +22,7 @@
 			return "'" . $str . "'";
 		}
 
-		public function generateSQL($tournament)
+		public function generateV1SQL($tournament)
 		{
 			$sqlFile = [];
 			$sqlFile[] = "USE tabbie_" . strtolower(str_replace(" ", "_", $tournament->name)) . ";";
@@ -135,14 +136,14 @@
 
 			$sqlFile[] = "DROP TABLE IF EXISTS `team`;";
 			$sqlFile[] = "CREATE TABLE `team` (
-  `team_id` mediumint(9) NOT NULL AUTO_INCREMENT,
-  `univ_id` mediumint(9) NOT NULL DEFAULT '0',
-  `team_code` varchar(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `esl` varchar(3) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `active` enum('N','Y') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'N',
-  `composite` enum('N','Y') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Y',
-  `novice` enum('N','Y') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Y',
-  `specialneeds` enum('N','Y') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'N',
+  `team_id` MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
+  `univ_id` MEDIUMINT(9) NOT NULL DEFAULT '0',
+  `team_code` VARCHAR(20) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `esl` VARCHAR(3) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `active` ENUM('N','Y') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'N',
+  `composite` ENUM('N','Y') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Y',
+  `novice` ENUM('N','Y') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Y',
+  `specialneeds` ENUM('N','Y') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'N',
   PRIMARY KEY (`team_id`),
   UNIQUE KEY `univ_id` (`univ_id`,`team_code`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Team Table';";
@@ -206,11 +207,11 @@
 			$sqlFile[] = "";
 			$sqlFile[] = "DROP TABLE IF EXISTS `venue`;";
 			$sqlFile[] = "CREATE TABLE `venue` (
-  `venue_id` mediumint(9) NOT NULL AUTO_INCREMENT,
-  `venue_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `venue_location` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `active` enum('Y','N') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Y',
-  `specialneeds` enum('Y','N') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'N',
+  `venue_id` MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
+  `venue_name` VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `venue_location` VARCHAR(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `active` ENUM('Y','N') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Y',
+  `specialneeds` ENUM('Y','N') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'N',
   PRIMARY KEY (`venue_id`),
   UNIQUE KEY `venue_name` (`venue_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Venue Table';";
@@ -437,5 +438,153 @@
 
 
 			return $sqlFile;
+		}
+
+		/**
+		 * @param models\Tournament $tournament
+		 */
+		public function generateSQL($tournament)
+		{
+			$sqlFile = [];
+			$sqlFile[] = "USE tabbie";
+			$sqlFile[] = "";
+
+			$sqlFile[] = $this->generateINSERT([$tournament]);
+			$sqlFile[] = "SET @tournament = LAST_INSERT_ID();";
+			$sqlFile[] = "";
+
+			$teams = models\Team::find()->tournament($tournament->id)->all();
+			$adjus = models\Adjudicator::find()->tournament($tournament->id)->all();
+
+			$users = [];
+			foreach ($teams as $team) {
+				/** @var models\Team $team */
+				if ($team->speakerA)
+					$users[] = $team->speakerA;
+				if ($team->speakerB)
+					$users[] = $team->speakerB;
+			}
+			foreach ($adjus as $adju) {
+				/** @var models\Adjudicator $adju */
+				$users[] = $adju->user;
+			}
+
+			/*$inS = [];
+			$societies = [];
+			foreach($users as $u)
+			{
+				/** @var models\User $u
+				foreach($u->inSocieties as $in)
+				{
+					/** @var models\InSociety $in
+					$inS[] = $in;
+					$societies[$in->society_id] = $in->society;
+				}
+			}*/
+
+			$collection[] = $users;
+			//$collection[] = $societies;
+			//$collection[] = $inS;
+
+			$collection[] = $teams;
+			$collection[] = $adjus;
+			$collection[] = models\TeamStrike::find()->tournament($tournament->id)->all();
+			$collection[] = models\AdjudicatorStrike::find()->tournament($tournament->id)->all();
+			$collection[] = models\Venue::find()->tournament($tournament->id)->all();
+			$collection[] = models\LanguageOfficer::find()->tournament($tournament->id)->all();
+			$collection[] = models\EnergyConfig::find()->tournament($tournament->id)->all();
+			$collection[] = models\Round::find()->tournament($tournament->id)->all();
+
+			$debates = models\Debate::find()->tournament($tournament->id)->all();
+
+			$collection[] = $debates;
+
+			foreach ($debates as $d) {
+				if ($d->result)
+					$result[] = $d->result;
+			}
+			$collection[] = $result;
+
+			$panel = models\Panel::find()->tournament($tournament->id)->all();
+			$collection[] = $panel;
+
+			foreach ($panel as $p) {
+				/**    @var models\AdjudicatorInPanel $p */
+				foreach ($p->getAdjudicatorInPanels()->all() as $aip)
+					$inPanel[] = $aip;
+			}
+
+			$collection[] = $inPanel;
+
+			foreach ($collection as $c) {
+				if ($c) {
+					$sqlFile[] = $this->generateINSERT($c);
+					$sqlFile[] = "";
+				}
+			}
+
+			return $sqlFile;
+		}
+
+		/**
+		 * @param ActiveRecord[] $models
+		 *
+		 * @return string
+		 */
+		private function generateINSERT($models)
+		{
+			foreach ($models as $m) {
+				$attr = [];
+				foreach ($m->attributes as $name => $a) {
+					$attr[] = $this->formatAttribute($name, $a);
+				}
+				$values[] = "(" . implode(", ", $attr) . ")";
+			}
+
+			return "INSERT INTO " . $models[0]->tableName() . " VALUES " . implode(", ", $values) . ";";
+		}
+
+		private function formatAttribute($name, $a)
+		{
+			if ($name == "tournament_id") {
+				return "@tournament";
+			} else if ($a === null || $name == "id")
+				return "NULL";
+			else if (is_string($a)) {
+				return "'" . addslashes($a) . "'";
+			}
+
+			return $a;
+		}
+
+		private function InsertCareForDuplicates($models, $index)
+		{
+
+			$inserts = [];
+			/*
+			INSERT INTO table_listnames (name, address, tele)
+			SELECT * FROM (SELECT 'Rupert', 'Somewhere', '022') AS tmp
+			WHERE NOT EXISTS (
+				SELECT name FROM table_listnames WHERE name = 'Rupert'
+			) LIMIT 1;
+			*/
+
+			foreach ($models as $m) {
+				$attr = [];
+				foreach ($m->attributes as $name => $a) {
+					$attr[] = $this->formatAttribute($name, $a);
+					if ($name == $index) {
+						$indexValue = $this->formatAttribute($name, $a);;
+					}
+				}
+				/** @var ActiveRecord $m */
+				$inserts[] = "INSERT INTO " . $m->tableName() . "
+							  SELECT * FROM (SELECT " . implode(", ", $attr) . ") AS tmp
+							  WHERE NOT EXISTS (
+								SELECT " . $index . " FROM " . $m->tableName() . " WHERE " . $index . " = " . $indexValue . "
+							  ) LIMIT 1;";
+			}
+
+			return $inserts;
 		}
 	}

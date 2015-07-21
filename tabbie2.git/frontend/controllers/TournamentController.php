@@ -50,7 +50,7 @@ class TournamentController extends BaseTournamentController
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['migrate-tabbie'],
+						'actions' => ['migrate-tabbie', 'download-sql'],
                         'matchCallback' => function ($rule, $action) {
                             return ($this->_tournament->isTabMaster(Yii::$app->user->id));
                         }
@@ -304,7 +304,27 @@ class TournamentController extends BaseTournamentController
 		ob_start('mb_output_handler');
 
 		$export = new TabbieExport();
-		echo implode("<br>\n", $export->generateSQL($this->_tournament));
+		echo implode("<br>\n", $export->generateV1SQL($this->_tournament));
 		exit();
     }
+
+	/**
+	 * Migrate back to Tabbie v1
+	 *
+	 * @param    integer $id
+	 */
+	public function actionDownloadSql($id)
+	{
+		/** Make output UTF-8 */
+		mb_internal_encoding('UTF-8');
+		mb_http_output('UTF-8');
+		mb_http_input('UTF-8');
+		mb_language('uni');
+		mb_regex_encoding('UTF-8');
+		ob_start('mb_output_handler');
+
+		$export = new TabbieExport();
+		echo implode("<br>\n", $export->generateSQL($this->_tournament));
+		exit();
+	}
 }
