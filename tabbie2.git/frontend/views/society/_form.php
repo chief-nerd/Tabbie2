@@ -17,14 +17,14 @@ use kartik\widgets\DatePicker;
 	<?php $form = ActiveForm::begin(); ?>
 
 	<?
-    $urlUserList = Url::to(['society/list', "user_id" => $model->user_id, "sid" => $model->society_id]);
+	$urlSocietyList = Url::to(['society/list', "user_id" => $model->user_id]);
 
 	// Script to initialize the selection based on the value of the select2 element
-	$initUserScript = <<< SCRIPT
+	$initSocietyScript = <<< SCRIPT
 function (element, callback) {
     var id=\$(element).val();
     if (id !== "") {
-        \$.ajax("{$urlUserList}?sid=" + id, {
+        \$.ajax("{$urlSocietyList}?sid=" + id, {
         dataType: "json"
         }).done(function(data) { callback(data.results);});
     }
@@ -40,12 +40,12 @@ SCRIPT;
 			'allowClear' => true,
 			'minimumInputLength' => 3,
 			'ajax' => [
-				'url' => $urlUserList,
+				'url' => $urlSocietyList,
 				'dataType' => 'json',
 				'data' => new JsExpression('function(term,page) { return {search:term}; }'),
 				'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
 			],
-			'initSelection' => new JsExpression($initUserScript)
+			'initSelection' => new JsExpression($initSocietyScript)
 		],
 	]);
 	?>

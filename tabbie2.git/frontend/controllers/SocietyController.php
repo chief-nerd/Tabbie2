@@ -15,8 +15,10 @@ use yii\filters\VerbFilter;
 /**
  * SocietyController implements the CRUD actions for Society model.
  */
-class SocietyController extends BaseUserController {
-	public function behaviors() {
+class SocietyController extends BaseUserController
+{
+	public function behaviors()
+	{
 		return [
 			'userFilter' => [
 				'class' => UserContextFilter::className(),
@@ -30,7 +32,7 @@ class SocietyController extends BaseUserController {
 						'roles' => ['@', '?'], //Everyone
 					],
 					[
-						'allow' => true,
+						'allow'   => true,
 						'actions' => ['create', 'update'],
 						'matchCallback' => function ($rule, $action) {
 							return (isset($this->_user) && ($this->_user->id == Yii::$app->user->id || Yii::$app->user->isAdmin()));
@@ -38,7 +40,7 @@ class SocietyController extends BaseUserController {
 					],
 				],
 			],
-			'verbs' => [
+			'verbs'  => [
 				'class' => VerbFilter::className(),
 				'actions' => [
 					'delete' => ['post'],
@@ -54,20 +56,23 @@ class SocietyController extends BaseUserController {
 	 *
 	 * @return mixed
 	 */
-	public function actionCreate() {
+	public function actionCreate()
+	{
 		$model = new InSociety();
 		$model->user_id = $this->_user->id;
 
 		if ($model->load(Yii::$app->request->post())) {
 
-			$model->society_id = Yii::$app->request->post("InSociety")["society"];
+			$InSociety = Yii::$app->request->post("InSociety", false);
+			if ($InSociety)
+				$model->society_id = $InSociety["society_id"];
 
-			if ($model->save()) {
+			if ($model->save() && $InSociety !== false) {
 				Yii::$app->session->addFlash("success", Yii::t("app", "Society connection created"));
+
 				return $this->redirect(['user/view', 'id' => $this->_user->id]);
-			}
-			else {
-				Yii::$app->session->addFlash("error", Yii::t("app", "Society coud not be saved"));
+			} else {
+				Yii::$app->session->addFlash("error", Yii::t("app", "Society could not be saved"));
 			}
 		}
 
@@ -84,16 +89,17 @@ class SocietyController extends BaseUserController {
 	 *
 	 * @return mixed
 	 */
-	public function actionUpdate($id) {
+	public function actionUpdate($id)
+	{
 		$model = $this->findModel($id);
 
 		if ($model->load(Yii::$app->request->post())) {
 
 			if ($model->save()) {
 				Yii::$app->session->addFlash("success", Yii::t("app", "Society Info updated"));
+
 				return $this->redirect(['user/view', 'id' => $this->_user->id]);
-			}
-			else {
+			} else {
 				Yii::$app->session->addFlash("error", Yii::t("app", "Society coud not be saved"));
 			}
 
@@ -112,7 +118,8 @@ class SocietyController extends BaseUserController {
 	 *
 	 * @return mixed
 	 */
-	public function actionDelete($id) {
+	public function actionDelete($id)
+	{
 		$this->findModel($id)->delete();
 
 		return $this->redirect(['index']);
@@ -122,27 +129,27 @@ class SocietyController extends BaseUserController {
 	 * Returns 20 societies in an JSON List
 	 *
 	 * @param type $search
-     * @param type $sid
+	 * @param type $sid
 	 */
-	public function actionList(array $search = null, $sid = null) {
+	public function actionList(array $search = null, $sid = null)
+	{
 		$search["term"] = HtmlPurifier::process($search["term"]);
-        $sid = intval($sid);
+		$sid = intval($sid);
 
 		$out = ['more' => false];
-        if (!is_null($search["term"]) && $search["term"] != "") {
+		if (!is_null($search["term"]) && $search["term"] != "") {
 			$query = new \yii\db\Query;
 			$query->select(["id", "CONCAT(fullname,' (',abr,')') as text"])
-			      ->from('society')
+				->from('society')
 				->andWhere(["LIKE", "fullname", $search["term"]])
 				->orWhere(["LIKE", "abr", $search["term"]])
-			      ->limit(20);
+				->limit(20);
 			$command = $query->createCommand();
 			$data = $command->queryAll();
 			$out['results'] = array_values($data);
 		} elseif ($sid > 0) {
-            $out['results'] = ['id' => $sid, 'text' => Society::findOne($sid)->fullname];
-		}
-		else {
+			$out['results'] = ['id' => $sid, 'text' => Society::findOne($sid)->fullname];
+		} else {
 			$out['results'] = ['id' => 0, 'text' => Yii::t("app", 'No matching records found')];
 		}
 		echo \yii\helpers\Json::encode($out);
@@ -154,7 +161,8 @@ class SocietyController extends BaseUserController {
 	 * @param type $search
 	 * @param type $id
 	 */
-	public function actionListCountry(array $search = null, $cid = null) {
+	public function actionListCountry(array $search = null, $cid = null)
+	{
 		$search["term"] = HtmlPurifier::process($search["term"]);
 		$cid = intval($cid);
 
@@ -162,17 +170,15 @@ class SocietyController extends BaseUserController {
 		if (!is_null($search["term"]) && $search["term"] != "") {
 			$query = new \yii\db\Query;
 			$query->select(["id", "name as text"])
-			      ->from('country')
+				->from('country')
 				->where(["LIKE", "name", $search["term"]])
-			      ->limit(20);
+				->limit(20);
 			$command = $query->createCommand();
 			$data = $command->queryAll();
 			$out['results'] = array_values($data);
-		}
-		elseif ($cid > 0) {
+		} elseif ($cid > 0) {
 			$out['results'] = ['id' => $cid, 'text' => Country::findOne($cid)->name];
-		}
-		else {
+		} else {
 			$out['results'] = ['id' => 0, 'text' => Yii::t("app", 'No matching records found')];
 		}
 		echo \yii\helpers\Json::encode($out);
@@ -187,11 +193,11 @@ class SocietyController extends BaseUserController {
 	 * @return Society the loaded model
 	 * @throws NotFoundHttpException if the model cannot be found
 	 */
-	protected function findModel($id) {
+	protected function findModel($id)
+	{
 		if (($model = InSociety::find()->where(["society_id" => $id, "user_id" => $this->_user->id])->one()) !== null) {
 			return $model;
-		}
-		else {
+		} else {
 			throw new NotFoundHttpException('The requested page does not exist.');
 		}
 	}
