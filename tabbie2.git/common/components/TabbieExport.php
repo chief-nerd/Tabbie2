@@ -499,6 +499,7 @@
 
 			$collection[] = $debates;
 
+			$result = [];
 			foreach ($debates as $d) {
 				if ($d->result)
 					$result[] = $d->result;
@@ -508,6 +509,7 @@
 			$panel = models\Panel::find()->tournament($tournament->id)->all();
 			$collection[] = $panel;
 
+			$inPanel = [];
 			foreach ($panel as $p) {
 				/**    @var models\AdjudicatorInPanel $p */
 				foreach ($p->getAdjudicatorInPanels()->all() as $aip)
@@ -533,6 +535,7 @@
 		 */
 		private function generateINSERT($models)
 		{
+			$values = [];
 			foreach ($models as $m) {
 				$attr = [];
 				foreach ($m->attributes as $name => $a) {
