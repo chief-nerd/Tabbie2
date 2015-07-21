@@ -12,8 +12,8 @@ use kartik\widgets\Select2;
 use yii\bootstrap\Modal;
 
 Modal::begin([
-	'options' => ['id' => 'changeSocietyForm' . $model->id],
-	'header' => '<h4 style="margin:0; padding:0">' . Yii::t("app", "Merge Society '{society}' into ...", ["society" => $model->fullname]) . '</h4>',
+	'options'      => ['id' => 'changeSocietyForm' . $model->id, 'tabindex' => false],
+	'header'       => '<h4 style="margin:0; padding:0">' . Yii::t("app", "Merge Society '{society}' into ...", ["society" => $model->fullname]) . '</h4>',
 	'toggleButton' => [
 		'label' => \kartik\helpers\Html::icon("compressed"),
 		'tag' => 'a',
@@ -29,9 +29,11 @@ $form = ActiveForm::begin([
 $societyOptions = \common\models\search\SocietySearch::getSearchArray();
 
 echo Select2::widget([
-	'name' => 'other',
-	'data' => $societyOptions,
-	'options' => ['placeholder' => Yii::t("app", 'Select a Mother-Society ...')],
+	'name'         => 'other',
+	'data'         => $societyOptions,
+	'options'      => [
+		'placeholder' => Yii::t("app", 'Select a Mother-Society ...')
+	],
 	"pluginEvents" => [
 		"change" => "function() { document.getElementById('" . $id . "').submit(); }",
 	]

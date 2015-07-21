@@ -2,8 +2,10 @@
 
 namespace backend\controllers;
 
+use common\models\Adjudicator;
 use common\models\InSociety;
 use common\models\search\UserSearch;
+use common\models\Team;
 use common\models\Tournament;
 use Yii;
 use common\models\Society;
@@ -80,6 +82,7 @@ class SocietyController extends Controller {
 	 * A society with another Society model.
 	 *
 	 * @param integer $id
+	 * @param integer $other
 	 *
 	 * @return mixed
 	 */
@@ -87,6 +90,8 @@ class SocietyController extends Controller {
 
 		InSociety::updateAll(["society_id" => $other], ["society_id" => $id]);
 		Tournament::updateAll(["hosted_by_id" => $other], ["hosted_by_id" => $id]);
+		Team::updateAll(["society_id" => $other], ["society_id" => $id]);
+		Adjudicator::updateAll(["society_id" => $other], ["society_id" => $id]);
 		Society::deleteAll(["id" => $id]);
 
 		return $this->redirect("index");

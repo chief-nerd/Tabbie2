@@ -5,7 +5,7 @@ use kartik\widgets\Select2;
 use yii\bootstrap\Modal;
 
 Modal::begin([
-	'options' => ['id' => 'changeVenueForm' . $model->venue_id],
+	'options' => ['id' => 'changeVenueForm' . $model->venue_id, 'tabindex' => false],
 	'header' => '<h4 style="margin:0; padding:0">' . Yii::t("app", "Switch venue {venue} with", ["venue" => $model->venue->name]) . '</h4>',
 	'toggleButton' => ['label' => $model->venue->name, 'class' => 'btn btn-sm btn-default'],
 ]);
