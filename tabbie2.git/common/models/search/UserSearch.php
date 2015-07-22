@@ -135,8 +135,10 @@ class UserSearch extends User
 
 		$this->setFilter($query);
 
-		foreach ($query->union as $union) {
-			$this->setFilter($union["query"]);
+		if (isset($query->union)) {
+			foreach ($query->union as $union) {
+				$this->setFilter($union["query"]);
+			}
 		}
 
 		$query->andFilterWhere([
