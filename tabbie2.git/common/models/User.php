@@ -102,6 +102,8 @@
 		{
 			return [
 				[['auth_key', 'password_hash', 'email'], 'required'],
+				['email', 'email'],
+				['email', 'unique', 'targetClass' => '\common\models\User', 'message' => Yii::t("app", 'This email address has already been taken.')],
 
 				[['password', 'password_repeat'], 'string', 'on' => 'first_login'],
 				[['password', 'password_repeat'], 'required', 'on' => 'first_login'],

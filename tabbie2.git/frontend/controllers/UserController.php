@@ -9,6 +9,7 @@ use common\models\Society;
 use common\models\Tournament;
 use common\models\User;
 use Yii;
+use yii\base\Exception;
 use yii\data\ArrayDataProvider;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -19,9 +20,11 @@ use yii\data\Pagination;
 /**
  * UserController implements the CRUD actions for User model.
  */
-class UserController extends BaseUserController {
+class UserController extends BaseUserController
+{
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return [
 			'access' => [
 				'class' => AccessControl::className(),
@@ -37,14 +40,14 @@ class UserController extends BaseUserController {
 						'roles' => ['@'],
 					],
 					[
-						'allow' => true,
+						'allow'   => true,
 						'actions' => ['update', 'societies', 'history'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->id == Yii::$app->request->get("id") || Yii::$app->user->isAdmin());
 						}
 					],
 					[
-						'allow' => true,
+						'allow'   => true,
 						'actions' => ['setlanguage'],
 						'matchCallback' => function ($rule, $action) {
 							$tournament = Tournament::findByPk(Yii::$app->request->get("tournament"));
@@ -55,7 +58,7 @@ class UserController extends BaseUserController {
 						}
 					],
 					[
-						'allow' => true,
+						'allow'   => true,
 						'actions' => ['index', 'delete', 'forcepass'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->isAdmin());
@@ -63,7 +66,7 @@ class UserController extends BaseUserController {
 					],
 				],
 			],
-			'verbs' => [
+			'verbs'  => [
 				'class' => VerbFilter::className(),
 				'actions' => [
 					'delete' => ['post'],
@@ -77,7 +80,8 @@ class UserController extends BaseUserController {
 	 *
 	 * @return mixed
 	 */
-	public function actionIndex() {
+	public function actionIndex()
+	{
 		$searchModel = new UserSearch();
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -94,7 +98,8 @@ class UserController extends BaseUserController {
 	 *
 	 * @return mixed
 	 */
-	public function actionView($id) {
+	public function actionView($id)
+	{
 		$model = $this->findModel($id);
 
 		if ($society = $model->getInSocieties()->where(["ending" => null])->one())
@@ -120,7 +125,8 @@ class UserController extends BaseUserController {
 	 *
 	 * @return mixed
 	 */
-	public function actionForcepass($id) {
+	public function actionForcepass($id)
+	{
 		$model = $this->findModel($id);
 
 		if ($model->load(Yii::$app->request->post())) {
@@ -128,9 +134,9 @@ class UserController extends BaseUserController {
 
 			if ($model->save() && $model->validatePassword(Yii::$app->request->post()["User"]["password"])) {
 				Yii::$app->session->addFlash("success", Yii::t("app", "New Passwort set"));
+
 				return $this->redirect(['index']);
-			}
-			else {
+			} else {
 				Yii::$app->session->addFlash("success", Yii::t("app", "Error saving new password"));
 			}
 		}
@@ -146,7 +152,8 @@ class UserController extends BaseUserController {
 	 *
 	 * @return mixed
 	 */
-	public function actionCreate() {
+	public function actionCreate()
+	{
 		$model = new User();
 
 		if ($model->load(Yii::$app->request->post())) {
@@ -159,17 +166,16 @@ class UserController extends BaseUserController {
 					$inSociety->society_id = $model->societies_id;
 					$inSociety->starting = date("Y-m-d");
 					if (!$inSociety->save()) {
-                        Yii::warning("inSociety not saved! Errors: " . ObjectError::getMsg($inSociety), __METHOD__);
+						Yii::warning("inSociety not saved! Errors: " . ObjectError::getMsg($inSociety), __METHOD__);
 						Yii::$app->session->addFlash("warning", Yii::t("app", "Society connection not saved"));
-					}
-					else {
+					} else {
 						Yii::$app->session->addFlash("success", Yii::t("app", "User successfully saved!"));
 					}
 				}
+
 				return $this->redirect(['view', 'id' => $model->id]);
-			}
-			else {
-                Yii::warning("User Model not saved! Errors: " . ObjectError::getMsg($model), __METHOD__);
+			} else {
+				Yii::warning("User Model not saved! Errors: " . ObjectError::getMsg($model), __METHOD__);
 				Yii::$app->session->addFlash("error", Yii::t("app", "User not saved!"));
 			}
 		}
@@ -187,7 +193,8 @@ class UserController extends BaseUserController {
 	 *
 	 * @return mixed
 	 */
-	public function actionUpdate($id, $login = false) {
+	public function actionUpdate($id, $login = false)
+	{
 
 		$model = $this->findModel($id);
 		if ($society = $model->getInSocieties()->where(["ending" => null])->one())
@@ -218,8 +225,7 @@ class UserController extends BaseUserController {
 						foreach ($InSociety as $in) {
 							if ($in->society_id == $model->societies_id) {
 								$found = true;
-							}
-							else {
+							} else {
 								$in->ending = date("Y-m-d");
 								$in->save();
 							}
@@ -230,12 +236,13 @@ class UserController extends BaseUserController {
 							$InSociety->society_id = $model->societies_id;
 							$InSociety->starting = date("Y-m-d");
 							if (!$InSociety->save()) {
-                                Yii::warning("Error saving InSociety " . ObjectError::getMsg($InSociety));
+								Yii::warning("Error saving InSociety " . ObjectError::getMsg($InSociety));
 								Yii::$app->session->addFlash("warning", Yii::t("app", "Society Connection not saved!"));
 							}
 						}
 					}
 					Yii::$app->session->addFlash("success", Yii::t("app", "User successfully updated!"));
+
 					return $this->redirect(['view', 'id' => $model->id]);
 				}
 			}
@@ -259,8 +266,32 @@ class UserController extends BaseUserController {
 	 *
 	 * @return mixed
 	 */
-	public function actionDelete($id) {
-		//$this->findModel($id)->delete();
+	public function actionDelete($id)
+	{
+
+		$model = $this->findModel($id);
+
+		$go = true;
+		foreach ($model->inSocieties as $in) {
+			if (!$in->delete())
+				$go = false;
+		}
+
+		if ($go) {
+			try {
+				if ($model->delete()) {
+					Yii::$app->session->addFlash("success", Yii::t("app", "User deleted"));
+				} else {
+					Yii::$app->session->addFlash("success", Yii::t("app", "Cant't delete because of {error}", [
+						"error" => ObjectError::getMsg($model),
+					]));
+				}
+			} catch (Exception $ex) {
+				Yii::$app->session->addFlash("error", Yii::t("app", "Cound't delete because already in use. <br> {ex}", [
+					"ex" => $ex
+				]));
+			}
+		}
 
 		return $this->redirect(['index']);
 	}
@@ -271,22 +302,21 @@ class UserController extends BaseUserController {
 	 * @param type $search
 	 * @param type $id
 	 */
-	public function actionList(array $search = null, $id = null) {
+	public function actionList(array $search = null, $id = null)
+	{
 		$out = ['more' => false];
-        if (!is_null($search["term"]) && $search["term"] != "") {
+		if (!is_null($search["term"]) && $search["term"] != "") {
 			$query = new \yii\db\Query;
 			$query->select(["id", "concat(givenname, ' ', surename) as text", "picture"])
-			      ->from('user')
+				->from('user')
 				->where('concat(givenname, \' \', surename) LIKE "%' . $search["term"] . '%"')
-			      ->limit(20);
+				->limit(20);
 			$command = $query->createCommand();
 			$data = $command->queryAll();
 			$out['results'] = array_values($data);
-		}
-		elseif ($id > 0) {
+		} elseif ($id > 0) {
 			$out['results'] = ['id' => $id, 'text' => User::findOne($id)->name];
-		}
-		else {
+		} else {
 			$out['results'] = ['id' => 0, 'text' => Yii::t("app", 'No matching records found')];
 		}
 		echo \yii\helpers\Json::encode($out);
@@ -301,11 +331,11 @@ class UserController extends BaseUserController {
 	 * @return User the loaded model
 	 * @throws NotFoundHttpException if the model cannot be found
 	 */
-	protected function findModel($id) {
+	protected function findModel($id)
+	{
 		if (($model = User::findOne($id)) !== null) {
 			return $model;
-		}
-		else {
+		} else {
 			throw new NotFoundHttpException('The requested page does not exist.');
 		}
 	}

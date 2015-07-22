@@ -30,6 +30,7 @@ class SignupForm extends Model {
 		return [
 			[['password', 'password_repeat', 'email', 'givenname', 'surename', 'societies_id'], 'required'],
 			['email', 'email'],
+			['email', 'unique', 'targetClass' => '\common\models\User', 'message' => Yii::t("app", 'This email address has already been taken.')],
 			['password_repeat', 'compare', 'compareAttribute' => 'password'],
 			['gender', 'default', 'value' => User::GENDER_NOTREVEALING],
 			['gender', 'in', 'range' => [User::GENDER_MALE, User::GENDER_FEMALE, User::GENDER_OTHER, User::GENDER_NOTREVEALING]],
