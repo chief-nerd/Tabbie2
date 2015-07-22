@@ -14,13 +14,10 @@ body {
 .paper {
     background-size: cover;
     float: left;
-    width: 100%;
 }
 
 .badge {
     float: left;
-    width: 50%;
-    height: 100%;
 }
 
 .name {

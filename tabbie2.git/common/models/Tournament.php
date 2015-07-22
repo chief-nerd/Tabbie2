@@ -552,7 +552,7 @@
 		{
 			if ($this->badge !== null) {
 				if (substr($this->badge, 0, 4) != "http")
-					return Url::to('@web/uploads/' . $this->badge, true);
+					return Url::to($this->badge, true);
 				else
 					return $this->badge;
 			} else {

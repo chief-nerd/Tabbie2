@@ -227,10 +227,32 @@ class CheckinController extends BaseTournamentController
 			else
 				$badgeURL = "";
 
+			$setting["A6"] = [
+				"format" => 'A6',
+				"margin" => Yii::$app->request->post("margin", 0),
+				"style"  => '@frontend/assets/css/badge.css',
+				"css"    => ".paper { width: 100%; height: 100%;} .badge { width: 50%; height: 100%; }",
+			];
+
+			$setting["A4"] = [
+				"format" => 'A4',
+				"margin" => Yii::$app->request->post("margin", 0),
+				"style"  => '@frontend/assets/css/badge.css',
+				//"css" => ".paper { width: 14.8cm; height: 10.5cm;} .badge { width: 7.4cm; height: 10.5cm }",
+				"css"    => ".paper { width: 50%; height: 50%;} .badge { width: 50%; height: 50%; }",
+			];
+
+			$paper = Yii::$app->request->post("paper", false);
+			if ($paper)
+				$set = $setting[$paper];
+			else
+				$set = $setting["A6"];
+
 			$pdf = new Pdf([
 				'mode'         => Pdf::MODE_BLANK, // leaner size using standard fonts
-				'format'       => 'A6',
+				'format'       => $set["format"],
 				'orientation'  => Pdf::ORIENT_LANDSCAPE,
+				'cssInline'    => $set["css"],
 				'cssFile'      => '@frontend/assets/css/badge.css',
 				'content'      => $this->renderPartial("badges", [
 					"teams"      => $a_teams,
@@ -238,10 +260,10 @@ class CheckinController extends BaseTournamentController
 					"tournament" => $this->_tournament,
 					"backurl"    => $badgeURL,
 				]),
-				"marginLeft"   => 0,
-				"marginTop"    => 0,
-				"marginRight"  => 0,
-				"marginBottom" => 0,
+				"marginLeft"   => $set["margin"],
+				"marginTop"    => $set["margin"],
+				"marginRight"  => $set["margin"],
+				"marginBottom" => $set["margin"],
 				"marginHeader" => 0,
 				"marginFooter" => 0,
 				'options'      => [

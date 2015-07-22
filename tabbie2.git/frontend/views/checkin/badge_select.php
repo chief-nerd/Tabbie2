@@ -43,6 +43,24 @@
 			<?= Html::checkbox("use", true) ?>
 		</div>
 	</div>
+
+	<div class="row">
+		<div class="col-xs-2">
+			<?= Html::label("Paper Format", "paper"); ?>
+		</div>
+		<div class="col-xs-10">
+			<?= Html::dropDownList("paper", "A6", ["A4" => "A4 (2x2)", "A6" => "A6 (1)"]) ?>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-xs-2">
+			<?= Html::label("Paper Margin", "margin"); ?>
+		</div>
+		<div class="col-xs-10">
+			<?= Html::textInput("margin", "4") ?>
+		</div>
+	</div>
 	<br>
 
 	<div class="form-group">
