@@ -61,6 +61,15 @@
 			<?= Html::textInput("margin", "4") ?>
 		</div>
 	</div>
+
+	<div class="row">
+		<div class="col-xs-2">
+			<?= Html::label("Paper Border CSS", "border"); ?>
+		</div>
+		<div class="col-xs-10">
+			<?= Html::textInput("border", "1px solid white") ?>
+		</div>
+	</div>
 	<br>
 
 	<div class="form-group">
