@@ -15,12 +15,6 @@ $this->params['breadcrumbs'][] = $this->title;
 	<h1><?= Html::encode($this->title) ?></h1>
 	<?php echo $this->render('_search', ['model' => $searchModel]); ?>
 
-	<p>
-		<?= Html::a(Yii::t('app', 'Create {modelClass}', [
-			'modelClass' => 'User',
-		]), ['create'], ['class' => 'btn btn-success']) ?>
-	</p>
-
 	<?
 	$gridColumns = [
 		[
@@ -28,9 +22,13 @@ $this->params['breadcrumbs'][] = $this->title;
 			'attribute' => 'id',
 		],
 		[
-			'class' => 'kartik\grid\DataColumn',
-			'attribute' => 'url_slug',
-			'vAlign' => 'middle',
+			'class'     => '\kartik\grid\DataColumn',
+			'attribute' => 'picture',
+			'format'    => "raw",
+			'value'     => function ($model, $key, $index, $widget) {
+				/** @var $model \common\models\User */
+				return $model->getPictureImage(30, 30);
+			},
 		],
 		[
 			'class' => '\kartik\grid\DataColumn',
@@ -49,8 +47,11 @@ $this->params['breadcrumbs'][] = $this->title;
 			},
 		],
 		[
+			'class'     => '\kartik\grid\DataColumn',
+			'attribute' => 'last_change',
+		],
+		[
 			'class' => 'kartik\grid\ActionColumn',
-			'width' => "100px",
 			'template' => '{forcepass}&nbsp;&nbsp;{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}',
 			'dropdown' => false,
 			'vAlign' => 'middle',
@@ -69,8 +70,25 @@ $this->params['breadcrumbs'][] = $this->title;
 			'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", "View User"), 'data-toggle' => 'tooltip'],
 			'updateOptions' => ['title' => Yii::t("app", "Update User"), 'data-toggle' => 'tooltip'],
 			'deleteOptions' => ['title' => Yii::t("app", "Delete User"), 'data-toggle' => 'tooltip'],
-			'width' => '100px'
+			'width' => '120px'
 		],
+	];
+
+	$toolbar = [
+		['content' =>
+			 Html::a(\kartik\helpers\Html::icon("plus"), ['create'], [
+				 'title'     => Yii::t('app', 'Add new element'),
+				 'data-pjax' => 0,
+				 'class'     => 'btn btn-default'
+			 ]) .
+			 Html::a(\kartik\helpers\Html::icon("repeat"), ['index'], [
+				 'data-pjax' => 1,
+				 'class'     => 'btn btn-default',
+				 'title'     => Yii::t('app', 'Reload content'),
+			 ])
+		],
+		'{export}',
+		'{toggleData}',
 	];
 
 	echo GridView::widget([
@@ -83,6 +101,11 @@ $this->params['breadcrumbs'][] = $this->title;
 		'hover' => true,
 		'floatHeader' => false,
 		'floatHeaderOptions' => ['scrollingTop' => '100'],
+		'panel'   => [
+			'type'    => GridView::TYPE_DEFAULT,
+			'heading' => Html::encode($this->title),
+		],
+		'toolbar' => $toolbar,
 	])
 	?>
 

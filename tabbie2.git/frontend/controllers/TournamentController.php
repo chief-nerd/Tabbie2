@@ -13,6 +13,7 @@ use kartik\helpers\Html;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\HtmlPurifier;
 use yii\web\NotFoundHttpException;
 use yii\web\UploadedFile;
 
@@ -33,7 +34,7 @@ class TournamentController extends BaseTournamentController
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'archive', 'view', 'testimport'],
+						'actions' => ['index', 'archive', 'view', 'testimport', 'list'],
                         'roles' => [],
                     ],
                     [
@@ -326,5 +327,34 @@ class TournamentController extends BaseTournamentController
 		$export = new TabbieExport();
 		echo implode("<br>\n", $export->generateSQL($this->_tournament));
 		exit();
+	}
+
+	/**
+	 * Returns 20 societies in an JSON List
+	 *
+	 * @param type $search
+	 * @param type $sid
+	 */
+	public function actionList(array $search = null, $tid = null)
+	{
+		$search["term"] = HtmlPurifier::process($search["term"]);
+		$tid = intval($tid);
+
+		$out = ['more' => false];
+		if (!is_null($search["term"]) && $search["term"] != "" && $search["term"] != "null") {
+			$query = new \yii\db\Query;
+			$query->select(["id", "CONCAT(name,' ',SUBSTRING(start_date, 1,4)) as text"])
+				->from('tournament')
+				->andWhere(["LIKE", "name", $search["term"]])
+				->limit(20);
+			$command = $query->createCommand();
+			$data = $command->queryAll();
+			$out['results'] = array_values($data);
+		} elseif ($tid > 0) {
+			$out['results'] = ['id' => $tid, 'text' => Tournament::findOne($tid)->fullname];
+		} else {
+			$out['results'] = ['id' => 0, 'text' => ""];
+		}
+		echo \yii\helpers\Json::encode($out);
 	}
 }

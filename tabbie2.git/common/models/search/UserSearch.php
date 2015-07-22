@@ -13,7 +13,8 @@ use yii\helpers\ArrayHelper;
 /**
  * UserSearch represents the model behind the search form about `common\models\User`.
  */
-class UserSearch extends User {
+class UserSearch extends User
+{
 
 	/**
 	 * Full Name for WHERE clausel
@@ -25,7 +26,8 @@ class UserSearch extends User {
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['language_status', 'role', 'id'], 'integer'],
 			[['name', 'email'], 'string'],
@@ -35,7 +37,8 @@ class UserSearch extends User {
 	/**
 	 * @inheritdoc
 	 */
-	public function scenarios() {
+	public function scenarios()
+	{
 		// bypass scenarios() implementation in the parent class
 		return Model::scenarios();
 	}
@@ -47,7 +50,8 @@ class UserSearch extends User {
 	 *
 	 * @return ActiveDataProvider
 	 */
-	public function search($params) {
+	public function search($params)
+	{
 		$query = User::find();
 
 		$dataProvider = new ActiveDataProvider([
@@ -64,7 +68,7 @@ class UserSearch extends User {
 				'email',
 				'role',
 				'name' => [
-					'asc' => ["CONCAT(givenname, ' ', surename)" => SORT_ASC],
+					'asc'  => ["CONCAT(givenname, ' ', surename)" => SORT_ASC],
 					'desc' => ["CONCAT(givenname, ' ', surename)" => SORT_DESC],
 					'label' => 'Name'
 				]
@@ -76,15 +80,15 @@ class UserSearch extends User {
 		}
 
 		$query->andFilterWhere([
-			'id' => $this->id,
-			'role' => $this->role,
+			'id'     => $this->id,
+			'role'   => $this->role,
 			'status' => $this->status,
 			'last_change' => $this->last_change,
-			'time' => $this->time,
+			'time'   => $this->time,
 		]);
 
 		$query->andFilterWhere(['like', 'email', $this->email])
-		      ->andFilterWhere(['like', "CONCAT(givenname, ' ', surename)", $this->name]);
+			->andFilterWhere(['like', "CONCAT(givenname, ' ', surename)", $this->name]);
 
 		return $dataProvider;
 	}
@@ -96,14 +100,33 @@ class UserSearch extends User {
 	 *
 	 * @return ActiveDataProvider
 	 */
-	public function searchTournament($params, $tournamentid) {
-		$query = User::findByTournament($tournamentid);
+	public function searchTournament($params, $tournamentid)
+	{
+		if ($tournamentid == false)
+			$query = User::find();
+		else
+			$query = User::findByTournament($tournamentid);
 
 		$dataProvider = new ActiveDataProvider([
 			'query' => $query,
 			'pagination' => [
 				'pageSize' => Yii::$app->params["users_per_page"],
 			],
+		]);
+
+		$dataProvider->setSort([
+			'attributes' => [
+				'id',
+				'url_slug',
+				'email',
+				'role',
+				'last_change',
+				'name' => [
+					'asc'   => ["CONCAT(givenname, ' ', surename)" => SORT_ASC],
+					'desc'  => ["CONCAT(givenname, ' ', surename)" => SORT_DESC],
+					'label' => 'Name'
+				]
+			]
 		]);
 
 		if (!($this->load($params) && $this->validate())) {
@@ -116,23 +139,39 @@ class UserSearch extends User {
 			$this->setFilter($union["query"]);
 		}
 
+		$query->andFilterWhere([
+			'id'          => $this->id,
+			'role'        => $this->role,
+			'status'      => $this->status,
+			'last_change' => $this->last_change,
+			'time'        => $this->time,
+		]);
+
+		$query->andFilterWhere(['like', 'email', $this->email])
+			->andFilterWhere(['like', "CONCAT(givenname, ' ', surename)", $this->name]);
+
 		return $dataProvider;
 	}
 
-	private function setFilter($query) {
+	private function setFilter($query)
+	{
 		$query->andFilterWhere([
 			'user.language_status' => $this->language_status,
 		]);
 		$query->andFilterWhere(['like', "CONCAT(givenname, ' ', surename)", $this->name]);
 	}
 
-	public static function getArray() {
+	public static function getArray()
+	{
 		$user = User::find()->all();
+
 		return ArrayHelper::map($user, "name", "name");
 	}
 
-	public function getSearchTournamentArray($tournamentid) {
+	public function getSearchTournamentArray($tournamentid)
+	{
 		$user = User::findByTournament($tournamentid)->all();
+
 		return ArrayHelper::map($user, "name", "name");
 	}
 
@@ -143,7 +182,8 @@ class UserSearch extends User {
 	 *
 	 * @return ActiveDataProvider
 	 */
-	public function searchBySociety($params, $society_id) {
+	public function searchBySociety($params, $society_id)
+	{
 		$query = User::find()->joinWith("inSocieties")->where(["society_id" => $society_id]);
 
 		$dataProvider = new ActiveDataProvider([

@@ -83,7 +83,7 @@ class UserController extends BaseUserController
 	public function actionIndex()
 	{
 		$searchModel = new UserSearch();
-		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+		$dataProvider = $searchModel->searchTournament(Yii::$app->request->queryParams, Yii::$app->request->get("tournament", false));
 
 		return $this->render('index', [
 			'searchModel' => $searchModel,
