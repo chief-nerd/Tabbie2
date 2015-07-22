@@ -353,7 +353,7 @@ class TournamentController extends BaseTournamentController
 		} elseif ($tid > 0) {
 			$out['results'] = ['id' => $tid, 'text' => Tournament::findOne($tid)->fullname];
 		} else {
-			$out['results'] = ['id' => 0, 'text' => ""];
+			$out['results'] = ['id' => 0, 'text' => "No results found"];
 		}
 		echo \yii\helpers\Json::encode($out);
 	}

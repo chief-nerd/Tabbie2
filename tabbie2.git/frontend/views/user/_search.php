@@ -14,6 +14,7 @@ use yii\widgets\ActiveForm;
 	$form = ActiveForm::begin([
 		'action' => ['index'],
 		'method' => 'get',
+		'id' => 'user-index-form'
 	]);
 	?>
 
@@ -42,6 +43,7 @@ SCRIPT;
 			?>
 			<?= \kartik\widgets\Select2::widget([
 				'name'          => 'tournament',
+				'options'       => ['placeholder' => Yii::t("app", 'Search for a tournament ...')],
 				'pluginOptions' => [
 					'allowClear'         => true,
 					'minimumInputLength' => 2,
@@ -51,8 +53,11 @@ SCRIPT;
 						'data'     => new \yii\web\JsExpression('function(term,page) { return {search:term}; }'),
 						'results'  => new \yii\web\JsExpression('function(data,page) { return {results:data.results}; }'),
 					],
-					'initSelection'      => new \yii\web\JsExpression($initScript)
+					'initSelection' => new \yii\web\JsExpression($initScript),
 				],
+				"pluginEvents"  => [
+					"change" => "function() { document.getElementById('user-index-form').submit(); }",
+				]
 			]);
 			?>
 		</div>
