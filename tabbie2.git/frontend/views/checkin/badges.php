@@ -11,7 +11,6 @@
 	<html>
 <body>
 <?php
-	$height = 70;
 foreach ($teams as $t): ?>
 	<? foreach (["A", "B"] as $s):
 		if (isset($t[$s])):

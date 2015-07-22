@@ -70,6 +70,15 @@
 			<?= Html::textInput("border", "1px solid white") ?>
 		</div>
 	</div>
+
+	<div class="row">
+		<div class="col-xs-2">
+			<?= Html::label("Code height", "height"); ?>
+		</div>
+		<div class="col-xs-10">
+			<?= Html::textInput("height", 70) ?>
+		</div>
+	</div>
 	<br>
 
 	<div class="form-group">

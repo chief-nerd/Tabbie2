@@ -231,7 +231,9 @@ class CheckinController extends BaseTournamentController
 				"format" => 'A6',
 				"margin" => Yii::$app->request->post("margin", 0),
 				"style"  => '@frontend/assets/css/badge.css',
-				"css" => ".paper { width: 100%; height: 100%; bolder: " . Yii::$app->request->post("border", "none") . ";} .badge { width: 50%; height: 100%; }",
+				"css" => ".paper { width: 100%; height: 100%; bolder: " . Yii::$app->request->post("border", "none") . ";}
+						  .badge { width: 50%; height: 100%; }
+						  .code { padding-top: " . (76 - Yii::$app->request->post("margin", 0)) . "mm; }",
 			];
 
 			$setting["A4"] = [
@@ -239,7 +241,9 @@ class CheckinController extends BaseTournamentController
 				"margin" => Yii::$app->request->post("margin", 0),
 				"style"  => '@frontend/assets/css/badge.css',
 				//"css" => ".paper { width: 14.8cm; height: 10.5cm;} .badge { width: 7.4cm; height: 10.5cm }",
-				"css" => ".paper { width: 50%; height: 50%; bolder: " . Yii::$app->request->post("border", "none") . ";} .badge { width: 50%; height: 50%; }",
+				"css" => ".paper { width: 50%; height: 50%; bolder: " . Yii::$app->request->post("border", "none") . ";}
+						  .badge { width: 50%; height: 50%; }
+						  .code { padding-top: 7.6cm; }",
 			];
 
 			$paper = Yii::$app->request->post("paper", false);
@@ -259,6 +263,7 @@ class CheckinController extends BaseTournamentController
 					"adjus"      => $a_adjus,
 					"tournament" => $this->_tournament,
 					"backurl"    => $badgeURL,
+					"height" => Yii::$app->request->post("height", 70),
 				]),
 				"marginLeft"   => $set["margin"],
 				"marginTop"    => $set["margin"],
