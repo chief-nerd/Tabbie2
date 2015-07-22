@@ -243,7 +243,7 @@ class CheckinController extends BaseTournamentController
 				//"css" => ".paper { width: 14.8cm; height: 10.5cm;} .badge { width: 7.4cm; height: 10.5cm }",
 				"css" => ".paper { width: 50%; height: 50%; bolder: " . Yii::$app->request->post("border", "none") . ";}
 						  .badge { width: 50%; height: 50%; }
-						  .code { padding-top: 7.6cm; }",
+						  .code { padding-top: " . (76 - Yii::$app->request->post("margin", 0)) . "mm; }",
 			];
 
 			$paper = Yii::$app->request->post("paper", false);
