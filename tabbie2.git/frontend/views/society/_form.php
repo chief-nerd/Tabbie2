@@ -14,7 +14,10 @@ use kartik\widgets\DatePicker;
 
 <div class="society-form">
 
-	<?php $form = ActiveForm::begin(); ?>
+	<?php $form = ActiveForm::begin([
+		"enableClientValidation" => false,
+		"id"                     => "society-create-form"
+	]); ?>
 
 	<?
 	$urlSocietyList = Url::to(['society/list', "user_id" => $model->user_id]);
@@ -31,6 +34,16 @@ function (element, callback) {
 }
 SCRIPT;
 
+	$newDataScript = <<< SCRIPT
+function (query) {
+    return {
+      id: query.term,
+      text: query.term,
+      tag: true
+    }
+  }
+SCRIPT;
+
     echo $form->field($model, 'society_id')->widget(Select2::classname(), [
 		'options' => [
 			'placeholder' => Yii::t("app", 'Search for a society ...'),
@@ -45,7 +58,10 @@ SCRIPT;
 				'data' => new JsExpression('function(term,page) { return {search:term}; }'),
 				'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
 			],
-			'initSelection' => new JsExpression($initSocietyScript)
+			//'initSelection' => new JsExpression($initSocietyScript),
+			'tags'            => true,
+			'createTag'       => new JsExpression($newDataScript),
+			'tokenSeparators' => ['#'],
 		],
 	]);
 	?>

@@ -28,7 +28,7 @@ class SocietyController extends BaseUserController
 				'rules' => [
 					[
 						'allow' => true,
-						'actions' => ['list', 'list-country'],
+						'actions' => ['list', 'list-country', 'add-new-society'],
 						'roles' => ['@', '?'], //Everyone
 					],
 					[
@@ -61,23 +61,60 @@ class SocietyController extends BaseUserController
 		$model = new InSociety();
 		$model->user_id = $this->_user->id;
 
+		$socid = Yii::$app->request->post("InSociety")["society_id"];
+		if (!is_numeric($socid) && $socid != "") {
+			$model->load(Yii::$app->request->post());
+			Yii::$app->session["InSociety"] = serialize($model);
+
+			return $this->redirect(["society/add-new-society", "user_id" => $this->_user->id]);
+		}
+
 		if ($model->load(Yii::$app->request->post())) {
+			$this->finishCreate($model, Yii::$app->request->post());
+		}
 
-			$InSociety = Yii::$app->request->post("InSociety", false);
-			if ($InSociety)
-				$model->society_id = $InSociety["society_id"];
+		return $this->render('create', [
+			'model' => $model,
+		]);
+	}
 
-			if ($model->save() && $InSociety !== false) {
-				Yii::$app->session->addFlash("success", Yii::t("app", "Society connection created"));
+	/**
+	 * @param SignupForm $model
+	 *
+	 * @return static
+	 */
+	private function finishCreate($model)
+	{
+		if ($model) {
+			if ($model->save()) {
+				Yii::$app->session->addFlash("success", Yii::t("app", "Society connection successfully created"));
 
 				return $this->redirect(['user/view', 'id' => $this->_user->id]);
 			} else {
 				Yii::$app->session->addFlash("error", Yii::t("app", "Society could not be saved"));
 			}
 		}
+	}
 
-		return $this->render('create', [
-			'model' => $model,
+	public function actionAddNewSociety()
+	{
+		$model = new Society();
+
+		if ($model->load(Yii::$app->request->post())) {
+			$form = unserialize(Yii::$app->session["InSociety"]);
+			if ($form instanceof InSociety) {
+				if ($model->save()) {
+					$form->society_id = $model->id;
+					$this->finishCreate($form);
+				}
+			} else
+				Yii::$app->session->addFlash("error", Yii::t("app", "Error in wakeup"));
+		}
+
+		$model->fullname = ($model->fullname) ? $model->fullname : unserialize(Yii::$app->session["InSociety"])->society_id;
+
+		return $this->render("newSociety", [
+			"model" => $model,
 		]);
 	}
 
@@ -137,6 +174,8 @@ class SocietyController extends BaseUserController
 		$sid = intval($sid);
 
 		$out = ['more' => false];
+		$soc = Society::findOne($sid);
+
 		if (!is_null($search["term"]) && $search["term"] != "") {
 			$query = new \yii\db\Query;
 			$query->select(["id", "CONCAT(fullname,' (',abr,')') as text"])
@@ -147,8 +186,8 @@ class SocietyController extends BaseUserController
 			$command = $query->createCommand();
 			$data = $command->queryAll();
 			$out['results'] = array_values($data);
-		} elseif ($sid > 0) {
-			$out['results'] = ['id' => $sid, 'text' => Society::findOne($sid)->fullname];
+		} elseif ($soc instanceof Society) {
+			$out['results'] = ['id' => $sid, 'text' => $soc->fullname];
 		} else {
 			$out['results'] = ['id' => 0, 'text' => Yii::t("app", 'No matching records found')];
 		}
