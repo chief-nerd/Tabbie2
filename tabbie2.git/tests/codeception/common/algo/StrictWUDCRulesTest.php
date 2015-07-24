@@ -2,6 +2,7 @@
 
 namespace tests\codeception\common\unit\components;
 
+use common\models\Tournament;
 use Yii;
 use tests\codeception\common\unit\DbTestCase;
 use Codeception\Specify;
@@ -11,6 +12,7 @@ use Codeception\Util\Debug;
 use common\models\Team;
 use common\models\Venue;
 use common\models\Adjudicator;
+use yii\base\Exception;
 
 /**
  * Test StrictWUDCRules Class
@@ -20,11 +22,12 @@ class StrictWUDCRulesTest extends DbTestCase {
 	/**
 	 * @var common\components\TabAlgorithmus\StrictWUDCRules
 	 */
-    public $algo;
+	public $algo = false;
 
     public function setUp() {
         parent::setUp();
         $tournament = \common\models\Tournament::findByPk(1);
+		if (!$tournament instanceof Tournament) throw new Exception("Setup fail");
         $this->algo = $tournament->getTabAlgorithmInstance();
     }
 
@@ -34,6 +37,9 @@ class StrictWUDCRulesTest extends DbTestCase {
 
     public function testSortAdjudicators() {
         $adj = \common\models\Adjudicator::findAll(["tournament_id" => 1]);
+		if ($this->algo === false) {
+			throw new Exception("Setup fail");
+		}
         $new_adj = $this->algo->sort_adjudicators($adj);
 
         expect("Preserve Amount", count($new_adj))->equals(count($adj));

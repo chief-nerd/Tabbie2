@@ -6,10 +6,10 @@
 return [
     'components' => [
         'db' => [
-            'dsn' => 'mysql:host=localhost;dbname=tabbie_tests',
+            'dsn' => 'mysql:host=127.0.0.1;dbname=tabbie_tests',
         ],
         'mailer' => [
-            'useFileTransport' => true,
+            'useFileTransport' => false,
         ],
         'urlManager' => [
             'showScriptName' => true,
