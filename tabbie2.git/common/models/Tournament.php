@@ -135,7 +135,7 @@
 		public function isTabMaster($userID)
 		{
 			if ($this->tabmaster_user_id == $userID) {
-				\Yii::trace("User is Tab Master for Tournament #" . $this->id, __METHOD__);
+				//\Yii::trace("User is Tab Master for Tournament #" . $this->id, __METHOD__);
 
 				return true;
 			} else if (Yii::$app->user->isAdmin()) //Admin secure override

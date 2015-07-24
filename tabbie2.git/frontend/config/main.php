@@ -36,17 +36,19 @@ $config = [
 			],
 		],
 		'log' => [
-			'traceLevel' => YII_DEBUG ? 3 : 0,
+			'traceLevel' => 0, //YII_DEBUG ? 3 : 0,
 			'targets' => [
 				[
 					'class' => 'yii\log\FileTarget',
 					'levels' => ['error', 'warning'],
+					'logVars' => ['_GET', '_POST', '_FILES'],
 				],
 				[
 					'class' => 'yii\log\FileTarget',
-					'categories' => ['frontend\*', 'common\*'],
+					'categories' => ['frontend\*', 'common\*', 'algorithms\*'],
 					'levels' => ['error', 'warning', 'trace'],
 					'logFile' => '@frontend/runtime/logs/debug.log',
+					'logVars'    => ['_GET', '_POST', '_FILES'],
 				],
 			],
 		],

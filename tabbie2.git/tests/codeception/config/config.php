@@ -14,5 +14,13 @@ return [
         'urlManager' => [
             'showScriptName' => true,
         ],
+		'log' => [
+			'targets' => [
+				[
+					'class'  => 'yii\log\FileTarget',
+					'levels' => ['error', 'warning', 'trace'],
+				],
+			],
+		],
     ],
 ];

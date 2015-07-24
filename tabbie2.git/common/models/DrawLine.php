@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\base\Exception;
 use yii\base\Model;
 
 /**
@@ -10,7 +11,8 @@ use yii\base\Model;
  *
  * @property integer level
  */
-class DrawLine extends Model {
+class DrawLine extends Model
+{
 
 	const OG = 1;
 	const OO = 2;
@@ -49,7 +51,7 @@ class DrawLine extends Model {
 	/**
 	 * Holds the Panel ID
 	 *
-*@var integer
+	 * @var integer
 	 */
 	public $panelID;
 
@@ -69,15 +71,17 @@ class DrawLine extends Model {
 	/**
 	 * Get the Average Strength of the Panel
 	 *
-*@return float
+	 * @return float
 	 */
-	public function getStrength() {
+	public function getStrength()
+	{
 		$total = 0;
 		$n = 0;
 		foreach ($this->adj as $adj) {
 			$total += $adj["strength"];
 			$n++;
 		}
+
 		return intval($total / $n);
 	}
 
@@ -90,7 +94,8 @@ class DrawLine extends Model {
 		];
 	}
 
-	public function setTeams($og, $oo, $cg, $co) {
+	public function setTeams($og, $oo, $cg, $co)
+	{
 		$this->setOG($og);
 		$this->setOO($oo);
 		$this->setCG($cg);
@@ -104,8 +109,7 @@ class DrawLine extends Model {
 			$this->setOO($teams[1]);
 			$this->setCG($teams[2]);
 			$this->setCO($teams[3]);
-		}
-		else
+		} else
 			throw new Exception("Paramter has not 4 teams");
 	}
 
@@ -114,7 +118,8 @@ class DrawLine extends Model {
 	 *
 	 * @return Team[]
 	 */
-	public function getTeams() {
+	public function getTeams()
+	{
 		return [
 			Team::OG => $this->teams[0],
 			Team::OO => $this->teams[1],
@@ -126,7 +131,8 @@ class DrawLine extends Model {
 	/**
 	 * Return the Team on Position X
 	 */
-	public function getTeamOn($pos) {
+	public function getTeamOn($pos)
+	{
 		return $this->teams[$pos];
 	}
 
@@ -136,55 +142,68 @@ class DrawLine extends Model {
 	 * @param integer $pos
 	 * @param Team    $team
 	 */
-	public function setTeamOn($pos, $team) {
+	public function setTeamOn($pos, $team)
+	{
 		$this->teams[$pos] = $team;
 	}
 
-	public function setOG($team) {
+	public function setOG($team)
+	{
 		return $this->setTeamOn(Team::OG, $team);
 	}
 
-	public function getOG() {
+	public function getOG()
+	{
 		return $this->getTeamOn(Team::OG);
 	}
 
-	public function setOO($team) {
+	public function setOO($team)
+	{
 		return $this->setTeamOn(Team::OO, $team);
 	}
 
-	public function getOO() {
+	public function getOO()
+	{
 		return $this->getTeamOn(Team::OO);
 	}
 
-	public function setCG($team) {
+	public function setCG($team)
+	{
 		return $this->setTeamOn(Team::CG, $team);
 	}
 
-	public function getCG() {
+	public function getCG()
+	{
 		return $this->getTeamOn(Team::CG);
 	}
 
-	public function setCO($team) {
+	public function setCO($team)
+	{
 		return $this->setTeamOn(Team::CO, $team);
 	}
 
-	public function getCO() {
+	public function getCO()
+	{
 		return $this->getTeamOn(Team::CO);
 	}
 
-	public function setChair($adj) {
+	public function setChair($adj)
+	{
 		$this->adj[0] = $adj;
 	}
 
-	public function getChair() {
+	public function getChair()
+	{
 		return $this->adj[0];
 	}
 
-	public function addAdjudicator($adj) {
+	public function addAdjudicator($adj)
+	{
 		$this->adj[] = $adj;
 	}
 
-	public function addChair($adj) {
+	public function addChair($adj)
+	{
 		array_unshift($this->adj, $adj);
 	}
 
@@ -193,24 +212,26 @@ class DrawLine extends Model {
 	 *
 	 * @return Adjudicator[]
 	 */
-	public function getAdjudicators() {
+	public function getAdjudicators()
+	{
 		return $this->adj;
 	}
 
-	/**
-	 * @param $i
-	 *
-	 * @return \common\models\Adjudicator
-	 */
-	public function getAdjudicator($i) {
-		return $this->adj[$i];
+	public function getAdjudicator($i)
+	{
+		if (isset($this->adj[$i]))
+			return $this->adj[$i];
+		else
+			throw new Exception("Adjudicator not set for this line");
 	}
 
-	public function setAdjudicator($i, $adjudicator) {
+	public function setAdjudicator($i, $adjudicator)
+	{
 		$this->adj[$i] = $adjudicator;
 	}
 
-	public function overrideAdjudicators($adjudicators) {
+	public function overrideAdjudicators($adjudicators)
+	{
 		$this->adj = $adjudicators;
 	}
 
@@ -219,7 +240,8 @@ class DrawLine extends Model {
 	 *
 	 * @return integer Points
 	 */
-	public function getLevel() {
+	public function getLevel()
+	{
 		return max([
 			$this->getOG()["points"],
 			$this->getOO()["points"],
@@ -236,9 +258,11 @@ class DrawLine extends Model {
 	 *
 	 * @return integer
 	 */
-	public static function compare_points($a, $b) {
+	public static function compare_points($a, $b)
+	{
 		$as = $a->getLevel();
 		$bs = $b->getLevel();
+
 		return ($as < $bs) ? 1 : (($as > $bs) ? -1 : 0);
 	}
 
@@ -247,7 +271,8 @@ class DrawLine extends Model {
 	 *
 	 * @return int
 	 */
-	public static function getDrawEnergy($draw) {
+	public static function getDrawEnergy($draw)
+	{
 		$max_lines = count($draw);
 		$energy = 0;
 		for ($line = 0; $line < $max_lines; $line++) {

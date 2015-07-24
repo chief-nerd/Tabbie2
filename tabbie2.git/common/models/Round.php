@@ -297,7 +297,7 @@ class Round extends \yii\db\ActiveRecord
 				$algo->SD_of_adjudicators = 0;
 			} else {
 				$algo->average_adjudicator_strength = array_sum($adjudicators_strengthArray) / count($adjudicators_strengthArray);
-				$algo->SD_of_adjudicators = $this->stats_standard_deviation($adjudicators_strengthArray);
+				$algo->SD_of_adjudicators = self::stats_standard_deviation($adjudicators_strengthArray);
 			}
 
 			$draw = $algo->makeDraw($venues, $teams, $adjudicators, $panel);
@@ -371,7 +371,7 @@ class Round extends \yii\db\ActiveRecord
 		}
 	}
 
-	private function stats_standard_deviation(array $a)
+	public static function stats_standard_deviation(array $a)
 	{
 		$n = count($a);
 		if ($n === 0) {
@@ -442,7 +442,7 @@ class Round extends \yii\db\ActiveRecord
 		);
 
 		$algo->average_adjudicator_strength = array_sum($adjudicators_strengthArray) / count($adjudicators_strengthArray);
-		$algo->SD_of_adjudicators = $this->stats_standard_deviation($adjudicators_strengthArray);
+		$algo->SD_of_adjudicators = self::stats_standard_deviation($adjudicators_strengthArray);
 
 		Yii::beginProfile("Improve Draw by " . $runs);
 
@@ -545,7 +545,7 @@ class Round extends \yii\db\ActiveRecord
 		);
 
 		$algo->average_adjudicator_strength = array_sum($adjudicators_strengthArray) / count($adjudicators_strengthArray);
-		$algo->SD_of_adjudicators = $this->stats_standard_deviation($adjudicators_strengthArray);
+		$algo->SD_of_adjudicators = self::stats_standard_deviation($adjudicators_strengthArray);
 
 		$returnLine = [];
 		foreach ($miniDraw as $key => $miniline) {

@@ -11,6 +11,6 @@ return [
         'end_date' => '2015-07-17 08:35:41',
         'logo' => null,
         'time' => 1424951630,
-        'tabAlgorithmClass' => 'StrictWUDCRules',
+        'tabAlgorithmClass' => 'StrictWUDCRulesSOAS',
     ],
 ];
