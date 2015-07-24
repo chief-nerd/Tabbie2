@@ -2,6 +2,8 @@
 
 namespace tests\codeception\common\unit\components;
 
+use algorithms\algorithms\StrictWUDCRules;
+use common\models\EnergyConfig;
 use common\models\Tournament;
 use Yii;
 use tests\codeception\common\unit\DbTestCase;
@@ -20,7 +22,7 @@ use yii\base\Exception;
 class StrictWUDCRulesTest extends DbTestCase {
 
 	/**
-	 * @var common\components\TabAlgorithmus\StrictWUDCRules
+	 * @var StrictWUDCRules
 	 */
 	public $algo = false;
 
@@ -29,6 +31,9 @@ class StrictWUDCRulesTest extends DbTestCase {
         $tournament = \common\models\Tournament::findByPk(1);
 		if (!$tournament instanceof Tournament) throw new Exception("Setup fail");
         $this->algo = $tournament->getTabAlgorithmInstance();
+		$this->algo->tournament_id = $tournament->id;
+		$this->algo->energyConfig = EnergyConfig::loadArray($tournament->id);
+		$this->algo->round_number = 1;
     }
 
     protected function tearDown() {
@@ -146,7 +151,8 @@ class StrictWUDCRulesTest extends DbTestCase {
     public function testEnergyCalculation() {
         $line = new \common\models\DrawLine();
 	    $line = $this->algo->calcEnergyLevel($line);
-        expect("Energy Level is set", $line->energyLevel)->notEquals(0);
+
+		expect("Energy Level is set", $line->energyLevel)->notEquals(0);
     }
 
     /**
