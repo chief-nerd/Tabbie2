@@ -252,8 +252,8 @@ class Round extends \yii\db\ActiveRecord
 					$strikedTeam = $adjudicatorsObjects[$i]->getStrikedTeams()->asArray()->all();
 					$adjudicators[$i]["strikedTeams"] = $strikedTeam;
 
-					$adjudicators[$i]["pastAdjudicatorIDs"] = $adjudicatorsObjects[$i]->getPastAdjudicatorIDs();
-					$adjudicators[$i]["pastTeamIDs"] = $adjudicatorsObjects[$i]->getPastTeamIDs();
+					$adjudicators[$i]["pastAdjudicatorIDs"] = $adjudicatorsObjects[$i]->getPastAdjudicatorIDs(true);
+					$adjudicators[$i]["pastTeamIDs"] = $adjudicatorsObjects[$i]->getPastTeamIDs(true);
 				}
 			}
 
@@ -493,8 +493,8 @@ class Round extends \yii\db\ActiveRecord
 			$strikedTeam = $adju->getStrikedTeams()->asArray()->all();
 			$adjudicator["strikedTeams"] = $strikedTeam;
 
-			$adjudicator["pastAdjudicatorIDs"] = $adju->getPastAdjudicatorIDs();
-			$adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs();
+			$adjudicator["pastAdjudicatorIDs"] = $adju->getPastAdjudicatorIDs(true);
+			$adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs(true);
 
 			if ($inPanel->function == Panel::FUNCTION_CHAIR)
 				$drawline->addChair($adjudicator);
