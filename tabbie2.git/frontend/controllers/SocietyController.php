@@ -111,7 +111,7 @@ class SocietyController extends BaseUserController
 				Yii::$app->session->addFlash("error", Yii::t("app", "Error in wakeup"));
 		}
 
-		$model->fullname = ($model->fullname) ? $model->fullname : unserialize(Yii::$app->session["InSociety"])->society_id;
+		$model->fullname = (isset($model->fullname)) ? $model->fullname : unserialize(Yii::$app->session["InSociety"])->society_id;
 
 		return $this->render("newSociety", [
 			"model" => $model,
