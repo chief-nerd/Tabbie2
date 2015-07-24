@@ -23,9 +23,10 @@
 <? if (isset($model->tempImport)): ?>
 	<table class="table">
 		<tr>
+			<th><?= Yii::t("app", "Team Name") ?></th>
 			<th><?= Yii::t("app", "Society") ?></th>
-			<th><?= Yii::t("app", "User") ?></th>
-			<th><?= Yii::t("app", "Strength") ?></th>
+			<th><?= Yii::t("app", "Speaker A") ?></th>
+			<th><?= Yii::t("app", "Speaker B") ?></th>
 		</tr>
 		<? for ($i = 1; $i <= count($model->tempImport); $i++): ?>
 			<tr>
