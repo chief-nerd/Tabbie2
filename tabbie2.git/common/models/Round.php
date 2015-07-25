@@ -323,6 +323,7 @@ class Round extends \yii\db\ActiveRecord
 	 */
 	private function saveDraw($draw)
 	{
+		Yii::trace(print_r($draw, true), __METHOD__);
 		foreach ($draw as $line) {
 			/* @var $line DrawLine */
 
