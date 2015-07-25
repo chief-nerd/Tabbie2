@@ -361,6 +361,7 @@ class Round extends \yii\db\ActiveRecord
 
 						$alloc->save();
 					} catch (Exception $ex) {
+						Yii::trace($judge["id"] . "-" . $judge["name"] . ": " . $ex->getMessage(), __METHOD__);
 						Yii::$app->session->addFlash("error", $judge["id"] . "-" . $judge["name"] . ": " . $ex->getMessage());
 					}
 				}
