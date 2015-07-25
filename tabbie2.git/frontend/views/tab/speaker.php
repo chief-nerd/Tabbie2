@@ -2,6 +2,7 @@
 
 use kartik\grid\GridView;
 use yii\helpers\Html;
+use kartik\export\ExportMenu;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\search\DrawSearch */
@@ -13,74 +14,89 @@ $this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['t
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tab-team-container">
-
-	<h1><?= Html::encode($this->title) ?></h1>
-	<?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
 	<?
 	$columns = [
 		[
-			'class' => '\kartik\grid\DataColumn',
+			'class'     => '\kartik\grid\DataColumn',
 			'attribute' => 'enl_place',
-			'label' => ($tournament->has_esl) ? Yii::t("app", 'ENL Place') : Yii::t("app", 'Place'),
-			'width' => '80px',
+			'label'     => ($tournament->has_esl) ? Yii::t("app", 'ENL Place') : Yii::t("app", 'Place'),
+			'width'     => '80px',
 		],
 		[
-			'class' => '\kartik\grid\DataColumn',
+			'class'     => '\kartik\grid\DataColumn',
 			'attribute' => 'esl_place',
-			'label' => Yii::t("app", 'ESL Place'),
-			'width' => '80px',
-			'visible' => $tournament->has_esl,
-			'value' => function ($model, $key, $index, $widget) {
+			'label'     => Yii::t("app", 'ESL Place'),
+			'width'     => '80px',
+			'visible'   => $tournament->has_esl,
+			'value'     => function ($model, $key, $index, $widget) {
 				return ($model->esl_place) ? $model->esl_place : "";
 			},
 		],
 		[
-			'class' => '\kartik\grid\DataColumn',
+			'class'     => '\kartik\grid\DataColumn',
 			'attribute' => 'object.name',
-			'label' => Yii::t("app", 'Speaker'),
-			'format' => 'raw',
-			'value' => function ($model, $key, $index, $widget) {
+			'label'     => Yii::t("app", 'Speaker'),
+			'format'    => 'raw',
+			'value'     => function ($model, $key, $index, $widget) {
 				return ($model->object) ? Html::a($model->object->name, ["user/view", "id" => $model->object->id]) : "(not set)";
 			},
 		],
 		[
-			'class' => '\kartik\grid\DataColumn',
+			'class'     => '\kartik\grid\DataColumn',
 			'attribute' => 'points',
-			'label' => Yii::t("app", 'Team Points'),
-			'width' => "20px",
+			'label'     => Yii::t("app", 'Team Points'),
+			'width'     => "20px",
 		],
 		[
-			'class' => '\kartik\grid\DataColumn',
+			'class'     => '\kartik\grid\DataColumn',
 			'attribute' => 'speaks',
-			'label' => Yii::t("app", 'Speaker Points'),
-			'width' => "20px",
+			'label'     => Yii::t("app", 'Speaker Points'),
+			'width'     => "20px",
 		],
 	];
 
 	foreach ($tournament->rounds as $r) {
 		$columns[] = [
-			'class' => '\kartik\grid\DataColumn',
+			'class'     => '\kartik\grid\DataColumn',
 			'attribute' => 'results_array.' . $r->number,
-			'label' => Yii::t("app", "#{number}", ["number" => $r->number]),
-			'width' => "80px",
+			'label'     => Yii::t("app", "#{number}", ["number" => $r->number]),
+			'width'     => "80px",
 		];
 	}
+	?>
+	<div class="row">
+		<div class="col-xs-10 col-sm-6"><h2><?= Html::encode($this->title) ?></h2></div>
+		<div class="col-xs-2 col-sm-6 text-right"><? echo ExportMenu::widget([
+				'dataProvider'    => $dataProvider,
+				'columns'         => $columns,
+				'fontAwesome'     => true,
+				'target'          => ExportMenu::TARGET_BLANK,
+				'dropdownOptions' => [
+					'label'       => 'Export',
+					'class'       => 'btn btn-default',
+					'itemsBefore' => [
+						'<li class="dropdown-header">Export All Data</li>',
+					],
+				]
+			]);
+			?></div>
+	</div>
 
+	<?
 	echo GridView::widget([
-		'dataProvider' => $dataProvider,
+		'dataProvider'    => $dataProvider,
 		//'filterModel' => $searchModel,
-		'columns' => $columns,
+		'columns'         => $columns,
 		'showPageSummary' => false,
-		'layout' => "{items}\n{pager}",
-		'bootstrap' => true,
-		'pjax' => false,
-		'hover' => true,
-		'responsive' => false,
-		'floatHeader' => true,
+		'layout'          => "{items}\n{pager}",
+		'bootstrap'       => true,
+		'pjax'            => false,
+		'hover'           => true,
+		'responsive'      => false,
+		'floatHeader'     => true,
 		'floatHeaderOptions' => ['scrollingTop' => 100],
-		'id' => 'team-tab',
-		'striped' => true,
+		'id'              => 'team-tab',
+		'striped'         => true,
 	])
 	?>
 

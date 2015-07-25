@@ -382,6 +382,10 @@ a.desc:after {
     margin-top: 30px;
 }
 
+.tab-team-container h2, .tab-speaker-container h2 {
+    margin-top: 0;
+}
+
 /** LOADER */
 #loader {
     display: none;
