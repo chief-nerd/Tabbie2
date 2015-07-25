@@ -279,7 +279,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 					if (!$found_notice && !$found_warning && !$found_error)
 						$ret .= "&nbsp;" . \kartik\helpers\Html::icon("glyphicon-ok", ["class" => "text-success"]);
 
-				} catch (\yii\base\Exception $ex) {
+				} catch (\yii\base\ErrorException $ex) {
 					return "Error overflow";
 				}
 
