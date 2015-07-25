@@ -300,8 +300,15 @@ class Round extends \yii\db\ActiveRecord
 				$algo->SD_of_adjudicators = self::stats_standard_deviation($adjudicators_strengthArray);
 			}
 
+			Yii::trace("Ready to set the draw", __METHOD__);
+
 			$draw = $algo->makeDraw($venues, $teams, $adjudicators, $panel);
+
+			Yii::trace("makeDraw returns " . count($draw) . "lines", __METHOD__);
+
 			$this->saveDraw($draw);
+
+			Yii::trace("We saved the draw, almost there", __METHOD__);
 
 			$this->lastrun_temp = $algo->temp;
 			$this->energy = $algo->best_energy;
@@ -323,6 +330,7 @@ class Round extends \yii\db\ActiveRecord
 	 */
 	private function saveDraw($draw)
 	{
+		Yii::trace("Save Draw with " . count($draw) . "lines", __METHOD__);
 		foreach ($draw as $line) {
 			/* @var $line DrawLine */
 
@@ -368,6 +376,8 @@ class Round extends \yii\db\ActiveRecord
 
 			if (!$debate->save())
 				throw new Exception(Yii::t("app", "Can't save Debate {message}", ["message" => print_r($debate->getErrors(), true)]));
+			else
+				Yii::trace("Debate #" . $debate->id . " saved", __METHOD__);
 		}
 	}
 
