@@ -75,12 +75,12 @@ $this->params['breadcrumbs'][] = $this->title;
 					 'class'     => 'btn btn-default'
 				 ])
             ],
-            //'{export}',
+            '{export}',
             '{toggleData}',
         ];
     } else {
         $toolbar = [
-            //'{export}',
+            '{export}',
             '{toggleData}',
         ];
     }

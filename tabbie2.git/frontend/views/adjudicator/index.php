@@ -141,12 +141,12 @@ $this->params['breadcrumbs'][] = $this->title;
 					'title' => Yii::t('app', 'Reset watcher flag'),
 				]),
             ],
-            //'{export}',
+            '{export}',
             '{toggleData}',
         ];
     } else {
         $toolbar = [
-            //'{export}',
+            '{export}',
             '{toggleData}',
         ];
     }

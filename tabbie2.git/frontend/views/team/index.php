@@ -113,16 +113,18 @@ $this->params['breadcrumbs'][] = $this->title;
     $modolo = $stat["active"] % 4;
     $missing = ($modolo == 0) ? 0 : 4 - $modolo;
 
-    $stats = '<table class="col-xs-12 col-md-4">
+    $stats = '<table class="col-xs-12 col-md-5">
                 <tr>
-                    <th>Missing Teams</th>
+                    <th>Active Teams</th>
                     <th>Inactive Teams</th>
                     <th>Swing Teams</th>
+                    <th>Missing Teams</th>
                 </tr>
                 <tr>
-                    <td><b class="' . (($modolo == 0) ? "text-success" : "text-danger") . '">' . Yii::$app->formatter->asDecimal($missing, 0) . '</b></td>
+                    <td>' . $stat["active"] . '</td>
                     <td>' . $stat["inactive"] . '</td>
                     <td>' . $stat["swing"] . '</td>
+                    <td><b class="' . (($modolo == 0) ? "text-success" : "text-danger") . '">' . Yii::$app->formatter->asDecimal($missing, 0) . '</b></td>
                 </tr>
             </table>';
 
@@ -145,12 +147,12 @@ $this->params['breadcrumbs'][] = $this->title;
 					 'class'     => 'btn btn-default'
 				 ])
             ],
-            //'{export}',
+            '{export}',
             '{toggleData}',
         ];
     } else {
         $toolbar = [
-            //'{export}',
+            '{export}',
             '{toggleData}',
         ];
     }
