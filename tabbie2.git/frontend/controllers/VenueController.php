@@ -92,7 +92,7 @@ class VenueController extends BaseTournamentController {
 		$model->active = true;
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
-			return $this->redirect(['view', 'id' => $model->id, 'tournament_id' => $model->tournament_id
+			return $this->redirect(['index', 'tournament_id' => $model->tournament_id
 			]);
 		}
 		else {
@@ -114,7 +114,7 @@ class VenueController extends BaseTournamentController {
 		$model = $this->findModel($id);
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
-			return $this->redirect(['view', 'id' => $model->id, 'tournament_id' => $model->tournament_id]);
+			return $this->redirect(['index', 'tournament_id' => $model->tournament_id]);
 		}
 		else {
 			return $this->render('update', [
@@ -134,7 +134,7 @@ class VenueController extends BaseTournamentController {
 	public function actionDelete($id) {
 		$this->findModel($id)->delete();
 
-		return $this->redirect(['tournament/view', 'id' => $this->_tournament->id]);
+		return $this->redirect(['index', 'tournament_id' => $this->_tournament->id]);
 	}
 
 	/**
