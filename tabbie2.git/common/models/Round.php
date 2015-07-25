@@ -9,7 +9,7 @@ use yii\base\Exception;
 use yii\helpers\ArrayHelper;
 
 /**
- * This is the model class for table "round".
+ * This is the model cla ss for table "round".
  *
  * @property integer         $id
  * @property integer         $number
