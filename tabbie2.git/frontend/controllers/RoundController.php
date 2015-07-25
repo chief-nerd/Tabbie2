@@ -214,6 +214,14 @@ class RoundController extends BaseTournamentController {
 		return $this->redirect(['index']);
 	}
 
+	/**
+	 * Publish the Draw
+	 *
+	 * @param $id
+	 *
+	 * @return \yii\web\Response
+	 * @throws \yii\web\NotFoundHttpException
+	 */
 	public function actionPublish($id) {
 		$model = $this->findModel($id);
 		$model->published = 1;
