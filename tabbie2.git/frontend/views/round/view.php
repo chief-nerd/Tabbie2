@@ -280,9 +280,9 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 						$ret .= "&nbsp;" . \kartik\helpers\Html::icon("glyphicon-ok", ["class" => "text-success"]);
 
 				} catch (\yii\base\ErrorException $ex) {
+					Yii::$app->session->addFlash("error", $ex->getMessage());
 
-					Yii::$app->session->addFlash("error", "Overflow: " . $ex->getMessage());
-					return "Error overflow";
+					return \kartik\helpers\Html::icon("ban-circle", ["class" => "text-danger"]);
 				}
 
 				return $ret;
