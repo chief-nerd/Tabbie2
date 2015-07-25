@@ -6,9 +6,11 @@ use yii\db\ActiveQuery;
 
 /**
  */
-class TournamentQuery extends ActiveQuery {
+class TournamentQuery extends ActiveQuery
+{
 
-	public function tournament($id) {
+	public function tournament($id)
+	{
 		return $this->andWhere(["tournament_id" => $id]);
 	}
 

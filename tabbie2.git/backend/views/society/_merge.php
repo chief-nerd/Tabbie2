@@ -16,7 +16,7 @@ Modal::begin([
 	'header'       => '<h4 style="margin:0; padding:0">' . Yii::t("app", "Merge Society '{society}' into ...", ["society" => $model->fullname]) . '</h4>',
 	'toggleButton' => [
 		'label' => \kartik\helpers\Html::icon("compressed"),
-		'tag' => 'a',
+		'tag'   => 'a',
 		'style' => 'cursor: pointer'
 	],
 ]);
@@ -24,7 +24,7 @@ $id = 'changeSocietyForm_' . $model->id;
 $form = ActiveForm::begin([
 	'action' => ['merge', "id" => $model->id],
 	'method' => 'get',
-	'id' => $id,
+	'id'     => $id,
 ]);
 $societyOptions = \common\models\search\SocietySearch::getSearchArray();
 

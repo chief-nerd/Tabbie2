@@ -11,10 +11,12 @@ use Yii;
  */
 use yii\console\Controller;
 
-class SampledataController extends Controller {
+class SampledataController extends Controller
+{
 
 
-	public function actionGenerate($amount_teams, $amount_adj = null, $amount_venues = null) {
+	public function actionGenerate($amount_teams, $amount_adj = null, $amount_venues = null)
+	{
 
 		if (!is_numeric($amount_teams)) {
 			echo "Parameter Teams must be an integer";

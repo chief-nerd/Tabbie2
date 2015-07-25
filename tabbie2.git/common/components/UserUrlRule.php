@@ -6,15 +6,18 @@ Use Yii;
 use yii\web\UrlRule;
 use common\models\User;
 
-class UserUrlRule extends UrlRule {
+class UserUrlRule extends UrlRule
+{
 
-	public function init() {
+	public function init()
+	{
 		if ($this->name === null) {
 			$this->name = __CLASS__;
 		}
 	}
 
-	public function createUrl($manager, $route, $params) {
+	public function createUrl($manager, $route, $params)
+	{
 		$parts = explode("/", $route);
 		//Yii::trace("Start with Route parts: " . print_r($parts, true) . " and params " . print_r($params, true), __METHOD__);
 		//Handle tournament base
@@ -30,8 +33,7 @@ class UserUrlRule extends UrlRule {
 						$parts[1] = null;
 
 					$route = "user/" . $user->url_slug . "/" . $parts[1];
-				}
-				else
+				} else
 					return "user/#";
 			}
 
@@ -41,12 +43,12 @@ class UserUrlRule extends UrlRule {
 					foreach ($value as $k => $v) {
 						$paramsString .= "/" . $key . "[" . $k . "]/" . $v;
 					}
-				}
-				else
+				} else
 					$paramsString .= "/" . $key . "/" . $value;
 			}
 
 			$ret = $route . $paramsString;
+
 			//Yii::trace("Returning Base: " . $ret, __METHOD__);
 			return $ret;
 		}
@@ -64,8 +66,7 @@ class UserUrlRule extends UrlRule {
 						$parts[] = $params['id'];
 						unset($params['id']);
 				}
-			}
-			else {
+			} else {
 				if ($parts[1] == "index") {
 					//index Case
 					//don't unset, end / needed
@@ -79,11 +80,11 @@ class UserUrlRule extends UrlRule {
 					foreach ($value as $k => $v) {
 						$paramsString .= "/" . $key . "[" . $k . "]/" . $v;
 					}
-				}
-				else
+				} else
 					$paramsString .= "/" . $key . "/" . $value;
 			}
 			$ret = "user/" . $user->url_slug . "/" . implode("/", $parts) . $paramsString;
+
 			//Yii::trace("Returning Sub: " . $ret, __METHOD__);
 			return $ret;
 		}
@@ -92,7 +93,8 @@ class UserUrlRule extends UrlRule {
 		return false;  // this rule does not apply
 	}
 
-	public function parseRequest($manager, $request) {
+	public function parseRequest($manager, $request)
+	{
 		$pathInfo = $request->getPathInfo();
 		$params = [];
 		$route = "";
@@ -104,6 +106,7 @@ class UserUrlRule extends UrlRule {
 				if (isset($parts[$i]) && isset($parts[$i + 1]))
 					$params[$parts[$i]] = $parts[$i + 1];
 			}
+
 			return ["user/index", $params];
 		}
 
@@ -131,8 +134,7 @@ class UserUrlRule extends UrlRule {
 
 					$params['id'] = $user->id;
 					$offset = 3;
-				}
-				else { //Context Classes
+				} else { //Context Classes
 
 					//case index
 					if ($parts[3] == "")
@@ -154,6 +156,7 @@ class UserUrlRule extends UrlRule {
 				}
 
 				$ret = [$route, $params];
+
 				//Yii::trace("Returning: " . print_r($ret, true), __METHOD__);
 				return $ret;
 			}

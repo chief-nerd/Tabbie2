@@ -13,19 +13,22 @@ use Yii;
  * @property Adjudicator $adjudicator
  * @property Panel       $panel
  */
-class AdjudicatorInPanel extends \yii\db\ActiveRecord {
+class AdjudicatorInPanel extends \yii\db\ActiveRecord
+{
 
 	/**
 	 * @inheritdoc
 	 */
-	public static function tableName() {
+	public static function tableName()
+	{
 		return 'adjudicator_in_panel';
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['adjudicator_id', 'panel_id'], 'required'],
 			[['adjudicator_id', 'panel_id', 'function'], 'integer']
@@ -35,29 +38,33 @@ class AdjudicatorInPanel extends \yii\db\ActiveRecord {
 	/**
 	 * @inheritdoc
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return [
 			'adjudicator_id' => Yii::t('app', 'Adjudicator ID'),
-			'panel_id' => Yii::t('app', 'Panel ID'),
-			'function' => Yii::t('app', 'Function'),
+			'panel_id'       => Yii::t('app', 'Panel ID'),
+			'function'       => Yii::t('app', 'Function'),
 		];
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getAdjudicator() {
+	public function getAdjudicator()
+	{
 		return $this->hasOne(Adjudicator::className(), ['id' => 'adjudicator_id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getPanel() {
+	public function getPanel()
+	{
 		return $this->hasOne(Panel::className(), ['id' => 'panel_id']);
 	}
 
-	public function is_chair() {
+	public function is_chair()
+	{
 		if ($this->function == Panel::FUNCTION_CHAIR)
 			return true;
 		else

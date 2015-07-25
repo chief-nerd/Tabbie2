@@ -13,9 +13,11 @@ use common\models\Debate;
 use yii\base\Exception;
 use Yii;
 
-class UserIdentity extends \yii\web\User {
+class UserIdentity extends \yii\web\User
+{
 
-	public static function className() {
+	public static function className()
+	{
 		return "common\components\UserIdentity";
 	}
 
@@ -24,7 +26,8 @@ class UserIdentity extends \yii\web\User {
 	 *
 	 * @return boolean
 	 */
-	public function isAdmin() {
+	public function isAdmin()
+	{
 		$user = $this->getModel();
 		if ($user instanceof User && $user->role == User::ROLE_ADMIN) {
 			return true;
@@ -38,10 +41,12 @@ class UserIdentity extends \yii\web\User {
 	 *
 	 * @return boolean
 	 */
-	public function hasChairedLastRound($info) {
+	public function hasChairedLastRound($info)
+	{
 		if ($info['type'] == 'judge' && $info['pos'] == 1) {
 			return true;
 		}
+
 		return false;
 	}
 
@@ -50,7 +55,8 @@ class UserIdentity extends \yii\web\User {
 	 *
 	 * @return Debate
 	 */
-	public function hasOpenFeedback($info) {
+	public function hasOpenFeedback($info)
+	{
 
 		$debate = $info['debate'];
 		if ($debate && $this->id > 0) {
@@ -76,6 +82,7 @@ class UserIdentity extends \yii\web\User {
 				}
 			}
 		}
+
 		return false;
 	}
 
@@ -84,24 +91,27 @@ class UserIdentity extends \yii\web\User {
 	 *
 	 * @return \common\models\User
 	 */
-	public function getModel() {
+	public function getModel()
+	{
 		return $user = User::findOne($this->id);
 	}
 
-	public function getRoleModel($tid) {
+	public function getRoleModel($tid)
+	{
 		$adj = \common\models\Adjudicator::find()->where(["tournament_id" => $tid, "user_id" => $this->id])->one();
 		if ($adj instanceof \common\models\Adjudicator)
 			return $adj;
 		else {
 			$team = \common\models\Team::find()
-			                           ->where("tournament_id = :tid AND (speakerA_id = :uid OR speakerB_id = :uid)", [
-				                           ":tid" => $tid,
-				                           ":uid" => $this->id,
-			                           ])
-			                           ->one();
+				->where("tournament_id = :tid AND (speakerA_id = :uid OR speakerB_id = :uid)", [
+					":tid" => $tid,
+					":uid" => $this->id,
+				])
+				->one();
 			if ($team instanceof \common\models\Team)
 				return $team;
 		}
+
 		return null;
 	}
 

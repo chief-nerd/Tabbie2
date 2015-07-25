@@ -19,15 +19,15 @@ $this->params['breadcrumbs'][] = $this->title;
 		<?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
 		<?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
 			'class' => 'btn btn-danger',
-			'data' => [
+			'data'  => [
 				'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
-				'method' => 'post',
+				'method'  => 'post',
 			],
 		]) ?>
 	</p>
 
 	<?= DetailView::widget([
-		'model' => $model,
+		'model'      => $model,
 		'attributes' => [
 			'id',
 			'abr',
@@ -41,54 +41,54 @@ $this->params['breadcrumbs'][] = $this->title;
 	$gridColumns = [
 		['class' => 'yii\grid\SerialColumn'],
 		[
-			'class' => '\kartik\grid\DataColumn',
+			'class'     => '\kartik\grid\DataColumn',
 			'attribute' => 'name',
-			'label' => 'User',
-			'format' => 'raw',
-			'value' => function ($user, $key, $index, $widget) {
+			'label'     => 'User',
+			'format'    => 'raw',
+			'value'     => function ($user, $key, $index, $widget) {
 				return Html::a($user->name, Yii::$app->urlManagerFrontend->createUrl(["user/view", "id" => $user->id]));
 			},
 		],
 		[
-			'class' => '\kartik\grid\DataColumn',
+			'class'     => '\kartik\grid\DataColumn',
 			'attribute' => 'language_status',
 		],
 		[
-			'class' => '\kartik\grid\DataColumn',
+			'class'     => '\kartik\grid\DataColumn',
 			'attribute' => 'inSocieties.starting',
-			'label' => 'Starting',
-			'format' => 'raw',
-			'value' => function ($user, $key, $index, $widget) {
+			'label'     => 'Starting',
+			'format'    => 'raw',
+			'value'     => function ($user, $key, $index, $widget) {
 				return $user->getInSocieties()
-				            ->where(["society_id" => $this->context->actionParams["id"]])
-				            ->one()
+					->where(["society_id" => $this->context->actionParams["id"]])
+					->one()
 					->starting;
 			},
 		],
 		[
-			'class' => '\kartik\grid\DataColumn',
+			'class'     => '\kartik\grid\DataColumn',
 			'attribute' => 'inSocieties.ending',
-			'label' => 'Ending',
-			'format' => 'raw',
-			'value' => function ($user, $key, $index, $widget) {
+			'label'     => 'Ending',
+			'format'    => 'raw',
+			'value'     => function ($user, $key, $index, $widget) {
 				return $user->getInSocieties()
-				            ->where(["society_id" => $this->context->actionParams["id"]])
-				            ->one()
+					->where(["society_id" => $this->context->actionParams["id"]])
+					->one()
 					->ending;
 			},
 		],
 	];
 
 	echo GridView::widget([
-		'dataProvider' => $memberDataProvider,
-		'filterModel' => $memberSearchModel,
-		'columns' => $gridColumns,
-		'id' => 'member',
-		'pjax' => true,
-		'showPageSummary' => false,
-		'responsive' => true,
-		'hover' => true,
-		'floatHeader' => true,
+		'dataProvider'       => $memberDataProvider,
+		'filterModel'        => $memberSearchModel,
+		'columns'            => $gridColumns,
+		'id'                 => 'member',
+		'pjax'               => true,
+		'showPageSummary'    => false,
+		'responsive'         => true,
+		'hover'              => true,
+		'floatHeader'        => true,
 		'floatHeaderOptions' => ['scrollingTop' => 50],
 
 	])

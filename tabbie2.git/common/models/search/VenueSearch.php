@@ -10,7 +10,8 @@ use common\models\Venue;
 /**
  * VenueSearch represents the model behind the search form about `\common\models\Venue`.
  */
-class VenueSearch extends Venue {
+class VenueSearch extends Venue
+{
 
 	/**
 	 * @var int
@@ -20,17 +21,19 @@ class VenueSearch extends Venue {
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
-            [['active'], 'integer'],
-            [['name', 'group'], 'string', 'max' => 255],
+			[['active'], 'integer'],
+			[['name', 'group'], 'string', 'max' => 255],
 		];
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function scenarios() {
+	public function scenarios()
+	{
 		// bypass scenarios() implementation in the parent class
 		return Model::scenarios();
 	}
@@ -42,23 +45,24 @@ class VenueSearch extends Venue {
 	 *
 	 * @return ActiveDataProvider
 	 */
-	public function search($params) {
+	public function search($params)
+	{
 		$query = Venue::find()->tournament($this->tournament_id)->orderBy(["group" => SORT_ASC, "name" => SORT_ASC]);
 
 		$dataProvider = new ActiveDataProvider([
-			'query' => $query,
+			'query'      => $query,
 			'pagination' => [
 				'pageSize' => Yii::$app->params["venues_per_page"],
 			],
 		]);
 
-        $dataProvider->setSort([
-            'attributes' => [
-                'name',
-                'group',
-                'active'
-            ]
-        ]);
+		$dataProvider->setSort([
+			'attributes' => [
+				'name',
+				'group',
+				'active'
+			]
+		]);
 
 		if (!($this->load($params) && $this->validate())) {
 			return $dataProvider;
@@ -74,7 +78,8 @@ class VenueSearch extends Venue {
 		return $dataProvider;
 	}
 
-	public static function getSearchArray($tid, $keys = false) {
+	public static function getSearchArray($tid, $keys = false)
+	{
 
 		$venues = Venue::find()->where(["tournament_id" => $tid])->asArray()->all();
 
@@ -85,6 +90,7 @@ class VenueSearch extends Venue {
 			else
 				$filter[$v["name"]] = $v["name"];
 		}
+
 		return $filter;
 	}
 

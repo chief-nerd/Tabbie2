@@ -10,12 +10,14 @@ use common\models\Result;
 /**
  * ResultSearch represents the model behind the search form about `\common\models\Result`.
  */
-class ResultSearch extends Result {
+class ResultSearch extends Result
+{
 
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['id', 'debate_id', 'og_speaks', 'og_place', 'oo_speaks', 'oo_place', 'cg_speaks', 'cg_place', 'co_speaks', 'co_place'], 'integer'],
 			[['time'], 'safe'],
@@ -25,7 +27,8 @@ class ResultSearch extends Result {
 	/**
 	 * @inheritdoc
 	 */
-	public function scenarios() {
+	public function scenarios()
+	{
 		// bypass scenarios() implementation in the parent class
 		return Model::scenarios();
 	}
@@ -37,14 +40,15 @@ class ResultSearch extends Result {
 	 *
 	 * @return ActiveDataProvider
 	 */
-	public function search($params, $tournament_id, $roundid) {
+	public function search($params, $tournament_id, $roundid)
+	{
 		$query = \common\models\Debate::find()
-		                              ->joinWith("result")
+			->joinWith("result")
 			->joinWith("venue")
-		                              ->where(["debate.round_id" => $roundid, "debate.tournament_id" => $tournament_id]);
+			->where(["debate.round_id" => $roundid, "debate.tournament_id" => $tournament_id]);
 
 		$dataProvider = new ActiveDataProvider([
-			'query' => $query,
+			'query'      => $query,
 			'pagination' => [
 				'pageSize' => Yii::$app->params["results_per_page"],
 			],
@@ -59,17 +63,17 @@ class ResultSearch extends Result {
 		}
 
 		$query->andFilterWhere([
-			'id' => $this->id,
+			'id'        => $this->id,
 			'debate_id' => $this->debate_id,
 			'og_speaks' => $this->og_speaks,
-			'og_place' => $this->og_place,
+			'og_place'  => $this->og_place,
 			'oo_speaks' => $this->oo_speaks,
-			'oo_place' => $this->oo_place,
+			'oo_place'  => $this->oo_place,
 			'cg_speaks' => $this->cg_speaks,
-			'cg_place' => $this->cg_place,
+			'cg_place'  => $this->cg_place,
 			'co_speaks' => $this->co_speaks,
-			'co_place' => $this->co_place,
-			'time' => $this->time,
+			'co_place'  => $this->co_place,
+			'time'      => $this->time,
 		]);
 
 		return $dataProvider;

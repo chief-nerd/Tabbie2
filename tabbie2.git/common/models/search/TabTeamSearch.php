@@ -12,12 +12,14 @@ use common\models\PublishTabTeam;
 /**
  * SocietySearch represents the model behind the search form about `\common\models\Society`.
  */
-class TabTeamSearch extends Tab {
+class TabTeamSearch extends Tab
+{
 
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['tournament_id'], 'integer'],
 		];
@@ -26,7 +28,8 @@ class TabTeamSearch extends Tab {
 	/**
 	 * @inheritdoc
 	 */
-	public function scenarios() {
+	public function scenarios()
+	{
 		// bypass scenarios() implementation in the parent class
 		return Model::scenarios();
 	}
@@ -38,7 +41,8 @@ class TabTeamSearch extends Tab {
 	 *
 	 * @return ActiveDataProvider
 	 */
-	public function search($tournament_id, $params) {
+	public function search($tournament_id, $params)
+	{
 		$query = Debate::find()->where(["tournament_id" => $tournament_id]);
 
 		$dataProvider = new ActiveDataProvider([

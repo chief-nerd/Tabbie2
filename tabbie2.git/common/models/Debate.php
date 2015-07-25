@@ -7,7 +7,7 @@ use Yii;
 /**
  * This is the model class for table "debate".
  *
-*@property integer    $id
+ * @property integer    $id
  * @property integer    $round_id
  * @property integer    $tournament_id
  * @property integer    $og_team_id
@@ -34,14 +34,16 @@ use Yii;
  * @property Tournament $tournament
  * @property Round      $round
  */
-class Debate extends \yii\db\ActiveRecord {
+class Debate extends \yii\db\ActiveRecord
+{
 
 	public $draw_sort = "";
 
 	/**
 	 * @inheritdoc
 	 */
-	public static function tableName() {
+	public static function tableName()
+	{
 		return 'debate';
 	}
 
@@ -49,14 +51,16 @@ class Debate extends \yii\db\ActiveRecord {
 	 * @inheritdoc
 	 * @return TournamentQuery
 	 */
-	public static function find() {
+	public static function find()
+	{
 		return new TournamentQuery(get_called_class());
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['round_id', 'tournament_id', 'og_team_id', 'oo_team_id', 'cg_team_id', 'co_team_id', 'panel_id', 'venue_id'], 'required'],
 			[['round_id', 'tournament_id', 'og_team_id', 'oo_team_id', 'cg_team_id', 'co_team_id', 'panel_id', 'venue_id', 'energy', 'og_feedback', 'oo_feedback', 'cg_feedback', 'co_feedback'], 'integer'],
@@ -68,27 +72,29 @@ class Debate extends \yii\db\ActiveRecord {
 	/**
 	 * @inheritdoc
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return [
-			'id' => Yii::t('app', 'ID'),
-			'round_id' => Yii::t('app', 'Round ID'),
+			'id'            => Yii::t('app', 'ID'),
+			'round_id'      => Yii::t('app', 'Round ID'),
 			'tournament_id' => Yii::t('app', 'Tournament ID'),
-			'og_team_id' => Yii::t('app', 'Og Team ID'),
-			'oo_team_id' => Yii::t('app', 'Oo Team ID'),
-			'cg_team_id' => Yii::t('app', 'Cg Team ID'),
-			'co_team_id' => Yii::t('app', 'Co Team ID'),
-			'panel_id' => Yii::t('app', 'Panel ID'),
-			'venue_id' => Yii::t('app', 'Venue ID'),
-			'og_feedback' => Yii::t('app', 'Og Feedback'),
-			'oo_feedback' => Yii::t('app', 'Oo Feedback'),
-			'cg_feedback' => Yii::t('app', 'Cg Feedback'),
-			'co_feedback' => Yii::t('app', 'Co Feedback'),
-			'time' => Yii::t('app', 'Time'),
-			'messages' => Yii::t('app', 'Messages')
+			'og_team_id'    => Yii::t('app', 'Og Team ID'),
+			'oo_team_id'    => Yii::t('app', 'Oo Team ID'),
+			'cg_team_id'    => Yii::t('app', 'Cg Team ID'),
+			'co_team_id'    => Yii::t('app', 'Co Team ID'),
+			'panel_id'      => Yii::t('app', 'Panel ID'),
+			'venue_id'      => Yii::t('app', 'Venue ID'),
+			'og_feedback'   => Yii::t('app', 'Og Feedback'),
+			'oo_feedback'   => Yii::t('app', 'Oo Feedback'),
+			'cg_feedback'   => Yii::t('app', 'Cg Feedback'),
+			'co_feedback'   => Yii::t('app', 'Co Feedback'),
+			'time'          => Yii::t('app', 'Time'),
+			'messages'      => Yii::t('app', 'Messages')
 		];
 	}
 
-	public function getLanguage_status() {
+	public function getLanguage_status()
+	{
 		if (!isset($this->og_team) ||
 			!isset($this->oo_team) ||
 			!isset($this->cg_team) ||
@@ -111,14 +117,15 @@ class Debate extends \yii\db\ActiveRecord {
 		) {
 			if ($status == 0)
 				$status = 1;
+
 			return $status;
-		}
-		else
+		} else
 			return -1;
 
 	}
 
-	public function getHighestPoints() {
+	public function getHighestPoints()
+	{
 		if (!isset($this->og_team) ||
 			!isset($this->oo_team) ||
 			!isset($this->cg_team) ||
@@ -137,69 +144,81 @@ class Debate extends \yii\db\ActiveRecord {
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getPanel() {
+	public function getPanel()
+	{
 		return $this->hasOne(Panel::className(), ['id' => 'panel_id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getVenue() {
+	public function getVenue()
+	{
 		return $this->hasOne(Venue::className(), ['id' => 'venue_id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getTournament() {
+	public function getTournament()
+	{
 		return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getFeedbacks() {
+	public function getFeedbacks()
+	{
 		return $this->hasMany(Feedback::className(), ['debate_id' => 'id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getResult() {
+	public function getResult()
+	{
 		return $this->hasOne(Result::className(), ['debate_id' => 'id']);
 	}
 
-	public function getOg_team() {
+	public function getOg_team()
+	{
 		return $this->hasOne(Team::className(), ['id' => 'og_team_id']);
 	}
 
-	public function getOo_team() {
+	public function getOo_team()
+	{
 		return $this->hasOne(Team::className(), ['id' => 'oo_team_id']);
 	}
 
-	public function getCg_team() {
+	public function getCg_team()
+	{
 		return $this->hasOne(Team::className(), ['id' => 'cg_team_id']);
 	}
 
-	public function getCo_team() {
+	public function getCo_team()
+	{
 		return $this->hasOne(Team::className(), ['id' => 'co_team_id']);
 	}
 
-	public function getRound() {
+	public function getRound()
+	{
 		return $this->hasOne(Round::className(), ['id' => 'round_id']);
 	}
 
-	public function getAdjudicators() {
+	public function getAdjudicators()
+	{
 		return $this->hasMany(Adjudicator::className(), ["id" => "adjudicator_id"])
-		            ->viaTable("panel", ["panel.id" => "panel_id"])
-		            ->viaTable('adjudicator_in_panel', ['panel_id' => 'id']);
+			->viaTable("panel", ["panel.id" => "panel_id"])
+			->viaTable('adjudicator_in_panel', ['panel_id' => 'id']);
 	}
 
 	/**
 	 * @deprecated
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getAdjudicatorObjects() {
+	public function getAdjudicatorObjects()
+	{
 		return Adjudicator::findBySql("SELECT adjudicator.* FROM " . Adjudicator::tableName() . " "
 			. "LEFT OUTER JOIN " . AdjudicatorInPanel::tableName() . " ON " . Adjudicator::tableName() . ".id = " . AdjudicatorInPanel::tableName() . ".adjudicator_id "
 			. "LEFT OUTER JOIN " . Panel::tableName() . " ON panel_id = " . Panel::tableName() . ".id "
@@ -210,14 +229,16 @@ class Debate extends \yii\db\ActiveRecord {
 	/**
 	 * @return mixed
 	 */
-	public function getChair() {
+	public function getChair()
+	{
 		return Adjudicator::find()->joinWith("panels")->leftJoin("debate", "debate.panel_id = panel.id")->where([
-			"debate.id" => $this->id,
+			"debate.id"                     => $this->id,
 			"adjudicator_in_panel.function" => Panel::FUNCTION_CHAIR,
 		])->one();
 	}
 
-	public static function findOneByChair($user_id, $tournament_id, $round_id) {
+	public static function findOneByChair($user_id, $tournament_id, $round_id)
+	{
 		$query = static::find();
 		$query->sql = "SELECT debate.* FROM " . Adjudicator::tableName() . " "
 			. "LEFT JOIN " . AdjudicatorInPanel::tableName() . " ON " . Adjudicator::tableName() . ".id = adjudicator_id "
@@ -229,36 +250,40 @@ class Debate extends \yii\db\ActiveRecord {
 			. "AND debate.tournament_id = :tournament_id";
 
 		$params = [
-			":user_id" => $user_id,
-			":round_id" => $round_id,
+			":user_id"       => $user_id,
+			":round_id"      => $round_id,
 			":tournament_id" => $tournament_id,
 		];
 
 		return $query->params($params)->one();
 	}
 
-	public function isOGTeamMember($id) {
+	public function isOGTeamMember($id)
+	{
 		if ($this->og_team->speakerA_id == $id || $this->og_team->speakerB_id == $id)
 			return true;
 		else
 			return false;
 	}
 
-	public function isOOTeamMember($id) {
+	public function isOOTeamMember($id)
+	{
 		if ($this->oo_team->speakerA_id == $id || $this->oo_team->speakerB_id == $id)
 			return true;
 		else
 			return false;
 	}
 
-	public function isCGTeamMember($id) {
+	public function isCGTeamMember($id)
+	{
 		if ($this->cg_team->speakerA_id == $id || $this->cg_team->speakerB_id == $id)
 			return true;
 		else
 			return false;
 	}
 
-	public function isCOTeamMember($id) {
+	public function isCOTeamMember($id)
+	{
 		if ($this->co_team->speakerA_id == $id || $this->co_team->speakerB_id == $id)
 			return true;
 		else
@@ -267,13 +292,13 @@ class Debate extends \yii\db\ActiveRecord {
 
 	/**
 	 * Get the Teams in a searchable Array
-
 	 *
-*@param bool $onlyKeys
+	 * @param bool $onlyKeys
 	 *
 	 * @return Team[]|array
 	 */
-	public function getTeams($onlyKeys = false) {
+	public function getTeams($onlyKeys = false)
+	{
 		return [
 			"og" => ($onlyKeys) ? $this->og_team_id : $this->og_team,
 			"oo" => ($onlyKeys) ? $this->oo_team_id : $this->oo_team,
@@ -282,12 +307,14 @@ class Debate extends \yii\db\ActiveRecord {
 		];
 	}
 
-	public function setMessages($array) {
+	public function setMessages($array)
+	{
 		ksort($array);
 		$this->messages = json_encode($array);
 	}
 
-	public function getMessages() {
+	public function getMessages()
+	{
 		return ($this->messages) ? json_decode($this->messages) : [];
 	}
 

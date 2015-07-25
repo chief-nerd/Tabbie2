@@ -8,7 +8,8 @@ use yii\base\Model;
 /**
  * ContactForm is the model behind the contact form.
  */
-class TabLine extends Model {
+class TabLine extends Model
+{
 
 	public $object;
 	public $points;

@@ -12,18 +12,21 @@ use Yii;
  * @property Tournament $tournament
  * @property Question   $questions
  */
-class TournamentHasQuestion extends \yii\db\ActiveRecord {
+class TournamentHasQuestion extends \yii\db\ActiveRecord
+{
 	/**
 	 * @inheritdoc
 	 */
-	public static function tableName() {
+	public static function tableName()
+	{
 		return 'tournament_has_question';
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['tournament_id', 'questions_id'], 'required'],
 			[['tournament_id', 'questions_id'], 'integer']
@@ -33,24 +36,27 @@ class TournamentHasQuestion extends \yii\db\ActiveRecord {
 	/**
 	 * @inheritdoc
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return [
 			'tournament_id' => Yii::t('app', 'Tournament ID'),
-			'questions_id' => Yii::t('app', 'Questions ID'),
+			'questions_id'  => Yii::t('app', 'Questions ID'),
 		];
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getTournament() {
+	public function getTournament()
+	{
 		return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getQuestions() {
+	public function getQuestions()
+	{
 		return $this->hasOne(Question::className(), ['id' => 'questions_id']);
 	}
 }

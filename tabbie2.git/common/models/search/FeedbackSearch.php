@@ -10,7 +10,8 @@ use common\models\Feedback;
 /**
  * FeedbackSearch represents the model behind the search form about `\common\models\feedback`.
  */
-class FeedbackSearch extends Feedback {
+class FeedbackSearch extends Feedback
+{
 
 	public $round_number;
 	public $venue_name;
@@ -18,7 +19,8 @@ class FeedbackSearch extends Feedback {
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['id', 'debate_id', 'round_number'], 'integer'],
 			['venue_name', 'string'],
@@ -29,7 +31,8 @@ class FeedbackSearch extends Feedback {
 	/**
 	 * @inheritdoc
 	 */
-	public function scenarios() {
+	public function scenarios()
+	{
 		// bypass scenarios() implementation in the parent class
 		return Model::scenarios();
 	}
@@ -41,14 +44,15 @@ class FeedbackSearch extends Feedback {
 	 *
 	 * @return ActiveDataProvider
 	 */
-	public function search($params, $tournament_id) {
+	public function search($params, $tournament_id)
+	{
 		$query = Feedback::find()->joinWith(['debate' => function ($query) {
 			$query->joinWith(['round']);
 			$query->joinWith(['venue']);
 		}])->where(["debate.tournament_id" => $tournament_id]);
 
 		$dataProvider = new ActiveDataProvider([
-			'query' => $query,
+			'query'      => $query,
 			'pagination' => [
 				'pageSize' => 20,
 			],
@@ -56,13 +60,13 @@ class FeedbackSearch extends Feedback {
 
 		$dataProvider->setSort([
 			'defaultOrder' => ['venue_name' => SORT_ASC],
-			'attributes' => [
-				'venue_name' => [
-					'asc' => ['CHAR_LENGTH(venue.name), venue.name' => SORT_ASC],
+			'attributes'   => [
+				'venue_name'   => [
+					'asc'  => ['CHAR_LENGTH(venue.name), venue.name' => SORT_ASC],
 					'desc' => ['CHAR_LENGTH(venue.name) DESC, venue.name' => SORT_DESC],
 				],
 				'round_number' => [
-					'asc' => ['round.number' => SORT_ASC],
+					'asc'  => ['round.number' => SORT_ASC],
 					'desc' => ['round.number' => SORT_DESC],
 				],
 			]
@@ -73,10 +77,10 @@ class FeedbackSearch extends Feedback {
 		}
 
 		$query->andFilterWhere([
-			'id' => $this->id,
-			'debate_id' => $this->debate_id,
-			'time' => $this->time,
-			'round.number' => $this->round_number,
+			'id'                   => $this->id,
+			'debate_id'            => $this->debate_id,
+			'time'                 => $this->time,
+			'round.number'         => $this->round_number,
 			'debate.tournament_id' => $tournament_id,
 		]);
 

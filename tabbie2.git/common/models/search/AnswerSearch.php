@@ -11,11 +11,13 @@ use common\models\Feedback;
 /**
  * FeedbackSearch represents the model behind the search form about `\common\models\feedback`.
  */
-class AnswerSearch extends Feedback {
+class AnswerSearch extends Feedback
+{
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['id', 'debate_id'], 'integer'],
 			[['time'], 'safe'],
@@ -25,7 +27,8 @@ class AnswerSearch extends Feedback {
 	/**
 	 * @inheritdoc
 	 */
-	public function scenarios() {
+	public function scenarios()
+	{
 		// bypass scenarios() implementation in the parent class
 		return Model::scenarios();
 	}
@@ -37,18 +40,19 @@ class AnswerSearch extends Feedback {
 	 *
 	 * @return ActiveDataProvider
 	 */
-	public function searchByAdjudicator($params) {
+	public function searchByAdjudicator($params)
+	{
 
 		$query = Answer::find()
-		               ->joinWith(['feedback' => function ($query) {
-			               $query->joinWith(['debate' => function ($query) {
-				               $query->joinWith(['adjudicators']);
-			               }]);
-		               }])
-		               ->orderBy("question_id"); //->where(["adjudicator.id" => $params["AnswerSearch"]["id"]])->orderBy("question_id");
+			->joinWith(['feedback' => function ($query) {
+				$query->joinWith(['debate' => function ($query) {
+					$query->joinWith(['adjudicators']);
+				}]);
+			}])
+			->orderBy("question_id"); //->where(["adjudicator.id" => $params["AnswerSearch"]["id"]])->orderBy("question_id");
 
 		$dataProvider = new ActiveDataProvider([
-			'query' => $query,
+			'query'      => $query,
 			'pagination' => [
 				'pageSize' => 9999,
 			],

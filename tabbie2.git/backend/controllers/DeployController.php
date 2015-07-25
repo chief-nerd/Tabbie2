@@ -10,14 +10,16 @@ use yii\filters\VerbFilter;
 /**
  * Site controller
  */
-class DeployController extends Controller {
+class DeployController extends Controller
+{
 
 	public $enableCsrfValidation = false;
 
 	/**
 	 * @inheritdoc
 	 */
-	public function behaviors() {
+	public function behaviors()
+	{
 		return [
 			'access' => [
 				'class' => AccessControl::className(),
@@ -27,8 +29,8 @@ class DeployController extends Controller {
 					],
 				],
 			],
-			'verbs' => [
-				'class' => VerbFilter::className(),
+			'verbs'  => [
+				'class'   => VerbFilter::className(),
 				'actions' => [
 					'logout' => ['post'],
 				],
@@ -39,7 +41,8 @@ class DeployController extends Controller {
 	/**
 	 * @inheritdoc
 	 */
-	public function actions() {
+	public function actions()
+	{
 		return [
 			'error' => [
 				'class' => 'yii\web\ErrorAction',
@@ -47,7 +50,8 @@ class DeployController extends Controller {
 		];
 	}
 
-	public function actionGitPushHook() {
+	public function actionGitPushHook()
+	{
 		// set the secret key
 		$hookSecret = Yii::$app->params["hookSecret"];
 
@@ -65,7 +69,7 @@ class DeployController extends Controller {
 			throw new \Exception("Missing 'hash' extension to check the secret code validity.");
 
 		// check if the algo is supported
-		list($algo, $hash) = explode('=', $_SERVER['HTTP_X_HUB_SIGNATURE'], 2) + array('', '');
+		list($algo, $hash) = explode('=', $_SERVER['HTTP_X_HUB_SIGNATURE'], 2) + ['', ''];
 		if (!in_array($algo, hash_algos(), true))
 			throw new \Exception("Hash algorithm '$algo' is not supported.");
 
@@ -100,10 +104,10 @@ class DeployController extends Controller {
 		$html .= implode("<br>\n", $out);
 
 		Yii::$app->mailer->compose()
-		                 ->setFrom(['git-report@tabbie.org' => "Git Pull Report"])
-		                 ->setTo(Yii::$app->params["supportEmail"])
+			->setFrom(['git-report@tabbie.org' => "Git Pull Report"])
+			->setTo(Yii::$app->params["supportEmail"])
 			->setSubject($out[1] . " " . $out[2])
-		                 ->setHtmlBody($html)
-		                 ->send();
+			->setHtmlBody($html)
+			->send();
 	}
 }

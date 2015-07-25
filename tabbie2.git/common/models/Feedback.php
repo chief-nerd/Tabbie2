@@ -14,23 +14,26 @@ use Yii;
  * @property FeedbackHasAnswer[] $feedbackHasAnswers
  * @property Answer[]            $answers
  */
-class Feedback extends \yii\db\ActiveRecord {
+class Feedback extends \yii\db\ActiveRecord
+{
 
 	const FROM_CHAIR = 1;
-	const FROM_WING  = 2;
-	const FROM_TEAM  = 3;
+	const FROM_WING = 2;
+	const FROM_TEAM = 3;
 
 	/**
 	 * @inheritdoc
 	 */
-	public static function tableName() {
+	public static function tableName()
+	{
 		return 'feedback';
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['debate_id'], 'required'],
 			[['debate_id'], 'integer'],
@@ -41,25 +44,28 @@ class Feedback extends \yii\db\ActiveRecord {
 	/**
 	 * @inheritdoc
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return [
-			'id' => Yii::t('app', 'ID'),
+			'id'        => Yii::t('app', 'ID'),
 			'debate_id' => Yii::t('app', 'Debate ID'),
-			'time' => Yii::t('app', 'Time'),
+			'time'      => Yii::t('app', 'Time'),
 		];
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getDebate() {
+	public function getDebate()
+	{
 		return $this->hasOne(Debate::className(), ['id' => 'debate_id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getAnswers() {
+	public function getAnswers()
+	{
 		return $this->hasMany(Answer::className(), ['feedback_id' => 'id']);
 	}
 }

@@ -11,7 +11,8 @@ use common\models\Society;
 /**
  * SocietySearch represents the model behind the search form about `\common\models\Society`.
  */
-class SocietySearch extends Society {
+class SocietySearch extends Society
+{
 
 	public $country_name;
 	public $country_region;
@@ -19,7 +20,8 @@ class SocietySearch extends Society {
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['id'], 'integer'],
 			[['fullname', 'abr', 'city', 'country_name', 'country_region'], 'string'],
@@ -30,7 +32,8 @@ class SocietySearch extends Society {
 	/**
 	 * @inheritdoc
 	 */
-	public function scenarios() {
+	public function scenarios()
+	{
 		// bypass scenarios() implementation in the parent class
 		return Model::scenarios();
 	}
@@ -42,11 +45,12 @@ class SocietySearch extends Society {
 	 *
 	 * @return ActiveDataProvider
 	 */
-	public function search($params) {
+	public function search($params)
+	{
 		$query = Society::find()->joinWith("country");
 
 		$dataProvider = new ActiveDataProvider([
-			'query' => $query,
+			'query'      => $query,
 			'pagination' => [
 				'pageSize' => Yii::$app->params["societies_per_page"],
 			],
@@ -57,14 +61,14 @@ class SocietySearch extends Society {
 				'fullname',
 				'abr',
 				'city',
-				'country_name' => [
-					'asc' => ['country.name' => SORT_ASC],
-					'desc' => ['country.name' => SORT_DESC],
+				'country_name'   => [
+					'asc'   => ['country.name' => SORT_ASC],
+					'desc'  => ['country.name' => SORT_DESC],
 					'label' => 'Country'
 				],
 				'country_region' => [
-					'asc' => ['country.region_id' => SORT_ASC],
-					'desc' => ['country.region_id' => SORT_DESC],
+					'asc'   => ['country.region_id' => SORT_ASC],
+					'desc'  => ['country.region_id' => SORT_DESC],
 					'label' => 'Region'
 				]
 			]
@@ -79,7 +83,7 @@ class SocietySearch extends Society {
 		]);
 
 		$query->andFilterWhere(['like', 'fullname', $this->fullname])
-		      ->andFilterWhere(['like', 'abr', $this->abr])
+			->andFilterWhere(['like', 'abr', $this->abr])
 			->andFilterWhere(['like', 'city', $this->city]);
 
 		$query->joinWith(['country' => function ($q) {
@@ -103,13 +107,17 @@ class SocietySearch extends Society {
 		return $dataProvider;
 	}
 
-	public static function getTournamentSearchArray($tid) {
+	public static function getTournamentSearchArray($tid)
+	{
 		$tournament = \common\models\Tournament::findByPk($tid);
+
 		return \yii\helpers\ArrayHelper::map($tournament->societies, "fullname", "fullname");
 	}
 
-	public static function getSearchArray() {
+	public static function getSearchArray()
+	{
 		$society = Society::find()->asArray()->all();
+
 		return \yii\helpers\ArrayHelper::map($society, "id", "fullname");
 	}
 }

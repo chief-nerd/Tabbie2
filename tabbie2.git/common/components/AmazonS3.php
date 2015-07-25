@@ -13,7 +13,8 @@ use Aws\S3\S3Client;
 use yii\base\Component;
 use yii\base\Exception;
 
-class AmazonS3 extends Component {
+class AmazonS3 extends Component
+{
 
 	public $dev = false;
 	public $key = false;
@@ -23,36 +24,37 @@ class AmazonS3 extends Component {
 
 	private $_client;
 
-	public function __construct($conf = []) {
+	public function __construct($conf = [])
+	{
 		parent::__construct($conf);
 
 		if (!$this->dev) {
 			if (!$this->key || !$this->secret) throw new Exception("Need key and secret");
 
-			$this->_client = new S3Client(array(
-				'credentials' => array(
-					'key' => $this->key,
+			$this->_client = new S3Client([
+				'credentials' => [
+					'key'    => $this->key,
 					'secret' => $this->secret,
-				),
-				'region' => $this->region,
-				'version' => 'latest'
-			));
+				],
+				'region'      => $this->region,
+				'version'     => 'latest'
+			]);
 		}
 	}
 
-	public function save($file, $path) {
+	public function save($file, $path)
+	{
 
 		if (!$this->dev) {
-			$result = $this->_client->putObject(array(
-				'Bucket' => $this->bucket,
-				'Key' => $path,
+			$result = $this->_client->putObject([
+				'Bucket'     => $this->bucket,
+				'Key'        => $path,
 				'SourceFile' => $file->tempName,
-				'ACL' => "public-read",
-			));
+				'ACL'        => "public-read",
+			]);
 
 			return $result['ObjectURL'];
-		}
-		else {
+		} else {
 			return $file->saveAs(\Yii::getAlias("@frontend/web/uploads/") . $path) ? "@web/uploads/" . $path : null;
 		}
 	}

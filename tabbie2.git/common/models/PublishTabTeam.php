@@ -17,12 +17,14 @@ use Yii;
  * @property Team       $team
  * @property Tournament $tournament
  */
-class PublishTabTeam extends \yii\db\ActiveRecord {
+class PublishTabTeam extends \yii\db\ActiveRecord
+{
 
 	/**
 	 * @inheritdoc
 	 */
-	public static function tableName() {
+	public static function tableName()
+	{
 		return 'publish_tab_team';
 	}
 
@@ -30,14 +32,16 @@ class PublishTabTeam extends \yii\db\ActiveRecord {
 	 * @inheritdoc
 	 * @return TournamentQuery
 	 */
-	public static function find() {
+	public static function find()
+	{
 		return new TournamentQuery(get_called_class());
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['tournament_id', 'team_id'], 'required'],
 			[['tournament_id', 'team_id', 'enl_place', 'esl_place', 'speaks'], 'integer'],
@@ -48,29 +52,32 @@ class PublishTabTeam extends \yii\db\ActiveRecord {
 	/**
 	 * @inheritdoc
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return [
-			'id' => Yii::t('app', 'ID'),
+			'id'            => Yii::t('app', 'ID'),
 			'tournament_id' => Yii::t('app', 'Tournament ID'),
-			'team_id' => Yii::t('app', 'Team ID'),
-			'enl_place' => Yii::t('app', 'ENL Place'),
-			'esl_place' => Yii::t('app', 'ESL Place'),
+			'team_id'       => Yii::t('app', 'Team ID'),
+			'enl_place'     => Yii::t('app', 'ENL Place'),
+			'esl_place'     => Yii::t('app', 'ESL Place'),
 			'cache_results' => Yii::t('app', 'Cache Results'),
-			'speaks' => Yii::t('app', 'Speaker Points'),
+			'speaks'        => Yii::t('app', 'Speaker Points'),
 		];
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getTeam() {
+	public function getTeam()
+	{
 		return $this->hasOne(Team::className(), ['id' => 'team_id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getTournament() {
+	public function getTournament()
+	{
 		return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
 	}
 
@@ -79,7 +86,8 @@ class PublishTabTeam extends \yii\db\ActiveRecord {
 	 *
 	 * @return \common\models\TabLine[]
 	 */
-	public static function generateTeamTab($_tournament) {
+	public static function generateTeamTab($_tournament)
+	{
 		$results = \common\models\Result::find()->leftJoin("debate", "debate.id = result.debate_id")->where([
 			"debate.tournament_id" => $_tournament->id,
 		])->all();
@@ -121,8 +129,7 @@ class PublishTabTeam extends \yii\db\ActiveRecord {
 						$i = $i + $jumpover;
 						$jumpover = 0;
 					}
-				}
-				else {
+				} else {
 					$jumpover++;
 				}
 			$line->enl_place = $i;
@@ -141,12 +148,10 @@ class PublishTabTeam extends \yii\db\ActiveRecord {
 								$i = $i + $jumpover;
 								$jumpover = 0;
 							}
-						}
-						else {
+						} else {
 							$jumpover++;
 						}
-					}
-					else $i++;
+					} else $i++;
 
 					$line->esl_place = $i;
 					$lines[$index] = $line;
@@ -166,11 +171,13 @@ class PublishTabTeam extends \yii\db\ActiveRecord {
 	 * @using rankSpeaker
 	 * @return int
 	 */
-	public function rankTeamsWithSpeaks($a, $b) {
+	public function rankTeamsWithSpeaks($a, $b)
+	{
 		$ap = $a["points"];
 		$as = $a["speaks"];
 		$bp = $b["points"];
 		$bs = $b["speaks"];
+
 		return ($ap < $bp) ? 1 : (($ap > $bp) ? -1 : PublishTabSpeaker::rankSpeaker($a, $b));
 	}
 

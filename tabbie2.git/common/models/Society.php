@@ -18,19 +18,22 @@ use Yii;
  * @property User[]        $users
  * @property Team[]        $teams
  */
-class Society extends \yii\db\ActiveRecord {
+class Society extends \yii\db\ActiveRecord
+{
 
 	/**
 	 * @inheritdoc
 	 */
-	public static function tableName() {
+	public static function tableName()
+	{
 		return 'society';
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['country_id', 'fullname'], 'required'],
 			[['country_id'], 'integer'],
@@ -43,12 +46,13 @@ class Society extends \yii\db\ActiveRecord {
 	/**
 	 * @inheritdoc
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return [
-			'id' => Yii::t('app', 'ID'),
-			'fullname' => Yii::t('app', 'Fullname'),
-			'abr' => Yii::t('app', 'Abbrevation'),
-			'city' => Yii::t('app', 'City'),
+			'id'         => Yii::t('app', 'ID'),
+			'fullname'   => Yii::t('app', 'Fullname'),
+			'abr'        => Yii::t('app', 'Abbrevation'),
+			'city'       => Yii::t('app', 'City'),
 			'country_id' => Yii::t('app', 'Country'),
 		];
 	}
@@ -56,47 +60,54 @@ class Society extends \yii\db\ActiveRecord {
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getAdjudicators() {
+	public function getAdjudicators()
+	{
 		return $this->hasMany(Adjudicator::className(), ['society_id' => 'id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getInSocieties() {
+	public function getInSocieties()
+	{
 		return $this->hasMany(InSociety::className(), ['society_id' => 'id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getUsers() {
+	public function getUsers()
+	{
 		return $this->hasMany(User::className(), ['id' => 'username_id'])
-		            ->viaTable('in_society', ['society_id' => 'id']);
+			->viaTable('in_society', ['society_id' => 'id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getCountry() {
+	public function getCountry()
+	{
 		return $this->hasOne(Country::className(), ['id' => 'country_id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getTournaments() {
+	public function getTournaments()
+	{
 		return $this->hasMany(Tournament::className(), ['hosted_by_id' => 'id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getTeams() {
+	public function getTeams()
+	{
 		return $this->hasMany(Team::className(), ['society_id' => 'id']);
 	}
 
-	public static function generateAbr($name) {
+	public static function generateAbr($name)
+	{
 		$abr = "";
 		$parts = explode(" ", trim($name));
 		foreach ($parts as $part) {

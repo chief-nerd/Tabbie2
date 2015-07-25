@@ -140,18 +140,18 @@ class Round extends \yii\db\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'id'           => Yii::t('app', 'Round ID'),
-			'id'           => Yii::t('app', 'Round Number'),
+			'id'            => Yii::t('app', 'Round ID'),
+			'id'            => Yii::t('app', 'Round Number'),
 			'tournament_id' => Yii::t('app', 'Tournament ID'),
-			'energy'       => Yii::t('app', 'Energy'),
-			'motion'       => Yii::t('app', 'Motion'),
-			'infoslide'    => Yii::t('app', 'Info Slide'),
-			'time'         => Yii::t('app', 'Time'),
-			'published'    => Yii::t('app', 'Published'),
-			'displayed'    => Yii::t('app', 'Displayed'),
-			'prep_started' => Yii::t('app', 'PrepTime started'),
-			'lastrun_temp' => Yii::t('app', 'Last Temperature'),
-			'lastrun_time' => Yii::t('app', 'ms to calculate'),
+			'energy'        => Yii::t('app', 'Energy'),
+			'motion'        => Yii::t('app', 'Motion'),
+			'infoslide'     => Yii::t('app', 'Info Slide'),
+			'time'          => Yii::t('app', 'Time'),
+			'published'     => Yii::t('app', 'Published'),
+			'displayed'     => Yii::t('app', 'Displayed'),
+			'prep_started'  => Yii::t('app', 'PrepTime started'),
+			'lastrun_temp'  => Yii::t('app', 'Last Temperature'),
+			'lastrun_time'  => Yii::t('app', 'ms to calculate'),
 		];
 	}
 
@@ -196,8 +196,8 @@ class Round extends \yii\db\ActiveRecord
 
 			$panel = [];
 			$panelsObjects = Panel::find()->where([
-				'is_preset' => 1,
-				'used'      => 0,
+				'is_preset'     => 1,
+				'used'          => 0,
 				'tournament_id' => $this->tournament_id])->all();
 
 			$active_rooms = (count($teams) / 4);
@@ -231,9 +231,9 @@ class Round extends \yii\db\ActiveRecord
 				}
 
 				$panel[] = [
-					"id"   => $p->id,
+					"id"       => $p->id,
 					"strength" => intval($total / count($panelAdju)),
-					"adju" => $panelAdju,
+					"adju"     => $panelAdju,
 				];
 			}
 
@@ -272,17 +272,17 @@ class Round extends \yii\db\ActiveRecord
 			if ($active_rooms > count($venues))
 				throw new Exception(Yii::t("app", "Not enough active Rooms (active: {active_rooms} required: {required})", [
 					"active_rooms" => count($venues),
-					"required" => $active_rooms,
+					"required"     => $active_rooms,
 				]), "500");
 			if ($active_rooms > count($adjudicatorsObjects))
 				throw new Exception(Yii::t("app", "Not enough adjudicators (active: {active}  min-required: {required})", [
-					"active" => count($adjudicatorsObjects),
+					"active"   => count($adjudicatorsObjects),
 					"required" => $active_rooms,
 				]), "500");
 			if ($active_rooms > (count($adjudicators) + count($panel)))
 				throw new Exception(Yii::t("app",
 					"Not enough free adjudicators with this preset panel configuration. (fillable rooms: {active}  min-required: {required})", [
-						"active" => (count($adjudicatorsObjects) + count($panelsObjects)),
+						"active"   => (count($adjudicatorsObjects) + count($panelsObjects)),
 						"required" => $active_rooms,
 					]), "500");
 

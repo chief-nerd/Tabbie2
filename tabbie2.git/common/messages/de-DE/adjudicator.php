@@ -13,14 +13,14 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-	'Average Judge' => '',
-	'Bad Judge' => '',
-	'Breaking Chair' => '',
-	'Can Judge' => '',
-	'Chair' => '',
+	'Average Judge'     => '',
+	'Bad Judge'         => '',
+	'Breaking Chair'    => '',
+	'Can Judge'         => '',
+	'Chair'             => '',
 	'Chief Adjudicator' => '',
-	'Decent Judge' => '',
-	'Good Chair' => '',
-	'High Potential' => '',
-	'Not Rated' => '',
+	'Decent Judge'      => '',
+	'Good Chair'        => '',
+	'High Potential'    => '',
+	'Not Rated'         => '',
 ];

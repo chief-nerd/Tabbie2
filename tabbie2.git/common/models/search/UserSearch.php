@@ -55,7 +55,7 @@ class UserSearch extends User
 		$query = User::find();
 
 		$dataProvider = new ActiveDataProvider([
-			'query' => $query,
+			'query'      => $query,
 			'pagination' => [
 				'pageSize' => Yii::$app->params["users_per_page"],
 			],
@@ -68,8 +68,8 @@ class UserSearch extends User
 				'email',
 				'role',
 				'name' => [
-					'asc'  => ["CONCAT(givenname, ' ', surename)" => SORT_ASC],
-					'desc' => ["CONCAT(givenname, ' ', surename)" => SORT_DESC],
+					'asc'   => ["CONCAT(givenname, ' ', surename)" => SORT_ASC],
+					'desc'  => ["CONCAT(givenname, ' ', surename)" => SORT_DESC],
 					'label' => 'Name'
 				]
 			]
@@ -80,11 +80,11 @@ class UserSearch extends User
 		}
 
 		$query->andFilterWhere([
-			'id'     => $this->id,
-			'role'   => $this->role,
-			'status' => $this->status,
+			'id'          => $this->id,
+			'role'        => $this->role,
+			'status'      => $this->status,
 			'last_change' => $this->last_change,
-			'time'   => $this->time,
+			'time'        => $this->time,
 		]);
 
 		$query->andFilterWhere(['like', 'email', $this->email])
@@ -108,7 +108,7 @@ class UserSearch extends User
 			$query = User::findByTournament($tournamentid);
 
 		$dataProvider = new ActiveDataProvider([
-			'query' => $query,
+			'query'      => $query,
 			'pagination' => [
 				'pageSize' => Yii::$app->params["users_per_page"],
 			],
@@ -189,7 +189,7 @@ class UserSearch extends User
 		$query = User::find()->joinWith("inSocieties")->where(["society_id" => $society_id]);
 
 		$dataProvider = new ActiveDataProvider([
-			'query' => $query,
+			'query'      => $query,
 			'pagination' => [
 				'pageSize' => Yii::$app->params["users_per_page"],
 			],

@@ -10,11 +10,13 @@ use common\models\Panel;
 /**
  * PanelSearch represents the model behind the search form about `\common\models\Panel`.
  */
-class PanelSearch extends Panel {
+class PanelSearch extends Panel
+{
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['id', 'strength', 'tournament_id', 'used', 'is_preset'], 'integer'],
 			[['time'], 'safe'],
@@ -24,7 +26,8 @@ class PanelSearch extends Panel {
 	/**
 	 * @inheritdoc
 	 */
-	public function scenarios() {
+	public function scenarios()
+	{
 		// bypass scenarios() implementation in the parent class
 		return Model::scenarios();
 	}
@@ -36,7 +39,8 @@ class PanelSearch extends Panel {
 	 *
 	 * @return ActiveDataProvider
 	 */
-	public function search($params, $tournament_id) {
+	public function search($params, $tournament_id)
+	{
 		$query = Panel::find()->where(["tournament_id" => $tournament_id, "is_preset" => true, 'used' => 0]);
 
 		$dataProvider = new ActiveDataProvider([
@@ -52,12 +56,12 @@ class PanelSearch extends Panel {
 		}
 
 		$query->andFilterWhere([
-			'id' => $this->id,
-			'strength' => $this->strength,
-			'time' => $this->time,
+			'id'            => $this->id,
+			'strength'      => $this->strength,
+			'time'          => $this->time,
 			'tournament_id' => $this->tournament_id,
-			'used' => $this->used,
-			'is_preset' => $this->is_preset,
+			'used'          => $this->used,
+			'is_preset'     => $this->is_preset,
 		]);
 
 		return $dataProvider;

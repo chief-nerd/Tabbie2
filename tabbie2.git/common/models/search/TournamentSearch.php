@@ -11,11 +11,13 @@ use common\models\Tournament;
 /**
  * TournamentSearch represents the model behind the search form about `common\models\Tournament`.
  */
-class TournamentSearch extends Tournament {
+class TournamentSearch extends Tournament
+{
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['id', 'convenor_user_id', 'tabmaster_user_id'], 'integer'],
 			[['name', 'start_date', 'end_date', 'logo', 'time'], 'safe'],
@@ -25,7 +27,8 @@ class TournamentSearch extends Tournament {
 	/**
 	 * @inheritdoc
 	 */
-	public function scenarios() {
+	public function scenarios()
+	{
 		// bypass scenarios() implementation in the parent class
 		return Model::scenarios();
 	}
@@ -37,11 +40,12 @@ class TournamentSearch extends Tournament {
 	 *
 	 * @return ActiveDataProvider
 	 */
-	public function search($params) {
+	public function search($params)
+	{
 		$query = Tournament::find()->joinWith('hostedby')->where("end_date >= now()");
 
 		$dataProvider = new ActiveDataProvider([
-			'query' => $query,
+			'query'      => $query,
 			'pagination' => [
 				'pageSize' => Yii::$app->params["tournament_per_page"],
 			],
@@ -56,16 +60,16 @@ class TournamentSearch extends Tournament {
 		}
 
 		$query->andFilterWhere([
-			'id' => $this->id,
-			'convenor_user_id' => $this->convenor_user_id,
+			'id'                => $this->id,
+			'convenor_user_id'  => $this->convenor_user_id,
 			'tabmaster_user_id' => $this->tabmaster_user_id,
-			'start_date' => $this->start_date,
-			'end_date' => $this->end_date,
-			'time' => $this->time,
+			'start_date'        => $this->start_date,
+			'end_date'          => $this->end_date,
+			'time'              => $this->time,
 		]);
 
 		$query->andFilterWhere(['like', 'name', $this->name])
-		      ->andFilterWhere(['like', 'logo', $this->logo]);
+			->andFilterWhere(['like', 'logo', $this->logo]);
 
 		return $dataProvider;
 	}
@@ -77,11 +81,12 @@ class TournamentSearch extends Tournament {
 	 *
 	 * @return ActiveDataProvider
 	 */
-	public function searchArchive($params) {
+	public function searchArchive($params)
+	{
 		$query = Tournament::find()->joinWith('hostedby')->where("end_date < now()");
 
 		$dataProvider = new ActiveDataProvider([
-			'query' => $query,
+			'query'      => $query,
 			'pagination' => [
 				'pageSize' => Yii::$app->params["tournament_per_page"],
 			],
@@ -96,27 +101,29 @@ class TournamentSearch extends Tournament {
 		}
 
 		$query->andFilterWhere([
-			'id' => $this->id,
-			'convenor_user_id' => $this->convenor_user_id,
+			'id'                => $this->id,
+			'convenor_user_id'  => $this->convenor_user_id,
 			'tabmaster_user_id' => $this->tabmaster_user_id,
-			'start_date' => $this->start_date,
-			'end_date' => $this->end_date,
-			'time' => $this->time,
+			'start_date'        => $this->start_date,
+			'end_date'          => $this->end_date,
+			'time'              => $this->time,
 		]);
 
 		$query->andFilterWhere(['like', 'name', $this->name])
-		      ->andFilterWhere(['like', 'logo', $this->logo]);
+			->andFilterWhere(['like', 'logo', $this->logo]);
 
 		return $dataProvider;
 	}
 
-	public function getRoundOptions($tournament) {
+	public function getRoundOptions($tournament)
+	{
 		$t = Round::find()->where(["tournament_id" => $tournament])->asArray()->all();
 
 		$filter = [];
 		foreach ($t as $v) {
 			$filter[$v["number"]] = $v["number"];
 		}
+
 		return $filter;
 	}
 }

@@ -10,12 +10,14 @@ use common\models\Question;
 /**
  * QuestionSearch represents the model behind the search form about `\common\models\question`.
  */
-class QuestionSearch extends Question {
+class QuestionSearch extends Question
+{
 
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['id', 'type', 'apply_T2C', 'apply_C2W', 'apply_W2C'], 'integer'],
 			[['text'], 'safe'],
@@ -25,7 +27,8 @@ class QuestionSearch extends Question {
 	/**
 	 * @inheritdoc
 	 */
-	public function scenarios() {
+	public function scenarios()
+	{
 		// bypass scenarios() implementation in the parent class
 		return Model::scenarios();
 	}
@@ -37,7 +40,8 @@ class QuestionSearch extends Question {
 	 *
 	 * @return ActiveDataProvider
 	 */
-	public function search($params, $tournament_id) {
+	public function search($params, $tournament_id)
+	{
 		$query = Question::find()->joinWith("tournamentHasQuestion")->where(["tournament_id" => $tournament_id]);
 
 		$dataProvider = new ActiveDataProvider([
@@ -51,8 +55,8 @@ class QuestionSearch extends Question {
 		$query->andWhere(["tournament_id" => $tournament_id]);
 
 		$query->andFilterWhere([
-			'id' => $this->id,
-			'type' => $this->type,
+			'id'        => $this->id,
+			'type'      => $this->type,
 			'apply_T2C' => $this->apply_T2C,
 			'apply_C2W' => $this->apply_C2W,
 			'apply_W2C' => $this->apply_W2C,

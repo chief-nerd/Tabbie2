@@ -9,9 +9,11 @@ namespace common\models;
  * T ... Team
  * A ... Adjudicator
  */
-class VTAQuery extends TournamentQuery {
+class VTAQuery extends TournamentQuery
+{
 
-	public function active($state = true) {
+	public function active($state = true)
+	{
 		return $this->andWhere(['active' => $state]);
 	}
 

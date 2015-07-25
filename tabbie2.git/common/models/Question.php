@@ -19,24 +19,27 @@ use yii\helpers\Html;
  * @property TournamentHasQuestions[] $tournamentHasQuestions
  * @property Tournament[]             $tournaments
  */
-class Question extends \yii\db\ActiveRecord {
+class Question extends \yii\db\ActiveRecord
+{
 
-	const TYPE_INPUT  = 1;
-	const TYPE_STAR   = 0;
-	const TYPE_TEXT   = 2;
+	const TYPE_INPUT = 1;
+	const TYPE_STAR = 0;
+	const TYPE_TEXT = 2;
 	const TYPE_NUMBER = 3;
 
 	/**
 	 * @inheritdoc
 	 */
-	public static function tableName() {
+	public static function tableName()
+	{
 		return 'question';
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['text', 'type'], 'required'],
 			[['type', 'apply_T2C', 'apply_C2W', 'apply_W2C'], 'integer'],
@@ -47,11 +50,12 @@ class Question extends \yii\db\ActiveRecord {
 	/**
 	 * @inheritdoc
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return [
-			'id' => Yii::t('app', 'ID'),
-			'text' => Yii::t('app', 'Text'),
-			'type' => Yii::t('app', 'Type'),
+			'id'        => Yii::t('app', 'ID'),
+			'text'      => Yii::t('app', 'Text'),
+			'type'      => Yii::t('app', 'Type'),
 			'apply_T2C' => Yii::t('app', 'Apply to Team -> Chair'),
 			'apply_C2W' => Yii::t('app', 'Apply to Chair -> Wing'),
 			'apply_W2C' => Yii::t('app', 'Apply to Wing -> Chair'),
@@ -61,32 +65,37 @@ class Question extends \yii\db\ActiveRecord {
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getAnswers() {
+	public function getAnswers()
+	{
 		return $this->hasMany(Answer::className(), ['questions_id' => 'id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getTournamentHasQuestion() {
+	public function getTournamentHasQuestion()
+	{
 		return $this->hasMany(TournamentHasQuestion::className(), ['questions_id' => 'id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getTournaments() {
+	public function getTournaments()
+	{
 		return $this->hasMany(Tournament::className(), ['id' => 'tournament_id'])
-		            ->viaTable('tournament_has_questions', ['questions_id' => 'id']);
+			->viaTable('tournament_has_questions', ['questions_id' => 'id']);
 	}
 
-	public function getTypeOptions($id = null) {
+	public function getTypeOptions($id = null)
+	{
 		$types = [
-			self::TYPE_STAR => Yii::t("app", "Star Rating (1-5) Field"),
-			self::TYPE_INPUT => Yii::t("app", "Short Text Field"),
-			self::TYPE_TEXT => Yii::t("app", "Long Text Field"),
+			self::TYPE_STAR   => Yii::t("app", "Star Rating (1-5) Field"),
+			self::TYPE_INPUT  => Yii::t("app", "Short Text Field"),
+			self::TYPE_TEXT   => Yii::t("app", "Long Text Field"),
 			self::TYPE_NUMBER => Yii::t("app", "Number Field"),
 		];
+
 		return ($id === null) ? $types : $types[$id];
 	}
 

@@ -10,7 +10,8 @@ use common\models\Debate;
 /**
  * DebateSearch represents the model behind the search form about `\common\models\Debate`.
  */
-class DebateSearch extends Debate {
+class DebateSearch extends Debate
+{
 
 	public $venue;
 	public $adjudicator;
@@ -20,7 +21,8 @@ class DebateSearch extends Debate {
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['id', 'round_id', 'tournament_id', 'og_team_id', 'oo_team_id', 'cg_team_id', 'co_team_id', 'panel_id', 'venue_id', 'og_feedback', 'oo_feedback', 'cg_feedback', 'co_feedback'], 'integer'],
 			[['venue', 'team', 'adjudicator'], 'string'],
@@ -31,7 +33,8 @@ class DebateSearch extends Debate {
 	/**
 	 * @inheritdoc
 	 */
-	public function scenarios() {
+	public function scenarios()
+	{
 		// bypass scenarios() implementation in the parent class
 		return Model::scenarios();
 	}
@@ -43,23 +46,24 @@ class DebateSearch extends Debate {
 	 *
 	 * @return ActiveDataProvider
 	 */
-	public function search($params, $tid, $rid, $displayed = true) {
+	public function search($params, $tid, $rid, $displayed = true)
+	{
 		$query = Debate::find()
-		               ->leftJoin("venue", "venue.id = debate.venue_id")
-		               ->leftJoin("team as ogteam", "ogteam.id = debate.og_team_id")
-		               ->leftJoin("team as ooteam", "ooteam.id = debate.oo_team_id")
-		               ->leftJoin("team as cgteam", "cgteam.id = debate.cg_team_id")
-		               ->leftJoin("team as coteam", "coteam.id = debate.co_team_id")
-		               ->leftJoin("adjudicator_in_panel", "adjudicator_in_panel.panel_id = debate.panel_id")
-		               ->leftJoin("adjudicator", "adjudicator.id = adjudicator_in_panel.adjudicator_id")
-		               ->leftJoin("user", "user.id = adjudicator.user_id")
-		               ->where(["debate.tournament_id" => $tid, "debate.round_id" => $rid]);
+			->leftJoin("venue", "venue.id = debate.venue_id")
+			->leftJoin("team as ogteam", "ogteam.id = debate.og_team_id")
+			->leftJoin("team as ooteam", "ooteam.id = debate.oo_team_id")
+			->leftJoin("team as cgteam", "cgteam.id = debate.cg_team_id")
+			->leftJoin("team as coteam", "coteam.id = debate.co_team_id")
+			->leftJoin("adjudicator_in_panel", "adjudicator_in_panel.panel_id = debate.panel_id")
+			->leftJoin("adjudicator", "adjudicator.id = adjudicator_in_panel.adjudicator_id")
+			->leftJoin("user", "user.id = adjudicator.user_id")
+			->where(["debate.tournament_id" => $tid, "debate.round_id" => $rid]);
 
 		if (!$displayed)
 			$query->andWhere(["displayed" => 0]);
 
 		$dataProvider = new ActiveDataProvider([
-			'query' => $query,
+			'query'      => $query,
 			'pagination' => [
 				'pageSize' => 9999,
 			],
@@ -67,33 +71,33 @@ class DebateSearch extends Debate {
 
 		$dataProvider->setSort([
 			'defaultOrder' => ['highestPoints' => SORT_ASC],
-			'attributes' => [
-				'venue' => [
-					'asc' => ['CHAR_LENGTH(venue.name), venue.name' => SORT_ASC],
+			'attributes'   => [
+				'venue'           => [
+					'asc'  => ['CHAR_LENGTH(venue.name), venue.name' => SORT_ASC],
 					'desc' => ['CHAR_LENGTH(venue.name) DESC, venue.name' => SORT_DESC],
 				],
-				'og_team.name' => [
-					'asc' => ['ogteam.name' => SORT_ASC],
+				'og_team.name'    => [
+					'asc'  => ['ogteam.name' => SORT_ASC],
 					'desc' => ['ogteam.name' => SORT_DESC],
 				],
-				'oo_team.name' => [
-					'asc' => ['ooteam.name' => SORT_ASC],
+				'oo_team.name'    => [
+					'asc'  => ['ooteam.name' => SORT_ASC],
 					'desc' => ['ooteam.name' => SORT_DESC],
 				],
-				'cg_team.name' => [
-					'asc' => ['cgteam.name' => SORT_ASC],
+				'cg_team.name'    => [
+					'asc'  => ['cgteam.name' => SORT_ASC],
 					'desc' => ['cgteam.name' => SORT_DESC],
 				],
-				'co_team.name' => [
-					'asc' => ['coteam.name' => SORT_ASC],
+				'co_team.name'    => [
+					'asc'  => ['coteam.name' => SORT_ASC],
 					'desc' => ['coteam.name' => SORT_DESC],
 				],
 				'language_status' => [
-					'asc' => ['GREATEST(ogteam.language_status, ooteam.language_status, cgteam.language_status, coteam.language_status)' => SORT_ASC],
+					'asc'  => ['GREATEST(ogteam.language_status, ooteam.language_status, cgteam.language_status, coteam.language_status)' => SORT_ASC],
 					'desc' => ['GREATEST(ogteam.language_status, ooteam.language_status, cgteam.language_status, coteam.language_status)' => SORT_DESC],
 				],
-				'highestPoints' => [
-					'asc' => ['GREATEST(ogteam.points, ooteam.points, cgteam.points, coteam.points)' => SORT_DESC],
+				'highestPoints'   => [
+					'asc'  => ['GREATEST(ogteam.points, ooteam.points, cgteam.points, coteam.points)' => SORT_DESC],
 					'desc' => ['GREATEST(ogteam.points, ooteam.points, cgteam.points, coteam.points)' => SORT_ASC],
 				],
 			]
@@ -104,20 +108,20 @@ class DebateSearch extends Debate {
 		}
 
 		$query->andFilterWhere([
-			'id' => $this->id,
-			'round_id' => $this->round_id,
+			'id'            => $this->id,
+			'round_id'      => $this->round_id,
 			'tournament_id' => $this->tournament_id,
-			'og_team_id' => $this->og_team_id,
-			'oo_team_id' => $this->oo_team_id,
-			'cg_team_id' => $this->cg_team_id,
-			'co_team_id' => $this->co_team_id,
-			'panel_id' => $this->panel_id,
-			'venue_id' => $this->venue_id,
-			'og_feedback' => $this->og_feedback,
-			'oo_feedback' => $this->oo_feedback,
-			'cg_feedback' => $this->cg_feedback,
-			'co_feedback' => $this->co_feedback,
-			'time' => $this->time,
+			'og_team_id'    => $this->og_team_id,
+			'oo_team_id'    => $this->oo_team_id,
+			'cg_team_id'    => $this->cg_team_id,
+			'co_team_id'    => $this->co_team_id,
+			'panel_id'      => $this->panel_id,
+			'venue_id'      => $this->venue_id,
+			'og_feedback'   => $this->og_feedback,
+			'oo_feedback'   => $this->oo_feedback,
+			'cg_feedback'   => $this->cg_feedback,
+			'co_feedback'   => $this->co_feedback,
+			'time'          => $this->time,
 		]);
 
 		$query->andWhere("ogteam.name LIKE '%" . $params["DebateSearch"]["team"] . "%' OR " .
@@ -141,17 +145,20 @@ class DebateSearch extends Debate {
 		return $dataProvider;
 	}
 
-	public static function getAdjudicatorSearchArray($tournamentid) {
+	public static function getAdjudicatorSearchArray($tournamentid)
+	{
 
 		$adjs = \common\models\Adjudicator::find()->where(["tournament_id" => $tournamentid])->all();
 		$filter = [];
 		foreach ($adjs as $adj) {
 			$filter[$adj->name] = $adj->name;
 		}
+
 		return $filter;
 	}
 
-	public static function getTeamSearchArray($tournamentid) {
+	public static function getTeamSearchArray($tournamentid)
+	{
 
 		$teams = \common\models\Team::find()->where(["tournament_id" => $tournamentid])->all();
 
@@ -159,6 +166,7 @@ class DebateSearch extends Debate {
 		foreach ($teams as $team) {
 			$filter[$team->name] = $team->name;
 		}
+
 		return $filter;
 	}
 

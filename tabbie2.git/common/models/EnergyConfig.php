@@ -15,12 +15,14 @@ use yii\helpers\ArrayHelper;
  * @property integer    $value
  * @property Tournament $tournament
  */
-class EnergyConfig extends \yii\db\ActiveRecord {
+class EnergyConfig extends \yii\db\ActiveRecord
+{
 
 	/**
 	 * @inheritdoc
 	 */
-	public static function tableName() {
+	public static function tableName()
+	{
 		return 'energy_config';
 	}
 
@@ -28,14 +30,16 @@ class EnergyConfig extends \yii\db\ActiveRecord {
 	 * @inheritdoc
 	 * @return TournamentQuery
 	 */
-	public static function find() {
+	public static function find()
+	{
 		return new TournamentQuery(get_called_class());
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['key', 'tournament_id', 'label'], 'required'],
 			[['tournament_id', 'value'], 'integer'],
@@ -47,20 +51,22 @@ class EnergyConfig extends \yii\db\ActiveRecord {
 	/**
 	 * @inheritdoc
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return [
-			'id' => Yii::t('app', 'ID'),
-			'key' => Yii::t('app', 'Key'),
+			'id'            => Yii::t('app', 'ID'),
+			'key'           => Yii::t('app', 'Key'),
 			'tournament_id' => Yii::t('app', 'Tournament ID'),
-			'label' => Yii::t('app', 'Label'),
-			'value' => Yii::t('app', 'Value'),
+			'label'         => Yii::t('app', 'Label'),
+			'value'         => Yii::t('app', 'Value'),
 		];
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getTournament() {
+	public function getTournament()
+	{
 		return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
 	}
 
@@ -69,7 +75,8 @@ class EnergyConfig extends \yii\db\ActiveRecord {
 	 *
 	 * @return bool
 	 */
-	public function setup($tournament) {
+	public function setup($tournament)
+	{
 		$algo = $tournament->getTabAlgorithmInstance();
 		if ($algo->setup($tournament))
 			return true;
@@ -77,9 +84,10 @@ class EnergyConfig extends \yii\db\ActiveRecord {
 			return false;
 	}
 
-	public static function get($key, $tournament_id) {
+	public static function get($key, $tournament_id)
+	{
 		$conf = EnergyConfig::findByCondition([
-			"key" => $key,
+			"key"           => $key,
 			"tournament_id" => $tournament_id,
 		])->one();
 		if ($conf)
@@ -88,9 +96,11 @@ class EnergyConfig extends \yii\db\ActiveRecord {
 			return null;
 	}
 
-	public static function loadArray($tournament_id) {
+	public static function loadArray($tournament_id)
+	{
 		$config = [];
 		$en = EnergyConfig::find()->tournament($tournament_id)->asArray()->all();
+
 		return ArrayHelper::map($en, "key", "value");
 	}
 

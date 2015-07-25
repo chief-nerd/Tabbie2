@@ -10,7 +10,8 @@ use common\models\Adjudicator;
 /**
  * AdjudicatorSearch represents the model behind the search form about `common\models\Adjudicator`.
  */
-class AdjudicatorSearch extends Adjudicator {
+class AdjudicatorSearch extends Adjudicator
+{
 
 	public $tournament_id;
 	public $name;
@@ -19,7 +20,8 @@ class AdjudicatorSearch extends Adjudicator {
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['id', 'active', 'can_chair', 'are_watched'], 'integer'],
 			[['societyName', 'strength'], 'safe'],
@@ -30,7 +32,8 @@ class AdjudicatorSearch extends Adjudicator {
 	/**
 	 * @inheritdoc
 	 */
-	public function scenarios() {
+	public function scenarios()
+	{
 		// bypass scenarios() implementation in the parent class
 		return Model::scenarios();
 	}
@@ -42,15 +45,16 @@ class AdjudicatorSearch extends Adjudicator {
 	 *
 	 * @return ActiveDataProvider
 	 */
-	public function search($params) {
+	public function search($params)
+	{
 		$query = Adjudicator::find()
-		                    ->joinWith("user", ["user.id" => "adjudicator.user_id"])
-		                    ->joinWith("society", ["society.id" => "adjudicator.society_id"])
-		                    ->where(["adjudicator.tournament_id" => $this->tournament_id]);
+			->joinWith("user", ["user.id" => "adjudicator.user_id"])
+			->joinWith("society", ["society.id" => "adjudicator.society_id"])
+			->where(["adjudicator.tournament_id" => $this->tournament_id]);
 
 
 		$dataProvider = new ActiveDataProvider([
-			'query' => $query,
+			'query'      => $query,
 			'pagination' => [
 				'pageSize' => Yii::$app->params["adjudicators_per_page"],
 			],
@@ -62,15 +66,15 @@ class AdjudicatorSearch extends Adjudicator {
 				'active',
 				'can_chair',
 				'are_watched',
-				'name' => [
-					'asc' => ['user.surename' => SORT_ASC],
-					'desc' => ['user.surename' => SORT_DESC],
+				'name'        => [
+					'asc'   => ['user.surename' => SORT_ASC],
+					'desc'  => ['user.surename' => SORT_DESC],
 					'label' => 'Name'
 				],
 				'strength',
 				'societyName' => [
-					'asc' => ['society.fullname' => SORT_ASC],
-					'desc' => ['society.fullname' => SORT_DESC],
+					'asc'   => ['society.fullname' => SORT_ASC],
+					'desc'  => ['society.fullname' => SORT_DESC],
 					'label' => 'Society Name'
 				]
 			]
@@ -81,10 +85,10 @@ class AdjudicatorSearch extends Adjudicator {
 		}
 
 		$query->andFilterWhere([
-			'id' => $this->id,
-			'active' => $this->active,
+			'id'          => $this->id,
+			'active'      => $this->active,
 			'are_watched' => $this->are_watched,
-			'can_chair' => $this->can_chair,
+			'can_chair'   => $this->can_chair,
 		]);
 
 		switch (substr($this->strength, 0, 1)) {
@@ -109,12 +113,14 @@ class AdjudicatorSearch extends Adjudicator {
 		return $dataProvider;
 	}
 
-	public static function getSearchArray($tid) {
+	public static function getSearchArray($tid)
+	{
 		$adjudicators = Adjudicator::find()->joinWith("user")->where(["tournament_id" => $tid])->all();
 		$filter = [];
 		foreach ($adjudicators as $a) {
 			$filter[$a->name] = $a->name;
 		}
+
 		return $filter;
 	}
 

@@ -87,8 +87,8 @@ class DrawLine extends Model
 	public function addMessage($key, $msg, $penalty = null)
 	{
 		$this->messages[] = [
-			"key" => $key,
-			"msg" => $msg,
+			"key"     => $key,
+			"msg"     => $msg,
 			"penalty" => $penalty,
 		];
 	}

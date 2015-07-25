@@ -22,23 +22,25 @@ use yii\filters\AccessControl;
 /**
  * SocietyController implements the CRUD actions for Society model.
  */
-class SocietyController extends Controller {
+class SocietyController extends Controller
+{
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return [
 			'access' => [
 				'class' => AccessControl::className(),
 				'rules' => [
 					[
-						'allow' => true,
+						'allow'         => true,
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->isAdmin());
 						}
 					],
 				],
 			],
-			'verbs' => [
-				'class' => VerbFilter::className(),
+			'verbs'  => [
+				'class'   => VerbFilter::className(),
 				'actions' => [
 					'logout' => ['post'],
 				],
@@ -51,12 +53,13 @@ class SocietyController extends Controller {
 	 *
 	 * @return mixed
 	 */
-	public function actionIndex() {
+	public function actionIndex()
+	{
 		$searchModel = new SocietySearch();
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 		return $this->render('index', [
-			'searchModel' => $searchModel,
+			'searchModel'  => $searchModel,
 			'dataProvider' => $dataProvider,
 		]);
 	}
@@ -68,13 +71,14 @@ class SocietyController extends Controller {
 	 *
 	 * @return mixed
 	 */
-	public function actionView($id) {
+	public function actionView($id)
+	{
 		$searchModel = new UserSearch();
 		$dataProvider = $searchModel->searchBySociety(Yii::$app->request->queryParams, $id);
 
 		return $this->render('view', [
-			'model' => $this->findModel($id),
-			'memberSearchModel' => $searchModel,
+			'model'              => $this->findModel($id),
+			'memberSearchModel'  => $searchModel,
 			'memberDataProvider' => $dataProvider,
 		]);
 	}
@@ -87,7 +91,8 @@ class SocietyController extends Controller {
 	 *
 	 * @return mixed
 	 */
-	public function actionMerge($id, $other) {
+	public function actionMerge($id, $other)
+	{
 
 		InSociety::updateAll(["society_id" => $other], ["society_id" => $id]);
 		Tournament::updateAll(["hosted_by_id" => $other], ["hosted_by_id" => $id]);
@@ -104,13 +109,13 @@ class SocietyController extends Controller {
 	 *
 	 * @return mixed
 	 */
-	public function actionCreate() {
+	public function actionCreate()
+	{
 		$model = new Society();
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
 			return $this->redirect(['view', 'id' => $model->id]);
-		}
-		else {
+		} else {
 			return $this->render('create', [
 				'model' => $model,
 			]);
@@ -125,13 +130,13 @@ class SocietyController extends Controller {
 	 *
 	 * @return mixed
 	 */
-	public function actionUpdate($id) {
+	public function actionUpdate($id)
+	{
 		$model = $this->findModel($id);
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
 			return $this->redirect(['index']);
-		}
-		else {
+		} else {
 			return $this->render('update', [
 				'model' => $model,
 			]);
@@ -146,13 +151,15 @@ class SocietyController extends Controller {
 	 *
 	 * @return mixed
 	 */
-	public function actionDelete($id) {
+	public function actionDelete($id)
+	{
 		$this->findModel($id)->delete();
 
 		return $this->redirect(['index']);
 	}
 
-	public function actionImport() {
+	public function actionImport()
+	{
 		if (Yii::$app->request->isPost) {
 			$file = \yii\web\UploadedFile::getInstanceByName('csvFile');
 			$import = [];
@@ -169,9 +176,9 @@ class SocietyController extends Controller {
 						throw new \yii\base\Exception("500", Yii::t("app", "File Syntax Wrong"));
 					}
 					$import[] = [
-						"fullname" => $data[0],
-						"abr" => $data[1],
-						"city" => $data[2],
+						"fullname"   => $data[0],
+						"abr"        => $data[1],
+						"city"       => $data[2],
 						"country_id" => $data[3],
 					];
 					$row++;
@@ -189,23 +196,21 @@ class SocietyController extends Controller {
 					$l["country_id"] = Country::COUNTRY_UNKNOWN_ID;
 
 				$socMatch = Society::find()
-				                   ->where(["fullname" => $l['fullname']])
-				                   ->orWhere(["abr" => $l['abr']])
-				                   ->all();
+					->where(["fullname" => $l['fullname']])
+					->orWhere(["abr" => $l['abr']])
+					->all();
 
 				if (count($socMatch) == 0) {
 					$soc = new Society($l);
 					if (!$soc->save())
 						throw new Exception(print_r($soc->getErrors(), true));
-				}
-				else if (count($socMatch) == 1) {
+				} else if (count($socMatch) == 1) {
 					//already exist
 					$soc = $socMatch[0];
 					$soc->load($l);
 					if (!$soc->save())
 						throw new Exception(print_r($soc->getErrors(), true));
-				}
-				else {
+				} else {
 					throw new Exception("Multiple Matches: " . print_r($socMatch, true));
 				}
 			}
@@ -223,11 +228,11 @@ class SocietyController extends Controller {
 	 * @return Society the loaded model
 	 * @throws NotFoundHttpException if the model cannot be found
 	 */
-	protected function findModel($id) {
+	protected function findModel($id)
+	{
 		if (($model = Society::findOne($id)) !== null) {
 			return $model;
-		}
-		else {
+		} else {
 			throw new NotFoundHttpException('The requested page does not exist.');
 		}
 	}
@@ -245,16 +250,15 @@ class SocietyController extends Controller {
 		if (!is_null($search["term"]) && $search["term"] != "") {
 			$query = new \yii\db\Query;
 			$query->select(["id", "name as text"])
-			      ->from('country')
+				->from('country')
 				->where('name LIKE "%' . $search["term"] . '%"')
-			      ->limit(20);
+				->limit(20);
 			$command = $query->createCommand();
 			$data = $command->queryAll();
 			$out['results'] = array_values($data);
 		} elseif ($cid > 0) {
 			$out['results'] = ['id' => $cid, 'text' => Country::findOne($cid)->name];
-		}
-		else {
+		} else {
 			$out['results'] = ['id' => 0, 'text' => 'No matching records found'];
 		}
 		echo Json::encode($out);

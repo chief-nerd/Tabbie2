@@ -1,30 +1,33 @@
 <?php
 
-	use yii\db\Schema;
-	use yii\db\Migration;
+use yii\db\Schema;
+use yii\db\Migration;
 
-class m141024_133146_init_country extends Migration {
+class m141024_133146_init_country extends Migration
+{
 
-		public function up() {
-			$filename = Yii::getAlias("@app") . "/../../schema/Countries.sql";
-			if (file_exists($filename)) {
-				$sql = file_get_contents($filename, "r");
-				$dbname = substr(strstr($this->db->dsn, "dbname="), 7);
-				$this->execute("USE $dbname;");
-				$this->execute($sql);
-				return true;
-			}
-			else
-				echo "ERROR: $filename doesn't exist!";
+	public function up()
+	{
+		$filename = Yii::getAlias("@app") . "/../../schema/Countries.sql";
+		if (file_exists($filename)) {
+			$sql = file_get_contents($filename, "r");
+			$dbname = substr(strstr($this->db->dsn, "dbname="), 7);
+			$this->execute("USE $dbname;");
+			$this->execute($sql);
 
-			return false;
-		}
+			return true;
+		} else
+			echo "ERROR: $filename doesn't exist!";
 
-		public function down() {
-
-			echo "Cannot be reverted.\n";
-
-			return false;
-		}
-
+		return false;
 	}
+
+	public function down()
+	{
+
+		echo "Cannot be reverted.\n";
+
+		return false;
+	}
+
+}

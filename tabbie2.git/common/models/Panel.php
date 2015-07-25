@@ -19,17 +19,19 @@ use Yii;
  * @property Debate               $debate
  * @property Tournament           $tournament
  */
-class Panel extends \yii\db\ActiveRecord {
+class Panel extends \yii\db\ActiveRecord
+{
 
 	const FUNCTION_CHAIR = 1;
-	const FUNCTION_WING  = 0;
+	const FUNCTION_WING = 0;
 
 	public $set_adjudicators = [];
 
-	public static function getFunctionLabel($id) {
+	public static function getFunctionLabel($id)
+	{
 		$label = [
 			self::FUNCTION_CHAIR => Yii::t("app", "Chair"),
-			self::FUNCTION_WING => Yii::t("app", "Wing"),
+			self::FUNCTION_WING  => Yii::t("app", "Wing"),
 		];
 
 		return $label[$id];
@@ -38,7 +40,8 @@ class Panel extends \yii\db\ActiveRecord {
 	/**
 	 * @inheritdoc
 	 */
-	public static function tableName() {
+	public static function tableName()
+	{
 		return 'panel';
 	}
 
@@ -46,14 +49,16 @@ class Panel extends \yii\db\ActiveRecord {
 	 * @inheritdoc
 	 * @return TournamentQuery
 	 */
-	public static function find() {
+	public static function find()
+	{
 		return new TournamentQuery(get_called_class());
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['strength', 'tournament_id', 'used', 'is_preset'], 'integer'],
 			[['time', 'set_adjudicators'], 'safe'],
@@ -64,38 +69,42 @@ class Panel extends \yii\db\ActiveRecord {
 	/**
 	 * @inheritdoc
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return [
-			'id' => Yii::t('app', 'ID'),
-			'strength' => Yii::t('app', 'Strength'),
-			'time' => Yii::t('app', 'Time'),
+			'id'            => Yii::t('app', 'ID'),
+			'strength'      => Yii::t('app', 'Strength'),
+			'time'          => Yii::t('app', 'Time'),
 			'tournament_id' => Yii::t('app', 'Tournament ID'),
-			'used' => Yii::t('app', 'Used'),
-			'is_preset' => Yii::t('app', 'Is Preset Panel'),
+			'used'          => Yii::t('app', 'Used'),
+			'is_preset'     => Yii::t('app', 'Is Preset Panel'),
 		];
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getAdjudicatorInPanels() {
+	public function getAdjudicatorInPanels()
+	{
 		return $this->hasMany(AdjudicatorInPanel::className(), ['panel_id' => 'id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getAdjudicators() {
+	public function getAdjudicators()
+	{
 		return $this->hasMany(Adjudicator::className(), ['id' => 'adjudicator_id'])
-		            ->viaTable('adjudicator_in_panel', ['panel_id' => 'id']);
+			->viaTable('adjudicator_in_panel', ['panel_id' => 'id']);
 	}
 
-	public function getAdjudicatorsObjects() {
+	public function getAdjudicatorsObjects()
+	{
 		return Adjudicator::find()
-		                  ->joinWith('adjudicatorInPanels')
-		                  ->where(["panel_id" => $this->id])
-		                  ->orderBy(['function' => SORT_DESC])
-		                  ->all();
+			->joinWith('adjudicatorInPanels')
+			->where(["panel_id" => $this->id])
+			->orderBy(['function' => SORT_DESC])
+			->all();
 	}
 
 	/**
@@ -103,25 +112,29 @@ class Panel extends \yii\db\ActiveRecord {
 	 *
 	 * @return AdjudicatorInPanel
 	 */
-	public function getSpecificAdjudicatorInPanel($id) {
+	public function getSpecificAdjudicatorInPanel($id)
+	{
 		return AdjudicatorInPanel::findByCondition(["panel_id" => $this->id, "adjudicator_id" => $id])->one();
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getDebate() {
+	public function getDebate()
+	{
 		return $this->hasOne(Debate::className(), ['panel_id' => 'id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getTournament() {
+	public function getTournament()
+	{
 		return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
 	}
 
-	public function check() {
+	public function check()
+	{
 		$amount_chairs = 0;
 		$amount = 0;
 		foreach ($this->adjudicatorInPanels as $adj) {
@@ -136,7 +149,7 @@ class Panel extends \yii\db\ActiveRecord {
 			return true;
 		else
 			throw new Exception(Yii::t("app", "Panel #{id} has {chairs} chairs", [
-				"id" => $this->id,
+				"id"     => $this->id,
 				"chairs" => $amount_chairs,
 			]));
 
@@ -148,18 +161,19 @@ class Panel extends \yii\db\ActiveRecord {
 	 *
 	 * @return AdjudicatorInPanel
 	 */
-	public function getChairInPanel() {
+	public function getChairInPanel()
+	{
 		return AdjudicatorInPanel::findBySql("SELECT " . AdjudicatorInPanel::tableName() . ".* from " . AdjudicatorInPanel::tableName() . " "
 			. "LEFT JOIN " . Panel::tableName() . " ON panel_id = " . Panel::tableName() . ".id "
 			. "WHERE " . Panel::tableName() . ".id = " . $this->id . " AND " . AdjudicatorInPanel::tableName() . ".function = " . Panel::FUNCTION_CHAIR)
-		                         ->one();
+			->one();
 	}
 
-	public function is_chair($id) {
+	public function is_chair($id)
+	{
 		if ($this->getChairInPanel()->adjudicator_id == $id) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
 	}
@@ -170,7 +184,8 @@ class Panel extends \yii\db\ActiveRecord {
 	 *
 	 * @param integer|null $id
 	 */
-	public function setChair($id = null) {
+	public function setChair($id = null)
+	{
 
 		if ($id == null) {
 			$nextHighestAdj = AdjudicatorInPanel::find()->where([
@@ -199,7 +214,8 @@ class Panel extends \yii\db\ActiveRecord {
 	 * @param Panel   $newPanel
 	 * @param integer $id
 	 */
-	public function changeTo($newPanel, $id) {
+	public function changeTo($newPanel, $id)
+	{
 		$adj = $this->getSpecificAdjudicatorInPanel($id);
 		if ($adj instanceof AdjudicatorInPanel) {
 			$adj->panel_id = $newPanel->id;
@@ -207,18 +223,18 @@ class Panel extends \yii\db\ActiveRecord {
 				return true;
 			else
 				throw new \yii\base\Exception(print_r($adj->getErrors(), true));
-		}
-		else
+		} else
 			throw new Exception("getSpecificAdjudicatorInPanel with ID " . $id . " NOT found");
 	}
 
-	public function setWing($id) {
+	public function setWing($id)
+	{
 		$adj = $this->getSpecificAdjudicatorInPanel($id);
 
 		if ($adj->function == Panel::FUNCTION_CHAIR) {
 			$nextHighestAdjNotID = AdjudicatorInPanel::find()
-			                                         ->where("panel_id = " . $this->id . " AND adjudicator_id != " . $id)
-			                                         ->joinWith("adjudicator")->orderBy("strength")->one();
+				->where("panel_id = " . $this->id . " AND adjudicator_id != " . $id)
+				->joinWith("adjudicator")->orderBy("strength")->one();
 			$id = $nextHighestAdjNotID->adjudicator_id;
 			$this->setChair($id);
 
@@ -228,20 +244,24 @@ class Panel extends \yii\db\ActiveRecord {
 			else
 				throw new \yii\base\Exception(print_r($adj->getErrors(), true));
 		}
+
 		return true;
 	}
 
-	public function setAllWings() {
+	public function setAllWings()
+	{
 		foreach ($this->adjudicatorInPanels as $adj) {
 			$adj->function = Panel::FUNCTION_WING;
 			if (!$adj->save())
 				throw new \yii\base\Exception(print_r($adj->getErrors(), true));
 		}
+
 		return true;
 	}
 
 
-	public function generateStrength() {
+	public function generateStrength()
+	{
 		$strength = 0;
 		foreach ($this->adjudicators as $adj) {
 			$strength += $adj->strength;
@@ -256,7 +276,8 @@ class Panel extends \yii\db\ActiveRecord {
 	}
 
 
-	public function createAIP() {
+	public function createAIP()
+	{
 		//Clean
 		AdjudicatorInPanel::deleteAll(["panel_id" => $this->id]);
 
@@ -277,6 +298,7 @@ class Panel extends \yii\db\ActiveRecord {
 		}
 		$this->refresh();
 		$this->generateStrength();
+
 		return $this->save();
 	}
 

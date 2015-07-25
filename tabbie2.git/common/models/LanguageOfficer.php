@@ -12,11 +12,13 @@ use Yii;
  * @property User       $user
  * @property Tournament $tournament
  */
-class LanguageOfficer extends \yii\db\ActiveRecord {
+class LanguageOfficer extends \yii\db\ActiveRecord
+{
 	/**
 	 * @inheritdoc
 	 */
-	public static function tableName() {
+	public static function tableName()
+	{
 		return 'language_officer';
 	}
 
@@ -24,14 +26,16 @@ class LanguageOfficer extends \yii\db\ActiveRecord {
 	 * @inheritdoc
 	 * @return TournamentQuery
 	 */
-	public static function find() {
+	public static function find()
+	{
 		return new TournamentQuery(get_called_class());
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['user_id', 'tournament_id'], 'required'],
 			[['user_id', 'tournament_id'], 'integer']
@@ -41,9 +45,10 @@ class LanguageOfficer extends \yii\db\ActiveRecord {
 	/**
 	 * @inheritdoc
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return [
-			'user_id' => Yii::t('app', 'User ID'),
+			'user_id'       => Yii::t('app', 'User ID'),
 			'tournament_id' => Yii::t('app', 'Tournament ID'),
 		];
 	}
@@ -51,14 +56,16 @@ class LanguageOfficer extends \yii\db\ActiveRecord {
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getUser() {
+	public function getUser()
+	{
 		return $this->hasOne(User::className(), ['id' => 'user_id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getTournament() {
+	public function getTournament()
+	{
 		return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
 	}
 }

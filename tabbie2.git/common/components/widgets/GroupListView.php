@@ -14,7 +14,8 @@ use yii\widgets\ListView;
 use common\models\Venue;
 use Yii;
 
-class GroupListView extends ListView {
+class GroupListView extends ListView
+{
 	public $groupBy = "venue.group";
 
 	public $panelClass = "panel-default";
@@ -24,7 +25,8 @@ class GroupListView extends ListView {
 	 *
 	 * @return string the rendering result
 	 */
-	public function renderItems() {
+	public function renderItems()
+	{
 		$models = $this->dataProvider->getModels();
 		$keys = $this->dataProvider->getKeys();
 		$rows = [];
