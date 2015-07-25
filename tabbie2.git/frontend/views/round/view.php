@@ -258,24 +258,30 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 				$found_warning = false;
 				$found_error = false;
 				$found_notice = false;
-				$msg = json_decode($model->messages);
-				foreach ($msg as $m) {
-					if (isset($m->penalty)) { //Legacy
-						if ($m->key == "error" && $m->penalty > 0) $found_error = true;
-						if ($m->key == "warning" && $m->penalty > 0) $found_warning = true;
-						if ($m->key == "notice" && $m->penalty > 0) $found_notice = true;
+				try {
+					$msg = json_decode($model->messages);
+
+					foreach ($msg as $m) {
+						if (isset($m->penalty)) { //Legacy
+							if ($m->key == "error" && $m->penalty > 0) $found_error = true;
+							if ($m->key == "warning" && $m->penalty > 0) $found_warning = true;
+							if ($m->key == "notice" && $m->penalty > 0) $found_notice = true;
+						}
 					}
+
+					if ($found_notice)
+						$ret .= "&nbsp;" . \kartik\helpers\Html::icon("info-sign", ["class" => "text-primary"]);
+					if ($found_warning)
+						$ret .= "&nbsp;" . \kartik\helpers\Html::icon("warning-sign", ["class" => "text-warning"]);
+					if ($found_error)
+						$ret .= "&nbsp;" . \kartik\helpers\Html::icon("exclamation-sign", ["class" => "text-danger"]);
+
+					if (!$found_notice && !$found_warning && !$found_error)
+						$ret .= "&nbsp;" . \kartik\helpers\Html::icon("glyphicon-ok", ["class" => "text-success"]);
+
+				} catch (\yii\base\Exception $ex) {
+					return "Error overflow";
 				}
-
-				if ($found_notice)
-					$ret .= "&nbsp;" . \kartik\helpers\Html::icon("info-sign", ["class" => "text-primary"]);
-				if ($found_warning)
-					$ret .= "&nbsp;" . \kartik\helpers\Html::icon("warning-sign", ["class" => "text-warning"]);
-				if ($found_error)
-					$ret .= "&nbsp;" . \kartik\helpers\Html::icon("exclamation-sign", ["class" => "text-danger"]);
-
-				if (!$found_notice && !$found_warning && !$found_error)
-					$ret .= "&nbsp;" . \kartik\helpers\Html::icon("glyphicon-ok", ["class" => "text-success"]);
 
 				return $ret;
 			},
