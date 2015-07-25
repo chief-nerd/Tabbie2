@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 							<?= Html::a(\kartik\helpers\Html::icon("cog") . "&nbsp" . Yii::t('app', 'Update Round'), ['update', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-primary']) ?>
 
 							<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
-							        aria-expanded="false">
+									aria-expanded="false">
 								<span class="caret"></span>
 								<span class="sr-only"><?= Yii::t("app", "Toggle Dropdown") ?></span>
 							</button>
@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 										<?=
 										Html::a(\kartik\helpers\Html::icon("refresh") . "&nbsp" . Yii::t('app', 'Continue Improving by') . " " . ($runs * $i / 1000) . "k", [
 											'improve',
-											'id' => $model->id,
+											'id'   => $model->id,
 											'runs' => ($runs * $i),
 											'tournament_id' => $tournament->id],
 											[
@@ -93,7 +93,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 					<div class="panel-body">
 						<?
 						$url = \yii\helpers\Url::to(["public/draw",
-							"id" => $model->id,
+							"id"          => $model->id,
 							"tournament_id" => $model->tournament_id,
 							"accessToken" => $tournament->accessToken
 						], true);
@@ -112,7 +112,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 					<div class="panel-body">
 						<?
 						$url = \yii\helpers\Url::to(["public/runner-view",
-							"id" => $model->id,
+							"id"          => $model->id,
 							"tournament_id" => $model->tournament_id,
 							"accessToken" => $tournament->accessToken
 						], true);
@@ -140,9 +140,9 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 				$attributes[] = 'infoslide:ntext';
 			$attributes[] = [
 				"attribute" => 'energy',
-				'label' => Yii::t("app", "Average Energy"),
+				'label'  => Yii::t("app", "Average Energy"),
 				'format' => 'raw',
-				'value' => (($debateDataProvider->getCount()) ? intval($model->energy / $debateDataProvider->getCount()) : 0),
+				'value'  => (($debateDataProvider->getCount()) ? intval($model->energy / $debateDataProvider->getCount()) : 0),
 			];
 			if ($model->displayed)
 				$attributes[] = 'prep_started';
@@ -150,7 +150,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 			$attributes[] = [
 				"attribute" => 'lastrun_temp',
 				'format' => 'raw',
-				'value' => Yii::$app->formatter->asDecimal($model->lastrun_temp, 15),
+				'value'  => Yii::$app->formatter->asDecimal($model->lastrun_temp, 15),
 			];
 
 			echo DetailView::widget([
@@ -162,17 +162,17 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 		<div class="col-md-4 text-center">
 			<h3 style="margin-top:0; margin-bottom:20px;"><?= Yii::t("app", "Color Palette") ?></h3>
 			<?= SwitchInput::widget([
-				'name' => 'colorpattern',
-				'type' => SwitchInput::RADIO,
-				'value' => "strength",
-				'items' => [
+				'name'         => 'colorpattern',
+				'type'         => SwitchInput::RADIO,
+				'value'        => "strength",
+				'items'        => [
 					['label' => Yii::t("app", "Strength"), 'value' => "strength"],
 					['label' => Yii::t("app", "Gender"), 'value' => "gender"],
 					['label' => Yii::t("app", "Regions"), 'value' => "region"],
 				],
 				'pluginOptions' => ['size' => 'medium'],
 				'labelOptions' => ["style" => "width: 80px"],
-				'separator' => "<br/>",
+				'separator'    => "<br/>",
 				'pluginEvents' => [
 					"switchChange.bootstrapSwitch" => "function() { $('#debateDraw')[0].className = this.value; }",
 				],
@@ -189,9 +189,9 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 	<?
 	$gridColumns = [
 		[
-			'class' => 'kartik\grid\ExpandRowColumn',
-			'width' => '30px',
-			'value' => function ($model, $key, $index, $column) {
+			'class'     => 'kartik\grid\ExpandRowColumn',
+			'width'     => '30px',
+			'value'     => function ($model, $key, $index, $column) {
 				return GridView::ROW_COLLAPSED;
 			},
 			/*'detail'=>function ($model, $key, $index, $column) {
@@ -201,12 +201,12 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 			'detailUrl' => \yii\helpers\Url::to(['round/debatedetails', "tournament_id" => $model->tournament_id]),
 		],
 		[
-			'class' => '\kartik\grid\DataColumn',
+			'class'  => '\kartik\grid\DataColumn',
 			'attribute' => 'venue',
-			'label' => Yii::t("app", 'Venue'),
-			'width' => '8%',
+			'label'  => Yii::t("app", 'Venue'),
+			'width'  => '8%',
 			'format' => 'raw',
-			'value' => function ($model, $key, $index, $widget) {
+			'value'  => function ($model, $key, $index, $widget) {
 				if (!$model->round->published)
 					return $this->render("_changeVenue", ["model" => $model]);
 				else
@@ -290,14 +290,14 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 			'width' => "20px",
 		],
 		[
-			'class' => '\kartik\grid\DataColumn',
+			'class'  => '\kartik\grid\DataColumn',
 			'attribute' => 'panel',
-			'label' => Yii::t("app", 'Adjudicator'),
+			'label'  => Yii::t("app", 'Adjudicator'),
 			'format' => 'raw',
-			'width' => '40%',
-			'value' => function ($model, $key, $index, $widget) {
+			'width'  => '40%',
+			'value'  => function ($model, $key, $index, $widget) {
 				/** @var Debate $model */
-				$list = array();
+				$list = [];
 				$panel = common\models\Panel::findOne($model->panel_id);
 				if ($panel && count($panel->adjudicators) > 0) {
 					$panel_chair_id = $model->getChair()->id;
@@ -313,77 +313,76 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 							$class .= " " . \common\models\User::getCSSGender($adj->user->gender);
 
 						$popup_obj = PopoverX::widget([
-							'header' => $adj->name . " " . $adj->user->getGenderIcon(),
-							'size' => 'md',
-							'placement' => PopoverX::ALIGN_BOTTOM,
-							'content' => $popcontent,
-							'footer' => "" .
+							'header'       => $adj->name . " " . $adj->user->getGenderIcon(),
+							'size'         => 'md',
+							'placement'    => PopoverX::ALIGN_BOTTOM,
+							'content'      => $popcontent,
+							'footer'       => "" .
 								//Html::a(\kartik\helpers\Html::icon("move") . "&nbsp;" . Yii::t("app", 'Move'), ["adjudicator/move", "id" => $adj->id, "debate" => $model->id, "tournament_id" => $model->tournament_id], ['class' => 'moveAdj btn btn-sm btn-primary']) .
 								Html::a(\kartik\helpers\Html::icon("folder-open") . "&nbsp;" . Yii::t("app", 'View Feedback'), ["feedback/adjudicator", "tournament_id" => $model->tournament_id, "AnswerSearch" => ["id" => $adj->id]], ['class' => 'btn btn-sm btn-default', 'target' => '_blank', 'data-pjax' => "0"]) .
 								Html::a(\kartik\helpers\Html::icon("folder-open") . "&nbsp;" . Yii::t("app", 'View User'), ["adjudicator/view", "id" => $adj->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-sm btn-default', 'target' => '_blank', 'data-pjax' => "0"]),
 							'toggleButton' => [
-								'label' => $adj->user->name,
-								'class' => 'btn btn-sm adj ' . $class,
-								"data-id" => $adj->id,
+								'label'     => $adj->user->name,
+								'class'     => 'btn btn-sm adj ' . $class,
+								"data-id"   => $adj->id,
 								"data-strength" => $adj->strength,
 								"data-href" => yii\helpers\Url::to(["adjudicator/popup", "id" => $adj->id, "round_id" => $model->round_id, "tournament_id" => $model->tournament_id]),
 							],
 						]);
 
 						if ($adj->id == $panel_chair_id) {
-							array_unshift($list, array('content' => $popup_obj));
-						}
-						else
+							array_unshift($list, ['content' => $popup_obj]);
+						} else
 							$list[]['content'] = $popup_obj;
 					}
 
 					return Sortable::widget([
-						'type' => Sortable::TYPE_GRID,
-						'items' => $list,
-						'disabled' => $model->round->published,
+						'type'       => Sortable::TYPE_GRID,
+						'items'      => $list,
+						'disabled'   => $model->round->published,
 						'handleLabel' => ($model->round->published) ? '' : \kartik\helpers\Html::icon("move"),
-						'connected' => true,
+						'connected'  => true,
 						'showHandle' => true,
-						'options' => [
+						'options'    => [
 							"data-panel" => $panel->id,
 							"class" => "adj_panel",
 						],
 					]);
-				}
-				else { // Empty panel line - but a placeholder there
+				} else { // Empty panel line - but a placeholder there
 					//@todo: Allow dropping into it <ul> does not render
 					return Sortable::widget([
-						'type' => Sortable::TYPE_GRID,
-						'items' => [],
-						'disabled' => $model->round->published,
+						'type'       => Sortable::TYPE_GRID,
+						'items'      => [],
+						'disabled'   => $model->round->published,
 						'handleLabel' => ($model->round->published) ? '' : \kartik\helpers\Html::icon("move"),
-						'connected' => true,
+						'connected'  => true,
 						'showHandle' => true,
-						'options' => [
+						'options'    => [
 							"data-panel" => $panel->id,
 							"class" => "adj_panel",
 						],
 					]);
 				}
+
 				return "";
 			}
 		],
 	];
 
 	echo GridView::widget([
-		'dataProvider' => $debateDataProvider,
-		'filterModel' => $debateSearchModel,
-		'columns' => $gridColumns,
+		'dataProvider'    => $debateDataProvider,
+		'filterModel'     => $debateSearchModel,
+		'columns'         => $gridColumns,
 		'showPageSummary' => false,
-		'layout' => "{items}\n{pager}",
-		'bootstrap' => true,
-		'pjax' => true,
-		'hover' => true,
-		'responsive' => true,
-		'floatHeader' => true,
+		'layout'          => "{items}\n{pager}",
+		'bootstrap'       => true,
+		'pjax'            => true,
+		'hover'           => true,
+		'responsive'      => true,
+		'floatHeader'     => true,
 		'floatHeaderOptions' => ['scrollingTop' => 100],
-		'id' => 'debateDraw',
-		'options' => [
+		'id'              => 'debateDraw',
+		'options'         => [
 			'class' => 'strength',
 			'data-href' => \yii\helpers\Url::to(["adjudicator/replace", "tournament_id" => $tournament->id]),
 		]

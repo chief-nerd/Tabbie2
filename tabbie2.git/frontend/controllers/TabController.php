@@ -16,9 +16,11 @@ use yii\filters\AccessControl;
 /**
  * TabController implements the CRUD actions for DrawAfterRound model.
  */
-class TabController extends BaseTournamentController {
+class TabController extends BaseTournamentController
+{
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return [
 			'tournamentFilter' => [
 				'class' => TournamentContextFilter::className(),
@@ -27,7 +29,7 @@ class TabController extends BaseTournamentController {
 				'class' => AccessControl::className(),
 				'rules' => [
 					[
-						'allow' => true,
+						'allow'   => true,
 						'actions' => ['live-team', 'live-speaker', 'publish'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
@@ -35,7 +37,7 @@ class TabController extends BaseTournamentController {
 					],
 				],
 			],
-			'verbs' => [
+			'verbs'  => [
 				'class' => VerbFilter::className(),
 				'actions' => [
 					'delete' => ['post'],
@@ -49,13 +51,14 @@ class TabController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionLiveTeam() {
+	public function actionLiveTeam()
+	{
 
 		$lines = PublishTabTeam::generateTeamTab($this->_tournament);
 
 		$dataProvider = new ArrayDataProvider([
 			'allModels' => $lines,
-			'sort' => [
+			'sort'      => [
 				'attributes' => ['enl_place'],
 			],
 			'pagination' => [
@@ -74,13 +77,14 @@ class TabController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionLiveSpeaker() {
+	public function actionLiveSpeaker()
+	{
 
 		$lines = PublishTabSpeaker::generateSpeakerTab($this->_tournament);
 
 		$dataProvider = new ArrayDataProvider([
 			'allModels' => $lines,
-			'sort' => [
+			'sort'      => [
 				'attributes' => ['enl_place'],
 			],
 			'pagination' => [
@@ -94,20 +98,21 @@ class TabController extends BaseTournamentController {
 		]);
 	}
 
-	public function actionPublish() {
+	public function actionPublish()
+	{
 		$lines_team = PublishTabTeam::generateTeamTab($this->_tournament);
 
 		foreach ($lines_team as $line) {
 			$ptt = new PublishTabTeam([
 				"tournament_id" => $this->_tournament->id,
-				"team_id" => $line->object->id,
+				"team_id"   => $line->object->id,
 				"enl_place" => $line->enl_place,
 				"esl_place" => $line->esl_place,
 				"cache_results" => json_encode($line->results_array),
-				"speaks" => $line->speaks,
+				"speaks"    => $line->speaks,
 			]);
 			if (!$ptt->save())
-                throw new Exception("Save Error " . ObjectError::getMsg($ptt));
+				throw new Exception("Save Error " . ObjectError::getMsg($ptt));
 		}
 
 		$lines_speaker = PublishTabSpeaker::generateSpeakerTab($this->_tournament);
@@ -116,14 +121,14 @@ class TabController extends BaseTournamentController {
 			if ($line->object) {
 				$ptt = new PublishTabSpeaker([
 					"tournament_id" => $this->_tournament->id,
-					"user_id" => $line->object->id,
+					"user_id"   => $line->object->id,
 					"enl_place" => $line->enl_place,
 					"esl_place" => $line->esl_place,
 					"cache_results" => json_encode($line->results_array),
-					"speaks" => $line->speaks,
+					"speaks"    => $line->speaks,
 				]);
 				if (!$ptt->save())
-                    throw new Exception("Save Error " . ObjectError::getMsg($ptt));
+					throw new Exception("Save Error " . ObjectError::getMsg($ptt));
 			}
 		}
 

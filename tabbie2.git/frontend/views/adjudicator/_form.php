@@ -48,19 +48,19 @@ function (element, callback) {
 SCRIPT;
 
 	echo $form->field($model, 'user_id')->widget(Select2::classname(), [
-		'options' => ['placeholder' => Yii::t("app", 'Search for a user ...')],
-		'addon' => [
+		'options'       => ['placeholder' => Yii::t("app", 'Search for a user ...')],
+		'addon'         => [
 			"prepend" => [
 				"content" => \kartik\helpers\Html::icon("user")
 			],
 		],
 		'pluginOptions' => [
-			'allowClear' => true,
+			'allowClear'    => true,
 			'minimumInputLength' => 3,
-			'ajax' => [
-				'url' => $url,
+			'ajax'          => [
+				'url'     => $url,
 				'dataType' => 'json',
-				'data' => new JsExpression('function(term,page) { return {search:term}; }'),
+				'data'    => new JsExpression('function(term,page) { return {search:term}; }'),
 				'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
 			],
 			'initSelection' => new JsExpression($initScript)
@@ -69,22 +69,22 @@ SCRIPT;
 	?>
 	<?
 	echo $form->field($model, 'society_id')->widget(Select2::classname(), [
-		'options' => [
+		'options'       => [
 			'placeholder' => Yii::t("app", 'Search for a societies ...'),
 			'multiple' => false,
 		],
-		'addon' => [
+		'addon'         => [
 			"prepend" => [
 				"content" => \kartik\helpers\Html::icon("tower")
 			],
 		],
 		'pluginOptions' => [
-			'allowClear' => true,
+			'allowClear'    => true,
 			'minimumInputLength' => 3,
-			'ajax' => [
-				'url' => $urlSocietyList,
+			'ajax'          => [
+				'url'     => $urlSocietyList,
 				'dataType' => 'json',
-				'data' => new JsExpression('function(term,page) { return {search:term}; }'),
+				'data'    => new JsExpression('function(term,page) { return {search:term}; }'),
 				'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
 			],
 			'initSelection' => new JsExpression($initSocietyScript)
@@ -101,34 +101,34 @@ SCRIPT;
 	?>
 
 	<?
-		$jsExpression = "function(val) { ";
+	$jsExpression = "function(val) { ";
 	for ($i = 0; $i <= (Adjudicator::MAX_RATING / 10) + 1; $i++) {
 		$jsExpression .= "if (val < " . ($i * 10) . ") { return '" . Adjudicator::getStrengthLabel($i * 10 - 1) . " ('+val+')'; } ";
-		}
+	}
 	$jsExpression .= "}";
 
-		echo $form->field($model, 'strength')->widget(\kartik\slider\Slider::className(), [
-			'handleColor'  => Slider::TYPE_INFO,
-			'sliderColor'  => Slider::TYPE_PRIMARY,
-			'pluginOptions'=>[
-				'min'=>0,
-				'max' => Adjudicator::MAX_RATING,
-				'step'=>1,
-				'tooltip'=>'always',
-				'formatter'=>new JsExpression($jsExpression)
-			]
-		]);
-			/*[
-			"pluginOptions" => [
-				"stars" => 8,
-				"min" => 0,
-				"max" => 9,
-				"step" => 1,
-				"size" => "md",
-				"starCaptions" => common\models\Adjudicator::translateStrength(),
-				"starCaptionClasses" => common\models\Adjudicator::starLabels(),
-			],
-		])*/
+	echo $form->field($model, 'strength')->widget(\kartik\slider\Slider::className(), [
+		'handleColor'   => Slider::TYPE_INFO,
+		'sliderColor'   => Slider::TYPE_PRIMARY,
+		'pluginOptions' => [
+			'min'       => 0,
+			'max'       => Adjudicator::MAX_RATING,
+			'step'      => 1,
+			'tooltip'   => 'always',
+			'formatter' => new JsExpression($jsExpression)
+		]
+	]);
+	/*[
+	"pluginOptions" => [
+		"stars" => 8,
+		"min" => 0,
+		"max" => 9,
+		"step" => 1,
+		"size" => "md",
+		"starCaptions" => common\models\Adjudicator::translateStrength(),
+		"starCaptionClasses" => common\models\Adjudicator::starLabels(),
+	],
+])*/
 
 	//echo $form->field($model, 'strength')->textInput();
 	?>

@@ -10,9 +10,11 @@ use Yii;
 use common\models\User;
 use yii\data\Pagination;
 
-class HistoryController extends BaseUserController {
+class HistoryController extends BaseUserController
+{
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return [
 			'userFilter' => [
 				'class' => UserContextFilter::className(),
@@ -21,7 +23,7 @@ class HistoryController extends BaseUserController {
 				'class' => AccessControl::className(),
 				'rules' => [
 					[
-						'allow' => true,
+						'allow'   => true,
 						'actions' => ['index'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_user->id == Yii::$app->user->id || Yii::$app->user->isAdmin());
@@ -29,7 +31,7 @@ class HistoryController extends BaseUserController {
 					],
 				],
 			],
-			'verbs' => [
+			'verbs'  => [
 				'class' => VerbFilter::className(),
 				'actions' => [
 					'delete' => ['post'],
@@ -38,7 +40,8 @@ class HistoryController extends BaseUserController {
 		];
 	}
 
-	public function actionIndex() {
+	public function actionIndex()
+	{
 		$model = User::findOne($this->_user->id);
 
 		$query = $model->getTeams()->joinWith("tournament")->orderBy(["tournament.end_date" => SORT_DESC]);

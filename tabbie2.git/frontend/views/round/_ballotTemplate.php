@@ -34,11 +34,11 @@ $rank = Yii::t("app", "Rank");
 				$panel .= $adj->name . ", ";
 		}
 		if (strlen($panel) > 0):
-		?>
-		<tr>
-			<th><?= Yii::t("app", "Adjudicators") ?></th>
-			<td><?= substr($panel, 0, -2); ?></td>
-		</tr>
+			?>
+			<tr>
+				<th><?= Yii::t("app", "Adjudicators") ?></th>
+				<td><?= substr($panel, 0, -2); ?></td>
+			</tr>
 		<? endif; ?>
 	</table>
 </div>
@@ -75,16 +75,16 @@ $rank = Yii::t("app", "Rank");
 					</tr>
 					<tr>
 						<td><?= ($debate->og_team->speakerA) ? $debate->og_team->speakerA->name : "" ?></td>
-                        <td class="value">
-                            <div class="help"><?= $speaks ?></td>
-                        <td class="rank" rowspan="2">
-                            <div class="help"><?= $rank ?></td>
+						<td class="value">
+							<div class="help"><?= $speaks ?></td>
+						<td class="rank" rowspan="2">
+							<div class="help"><?= $rank ?></td>
 					</tr>
 					<tr>
 						<td><?= ($debate->og_team->speakerB) ? $debate->og_team->speakerB->name : "" ?></td>
-                        <td class="value">
-                            <div class="help"><?= $speaks ?></div>
-                        </td>
+						<td class="value">
+							<div class="help"><?= $speaks ?></div>
+						</td>
 					</tr>
 				</table>
 			</td>
@@ -98,15 +98,15 @@ $rank = Yii::t("app", "Rank");
 					</tr>
 					<tr>
 						<td><?= ($debate->oo_team->speakerA) ? $debate->oo_team->speakerA->name : "" ?></td>
-                        <td class="value">
-                            <div class="help"><?= $speaks ?></td>
-                        <td class="rank" rowspan="2">
-                            <div class="help"><?= $rank ?></td>
+						<td class="value">
+							<div class="help"><?= $speaks ?></td>
+						<td class="rank" rowspan="2">
+							<div class="help"><?= $rank ?></td>
 					</tr>
 					<tr>
 						<td><?= ($debate->oo_team->speakerB) ? $debate->oo_team->speakerB->name : "" ?></td>
-                        <td class="value">
-                            <div class="help"><?= $speaks ?></td>
+						<td class="value">
+							<div class="help"><?= $speaks ?></td>
 					</tr>
 				</table>
 			</td>
@@ -122,15 +122,15 @@ $rank = Yii::t("app", "Rank");
 					</tr>
 					<tr>
 						<td><?= ($debate->cg_team->speakerA) ? $debate->cg_team->speakerA->name : "" ?></td>
-                        <td class="value">
-                            <div class="help"><?= $speaks ?></td>
-                        <td class="rank" rowspan="2">
-                            <div class="help"><?= $rank ?></td>
+						<td class="value">
+							<div class="help"><?= $speaks ?></td>
+						<td class="rank" rowspan="2">
+							<div class="help"><?= $rank ?></td>
 					</tr>
 					<tr>
 						<td><?= ($debate->cg_team->speakerB) ? $debate->cg_team->speakerB->name : "" ?></td>
-                        <td class="value">
-                            <div class="help"><?= $speaks ?></td>
+						<td class="value">
+							<div class="help"><?= $speaks ?></td>
 					</tr>
 				</table>
 			</td>
@@ -144,16 +144,16 @@ $rank = Yii::t("app", "Rank");
 					</tr>
 					<tr>
 						<td><?= ($debate->co_team->speakerA) ? $debate->co_team->speakerA->name : "" ?></td>
-                        <td class="value">
-                            <div class="help"><?= $speaks ?></td>
-                        <td class="rank" rowspan="2">
-                            <div class="help"><?= $rank ?></div>
-                        </td>
+						<td class="value">
+							<div class="help"><?= $speaks ?></td>
+						<td class="rank" rowspan="2">
+							<div class="help"><?= $rank ?></div>
+						</td>
 					</tr>
 					<tr>
 						<td><?= ($debate->co_team->speakerB) ? $debate->co_team->speakerB->name : "" ?></td>
-                        <td class="value">
-                            <div class="help"><?= $speaks ?></td>
+						<td class="value">
+							<div class="help"><?= $speaks ?></td>
 					</tr>
 				</table>
 			</td>

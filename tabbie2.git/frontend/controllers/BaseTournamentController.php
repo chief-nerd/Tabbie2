@@ -6,7 +6,8 @@ use common\models\Tournament;
 use Yii;
 use yii\web\Controller;
 
-class BaseTournamentController extends Controller {
+class BaseTournamentController extends Controller
+{
 
 	/**
 	 * Current Tournament Scope
@@ -23,7 +24,8 @@ class BaseTournamentController extends Controller {
 	 *
 	 * @return boolean
 	 */
-	public function _setContext($id) {
+	public function _setContext($id)
+	{
 		$this->_tournament = Tournament::findByPk($id);
 		\Yii::trace("Set Context for " . $this->_tournament->fullname . " (" . $this->_tournament->id . ")", __METHOD__);
 		if ($this->_tournament instanceof Tournament)
@@ -37,7 +39,8 @@ class BaseTournamentController extends Controller {
 	 *
 	 * @return Tournament
 	 */
-	public function _getContext() {
+	public function _getContext()
+	{
 		return $this->_tournament;
 	}
 

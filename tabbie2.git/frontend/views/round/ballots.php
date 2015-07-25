@@ -7,7 +7,7 @@ foreach ($model->debates as $debate): ?>
 		<?
 		echo $this->render('_ballotTemplate', [
 			'tournament' => $model->tournament,
-			'round' => $model,
+			'round'  => $model,
 			'debate' => $debate,
 		]);
 		?>

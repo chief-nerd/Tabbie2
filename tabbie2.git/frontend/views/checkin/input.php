@@ -33,8 +33,8 @@ $this->params['breadcrumbs'][] = $this->title;
 		<div class="col-xs-12 col-sm-6">
 			<div class="col-xs-12">
 				<?= $form->field($model, 'number')->widget(\yii\widgets\MaskedInput::className(), [
-                    'mask' => 'AA-99999999',
-                    'options' => ["autofocus" => "autofocus"]
+					'mask'    => 'AA-99999999',
+					'options' => ["autofocus" => "autofocus"]
 				]) ?>
 			</div>
 			<div class="col-xs-12">
@@ -48,8 +48,8 @@ $this->params['breadcrumbs'][] = $this->title;
 			<!--quaggaJS-->
 			<? if ($camInit):
 				echo YiiQuagga::widget([
-					"id" => 'codereader',
-					'name' => 'CheckinForm[number]',
+					"id"     => 'codereader',
+					'name'   => 'CheckinForm[number]',
 					'target' => '#checkinform-number',
 					'messages' => '#messages',
 				]);

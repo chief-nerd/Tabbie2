@@ -17,17 +17,17 @@ use yii\web\JsExpression;
 	<?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
 	<?= $form->field($model, 'email', ['addon' => ['prepend' => ['content' => '<b>@</b>']]])
-	         ->textInput(['maxlength' => 255]) ?>
+		->textInput(['maxlength' => 255]) ?>
 
 	<div class="row">
 		<div class="col-sm-6">
 			<?= $form->field($model, 'password', ['addon' => ['prepend' => ['content' => "<span class='glyphicon glyphicon-lock'></span>"]]])
-			         ->passwordInput(['maxlength' => 255]) ?>
+				->passwordInput(['maxlength' => 255]) ?>
 
 		</div>
 		<div class="col-sm-6">
 			<?= $form->field($model, 'password_repeat')
-			         ->passwordInput(['maxlength' => 255]) ?>
+				->passwordInput(['maxlength' => 255]) ?>
 		</div>
 	</div>
 

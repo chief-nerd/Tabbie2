@@ -53,21 +53,21 @@ $this->params['breadcrumbs'][] = $this->title;
 		if ($tournament->getTournamentHasQuestions()->count() > 0): ?>
 			<div class="col-xs-5">
 				<?= Html::a(Html::icon("home") . "&nbsp;" . Yii::t("app", "Tournament"), ["tournament/view", "id" => $tournament->id], ["class" => "btn btn-default center-block"]) ?>
-		</div>
+			</div>
 			<div class="col-xs-7">
-			<?
-			//Can only be chair
-			$ref = $model->debate->getChair()->id;
+				<?
+				//Can only be chair
+				$ref = $model->debate->getChair()->id;
 
-			?>
-			<?= Html::a(Html::icon("comment") . "&nbsp;" . Yii::t("app", "Enter Feedback"), [
-				"feedback/create",
-				"id" => $model->debate->id,
-				"type" => \common\models\Feedback::FROM_CHAIR,
-				"ref" => $ref,
-				"tournament_id" => $tournament->id],
-				["class" => "btn btn-success center-block"]) ?>
-		</div>
+				?>
+				<?= Html::a(Html::icon("comment") . "&nbsp;" . Yii::t("app", "Enter Feedback"), [
+					"feedback/create",
+					"id"            => $model->debate->id,
+					"type"          => \common\models\Feedback::FROM_CHAIR,
+					"ref"           => $ref,
+					"tournament_id" => $tournament->id],
+					["class" => "btn btn-success center-block"]) ?>
+			</div>
 		<? else: ?>
 			<div class="col-xs-12">
 				<?= Html::a(Html::icon("home") . "&nbsp;" . Yii::t("app", "Return to Tournament"), ["tournament/view", "id" => $tournament->id], ["class" => "btn btn-success center-block"]) ?>

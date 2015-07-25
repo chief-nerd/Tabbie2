@@ -20,8 +20,8 @@ $this->params['breadcrumbs'][] = $this->title;
 		<?
 		if ($tournament->status < Tournament::STATUS_CLOSED)
 			echo Html::a(Yii::t('app', 'Create {modelClass}', [
-			'modelClass' => 'Round',
-		]), ['create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
+				'modelClass' => 'Round',
+			]), ['create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
 		?>
 	</p>
 
@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	ListView::widget([
 		'dataProvider' => $dataProvider,
 		'itemOptions' => ['class' => 'item row'],
-		'itemView' => "_item",
+		'itemView'    => "_item",
 	])
 	?>
 

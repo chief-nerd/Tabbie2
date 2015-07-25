@@ -45,17 +45,17 @@ SCRIPT;
 	?>
 
 	<?= $form->field($model, 'country_id')->widget(Select2::classname(), [
-		'options' => [
+		'options'       => [
 			'placeholder' => Yii::t("app", 'Search for a country ...'),
 			'multiple' => false,
 		],
 		'pluginOptions' => [
-			'allowClear' => true,
+			'allowClear'    => true,
 			'minimumInputLength' => 3,
-			'ajax' => [
-				'url' => $country_list,
+			'ajax'          => [
+				'url'     => $country_list,
 				'dataType' => 'json',
-				'data' => new JsExpression('function(term,page) { return {search:term}; }'),
+				'data'    => new JsExpression('function(term,page) { return {search:term}; }'),
 				'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
 			],
 			'initSelection' => new JsExpression($initCountryScript),

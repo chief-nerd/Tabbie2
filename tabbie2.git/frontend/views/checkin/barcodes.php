@@ -13,7 +13,7 @@ $height = 100;
 	<head>
 		<title>Barcodes for <?= $tournament->name ?></title>
 		<link href="<?= Yii::$app->assetManager->publish(Yii::getAlias('@frontend/assets/css/ballot.css'))[1]; ?>"
-		      rel="stylesheet">
+			  rel="stylesheet">
 		<style type="text/css">
 			@page {
 				size: 21cm 29.7cm;

@@ -13,10 +13,10 @@ $this->registerMetaTag(["property" => "og:title", "content" => Yii::t("app", "{t
 $this->registerMetaTag(["property" => "og:image", "content" => $model->getLogo(true)], "og:image");
 $this->registerMetaTag(["property" => "og:description", "content" =>
 	Yii::t("app", "Tournament taking place from {start} to {end} hosted by {convenor} from {host} in {country}", [
-		"start" => Yii::$app->formatter->asDate($model->start_date, "short"),
-		"end" => Yii::$app->formatter->asDate($model->end_date, "short"),
+		"start"   => Yii::$app->formatter->asDate($model->start_date, "short"),
+		"end"     => Yii::$app->formatter->asDate($model->end_date, "short"),
 		"convenor" => Html::encode($model->convenorUser->name),
-		"host" => Html::encode($model->hostedby->fullname),
+		"host"    => Html::encode($model->hostedby->fullname),
 		"country" => Html::encode($model->hostedby->country->name),
 	])],
 	"og:description");

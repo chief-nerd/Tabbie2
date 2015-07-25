@@ -21,10 +21,10 @@ use yii\helpers\Url;
 				(<?= strtoupper(Html::encode($model->hostedby->country->alpha_2)) ?>)
 			</div>
 			<div class="col-sm-12">
-				<?= Yii::t("app", "Teams") ?>:  <?= Html::encode($model->getTeams()->count()) ?>
+				<?= Yii::t("app", "Teams") ?>: <?= Html::encode($model->getTeams()->count()) ?>
 			</div>
 			<div class="col-sm-12">
-				<?= Yii::t("app", "Adjudicators") ?>:  <?= Html::encode($model->getAdjudicators()->count()) ?>
+				<?= Yii::t("app", "Adjudicators") ?>: <?= Html::encode($model->getAdjudicators()->count()) ?>
 			</div>
 		</div>
 	</a>

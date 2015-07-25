@@ -14,8 +14,10 @@ use yii\filters\AccessControl;
 /**
  * StrikesController implements the CRUD actions for Strikes model.
  */
-class StrikeController extends BaseTournamentController {
-	public function behaviors() {
+class StrikeController extends BaseTournamentController
+{
+	public function behaviors()
+	{
 		return [
 			'tournamentFilter' => [
 				'class' => TournamentContextFilter::className(),
@@ -24,7 +26,7 @@ class StrikeController extends BaseTournamentController {
 				'class' => AccessControl::className(),
 				'rules' => [
 					[
-						'allow' => true,
+						'allow'   => true,
 						'actions' => ['team_index', 'team_create', 'team_update', 'team_delete', 'adjudicator_index', 'adjudicator_create', 'adjudicator_update', 'adjudicator_delete'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
@@ -32,7 +34,7 @@ class StrikeController extends BaseTournamentController {
 					],
 				],
 			],
-			'verbs' => [
+			'verbs'  => [
 				'class' => VerbFilter::className(),
 				'actions' => [
 					'delete' => ['post'],
@@ -46,7 +48,8 @@ class StrikeController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionTeam_index() {
+	public function actionTeam_index()
+	{
 		$dataProvider = new ActiveDataProvider([
 			'query' => TeamStrike::find()->where(["tournament_id" => $this->_tournament->id])
 		]);
@@ -61,7 +64,8 @@ class StrikeController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionAdjudicator_index() {
+	public function actionAdjudicator_index()
+	{
 		$dataProvider = new ActiveDataProvider([
 			'query' => AdjudicatorStrike::find()->where(["tournament_id" => $this->_tournament->id])
 		]);
@@ -79,7 +83,8 @@ class StrikeController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionView($team_id, $adjudicator_id) {
+	public function actionView($team_id, $adjudicator_id)
+	{
 		return $this->render('view', [
 			'model' => $this->findModel($team_id, $adjudicator_id),
 		]);
@@ -88,18 +93,17 @@ class StrikeController extends BaseTournamentController {
 	/**
 	 * Creates a new Team Strikes model.
 	 * If creation is successful, the browser will be redirected to the 'index' page.
-
 	 *
-*@return mixed
+	 * @return mixed
 	 */
-	public function actionTeam_create() {
+	public function actionTeam_create()
+	{
 		$model = new TeamStrike();
 		$model->tournament_id = $this->_tournament->id;
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
 			return $this->redirect(['team_index', "tournament_id" => $this->_tournament->id]);
-		}
-		else {
+		} else {
 			return $this->render('team_create', [
 				'model' => $model,
 			]);
@@ -112,14 +116,14 @@ class StrikeController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionAdjudicator_create() {
+	public function actionAdjudicator_create()
+	{
 		$model = new AdjudicatorStrike();
 		$model->tournament_id = $this->_tournament->id;
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
 			return $this->redirect(['adjudicator_index', "tournament_id" => $this->_tournament->id]);
-		}
-		else {
+		} else {
 			return $this->render('adjudicator_create', [
 				'model' => $model,
 			]);
@@ -135,13 +139,13 @@ class StrikeController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionTeam_update($team_id, $adjudicator_id) {
+	public function actionTeam_update($team_id, $adjudicator_id)
+	{
 		$model = $this->findTeamModel($team_id, $adjudicator_id);
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
 			return $this->redirect(['team_index', 'tournament_id' => $model->tournament_id]);
-		}
-		else {
+		} else {
 			return $this->render('team_update', [
 				'model' => $model,
 			]);
@@ -157,13 +161,13 @@ class StrikeController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionAdjudicator_update($adjudicator_from_id, $adjudicator_to_id) {
+	public function actionAdjudicator_update($adjudicator_from_id, $adjudicator_to_id)
+	{
 		$model = $this->findAdjudicatorModel($adjudicator_from_id, $adjudicator_to_id);
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
 			return $this->redirect(['adjudicator_index', 'tournament_id' => $model->tournament_id]);
-		}
-		else {
+		} else {
 			return $this->render('adjudicator_update', [
 				'model' => $model,
 			]);
@@ -179,7 +183,8 @@ class StrikeController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionTeam_delete($team_id, $adjudicator_id) {
+	public function actionTeam_delete($team_id, $adjudicator_id)
+	{
 		$this->findTeamModel($team_id, $adjudicator_id)->delete();
 
 		return $this->redirect(['team_index', "tournament_id" => $this->_tournament->id]);
@@ -194,7 +199,8 @@ class StrikeController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionAdjudicator_delete($adjudicator_from_id, $adjudicator_to_id) {
+	public function actionAdjudicator_delete($adjudicator_from_id, $adjudicator_to_id)
+	{
 		$this->findAdjudicatorModel($adjudicator_from_id, $adjudicator_to_id)->delete();
 
 		return $this->redirect(['adjudicator_index', "tournament_id" => $this->_tournament->id]);
@@ -210,11 +216,11 @@ class StrikeController extends BaseTournamentController {
 	 * @return Strikes the loaded model
 	 * @throws NotFoundHttpException if the model cannot be found
 	 */
-	protected function findTeamModel($team_id, $adjudicator_id) {
+	protected function findTeamModel($team_id, $adjudicator_id)
+	{
 		if (($model = TeamStrike::findOne(['team_id' => $team_id, 'adjudicator_id' => $adjudicator_id])) !== null) {
 			return $model;
-		}
-		else {
+		} else {
 			throw new NotFoundHttpException('The requested page does not exist.');
 		}
 	}
@@ -229,11 +235,11 @@ class StrikeController extends BaseTournamentController {
 	 * @return Strikes the loaded model
 	 * @throws NotFoundHttpException if the model cannot be found
 	 */
-	protected function findAdjudicatorModel($adjudicator_from_id, $adjudicator_to_id) {
+	protected function findAdjudicatorModel($adjudicator_from_id, $adjudicator_to_id)
+	{
 		if (($model = AdjudicatorStrike::findOne(['adjudicator_from_id' => $adjudicator_from_id, 'adjudicator_to_id' => $adjudicator_to_id])) !== null) {
 			return $model;
-		}
-		else {
+		} else {
 			throw new NotFoundHttpException('The requested page does not exist.');
 		}
 	}

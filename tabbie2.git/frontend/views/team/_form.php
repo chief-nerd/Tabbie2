@@ -53,24 +53,24 @@ function (element, callback) {
 SCRIPT;
 
 	echo $form->field($model, 'speakerA_id')->widget(Select2::classname(), [
-		'options' => ['placeholder' => Yii::t("app", 'Search for a user ...')],
-		'addon' => [
+		'options'       => ['placeholder' => Yii::t("app", 'Search for a user ...')],
+		'addon'         => [
 			"prepend" => [
 				"content" => \kartik\helpers\Html::icon("user")
 			],
 		],
 		'pluginOptions' => [
-			'allowClear' => true,
+			'allowClear'    => true,
 			'minimumInputLength' => 3,
-			'ajax' => [
-				'url' => $urlUserList,
+			'ajax'          => [
+				'url'     => $urlUserList,
 				'dataType' => 'json',
-				'data' => new JsExpression('function(term,page) { return {search:term}; }'),
+				'data'    => new JsExpression('function(term,page) { return {search:term}; }'),
 				'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
 			],
 			'initSelection' => new JsExpression($initUserScript)
 		],
-		'pluginEvents' => [
+		'pluginEvents'  => [
 			"select2-selecting" => "function(obj) { console.log(obj); }",
 		],
 	]);
@@ -78,19 +78,19 @@ SCRIPT;
 
 	<?=
 	$form->field($model, 'speakerB_id')->widget(Select2::classname(), [
-		'options' => ['placeholder' => Yii::t("app", 'Search for a user ...')],
-		'addon' => [
+		'options'       => ['placeholder' => Yii::t("app", 'Search for a user ...')],
+		'addon'         => [
 			"prepend" => [
 				"content" => \kartik\helpers\Html::icon("user")
 			],
 		],
 		'pluginOptions' => [
-			'allowClear' => true,
+			'allowClear'    => true,
 			'minimumInputLength' => 3,
-			'ajax' => [
-				'url' => $urlUserList,
+			'ajax'          => [
+				'url'     => $urlUserList,
 				'dataType' => 'json',
-				'data' => new JsExpression('function(term,page) { return {search:term}; }'),
+				'data'    => new JsExpression('function(term,page) { return {search:term}; }'),
 				'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
 			],
 			'initSelection' => new JsExpression($initUserScript)
@@ -100,19 +100,19 @@ SCRIPT;
 
 	<?=
 	$form->field($model, 'society_id')->widget(Select2::classname(), [
-		'options' => ['placeholder' => Yii::t("app", 'Search for a society ...')],
-		'addon' => [
+		'options'       => ['placeholder' => Yii::t("app", 'Search for a society ...')],
+		'addon'         => [
 			"prepend" => [
 				"content" => \kartik\helpers\Html::icon("education")
 			],
 		],
 		'pluginOptions' => [
-			'allowClear' => true,
+			'allowClear'    => true,
 			'minimumInputLength' => 3,
-			'ajax' => [
-				'url' => $urlSocietyList,
+			'ajax'          => [
+				'url'     => $urlSocietyList,
 				'dataType' => 'json',
-				'data' => new JsExpression('function(term,page) { return {search:term}; }'),
+				'data'    => new JsExpression('function(term,page) { return {search:term}; }'),
 				'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
 			],
 			'initSelection' => new JsExpression($initSocietyScript)

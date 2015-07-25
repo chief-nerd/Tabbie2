@@ -5,7 +5,7 @@ use yii\bootstrap\NavBar;
 NavBar::begin([
 	'brandLabel' => Yii::t("app", "{tournament} - Language Officer", ["tournament" => $tournament->name]),
 	'brandUrl' => Yii::$app->urlManager->createUrl(["tournament/view", "id" => $tournament->id]),
-	'options' => [
+	'options'  => [
 		'class' => 'navbar navbar-default navbar-fixed-top navbar-sub',
 	],
 ]);

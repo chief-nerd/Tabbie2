@@ -18,9 +18,11 @@ use yii\web\NotFoundHttpException;
  *
  * @property Tournament $_tournament
  */
-class VenueController extends BaseTournamentController {
+class VenueController extends BaseTournamentController
+{
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return [
 			'tournamentFilter' => [
 				'class' => TournamentContextFilter::className(),
@@ -29,14 +31,14 @@ class VenueController extends BaseTournamentController {
 				'class' => AccessControl::className(),
 				'rules' => [
 					[
-						'allow' => true,
+						'allow'   => true,
 						'actions' => ['index', 'view'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id) || $this->_tournament->isConvenor(Yii::$app->user->id));
 						}
 					],
 					[
-						'allow' => true,
+						'allow'   => true,
 						'actions' => ['create', 'update', 'delete', 'active', 'import'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
@@ -44,7 +46,7 @@ class VenueController extends BaseTournamentController {
 					],
 				],
 			],
-			'verbs' => [
+			'verbs'  => [
 				'class' => VerbFilter::className(),
 				'actions' => [
 					'delete' => ['post'],
@@ -58,7 +60,8 @@ class VenueController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionIndex() {
+	public function actionIndex()
+	{
 		$search = new VenueSearch(["tournament_id" => $this->_tournament->id]);
 		$dataProvider = $search->search(Yii::$app->request->queryParams);
 
@@ -74,7 +77,8 @@ class VenueController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionView($id) {
+	public function actionView($id)
+	{
 		return $this->render('view', [
 			'model' => $this->findModel($id),
 		]);
@@ -86,7 +90,8 @@ class VenueController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionCreate() {
+	public function actionCreate()
+	{
 		$model = new Venue();
 		$model->tournament_id = $this->_tournament->id;
 		$model->active = true;
@@ -94,8 +99,7 @@ class VenueController extends BaseTournamentController {
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
 			return $this->redirect(['index', 'tournament_id' => $model->tournament_id
 			]);
-		}
-		else {
+		} else {
 			return $this->render('create', [
 				'model' => $model,
 			]);
@@ -110,13 +114,13 @@ class VenueController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionUpdate($id) {
+	public function actionUpdate($id)
+	{
 		$model = $this->findModel($id);
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
 			return $this->redirect(['index', 'tournament_id' => $model->tournament_id]);
-		}
-		else {
+		} else {
 			return $this->render('update', [
 				'model' => $model,
 			]);
@@ -131,7 +135,8 @@ class VenueController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionDelete($id) {
+	public function actionDelete($id)
+	{
 		$this->findModel($id)->delete();
 
 		return $this->redirect(['index', 'tournament_id' => $this->_tournament->id]);
@@ -144,7 +149,8 @@ class VenueController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionActive($id) {
+	public function actionActive($id)
+	{
 		$model = $this->findModel($id);
 
 		if ($model->active == 0)
@@ -154,13 +160,13 @@ class VenueController extends BaseTournamentController {
 		}
 
 		if (!$model->save()) {
-            Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
+			Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
 		}
 
-        if (Yii::$app->request->isAjax)
+		if (Yii::$app->request->isAjax)
 			return $this->actionIndex();
-        else
-            return $this->redirect(['venue/index', 'tournament_id' => $this->_tournament->id]);
+		else
+			return $this->redirect(['venue/index', 'tournament_id' => $this->_tournament->id]);
 	}
 
 	/**
@@ -172,16 +178,17 @@ class VenueController extends BaseTournamentController {
 	 * @return Venue the loaded model
 	 * @throws NotFoundHttpException if the model cannot be found
 	 */
-	protected function findModel($id) {
+	protected function findModel($id)
+	{
 		if (($model = Venue::findOne($id)) !== null) {
 			return $model;
-		}
-		else {
+		} else {
 			throw new NotFoundHttpException('The requested page does not exist.');
 		}
 	}
 
-	public function actionImport() {
+	public function actionImport()
+	{
 		set_time_limit(0);
 		$tournament = $this->_tournament;
 		$model = new \frontend\models\ImportForm();
@@ -196,9 +203,9 @@ class VenueController extends BaseTournamentController {
 					$row = $model->tempImport[$r];
 
 					if (Venue::find()
-					         ->tournament($this->_tournament->id)
-					         ->andWhere(['name' => $row[0]])
-					         ->count() == 0
+							->tournament($this->_tournament->id)
+							->andWhere(['name' => $row[0]])
+							->count() == 0
 					) {
 						$venue = new Venue();
 						$venue->name = $row[0];
@@ -208,9 +215,9 @@ class VenueController extends BaseTournamentController {
 						$venue->save();
 					}
 				}
+
 				return $this->redirect(['index', "tournament_id" => $this->_tournament->id]);
-			}
-			else { //FORM UPLOAD
+			} else { //FORM UPLOAD
 				$file = \yii\web\UploadedFile::getInstance($model, 'csvFile');
 				$model->load(Yii::$app->request->post());
 
@@ -233,14 +240,12 @@ class VenueController extends BaseTournamentController {
 						$row++;
 					}
 					fclose($handle);
-				}
-				else {
+				} else {
 					Yii::$app->session->addFlash("error", Yii::t("app", "No File available"));
 					print_r($file);
 				}
 			}
-		}
-		else
+		} else
 			$model->scenario = "upload";
 
 		return $this->render('import', [

@@ -30,7 +30,7 @@ $this->context->layout = null;
 		$chaired = Panel::find()->joinWith("adjudicatorInPanels")->joinWith("debate")->where([
 			"panel.tournament_id" => $model->tournament_id,
 			"adjudicator_id" => $model->id,
-			"function" => Panel::FUNCTION_CHAIR,
+			"function"       => Panel::FUNCTION_CHAIR,
 		])->andWhere("round_id != " . $round_id)->count();
 		?>
 		<td><?= $chaired ?></td>

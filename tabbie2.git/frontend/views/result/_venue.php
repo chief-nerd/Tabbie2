@@ -30,17 +30,16 @@ if ($model->result instanceof Result) {
 		. (($model->co_team->speakerB) ? $model->co_team->speakerB->name : \common\models\User::NONE) . ": " . $result->getSpeakerSpeaks(Team::getPos(Team::CG), Team::POS_B) . "</td>"
 		. "</tr>"
 		. "</table>";
-}
-else
+} else
 	$popcontent = Yii::t("app", "No results yet!");
 ?>
 <?=
 
 PopoverX::widget([
-	'header' => Yii::t("app", "Results in Room: {venue}", ["venue" => $model->venue->name]),
-	'size' => 'lg',
+	'header'    => Yii::t("app", "Results in Room: {venue}", ["venue" => $model->venue->name]),
+	'size'      => 'lg',
 	'placement' => PopoverX::ALIGN_TOP,
-	'content' => $popcontent,
+	'content'   => $popcontent,
 	'toggleButton' => [
 		'label' => '<div class="status ' . (($model->result) ? "entered" : "missing") . '"></div>' . $model->venue->name,
 		'class' => 'btn btn-default',

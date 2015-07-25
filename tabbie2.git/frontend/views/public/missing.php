@@ -45,6 +45,7 @@ if ($tournament->isTabMaster(Yii::$app->user->id)) {
 			</div>
 		</div>
 		<br>
+
 		<div class="row">
 			<div class="col-sm-6 text-center">
 				<table class="table">

@@ -24,28 +24,28 @@ $this->params['breadcrumbs'][] = $this->title;
 			'class' => '\kartik\grid\SerialColumn'
 		],
 		[
-			'class' => '\kartik\grid\DataColumn',
-			'attribute' => 'round_number',
-			'format' => 'raw',
-			'value' => function ($model, $key, $index, $widget) {
+			'class'              => '\kartik\grid\DataColumn',
+			'attribute'          => 'round_number',
+			'format'             => 'raw',
+			'value'              => function ($model, $key, $index, $widget) {
 				return $model->debate->round->number;
 			},
-			'filter' => \common\models\search\TournamentSearch::getRoundOptions($tournament->id),
-			'filterType' => GridView::FILTER_SELECT2,
+			'filter'             => \common\models\search\TournamentSearch::getRoundOptions($tournament->id),
+			'filterType'         => GridView::FILTER_SELECT2,
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
 			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any Round ...')],
 		],
 		[
-			'class' => '\kartik\grid\DataColumn',
-			'attribute' => 'venue_name',
-			'format' => 'raw',
-			'value' => function ($model, $key, $index, $widget) {
+			'class'              => '\kartik\grid\DataColumn',
+			'attribute'          => 'venue_name',
+			'format'             => 'raw',
+			'value'              => function ($model, $key, $index, $widget) {
 				return $model->debate->venue->name;
 			},
-			'filter' => VenueSearch::getSearchArray($tournament->id),
-			'filterType' => GridView::FILTER_SELECT2,
+			'filter'             => VenueSearch::getSearchArray($tournament->id),
+			'filterType'         => GridView::FILTER_SELECT2,
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
@@ -53,30 +53,30 @@ $this->params['breadcrumbs'][] = $this->title;
 		],
 		'time',
 		[
-			'class' => 'kartik\grid\ActionColumn',
-			'width' => "100px",
-			'template' => '{view}&nbsp;&nbsp;{update}',
-			'dropdown' => false,
-			'vAlign' => 'middle',
-			'urlCreator' => function ($action, $model, $key, $index) {
+			'class'       => 'kartik\grid\ActionColumn',
+			'width'       => "100px",
+			'template'    => '{view}&nbsp;&nbsp;{update}',
+			'dropdown'    => false,
+			'vAlign'      => 'middle',
+			'urlCreator'  => function ($action, $model, $key, $index) {
 				return \yii\helpers\Url::to(["feedback/" . $action, "id" => $model->id, "tournament_id" => $model->debate->tournament_id]);
 			},
 			'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", 'View {modelClass}', ['modelClass' => 'Feedback']), 'data-toggle' => 'tooltip'],
 			'updateOptions' => ['title' => Yii::t("app", 'Update {modelClass}', ['modelClass' => 'Feedback']), 'data-toggle' => 'tooltip'],
-			'width' => '100px'
+			'width'       => '100px'
 		]
 	];
 
 	echo GridView::widget([
-		'dataProvider' => $dataProvider,
-		'filterModel' => $searchModel,
-		'columns' => $gridColumns,
-		'id' => 'feedback',
-		'pjax' => true,
+		'dataProvider'    => $dataProvider,
+		'filterModel'     => $searchModel,
+		'columns'         => $gridColumns,
+		'id'              => 'feedback',
+		'pjax'            => true,
 		'showPageSummary' => false,
-		'responsive' => true,
-		'hover' => true,
-		'floatHeader' => false,
+		'responsive'      => true,
+		'hover'           => true,
+		'floatHeader'     => false,
 		'floatHeaderOptions' => ['scrollingTop' => '150'],
 	])
 	?>

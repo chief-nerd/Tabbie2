@@ -26,12 +26,12 @@ $this->params['breadcrumbs'][] = $this->title;
 		'feedback.debate.round.number',
 		'value',
 		[
-			'class' => 'kartik\grid\ActionColumn',
-			'width' => "100px",
-			'template' => '{view}&nbsp;&nbsp;{update}',
-			'dropdown' => false,
-			'vAlign' => 'middle',
-			'urlCreator' => function ($action, $model, $key, $index) {
+			'class'       => 'kartik\grid\ActionColumn',
+			'width'       => "100px",
+			'template'    => '{view}&nbsp;&nbsp;{update}',
+			'dropdown'    => false,
+			'vAlign'      => 'middle',
+			'urlCreator'  => function ($action, $model, $key, $index) {
 				return \yii\helpers\Url::to(["feedback/" . $action, "id" => $model->id]);
 			},
 			'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", 'View {modelClass}', ['modelClass' => 'Team']), 'data-toggle' => 'tooltip'],
@@ -40,15 +40,15 @@ $this->params['breadcrumbs'][] = $this->title;
 	];
 
 	echo GridView::widget([
-		'dataProvider' => $dataProvider,
-		'filterModel' => $searchModel,
-		'columns' => $gridColumns,
-		'id' => 'feedback',
-		'pjax' => true,
+		'dataProvider'    => $dataProvider,
+		'filterModel'     => $searchModel,
+		'columns'         => $gridColumns,
+		'id'              => 'feedback',
+		'pjax'            => true,
 		'showPageSummary' => false,
-		'responsive' => true,
-		'hover' => true,
-		'floatHeader' => false,
+		'responsive'      => true,
+		'hover'           => true,
+		'floatHeader'     => false,
 		'floatHeaderOptions' => ['scrollingTop' => '150'],
 	])
 	?>

@@ -44,18 +44,18 @@ function (query) {
   }
 SCRIPT;
 
-    echo $form->field($model, 'society_id')->widget(Select2::classname(), [
-		'options' => [
+	echo $form->field($model, 'society_id')->widget(Select2::classname(), [
+		'options'       => [
 			'placeholder' => Yii::t("app", 'Search for a society ...'),
-            'multiple' => false,
+			'multiple' => false,
 		],
 		'pluginOptions' => [
-			'allowClear' => true,
+			'allowClear'      => true,
 			'minimumInputLength' => 3,
-			'ajax' => [
-				'url' => $urlSocietyList,
+			'ajax'            => [
+				'url'     => $urlSocietyList,
 				'dataType' => 'json',
-				'data' => new JsExpression('function(term,page) { return {search:term}; }'),
+				'data'    => new JsExpression('function(term,page) { return {search:term}; }'),
 				'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
 			],
 			//'initSelection' => new JsExpression($initSocietyScript),
@@ -68,8 +68,8 @@ SCRIPT;
 
 	<?=
 	$form->field($model, 'starting')->widget(DatePicker::classname(), [
-		'type' => DatePicker::TYPE_INPUT,
-		'options' => ['placeholder' => Yii::t("app", 'Enter start date ...')],
+		'type'          => DatePicker::TYPE_INPUT,
+		'options'       => ['placeholder' => Yii::t("app", 'Enter start date ...')],
 		'pluginOptions' => [
 			'autoclose' => true,
 			'format' => 'yyyy-mm-dd'
@@ -80,8 +80,8 @@ SCRIPT;
 	<?
 	if (!$model->isNewRecord)
 		echo $form->field($model, 'ending')->widget(DatePicker::classname(), [
-			'type' => DatePicker::TYPE_INPUT,
-			'options' => ['placeholder' => Yii::t("app", 'Enter ending date if applicable ...')],
+			'type'          => DatePicker::TYPE_INPUT,
+			'options'       => ['placeholder' => Yii::t("app", 'Enter ending date if applicable ...')],
 			'pluginOptions' => [
 				'autoclose' => true,
 				'format' => 'yyyy-mm-dd',

@@ -32,13 +32,13 @@ $assetBundle = AppAsset::register($this);
 		NavBar::begin([
 			'brandLabel' => Html::tag("img", "", ["src" => Yii::$app->params["base64_logo"], "alt" => Yii::$app->params["appName"] . " Logo"]) . "&nbsp;" . Yii::$app->params["appName"],
 			'brandUrl' => Yii::$app->homeUrl,
-			'options' => [
+			'options'  => [
 				'class' => 'navbar navbar-default navbar-fixed-top',
 			],
 		]);
 		echo Nav::widget([
 			'options' => ['class' => 'navbar-nav menu navbar-right'],
-			'items' => $this->context->menuItems,
+			'items'   => $this->context->menuItems,
 			'encodeLabels' => false,
 		]);
 		NavBar::end();

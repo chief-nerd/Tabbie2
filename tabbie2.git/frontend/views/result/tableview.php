@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Table View");
 		&nbsp;|&nbsp;
 		<?=
 		Html::a(Html::icon("tower") . "&nbsp;" . Yii::t("app", "Switch to Venue View"), ["round",
-			"id" => $round_id,
+			"id"   => $round_id,
 			"tournament_id" => $tournament->id,
 			"view" => "venue",
 		], ["class" => "btn btn-default"]);
@@ -40,84 +40,84 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Table View");
 	<?
 	echo GridView::widget([
 		'dataProvider' => $dataProvider,
-		'filterModel' => $searchModel,
-		'id' => 'debates',
-		'pjax' => true,
+		'filterModel'  => $searchModel,
+		'id'           => 'debates',
+		'pjax'         => true,
 		'pjaxSettings' => [
 			'loadingCssClass' => false,
 		],
-		'striped' => false,
-		'responsive' => true,
-		'hover' => true,
-		'floatHeader' => true,
+		'striped'      => false,
+		'responsive'   => true,
+		'hover'        => true,
+		'floatHeader'  => true,
 		'floatHeaderOptions' => ['scrollingTop' => 100],
-		'rowOptions' => function ($model, $key, $index, $grid) {
+		'rowOptions'   => function ($model, $key, $index, $grid) {
 			return ["class" => ($model->result) ? "bg-success" : "bg-warning"];
 		},
-		'columns' => [
+		'columns'      => [
 			['class' => 'yii\grid\SerialColumn'],
 			[
-				'class' => 'kartik\grid\BooleanColumn',
+				'class'  => 'kartik\grid\BooleanColumn',
 				'attribute' => 'Entered',
 				'vAlign' => 'middle',
-				'value' => function ($model, $key, $index, $widget) {
+				'value'  => function ($model, $key, $index, $widget) {
 					return ($model->result instanceof Result) ? true : false;
 				},
 			],
 			[
-				'class' => 'kartik\grid\DataColumn',
-				'attribute' => "debate.venue",
-				'format' => 'raw',
-				'vAlign' => GridView::ALIGN_MIDDLE,
-				'value' => function ($model, $key, $index, $widget) {
+				'class'              => 'kartik\grid\DataColumn',
+				'attribute'          => "debate.venue",
+				'format'             => 'raw',
+				'vAlign'             => GridView::ALIGN_MIDDLE,
+				'value'              => function ($model, $key, $index, $widget) {
 					return $model->venue->name;
 				},
-				'filterType' => GridView::FILTER_SELECT2,
-				'filter' => \common\models\search\VenueSearch::getSearchArray($tournament->id),
+				'filterType'         => GridView::FILTER_SELECT2,
+				'filter'             => \common\models\search\VenueSearch::getSearchArray($tournament->id),
 				'filterWidgetOptions' => [
 					'pluginOptions' => ['allowClear' => true],
 				],
 				'filterInputOptions' => ['placeholder' => 'Any Venue'],
 			],
 			[
-				'class' => 'kartik\grid\DataColumn',
+				'class'  => 'kartik\grid\DataColumn',
 				'attribute' => "result.og_place",
 				'format' => 'raw',
 				'vAlign' => GridView::ALIGN_MIDDLE,
-				'value' => function ($model, $key, $index, $widget) {
+				'value'  => function ($model, $key, $index, $widget) {
 					if ($model->result instanceof Result)
 						return $model->result->og_place . (($model->result->og_irregular > 0) ? Result::swingIndicator() : "");
 					else return "";
 				},
 			],
 			[
-				'class' => 'kartik\grid\DataColumn',
+				'class'  => 'kartik\grid\DataColumn',
 				'attribute' => "result.oo_place",
 				'format' => 'raw',
 				'vAlign' => GridView::ALIGN_MIDDLE,
-				'value' => function ($model, $key, $index, $widget) {
+				'value'  => function ($model, $key, $index, $widget) {
 					if ($model->result instanceof Result)
 						return $model->result->oo_place . (($model->result->oo_irregular > 0) ? Result::swingIndicator() : "");
 					else return "";
 				},
 			],
 			[
-				'class' => 'kartik\grid\DataColumn',
+				'class'  => 'kartik\grid\DataColumn',
 				'attribute' => "result.cg_place",
 				'format' => 'raw',
 				'vAlign' => GridView::ALIGN_MIDDLE,
-				'value' => function ($model, $key, $index, $widget) {
+				'value'  => function ($model, $key, $index, $widget) {
 					if ($model->result instanceof Result)
 						return $model->result->cg_place . (($model->result->cg_irregular > 0) ? Result::swingIndicator() : "");
 					else return "";
 				},
 			],
 			[
-				'class' => 'kartik\grid\DataColumn',
+				'class'  => 'kartik\grid\DataColumn',
 				'attribute' => "result.co_place",
 				'format' => 'raw',
 				'vAlign' => GridView::ALIGN_MIDDLE,
-				'value' => function ($model, $key, $index, $widget) {
+				'value'  => function ($model, $key, $index, $widget) {
 					if ($model->result instanceof Result)
 						return $model->result->co_place . (($model->result->co_irregular > 0) ? Result::swingIndicator() : "");
 					else return "";
@@ -131,12 +131,12 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Table View");
 				},
 			],
 			[
-				'class' => 'kartik\grid\ActionColumn',
-				'width' => "100px",
-				'template' => '{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}',
-				'dropdown' => false,
-				'vAlign' => 'middle',
-				'urlCreator' => function ($action, $model, $key, $index) {
+				'class'       => 'kartik\grid\ActionColumn',
+				'width'       => "100px",
+				'template'    => '{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}',
+				'dropdown'    => false,
+				'vAlign'      => 'middle',
+				'urlCreator'  => function ($action, $model, $key, $index) {
 					if ($model->result instanceof Result)
 						return \yii\helpers\Url::to(["result/" . $action, "id" => $model->result->id, "tournament_id" => $model->tournament_id]);
 					else {

@@ -51,12 +51,12 @@ $this->title = "Round " . $round->number . " Draw";
 				'width' => $team_width,
 			],
 			[
-				'class' => '\kartik\grid\DataColumn',
+				'class'  => '\kartik\grid\DataColumn',
 				'attribute' => 'panel',
-				'label' => Yii::t("app", 'Adjudicators'),
+				'label'  => Yii::t("app", 'Adjudicators'),
 				'format' => 'raw',
-				'value' => function ($model, $key, $index, $widget) {
-					$list = array();
+				'value'  => function ($model, $key, $index, $widget) {
+					$list = [];
 					$panel = common\models\Panel::findOne($model->panel_id);
 					if ($panel) {
 						$chair = common\models\AdjudicatorInPanel::findOne([
@@ -67,29 +67,29 @@ $this->title = "Round " . $round->number . " Draw";
 						foreach ($panel->adjudicators as $adj) {
 							if ($adj->id == $chair->adjudicator_id) {
 								array_unshift($list, "<b>" . $adj->user->name . "</b>");
-							}
-							else
+							} else
 								$list[] = $adj->user->name;
 						}
 
 						return implode(", ", $list);
 					}
+
 					return "";
 				}
 			],
 		];
 
 		echo GridView::widget([
-			'dataProvider' => $dataProvider,
-			'columns' => $gridColumns,
+			'dataProvider'    => $dataProvider,
+			'columns'         => $gridColumns,
 			'showPageSummary' => false,
-			'bootstrap' => true,
-			'hover' => true,
-			'responsive' => false,
-			'floatHeader' => true,
-			'layout' => "{items}\n{pager}",
+			'bootstrap'       => true,
+			'hover'           => true,
+			'responsive'      => false,
+			'floatHeader'     => true,
+			'layout'          => "{items}\n{pager}",
 			'floatHeaderOptions' => ['scrollingTop' => 50],
-			'id' => 'team-table',
+			'id'              => 'team-table',
 		])
 		?>
 	</div>
@@ -105,12 +105,12 @@ $this->title = "Round " . $round->number . " Draw";
 			<h2><?= $round->infoslide ?></h2>
 		</div>
 		<div class="col-sm-12 text-center" id="motionContent"
-		     data-href="<?= yii\helpers\Url::to(["public/start-round",
-			     "id" => $round->id,
-			     "tournament_id" => $round->tournament_id,
-			     "accessToken" => $round->tournament->accessToken
-		     ]) ?>"
-		     style="display:none; margin-top: 20px;">
+			 data-href="<?= yii\helpers\Url::to(["public/start-round",
+				 "id"            => $round->id,
+				 "tournament_id" => $round->tournament_id,
+				 "accessToken"   => $round->tournament->accessToken
+			 ]) ?>"
+			 style="display:none; margin-top: 20px;">
 			<h1><?= $round->motion ?></h1>
 		</div>
 	</div>
@@ -120,12 +120,12 @@ $this->title = "Round " . $round->number . " Draw";
 			<?= yii\helpers\Html::button(Yii::t("app", "Show Motion"), ["class" => "btn btn-success", "id" => 'motion']) ?>
 		</center>
 		<div class="col-sm-12 text-center" id="motionContent"
-		     data-href="<?= yii\helpers\Url::to(["public/start-round",
-			     "id" => $round->id,
-			     "tournament_id" => $round->tournament_id,
-			     "accessToken" => $round->tournament->accessToken
-		     ]) ?>"
-		     style="display:none; margin-top: 50px;">
+			 data-href="<?= yii\helpers\Url::to(["public/start-round",
+				 "id"            => $round->id,
+				 "tournament_id" => $round->tournament_id,
+				 "accessToken"   => $round->tournament->accessToken
+			 ]) ?>"
+			 style="display:none; margin-top: 50px;">
 			<h1><?= $round->motion ?></h1>
 		</div>
 	</div>

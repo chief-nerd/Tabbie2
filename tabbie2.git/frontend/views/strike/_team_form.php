@@ -34,14 +34,14 @@ SCRIPT;
 	?>
 
 	<?= $form->field($model, 'team_id')->widget(Select2::classname(), [
-		'options' => ['placeholder' => Yii::t("app", 'Search for a Team ...')],
+		'options'       => ['placeholder' => Yii::t("app", 'Search for a Team ...')],
 		'pluginOptions' => [
-			'allowClear' => true,
+			'allowClear'    => true,
 			'minimumInputLength' => 2,
-			'ajax' => [
-				'url' => $urlTeamList,
+			'ajax'          => [
+				'url'     => $urlTeamList,
 				'dataType' => 'json',
-				'data' => new JsExpression('function(term,page) { return {search:term}; }'),
+				'data'    => new JsExpression('function(term,page) { return {search:term}; }'),
 				'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
 			],
 			'initSelection' => new JsExpression($initTeamScript)
@@ -66,14 +66,14 @@ SCRIPT;
 	?>
 
 	<?= $form->field($model, 'adjudicator_id')->widget(Select2::classname(), [
-		'options' => ['placeholder' => Yii::t("app", 'Search for an Adjudicator ...')],
+		'options'       => ['placeholder' => Yii::t("app", 'Search for an Adjudicator ...')],
 		'pluginOptions' => [
-			'allowClear' => true,
+			'allowClear'    => true,
 			'minimumInputLength' => 2,
-			'ajax' => [
-				'url' => $urlAdjList,
+			'ajax'          => [
+				'url'     => $urlAdjList,
 				'dataType' => 'json',
-				'data' => new JsExpression('function(term,page) { return {search:term}; }'),
+				'data'    => new JsExpression('function(term,page) { return {search:term}; }'),
 				'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
 			],
 			'initSelection' => new JsExpression($initAdjScript)

@@ -10,43 +10,43 @@ $params = array_merge(
 $baseUrl = str_replace('/frontend/web', '', (new \yii\web\Request)->getBaseUrl());
 
 $config = [
-	'id' => 'app-frontend',
-	'basePath' => dirname(__DIR__),
-	'bootstrap' => ['log'],
+	'id'         => 'app-frontend',
+	'basePath'   => dirname(__DIR__),
+	'bootstrap'  => ['log'],
 	'controllerNamespace' => 'frontend\controllers',
 	'components' => [
-		'request' => [
+		'request'      => [
 			'baseUrl' => $baseUrl,
 		],
 		'assetManager' => [
 			'linkAssets' => true,
 			'appendTimestamp' => false,
 		],
-		'user' => [
+		'user'         => [
 			'identityClass' => 'common\models\User',
 			'enableAutoLogin' => true,
 		],
-		'urlManager' => [
+		'urlManager'   => [
 			'enablePrettyUrl' => true,
 			'showScriptName' => false,
-			'rules' => [
+			'rules'          => [
 				'' => 'site/index',
 				['class' => 'common\components\UserUrlRule'],
 				['class' => 'common\components\TournamentUrlRule'],
 			],
 		],
-		'log' => [
+		'log'          => [
 			'traceLevel' => 0, //YII_DEBUG ? 3 : 0,
 			'targets' => [
 				[
-					'class' => 'yii\log\FileTarget',
+					'class'  => 'yii\log\FileTarget',
 					'levels' => ['error', 'warning'],
 					'logVars' => ['_GET', '_POST', '_FILES'],
 				],
 				[
-					'class' => 'yii\log\FileTarget',
+					'class'   => 'yii\log\FileTarget',
 					'categories' => ['frontend\*', 'common\*', 'algorithms\*'],
-					'levels' => ['error', 'warning', 'trace'],
+					'levels'  => ['error', 'warning', 'trace'],
 					'logFile' => '@frontend/runtime/logs/debug.log',
 					'logVars'    => ['_GET', '_POST', '_FILES'],
 				],
@@ -56,18 +56,18 @@ $config = [
 			'errorAction' => 'site/error',
 		],
 	],
-	'modules' => [
+	'modules'    => [
 		'gii' => [
 			'class' => 'yii\gii\Module', //adding gii module
 			'allowedIPs' => ['127.0.0.1', '::1']  //allowing ip's
 		],
 	],
-	'params' => $params,
+	'params'     => $params,
 ];
 
 if (YII_ENV == "prod") // In production change to CDN hosted
 	$config['components']['assetManager']['bundles'] = [
-		'yii\bootstrap\BootstrapAsset' => [
+		'yii\bootstrap\BootstrapAsset'       => [
 			'sourcePath' => null,   // do not publish the bundle
 			'css' => [
 				'//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css',
@@ -75,7 +75,7 @@ if (YII_ENV == "prod") // In production change to CDN hosted
 		],
 		'yii\bootstrap\BootstrapPluginAsset' => [
 			'sourcePath' => null,   // do not publish the bundle
-			'js' => [
+			'js'      => [
 				'//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js',
 			],
 			'depends' => [
@@ -83,7 +83,7 @@ if (YII_ENV == "prod") // In production change to CDN hosted
 				'yii\bootstrap\BootstrapAsset',
 			],
 		],
-		'yii\web\JqueryAsset' => [
+		'yii\web\JqueryAsset'                => [
 			'sourcePath' => null,   // do not publish the bundle
 			'js' => [
 				'//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js',

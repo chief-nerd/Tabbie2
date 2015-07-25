@@ -11,10 +11,10 @@ use kartik\helpers\Html;
 use yii\web\JsExpression;
 use yii\helpers\Url;
 
-	$this->title = Yii::t('app', 'Generate Barcodes');
-	$tournament = $this->context->_getContext();
-	$this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
-	$this->params['breadcrumbs'][] = $this->title;
+$this->title = Yii::t('app', 'Generate Barcodes');
+$tournament = $this->context->_getContext();
+$this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
+$this->params['breadcrumbs'][] = $this->title;
 
 ?>
 <div id="barcodeForm">
@@ -38,20 +38,20 @@ function (element, callback) {
 SCRIPT;
 			?>
 			<?= \kartik\select2\Select2::widget([
-				'options' => ['placeholder' => Yii::t("app", 'Search for a user ... or leave blank')],
-				'name' => 'userID',
-				'addon' => [
+				'options'       => ['placeholder' => Yii::t("app", 'Search for a user ... or leave blank')],
+				'name'          => 'userID',
+				'addon'         => [
 					"prepend" => [
 						"content" => \kartik\helpers\Html::icon("user")
 					]
 				],
 				'pluginOptions' => [
-					'allowClear' => true,
+					'allowClear'    => true,
 					'minimumInputLength' => 3,
-					'ajax' => [
-						'url' => $urlUserList,
+					'ajax'          => [
+						'url'     => $urlUserList,
 						'dataType' => 'json',
-						'data' => new JsExpression('function(term,page) { return {search:term}; }'),
+						'data'    => new JsExpression('function(term,page) { return {search:term}; }'),
 						'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
 					],
 					'initSelection' => new JsExpression($initUserScript),

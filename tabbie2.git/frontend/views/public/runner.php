@@ -33,10 +33,10 @@ $tournament = $this->context->_getContext();
 	<?=
 	\common\components\widgets\GroupListView::widget([
 		"dataProvider" => $dataProvider,
-		"groupBy" => "venue.group",
+		"groupBy"     => "venue.group",
 		"itemOptions" => ["class" => "venue col-xs-12 col-sm-3 col-md-2 col-lg-2"],
-		"itemView" => "_venue",
-		"id" => "debates",
+		"itemView"    => "_venue",
+		"id"          => "debates",
 	]);
 	?>
 	<? \yii\widgets\Pjax::end(); ?>

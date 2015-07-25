@@ -8,7 +8,8 @@ use yii\base\Model;
 /**
  * ContactForm is the model behind the contact form.
  */
-class ImportForm extends Model {
+class ImportForm extends Model
+{
 
 	public $csvFile;
 	public $tempImport;
@@ -17,7 +18,8 @@ class ImportForm extends Model {
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			// name, email, subject and body are required
 			[['csvFile'], 'required'],
@@ -28,7 +30,8 @@ class ImportForm extends Model {
 	/**
 	 * @inheritdoc
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return [
 			'csvFile' => Yii::t("app", '*.csv File'),
 			'is_test' => Yii::t("app", 'Mark as Test Data Import (prohibits Email sending)'),

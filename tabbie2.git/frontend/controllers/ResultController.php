@@ -18,9 +18,11 @@ use yii\filters\AccessControl;
 /**
  * ResultController implements the CRUD actions for Result model.
  */
-class ResultController extends BaseTournamentController {
+class ResultController extends BaseTournamentController
+{
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return [
 			'tournamentFilter' => [
 				'class' => TournamentContextFilter::className(),
@@ -29,17 +31,18 @@ class ResultController extends BaseTournamentController {
 				'class' => AccessControl::className(),
 				'rules' => [
 					[
-						'allow' => true,
+						'allow'   => true,
 						'actions' => ['create'],
 						'matchCallback' => function ($rule, $action) {
 							/** @TODO: Faster call
 							 */
 							$info = $this->_tournament->getLastDebateInfo(Yii::$app->user->id);
+
 							return Yii::$app->user->hasChairedLastRound($info);
 						},
 					],
 					[
-						'allow' => true,
+						'allow'   => true,
 						'actions' => ['index', 'round', 'create', 'view', 'update', 'manual', 'correctcache'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
@@ -47,7 +50,7 @@ class ResultController extends BaseTournamentController {
 					],
 				],
 			],
-			'verbs' => [
+			'verbs'  => [
 				'class' => VerbFilter::className(),
 				'actions' => [
 					'delete' => ['post'],
@@ -61,7 +64,8 @@ class ResultController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionIndex() {
+	public function actionIndex()
+	{
 
 		$rounds = new ActiveDataProvider([
 			'query' => \common\models\Round::findBySql("SELECT round.* FROM round "
@@ -81,7 +85,8 @@ class ResultController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionRound($id, $view = "venue") {
+	public function actionRound($id, $view = "venue")
+	{
 		$searchModel = new ResultSearch();
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->_tournament->id, $id);
 
@@ -112,7 +117,7 @@ class ResultController extends BaseTournamentController {
 		}
 
 		return $this->render($view, [
-			'round_id' => $id,
+			'round_id'    => $id,
 			'round_number' => $number,
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
@@ -126,7 +131,8 @@ class ResultController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionView($id) {
+	public function actionView($id)
+	{
 		return $this->render('view', [
 			'model' => $this->findModel($id),
 		]);
@@ -138,7 +144,8 @@ class ResultController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionCreate($id) {
+	public function actionCreate($id)
+	{
 
 		$result = Result::find()->where(["debate_id" => $id])->one();
 
@@ -160,22 +167,20 @@ class ResultController extends BaseTournamentController {
 							"round_id" => $roundid
 						])->count();
 						$max = Debate::find()
-						             ->tournament($this->_tournament->id)
-						             ->where(["round_id" => $roundid])
-						             ->count();
+							->tournament($this->_tournament->id)
+							->where(["round_id" => $roundid])
+							->count();
 
 						return $this->render('thankyou', [
 							"model" => $model,
 							"place" => $place,
 							"max" => $max,
 						]);
-					}
-					else {
-                        Yii::error("Save Results: " . ObjectError::getMsg($model), __METHOD__);
+					} else {
+						Yii::error("Save Results: " . ObjectError::getMsg($model), __METHOD__);
 						Yii::$app->session->addFlash("error", Yii::t("app", "Error saving Results.<br>Please request a paper ballot!"));
 					}
-				}
-				else {
+				} else {
 					$model->rankTeams();
 
 					return $this->render('confirm', [
@@ -187,8 +192,7 @@ class ResultController extends BaseTournamentController {
 			return $this->render('create', [
 				'model' => $model,
 			]);
-		}
-		else //Already entered - prevent reload
+		} else //Already entered - prevent reload
 		{
 			return $this->render('thankyou', [
 				"model" => $result,
@@ -206,7 +210,8 @@ class ResultController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionUpdate($id) {
+	public function actionUpdate($id)
+	{
 		$model = $this->findModel($id);
 
 		if ($model->load(Yii::$app->request->post())) {
@@ -217,15 +222,15 @@ class ResultController extends BaseTournamentController {
 					$model->updateTeamCache();
 
 					Yii::$app->session->addFlash("success", Yii::t("app", "Result updated"));
+
 					return $this->redirect(['result/round', 'id' => $model->debate->round_id, "tournament_id" => $this->_tournament->id]);
-				}
-				else {
-                    Yii::error("Save Results: " . ObjectError::getMsg($model), __METHOD__);
+				} else {
+					Yii::error("Save Results: " . ObjectError::getMsg($model), __METHOD__);
 					Yii::$app->session->addFlash("error", Yii::t("app", "Error saving Results.<br>Please request a paper ballot!"));
 				}
-			}
-			else {
+			} else {
 				$model->rankTeams();
+
 				return $this->render('confirm', [
 					'model' => $model,
 				]);
@@ -245,7 +250,8 @@ class ResultController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionDelete($id) {
+	public function actionDelete($id)
+	{
 		$this->findModel($id)->delete();
 
 		return $this->redirect(['index']);
@@ -260,41 +266,43 @@ class ResultController extends BaseTournamentController {
 	 * @return Result the loaded model
 	 * @throws NotFoundHttpException if the model cannot be found
 	 */
-	protected function findModel($id) {
+	protected function findModel($id)
+	{
 		if (($model = Result::findOne($id)) !== null) {
 			return $model;
-		}
-		else {
+		} else {
 			throw new NotFoundHttpException('The requested page does not exist.');
 		}
 	}
 
-	public function actionManual() {
+	public function actionManual()
+	{
 
 		$model = new Result();
 
 		if ($model->load(Yii::$app->request->post())) {
 
-            if ($model->debate instanceof Debate) {
-                if ($model->confirmed == "true") {
-                    $model->entered_by_id = Yii::$app->user->id;
-                    if ($model->save()) {
-                        $model->updateTeamCache();
-                        Yii::$app->session->addFlash("success", Yii::t("app", "Result saved. Next one!"));
-                        /* Reset for next one */
-                        $model = new Result();
-                    } else {
-                        Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
-                    }
-                } else {
-                    $model->rankTeams();
-                    return $this->render('confirm', [
-                        'model' => $model,
-                    ]);
-                }
-            } else {
-                $model->addError("debate_id", Yii::t("app", "Debate #{id} does not exist", ["id" => $model->debate_id]));
-            }
+			if ($model->debate instanceof Debate) {
+				if ($model->confirmed == "true") {
+					$model->entered_by_id = Yii::$app->user->id;
+					if ($model->save()) {
+						$model->updateTeamCache();
+						Yii::$app->session->addFlash("success", Yii::t("app", "Result saved. Next one!"));
+						/* Reset for next one */
+						$model = new Result();
+					} else {
+						Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
+					}
+				} else {
+					$model->rankTeams();
+
+					return $this->render('confirm', [
+						'model' => $model,
+					]);
+				}
+			} else {
+				$model->addError("debate_id", Yii::t("app", "Debate #{id} does not exist", ["id" => $model->debate_id]));
+			}
 		}
 
 		return $this->render('manual', [
@@ -302,7 +310,8 @@ class ResultController extends BaseTournamentController {
 		]);
 	}
 
-	public function actionCorrectcache() {
+	public function actionCorrectcache()
+	{
 		$teams = \common\models\Team::find()->tournament($this->_tournament->id)->all();
 
 		$found = false;

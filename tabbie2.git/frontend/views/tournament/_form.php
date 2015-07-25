@@ -16,7 +16,7 @@ use yii\helpers\Html;
 	<?= Html::activeHiddenInput($model, 'convenor_user_id', ["value" => Yii::$app->user->id]) ?>
 
 	<?= $form->field($model, 'name')
-	         ->textInput(['maxlength' => 100, 'placeholder' => Yii::t("app", 'My super awesome IV')]) ?>
+		->textInput(['maxlength' => 100, 'placeholder' => Yii::t("app", 'My super awesome IV')]) ?>
 
 	<?= $form->field($model, 'hosted_by_id', [
 		'addon' => ['prepend' => ['content' => "<i class=\"glyphicon glyphicon-education\"></i>"]]
@@ -30,8 +30,8 @@ use yii\helpers\Html;
 	$form->field($model, 'start_date', [
 		'addon' => ['prepend' => ['content' => "<i class=\"glyphicon glyphicon-calendar\"></i>"]]
 	])->widget(DateTimePicker::classname(), [
-		'type' => DateTimePicker::TYPE_INPUT,
-		'options' => ['placeholder' => Yii::t("app", 'Enter start date / time ...')],
+		'type'          => DateTimePicker::TYPE_INPUT,
+		'options'       => ['placeholder' => Yii::t("app", 'Enter start date / time ...')],
 		'pluginOptions' => [
 			'format' => 'yyyy-mm-dd hh:ii',
 			'startDate' => date("Y-m-d H:i"),
@@ -44,8 +44,8 @@ use yii\helpers\Html;
 	$form->field($model, 'end_date', [
 		'addon' => ['prepend' => ['content' => "<i class=\"glyphicon glyphicon-calendar\"></i>"]]
 	])->widget(DateTimePicker::classname(), [
-		'type' => DateTimePicker::TYPE_INPUT,
-		'options' => ['placeholder' => Yii::t("app", 'Enter the end date / time ...')],
+		'type'          => DateTimePicker::TYPE_INPUT,
+		'options'       => ['placeholder' => Yii::t("app", 'Enter the end date / time ...')],
 		'pluginOptions' => [
 			'format' => 'yyyy-mm-dd hh:ii',
 			'startDate' => date("Y-m-d H:i"),
@@ -55,7 +55,7 @@ use yii\helpers\Html;
 	?>
 
 	<?= $form->field($model, 'expected_rounds')
-	         ->dropDownList([1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9]) ?>
+		->dropDownList([1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9]) ?>
 
 	<?= $form->field($model, 'tabAlgorithmClass', [
 		'addon' => ['prepend' => ['content' => "<i class=\"glyphicon glyphicon-flash\"></i>"]]

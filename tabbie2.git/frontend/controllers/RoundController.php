@@ -21,9 +21,11 @@ use yii\web\NotFoundHttpException;
 /**
  * RoundController implements the CRUD actions for Round model.
  */
-class RoundController extends BaseTournamentController {
+class RoundController extends BaseTournamentController
+{
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return [
 			'tournamentFilter' => [
 				'class' => TournamentContextFilter::className(),
@@ -32,14 +34,14 @@ class RoundController extends BaseTournamentController {
 				'class' => AccessControl::className(),
 				'rules' => [
 					[
-						'allow' => true,
+						'allow'   => true,
 						'actions' => ['index', 'view', 'printballots', 'debatedetails'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id) || $this->_tournament->isConvenor(Yii::$app->user->id));
 						}
 					],
 					[
-						'allow' => true,
+						'allow'   => true,
 						'actions' => ['create', 'update', 'changevenue', 'publish', 'redraw', 'improve'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
@@ -47,7 +49,7 @@ class RoundController extends BaseTournamentController {
 					],
 				],
 			],
-			'verbs' => [
+			'verbs'  => [
 				'class' => VerbFilter::className(),
 				'actions' => [
 					'delete' => ['post'],
@@ -61,7 +63,8 @@ class RoundController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionIndex() {
+	public function actionIndex()
+	{
 		$dataProvider = new ActiveDataProvider([
 			'query' => Round::find()->where(["tournament_id" => $this->_tournament->id]),
 		]);
@@ -78,7 +81,8 @@ class RoundController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionView($id) {
+	public function actionView($id)
+	{
 		$model = $this->findModel($id);
 
 		$debateSearchModel = new DebateSearch();
@@ -92,13 +96,14 @@ class RoundController extends BaseTournamentController {
 
 			// store a default json response as desired by editable
 			$out = \yii\helpers\Json::encode(['output' => '', 'message' => '']);
+
 			// return ajax json encoded response and exit
 
 			return $out;
 		}
 
 		return $this->render('view', [
-			'model' => $model,
+			'model'             => $model,
 			'debateSearchModel' => $debateSearchModel,
 			'debateDataProvider' => $debateDataProvider,
 		]);
@@ -107,7 +112,8 @@ class RoundController extends BaseTournamentController {
 	/**
 	 * Function called when move results are sent
 	 */
-	public function actionChangevenue($id, $debateid) {
+	public function actionChangevenue($id, $debateid)
+	{
 		$selected_debate = \common\models\Debate::findOne($debateid);
 
 		if ($params = Yii::$app->request->get()) {
@@ -119,17 +125,14 @@ class RoundController extends BaseTournamentController {
 				$used_debate->venue_id = $old_debate_venue;
 				if ($selected_debate->save() && $used_debate->save()) {
 					Yii::$app->session->setFlash('success', Yii::t("app", 'Venues switched'));
-				}
-				else {
+				} else {
 					Yii::$app->session->setFlash('error', Yii::t("app", 'Error while switching'));
 				}
-			}
-			else {
+			} else {
 				$selected_debate->venue_id = $params["new_venue"];
 				if ($selected_debate->save()) {
 					Yii::$app->session->setFlash('success', Yii::t("app", 'New Venues set'));
-				}
-				else {
+				} else {
 					Yii::$app->session->setFlash('error', Yii::t("app", 'Error while setting new Venue'));
 				}
 			}
@@ -144,10 +147,12 @@ class RoundController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionCreate() {
+	public function actionCreate()
+	{
 
 		if (\common\models\Team::find()->active()->tournament($this->_tournament->id)->count() % 4 != 0) {
 			\Yii::$app->session->setFlash("error", Yii::t("app", "Can't create Round: Amount of Teams is not dividable by 4"));
+
 			return $this->redirect(["team/index", "tournament_id" => $this->_tournament->id]);
 		}
 
@@ -158,8 +163,9 @@ class RoundController extends BaseTournamentController {
 		if ($model->load(Yii::$app->request->post())) {
 
 			if (!$model->save() || !$model->generateWorkingDraw()) {
-                Yii::$app->session->setFlash("error", ObjectError::getMsg($model));
+				Yii::$app->session->setFlash("error", ObjectError::getMsg($model));
 			}
+
 			return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
 		}
 
@@ -168,11 +174,12 @@ class RoundController extends BaseTournamentController {
 		]);
 	}
 
-	public function nextRoundNumber() {
+	public function nextRoundNumber()
+	{
 		$lastRound = Round::find()
-		                  ->where(["tournament_id" => $this->_tournament->id])
-		                  ->orderBy(["number" => SORT_DESC])
-		                  ->one();
+			->where(["tournament_id" => $this->_tournament->id])
+			->orderBy(["number" => SORT_DESC])
+			->one();
 		if (!$lastRound)
 			return 1;
 		else
@@ -187,13 +194,13 @@ class RoundController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionUpdate($id) {
+	public function actionUpdate($id)
+	{
 		$model = $this->findModel($id);
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
 			return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
-		}
-		else {
+		} else {
 			return $this->render('update', [
 				'model' => $model,
 			]);
@@ -208,7 +215,8 @@ class RoundController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionDelete($id) {
+	public function actionDelete($id)
+	{
 		$this->findModel($id)->delete();
 
 		return $this->redirect(['index']);
@@ -222,7 +230,8 @@ class RoundController extends BaseTournamentController {
 	 * @return \yii\web\Response
 	 * @throws \yii\web\NotFoundHttpException
 	 */
-	public function actionPublish($id) {
+	public function actionPublish($id)
+	{
 		$model = $this->findModel($id);
 		$model->published = 1;
 		$model->save();
@@ -241,16 +250,17 @@ class RoundController extends BaseTournamentController {
 	 * @return Round the loaded model
 	 * @throws NotFoundHttpException if the model cannot be found
 	 */
-	protected function findModel($id) {
+	protected function findModel($id)
+	{
 		if (($model = Round::findOne($id)) !== null) {
 			return $model;
-		}
-		else {
+		} else {
 			throw new NotFoundHttpException('The requested page does not exist.');
 		}
 	}
 
-	public function actionRedraw($id) {
+	public function actionRedraw($id)
+	{
 		$model = Round::findOne(["id" => $id]);
 
 		if ($model instanceof Round) {
@@ -266,16 +276,14 @@ class RoundController extends BaseTournamentController {
 					$panelid = $debate->panel_id;
 					$debate->delete();
 					Panel::deleteAll(["id" => $panelid]);
-				}
-				else {
+				} else {
 					$debate->delete();
 				}
 			}
 
 			if (!$model->generateWorkingDraw()) {
-                Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
-			}
-			else {
+				Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
+			} else {
 				$model->save();
 				Yii::$app->session->addFlash("success", Yii::t("app", "Successfully redrawn in {secs}s", ["secs" => intval(microtime(true) - $time)]));
 			}
@@ -285,7 +293,8 @@ class RoundController extends BaseTournamentController {
 		return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
 	}
 
-	public function actionImprove($id, $runs = null) {
+	public function actionImprove($id, $runs = null)
+	{
 		$model = Round::findOne(["id" => $id]);
 
 		if ($model instanceof Round) {
@@ -310,12 +319,13 @@ class RoundController extends BaseTournamentController {
 		return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
 	}
 
-	public function actionPrintballots($id, $debug = false) {
+	public function actionPrintballots($id, $debug = false)
+	{
 		$model = Round::findOne(["id" => $id]);
 
 		$pdf = new Pdf([
-			'mode' => Pdf::MODE_CORE, // leaner size using standard fonts
-			'format' => Pdf::FORMAT_A4,
+			'mode'    => Pdf::MODE_CORE, // leaner size using standard fonts
+			'format'  => Pdf::FORMAT_A4,
 			'orientation' => Pdf::ORIENT_LANDSCAPE,
 			'cssFile' => '@frontend/assets/css/ballot.css',
 			'content' => $this->renderPartial("ballots", [
@@ -330,7 +340,8 @@ class RoundController extends BaseTournamentController {
 		return $pdf->render();
 	}
 
-	public function actionDebatedetails() {
+	public function actionDebatedetails()
+	{
 		try {
 			$id = Yii::$app->request->post("expandRowKey", 0);
 			$debate = Debate::findOne($id);
@@ -339,6 +350,7 @@ class RoundController extends BaseTournamentController {
 		} catch (Exception $ex) {
 			return $ex->getMessage();
 		}
+
 		return "Error";
 	}
 

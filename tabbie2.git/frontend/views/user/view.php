@@ -52,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'class' => '\kartik\grid\SerialColumn',
 		],
 		[
-			'class' => 'kartik\grid\DataColumn',
+			'class'  => 'kartik\grid\DataColumn',
 			'attribute' => 'society.fullname',
 			'vAlign' => 'middle',
 		],
@@ -61,35 +61,35 @@ $this->params['breadcrumbs'][] = $this->title;
 			'attribute' => 'starting',
 		],
 		[
-			'class' => '\kartik\grid\DataColumn',
+			'class'  => '\kartik\grid\DataColumn',
 			'attribute' => 'ending',
 			'format' => "raw",
-			'value' => function ($model, $key, $index, $widget) {
+			'value'  => function ($model, $key, $index, $widget) {
 				return ($model->ending) ? $model->ending : Yii::t("app", "still active");
 			},
 		],
 		[
-			'class' => 'kartik\grid\ActionColumn',
-			'template' => '{update}',
-			'dropdown' => false,
-			'vAlign' => 'middle',
+			'class'      => 'kartik\grid\ActionColumn',
+			'template'   => '{update}',
+			'dropdown'   => false,
+			'vAlign'     => 'middle',
 			'urlCreator' => function ($action, $model, $key, $index) {
 				return \yii\helpers\Url::to(["society/" . $action, "user_id" => $model->user_id, "id" => $model->society_id]);
 			},
 			'updateOptions' => ['title' => Yii::t("app", "Update Society Info"), 'data-toggle' => 'tooltip'],
-			'width' => '100px'
+			'width'      => '100px'
 		],
 	];
 
 	echo GridView::widget([
-		'dataProvider' => $dataSocietyProvider,
-		'columns' => $gridColumns,
-		'id' => 'venues',
-		'pjax' => true,
+		'dataProvider'    => $dataSocietyProvider,
+		'columns'         => $gridColumns,
+		'id'              => 'venues',
+		'pjax'            => true,
 		'showPageSummary' => false,
-		'responsive' => true,
-		'hover' => true,
-		'floatHeader' => false,
+		'responsive'      => true,
+		'hover'           => true,
+		'floatHeader'     => false,
 		'floatHeaderOptions' => ['scrollingTop' => '150'],
 	])
 	?>

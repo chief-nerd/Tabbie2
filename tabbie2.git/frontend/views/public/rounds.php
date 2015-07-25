@@ -15,7 +15,7 @@ $this->title = "Rounds";
 <br>
 <div class="row">
 	<div class="col-xs-12 text-center rounds"
-	     data-href="<?= yii\helpers\Url::to(["public/rounds", "tournament_id" => $tournament->id, "accessToken" => $tournament->accessToken]); ?>">
+		 data-href="<?= yii\helpers\Url::to(["public/rounds", "tournament_id" => $tournament->id, "accessToken" => $tournament->accessToken]); ?>">
 		<?= $already ?>
 	</div>
 </div>

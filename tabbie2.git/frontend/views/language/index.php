@@ -25,25 +25,25 @@ $this->params['breadcrumbs'][] = $this->title;
 			'class' => '\kartik\grid\SerialColumn',
 		],
 		[
-			'class' => '\kartik\grid\DataColumn',
-			'attribute' => 'name',
-			'filterType' => GridView::FILTER_SELECT2,
-			'filter' => \common\models\search\UserSearch::getSearchTournamentArray($tournament->id),
+			'class'              => '\kartik\grid\DataColumn',
+			'attribute'          => 'name',
+			'filterType'         => GridView::FILTER_SELECT2,
+			'filter'             => \common\models\search\UserSearch::getSearchTournamentArray($tournament->id),
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
 			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any User ...')],
 		],
 		[
-			'class' => '\kartik\grid\DataColumn',
-			'attribute' => 'language_status',
-			'format' => "raw",
-			'value' => function ($model, $key, $index, $widget) {
+			'class'              => '\kartik\grid\DataColumn',
+			'attribute'          => 'language_status',
+			'format'             => "raw",
+			'value'              => function ($model, $key, $index, $widget) {
 				return \common\models\User::getLanguageStatusLabel($model->language_status);
 			},
-			'width' => '25%',
-			'filterType' => GridView::FILTER_SELECT2,
-			'filter' => \common\models\User::getLanguageStatusLabel(),
+			'width'              => '25%',
+			'filterType'         => GridView::FILTER_SELECT2,
+			'filter'             => \common\models\User::getLanguageStatusLabel(),
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
@@ -60,31 +60,31 @@ $this->params['breadcrumbs'][] = $this->title;
 			'filterInputOptions' => ['placeholder' => 'Any Society'],
 		],*/
 		[
-			'class' => 'kartik\grid\ActionColumn',
+			'class'    => 'kartik\grid\ActionColumn',
 			'template' => '{ENL}&nbsp;{ESL}&nbsp;{EFL}',
-			'buttons' => [
+			'buttons'  => [
 				"ENL" => function ($url, $model) {
 					return Html::a("Set to ENL", $url, [
-						'title' => Yii::t('app', 'Set ENL'),
+						'title'     => Yii::t('app', 'Set ENL'),
 						'data-pjax' => '0',
 						'data-toggle-active' => $model->id,
-						'class' => 'btn btn-default',
+						'class'     => 'btn btn-default',
 					]);
 				},
 				"ESL" => function ($url, $model) {
 					return Html::a("Set to ESL", $url, [
-						'title' => Yii::t('app', 'Set ESL'),
+						'title'     => Yii::t('app', 'Set ESL'),
 						'data-pjax' => '0',
 						'data-toggle-active' => $model->id,
-						'class' => 'btn btn-default',
+						'class'     => 'btn btn-default',
 					]);
 				},
 				"EFL" => function ($url, $model) {
 					return Html::a("Set to EFL", $url, [
-						'title' => Yii::t('app', 'Set ESL'),
+						'title'     => Yii::t('app', 'Set ESL'),
 						'data-pjax' => '0',
 						'data-toggle-active' => $model->id,
-						'class' => 'btn btn-default',
+						'class'     => 'btn btn-default',
 					]);
 				},
 			],
@@ -92,21 +92,21 @@ $this->params['breadcrumbs'][] = $this->title;
 				return \yii\helpers\Url::to(["language/set", "userid" => $key, "status" => $action, "tournament_id" => $this->context->_getContext()->id]);
 			},
 			'dropdown' => true,
-			'vAlign' => 'middle',
-			'width' => '120px',
+			'vAlign'   => 'middle',
+			'width'    => '120px',
 		],
 	];
 
 	echo GridView::widget([
-		'dataProvider' => $dataProvider,
-		'filterModel' => $searchModel,
-		'columns' => $gridColumns,
-		'id' => 'language',
-		'pjax' => true,
+		'dataProvider'    => $dataProvider,
+		'filterModel'     => $searchModel,
+		'columns'         => $gridColumns,
+		'id'              => 'language',
+		'pjax'            => true,
 		'showPageSummary' => false,
-		'responsive' => false,
-		'hover' => true,
-		'floatHeader' => true,
+		'responsive'      => false,
+		'hover'           => true,
+		'floatHeader'     => true,
 		'floatHeaderOptions' => ['scrollingTop' => 100],
 
 	])

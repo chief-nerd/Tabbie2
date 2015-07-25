@@ -15,12 +15,14 @@ use yii\filters\VerbFilter;
 /**
  * Site controller
  */
-class LanguageController extends BaseTournamentController {
+class LanguageController extends BaseTournamentController
+{
 
 	/**
 	 * @inheritdoc
 	 */
-	public function behaviors() {
+	public function behaviors()
+	{
 		return [
 			'tournamentFilter' => [
 				'class' => TournamentContextFilter::className(),
@@ -29,7 +31,7 @@ class LanguageController extends BaseTournamentController {
 				'class' => AccessControl::className(),
 				'rules' => [
 					[
-						'allow' => true,
+						'allow'   => true,
 						'actions' => ['index', 'set', 'officer', 'officer-add', 'officer-delete'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isLanguageOfficer(Yii::$app->user->id) || $this->_tournament->isTabMaster(Yii::$app->user->id));
@@ -37,7 +39,7 @@ class LanguageController extends BaseTournamentController {
 					],
 				],
 			],
-			'verbs' => [
+			'verbs'  => [
 				'class' => VerbFilter::className(),
 				'actions' => [
 					'logout' => ['post'],
@@ -46,7 +48,8 @@ class LanguageController extends BaseTournamentController {
 		];
 	}
 
-	public function actionIndex() {
+	public function actionIndex()
+	{
 		$searchModel = new UserSearch();
 		$dataProvider = $searchModel->searchTournament(Yii::$app->request->queryParams, $this->_tournament->id);
 
@@ -65,7 +68,8 @@ class LanguageController extends BaseTournamentController {
 	 *
 	 * @return \yii\web\Response
 	 */
-	public function actionSet($userid, $status) {
+	public function actionSet($userid, $status)
+	{
 
 		$user = User::findOne($userid);
 		if ($user instanceof User) {
@@ -95,26 +99,24 @@ class LanguageController extends BaseTournamentController {
 						$team->language_status = $team->speakerA->language_status;
 						$addon = Yii::t("app", " + Team upgraded to {status}", ["status" => User::getLanguageStatusLabel($team->language_status, true)]);
 						$team->save();
-					}
-					else {
+					} else {
 						$team->language_status = User::LANGUAGE_NONE;
 						$team->save();
 					}
 				}
 
 				Yii::$app->session->addFlash("success", Yii::t("app", "Language Settings saved") . $addon);
-			}
-			else
+			} else
 				Yii::$app->session->addFlash("error", Yii::t("app", "Error saving Language Settings"));
-		}
-		else
+		} else
 			Yii::$app->session->addFlash("error", Yii::t("app", "User not found!"));
 
 		return $this->redirect(['language/index', "tournament_id" => $this->_tournament->id]);
 	}
 
 
-	public function actionOfficer() {
+	public function actionOfficer()
+	{
 
 		$query = LanguageOfficer::find()->tournament($this->_tournament->id);
 
@@ -127,15 +129,16 @@ class LanguageController extends BaseTournamentController {
 		]);
 	}
 
-	public function actionOfficerAdd() {
+	public function actionOfficerAdd()
+	{
 		$model = new LanguageOfficer();
 		$model->tournament_id = $this->_tournament->id;
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
 			Yii::$app->session->addFlash("success", Yii::t("app", "Successfully added"));
+
 			return $this->redirect(['language/officer', "tournament_id" => $model->tournament_id]);
-		}
-		else {
+		} else {
 			return $this->render('officer_add', [
 				'model' => $model,
 			]);
@@ -143,7 +146,8 @@ class LanguageController extends BaseTournamentController {
 
 	}
 
-	public function actionOfficerDelete($id) {
+	public function actionOfficerDelete($id)
+	{
 		$model = LanguageOfficer::find()->where([
 			"tournament_id" => $this->_tournament->id,
 			"user_id" => $id,

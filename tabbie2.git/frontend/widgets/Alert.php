@@ -23,7 +23,8 @@ namespace frontend\widgets;
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @author Alexander Makarov <sam@rmcreative.ru>
  */
-class Alert extends \yii\bootstrap\Widget {
+class Alert extends \yii\bootstrap\Widget
+{
 	/**
 	 * @var array the alert types configuration for the flash messages.
 	 * This array is setup as $key => $value, where:
@@ -31,10 +32,10 @@ class Alert extends \yii\bootstrap\Widget {
 	 * - $value is the bootstrap alert type (i.e. danger, success, info, warning)
 	 */
 	public $alertTypes = [
-		'error' => 'alert-danger',
+		'error'  => 'alert-danger',
 		'danger' => 'alert-danger',
 		'success' => 'alert-success',
-		'info' => 'alert-info',
+		'info'   => 'alert-info',
 		'warning' => 'alert-warning'
 	];
 
@@ -43,7 +44,8 @@ class Alert extends \yii\bootstrap\Widget {
 	 */
 	public $closeButton = [];
 
-	public function init() {
+	public function init()
+	{
 		parent::init();
 
 		$session = \Yii::$app->getSession();
@@ -61,7 +63,7 @@ class Alert extends \yii\bootstrap\Widget {
 					$this->options['id'] = $this->getId() . '-' . $type;
 
 					echo \yii\bootstrap\Alert::widget([
-						'body' => $message,
+						'body'    => $message,
 						'closeButton' => $this->closeButton,
 						'options' => $this->options,
 					]);

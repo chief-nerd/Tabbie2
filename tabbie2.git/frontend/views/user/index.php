@@ -39,10 +39,10 @@ $this->params['breadcrumbs'][] = $this->title;
 			'attribute' => 'email',
 		],
 		[
-			'class' => '\kartik\grid\DataColumn',
+			'class'  => '\kartik\grid\DataColumn',
 			'attribute' => 'role',
 			'format' => "raw",
-			'value' => function ($model, $key, $index, $widget) {
+			'value'  => function ($model, $key, $index, $widget) {
 				return \common\models\User::getRoleLabel($model->role);
 			},
 		],
@@ -51,26 +51,26 @@ $this->params['breadcrumbs'][] = $this->title;
 			'attribute' => 'last_change',
 		],
 		[
-			'class' => 'kartik\grid\ActionColumn',
-			'template' => '{forcepass}&nbsp;&nbsp;{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}',
-			'dropdown' => false,
-			'vAlign' => 'middle',
-			'buttons' => [
+			'class'       => 'kartik\grid\ActionColumn',
+			'template'    => '{forcepass}&nbsp;&nbsp;{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}',
+			'dropdown'    => false,
+			'vAlign'      => 'middle',
+			'buttons'     => [
 				"forcepass" => function ($url, $model) {
 					return Html::a("<span class='glyphicon glyphicon-lock'></span>", $url, [
-						'title' => Yii::t('app', 'Set new Password'),
+						'title'     => Yii::t('app', 'Set new Password'),
 						'data-pjax' => '0',
 						'data-toggle-active' => $model->id
 					]);
 				}
 			],
-			'urlCreator' => function ($action, $model, $key, $index) {
+			'urlCreator'  => function ($action, $model, $key, $index) {
 				return \yii\helpers\Url::to(["user/" . $action, "id" => $model->id]);
 			},
 			'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", "View User"), 'data-toggle' => 'tooltip'],
 			'updateOptions' => ['title' => Yii::t("app", "Update User"), 'data-toggle' => 'tooltip'],
 			'deleteOptions' => ['title' => Yii::t("app", "Delete User"), 'data-toggle' => 'tooltip'],
-			'width' => '120px'
+			'width'       => '120px'
 		],
 	];
 
@@ -92,20 +92,20 @@ $this->params['breadcrumbs'][] = $this->title;
 	];
 
 	echo GridView::widget([
-		'dataProvider' => $dataProvider,
-		'columns' => $gridColumns,
-		'id' => 'users',
-		'pjax' => true,
+		'dataProvider'    => $dataProvider,
+		'columns'         => $gridColumns,
+		'id'              => 'users',
+		'pjax'            => true,
 		'showPageSummary' => false,
-		'responsive' => true,
-		'hover' => true,
-		'floatHeader' => false,
+		'responsive'      => true,
+		'hover'           => true,
+		'floatHeader'     => false,
 		'floatHeaderOptions' => ['scrollingTop' => '100'],
-		'panel'   => [
+		'panel'           => [
 			'type'    => GridView::TYPE_DEFAULT,
 			'heading' => Html::encode($this->title),
 		],
-		'toolbar' => $toolbar,
+		'toolbar'         => $toolbar,
 	])
 	?>
 

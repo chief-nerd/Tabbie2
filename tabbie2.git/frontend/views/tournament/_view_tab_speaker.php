@@ -8,7 +8,7 @@ $lines = PublishTabSpeaker::generateSpeakerTab($model);
 
 $dataProvider = new ArrayDataProvider([
 	'allModels' => $lines,
-	'sort' => [
+	'sort'      => [
 		'attributes' => ['enl_place'],
 	],
 	'pagination' => [
@@ -29,21 +29,21 @@ $dataProvider = new ArrayDataProvider([
 			'width' => '100px',
 		],
 		[
-			'class' => '\kartik\grid\DataColumn',
+			'class'   => '\kartik\grid\DataColumn',
 			'attribute' => 'esl_place',
-			'label' => Yii::t("app", 'ESL Place'),
-			'width' => '100px',
+			'label'   => Yii::t("app", 'ESL Place'),
+			'width'   => '100px',
 			'visible' => $model->has_esl,
-			'value' => function ($model, $key, $index, $widget) {
+			'value'   => function ($model, $key, $index, $widget) {
 				return ($model->esl_place) ? $model->esl_place : "";
 			},
 		],
 		[
-			'class' => '\kartik\grid\DataColumn',
+			'class'  => '\kartik\grid\DataColumn',
 			'attribute' => 'object.name',
-			'label' => Yii::t("app", 'Speaker'),
+			'label'  => Yii::t("app", 'Speaker'),
 			'format' => 'raw',
-			'value' => function ($model, $key, $index, $widget) {
+			'value'  => function ($model, $key, $index, $widget) {
 				return ($model->object) ? $model->object->name : "(not set)";
 			},
 		],
@@ -71,19 +71,19 @@ $dataProvider = new ArrayDataProvider([
 	}
 
 	echo GridView::widget([
-		'dataProvider' => $dataProvider,
+		'dataProvider'    => $dataProvider,
 		//'filterModel' => $searchModel,
-		'columns' => $columns,
+		'columns'         => $columns,
 		'showPageSummary' => false,
-		'layout' => "{items}\n{pager}",
-		'bootstrap' => true,
-		'pjax' => false,
-		'hover' => true,
-		'responsive' => false,
-		'floatHeader' => true,
+		'layout'          => "{items}\n{pager}",
+		'bootstrap'       => true,
+		'pjax'            => false,
+		'hover'           => true,
+		'responsive'      => false,
+		'floatHeader'     => true,
 		'floatHeaderOptions' => ['scrollingTop' => ($model->isTabMaster(Yii::$app->user->id) ? 100 : 50)],
-		'id' => 'team-speaker',
-		'striped' => true,
+		'id'              => 'team-speaker',
+		'striped'         => true,
 	])
 	?>
 

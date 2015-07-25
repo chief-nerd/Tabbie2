@@ -12,9 +12,10 @@ use yii\web\AssetBundle;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since  2.0
+ * @since  2.0ˆ
  */
-class UserAsset extends AssetBundle {
+class UserAsset extends AssetBundle
+{
 
 	public $sourcePath = '@frontend/assets';
 	public $css = [

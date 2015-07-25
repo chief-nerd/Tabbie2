@@ -9,21 +9,23 @@ use Yii;
 /**
  * Password reset request form
  */
-class PasswordResetRequestForm extends Model {
+class PasswordResetRequestForm extends Model
+{
 
 	public $email;
 
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			['email', 'filter', 'filter' => 'trim'],
 			['email', 'required'],
 			['email', 'email'],
 			['email', 'exist',
 				'targetClass' => '\common\models\User',
-				'filter' => ['status' => User::STATUS_ACTIVE],
+				'filter'  => ['status' => User::STATUS_ACTIVE],
 				'message' => 'There is no user with such email.'
 			],
 		];
@@ -34,7 +36,8 @@ class PasswordResetRequestForm extends Model {
 	 *
 	 * @return boolean whether the email was send
 	 */
-	public function sendEmail() {
+	public function sendEmail()
+	{
 		/* @var $user User */
 		$user = User::findOne([
 			'status' => User::STATUS_ACTIVE,
@@ -49,14 +52,12 @@ class PasswordResetRequestForm extends Model {
 			if ($user->save()) {
 				return \Yii::$app->mailer->compose('passwordResetToken', ['user' => $user])
 					->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->params["appName"] . ' robot'])
-				                         ->setTo($this->email)
+					->setTo($this->email)
 					->setSubject(Yii::t("app", 'Password reset for {user}', ["user" => $user->getName()]))
-				                         ->send();
-			}
-			else
+					->send();
+			} else
 				$this->addError("user", $user->getErrors());
-		}
-		else
+		} else
 			$this->addError("email", Yii::t("app", "User not found with this Email"));
 
 		return false;

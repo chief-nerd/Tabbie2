@@ -19,8 +19,8 @@ $form = ActiveForm::begin([
 		<div class="col-md-<?= $cols ?>">
 			<?
 			echo $form->field($debateSearchModel, 'venue')->widget(Select2::classname(), [
-				'data' => \common\models\search\VenueSearch::getSearchArray($model->tournament_id),
-				'options' => [
+				'data'         => \common\models\search\VenueSearch::getSearchArray($model->tournament_id),
+				'options'      => [
 					'placeholder' => Yii::t("app", 'Select a Venue ...')
 				],
 				'pluginOptions' => [
@@ -35,8 +35,8 @@ $form = ActiveForm::begin([
 		<div class="col-md-<?= $cols ?>">
 			<?
 			echo $form->field($debateSearchModel, 'team')->widget(Select2::classname(), [
-				'data' => \common\models\search\DebateSearch::getTeamSearchArray($model->tournament_id),
-				'options' => ['placeholder' => Yii::t("app", 'Select a Team ...')],
+				'data'         => \common\models\search\DebateSearch::getTeamSearchArray($model->tournament_id),
+				'options'      => ['placeholder' => Yii::t("app", 'Select a Team ...')],
 				'pluginOptions' => [
 					'allowClear' => true
 				],
@@ -50,8 +50,8 @@ $form = ActiveForm::begin([
 			<div class="col-md-<?= $cols ?>">
 				<?
 				echo $form->field($debateSearchModel, 'language_status')->widget(Select2::classname(), [
-					'data' => \common\models\User::getLanguageStatusLabel(),
-					'options' => ['placeholder' => Yii::t("app", 'Select a Language ...')],
+					'data'         => \common\models\User::getLanguageStatusLabel(),
+					'options'      => ['placeholder' => Yii::t("app", 'Select a Language ...')],
 					'pluginOptions' => [
 						'allowClear' => true
 					],
@@ -65,8 +65,8 @@ $form = ActiveForm::begin([
 		<div class="col-md-<?= $cols ?>">
 			<?
 			echo $form->field($debateSearchModel, 'adjudicator')->widget(Select2::classname(), [
-				'data' => \common\models\search\DebateSearch::getAdjudicatorSearchArray($model->tournament_id),
-				'options' => ['placeholder' => Yii::t("app", 'Select an Adjudicator ...')],
+				'data'         => \common\models\search\DebateSearch::getAdjudicatorSearchArray($model->tournament_id),
+				'options'      => ['placeholder' => Yii::t("app", 'Select an Adjudicator ...')],
 				'pluginOptions' => [
 					'allowClear' => true
 				],

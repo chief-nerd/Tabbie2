@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Venue View");
 		&nbsp;|&nbsp;
 		<?=
 		Html::a(Html::icon("list") . "&nbsp;" . Yii::t("app", "Switch to Tableview"), ["round",
-			"id" => $round_id,
+			"id"   => $round_id,
 			"tournament_id" => $tournament->id,
 			"view" => "table",
 		], ["class" => "btn btn-default"]);
@@ -40,10 +40,10 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Venue View");
 	<?=
 	\common\components\widgets\GroupListView::widget([
 		"dataProvider" => $dataProvider,
-		"groupBy" => "venue.group",
+		"groupBy"     => "venue.group",
 		"itemOptions" => ["class" => "venue col-xs-12 col-sm-3 col-md-2 col-lg-2"],
-		"itemView" => "_venue",
-		"id" => "debates",
+		"itemView"    => "_venue",
+		"id"          => "debates",
 	]);
 	?>
 	<? \yii\widgets\Pjax::end(); ?>

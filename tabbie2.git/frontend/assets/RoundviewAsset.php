@@ -14,7 +14,8 @@ use yii\web\AssetBundle;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since  2.0
  */
-class RoundviewAsset extends AssetBundle {
+class RoundviewAsset extends AssetBundle
+{
 
 	public $sourcePath = '@frontend/assets';
 	public $css = [

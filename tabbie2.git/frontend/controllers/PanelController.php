@@ -17,8 +17,10 @@ use yii\filters\AccessControl;
 /**
  * PanelController implements the CRUD actions for Panel model.
  */
-class PanelController extends BaseTournamentController {
-	public function behaviors() {
+class PanelController extends BaseTournamentController
+{
+	public function behaviors()
+	{
 		return [
 			'tournamentFilter' => [
 				'class' => TournamentContextFilter::className(),
@@ -27,14 +29,14 @@ class PanelController extends BaseTournamentController {
 				'class' => AccessControl::className(),
 				'rules' => [
 					[
-						'allow' => true,
+						'allow'   => true,
 						'actions' => ['index', 'view', 'printballots', 'debatedetails'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id) || $this->_tournament->isConvenor(Yii::$app->user->id));
 						}
 					],
 					[
-						'allow' => true,
+						'allow'   => true,
 						'actions' => ['create', 'update', 'changevenue', 'publish', 'redraw', 'improve'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
@@ -42,7 +44,7 @@ class PanelController extends BaseTournamentController {
 					],
 				],
 			],
-			'verbs' => [
+			'verbs'  => [
 				'class' => VerbFilter::className(),
 				'actions' => [
 					'delete' => ['post'],
@@ -56,7 +58,8 @@ class PanelController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionIndex() {
+	public function actionIndex()
+	{
 		$searchModel = new PanelSearch();
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->_tournament->id);
 
@@ -73,7 +76,8 @@ class PanelController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionView($id) {
+	public function actionView($id)
+	{
 		return $this->render('view', [
 			'model' => $this->findModel($id),
 		]);
@@ -85,7 +89,8 @@ class PanelController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionCreate() {
+	public function actionCreate()
+	{
 		$model = new Panel();
 		$model->tournament_id = $this->_tournament->id;
 		$model->used = 0;
@@ -93,15 +98,13 @@ class PanelController extends BaseTournamentController {
 
 		if ($model->load(Yii::$app->request->post())) {
 			if ($model->createAIP()) {
-                return $this->redirect(['panel/index', "tournament_id" => $this->_tournament->id]);
-			}
-			else {
-                Yii::$app->session->addFlash("error", Yii::t("app", "Error saving:") . ObjectError::getMsg($model));
+				return $this->redirect(['panel/index', "tournament_id" => $this->_tournament->id]);
+			} else {
+				Yii::$app->session->addFlash("error", Yii::t("app", "Error saving:") . ObjectError::getMsg($model));
 				for ($i = 0; $i < 4; $i++)
 					$model->set_adjudicators[] = Yii::$app->request->post("Panel")["set_adjudicators"][$i];
 			}
-		}
-		else {
+		} else {
 			for ($i = 0; $i < 4; $i++)
 				$model->set_adjudicators[] = new Adjudicator();
 		}
@@ -119,7 +122,8 @@ class PanelController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionUpdate($id) {
+	public function actionUpdate($id)
+	{
 		$model = $this->findModel($id);
 		$model->tournament_id = $this->_tournament->id;
 
@@ -148,7 +152,8 @@ class PanelController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionDelete($id) {
+	public function actionDelete($id)
+	{
 		$this->findModel($id)->delete();
 
 		return $this->redirect(['index']);
@@ -163,11 +168,11 @@ class PanelController extends BaseTournamentController {
 	 * @return Panel the loaded model
 	 * @throws NotFoundHttpException if the model cannot be found
 	 */
-	protected function findModel($id) {
+	protected function findModel($id)
+	{
 		if (($model = Panel::findOne($id)) !== null) {
 			return $model;
-		}
-		else {
+		} else {
 			throw new NotFoundHttpException('The requested page does not exist.');
 		}
 	}

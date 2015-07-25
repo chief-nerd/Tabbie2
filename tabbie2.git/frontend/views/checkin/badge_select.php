@@ -1,19 +1,19 @@
 <?php
-	/**
-	 * badge_select.php File
-	 *
-	 * @package  Tabbie2
-	 * @author   jareiter
-	 * @version
-	 */
-	use kartik\widgets\ActiveForm;
-	use kartik\helpers\Html;
+/**
+ * badge_select.php File
+ *
+ * @package  Tabbie2
+ * @author   jareiter
+ * @version
+ */
+use kartik\widgets\ActiveForm;
+use kartik\helpers\Html;
 
-	$this->title = Yii::t('app', 'Generate Badges');
-	/** @var \common\models\Tournament $tournament */
-	$tournament = $this->context->_getContext();
-	$this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
-	$this->params['breadcrumbs'][] = $this->title;
+$this->title = Yii::t('app', 'Generate Badges');
+/** @var \common\models\Tournament $tournament */
+$tournament = $this->context->_getContext();
+$this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div id="barcodeForm">
 	<?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>

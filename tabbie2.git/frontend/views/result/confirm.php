@@ -30,15 +30,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<div class="row">
 		<? foreach (\common\models\Team::getPos() as $posindex => $pos): ?>
-		<div class="<?= $cols ?>">
-			<h3><?= Team::getPosLabel($posindex) ?></h3>
-			<?= Html::activeHiddenInput($model, $pos . '_A_speaks'); ?>
-			<?= Html::activeHiddenInput($model, $pos . '_B_speaks'); ?>
-			<?= Html::activeHiddenInput($model, $pos . '_irregular'); ?>
-			<?= $form->field($model, $pos . '_place', $fieldOption)
-			         ->label($model->getResultLabel($debate, $pos))
-			         ->textInput($textOption) ?>
-		</div>
+			<div class="<?= $cols ?>">
+				<h3><?= Team::getPosLabel($posindex) ?></h3>
+				<?= Html::activeHiddenInput($model, $pos . '_A_speaks'); ?>
+				<?= Html::activeHiddenInput($model, $pos . '_B_speaks'); ?>
+				<?= Html::activeHiddenInput($model, $pos . '_irregular'); ?>
+				<?= $form->field($model, $pos . '_place', $fieldOption)
+					->label($model->getResultLabel($debate, $pos))
+					->textInput($textOption) ?>
+			</div>
 		<? endforeach; ?>
 	</div>
 
@@ -50,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			<?= Html::a(Html::icon("trash") . "&nbsp;" . Yii::t('app', 'start over'), ["create", "id" => $debate->id, "tournament_id" => $debate->tournament_id], ['class' => 'btn btn-default btn-block']) ?>
 		</div>
 		<div class="col-xs-7">
-            <?= Html::submitButton(Yii::t('app', 'Make it so!') . "&nbsp;" . Html::icon("send"), ['class' => 'btn btn-success btn-block', 'autofocus' => 'autofocus']) ?>
+			<?= Html::submitButton(Yii::t('app', 'Make it so!') . "&nbsp;" . Html::icon("send"), ['class' => 'btn btn-success btn-block', 'autofocus' => 'autofocus']) ?>
 		</div>
 	</div>
 

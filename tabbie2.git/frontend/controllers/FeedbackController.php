@@ -19,9 +19,11 @@ use yii\filters\AccessControl;
 /**
  * FeedbackController implements the CRUD actions for feedback model.
  */
-class FeedbackController extends BaseTournamentController {
+class FeedbackController extends BaseTournamentController
+{
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return [
 			'tournamentFilter' => [
 				'class' => TournamentContextFilter::className(),
@@ -30,7 +32,7 @@ class FeedbackController extends BaseTournamentController {
 				'class' => AccessControl::className(),
 				'rules' => [
 					[
-						'allow' => true,
+						'allow'   => true,
 						'actions' => ['create'],
 						'matchCallback' => function ($rule, $action) {
 							/** @var Debate $debate */
@@ -39,11 +41,12 @@ class FeedbackController extends BaseTournamentController {
 							if (is_array($ref) && $ref["id"] == Yii::$app->request->get("id")) {
 								return true;
 							}
+
 							return false;
 						},
 					],
 					[
-						'allow' => true,
+						'allow'   => true,
 						'actions' => ['index', 'view', 'create', 'adjudicator', 'tournament', 'tabbie'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
@@ -51,7 +54,7 @@ class FeedbackController extends BaseTournamentController {
 					],
 				],
 			],
-			'verbs' => [
+			'verbs'  => [
 				'class' => VerbFilter::className(),
 				'actions' => [
 					'delete' => ['post'],
@@ -65,7 +68,8 @@ class FeedbackController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionIndex() {
+	public function actionIndex()
+	{
 		$searchModel = new FeedbackSearch();
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->_tournament->id);
 
@@ -82,7 +86,8 @@ class FeedbackController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionView($id) {
+	public function actionView($id)
+	{
 		return $this->render('view', [
 			'model' => $this->findModel($id),
 		]);
@@ -94,7 +99,8 @@ class FeedbackController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionCreate($id, $type, $ref) {
+	public function actionCreate($id, $type, $ref)
+	{
 
 		$models = [];
 		$already_entered = false;
@@ -155,8 +161,7 @@ class FeedbackController extends BaseTournamentController {
 
 				if ($models[$question->id]->save()) {
 					$allGood = true;
-				}
-				else {
+				} else {
 					$allGood = false;
 				}
 			}
@@ -173,21 +178,22 @@ class FeedbackController extends BaseTournamentController {
 				}
 
 				if (!$object->save())
-                    throw new Exception("Save error " . ObjectError::getMsg($object));
+					throw new Exception("Save error " . ObjectError::getMsg($object));
 			}
 			$already_entered = true;
 		}
 
 		if ($already_entered) {
 			Yii::$app->session->addFlash("success", Yii::t("app", "Feedback successfully submitted"));
+
 			return $this->redirect(['tournament/view', "id" => $this->_tournament->id]);
-		}
-		else
+		} else
 			return $this->render('create', ['models' => $models,]);
 	}
 
 
-	public function actionAdjudicator() {
+	public function actionAdjudicator()
+	{
 		$searchModel = new AnswerSearch();
 		$dataProvider = $searchModel->searchByAdjudicator(Yii::$app->request->queryParams);
 
@@ -206,7 +212,8 @@ class FeedbackController extends BaseTournamentController {
 	 * @return mixed
 	 */
 	public
-	function actionDelete($id) {
+	function actionDelete($id)
+	{
 		$this->findModel($id)->delete();
 
 		return $this->redirect(['index']);
@@ -222,20 +229,22 @@ class FeedbackController extends BaseTournamentController {
 	 * @throws NotFoundHttpException if the model cannot be found
 	 */
 	protected
-	function findModel($id) {
+	function findModel($id)
+	{
 		if (($model = feedback::findOne($id)) !== null) {
 			return $model;
-		}
-		else {
+		} else {
 			throw new NotFoundHttpException('The requested page does not exist.');
 		}
 	}
 
-	public function actionTournament() {
+	public function actionTournament()
+	{
 		return "Soon";
 	}
 
-	public function actionTabbie() {
+	public function actionTabbie()
+	{
 		return "Soon";
 	}
 

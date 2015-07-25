@@ -22,8 +22,8 @@ $this->params['breadcrumbs'][] = $this->title;
 			'label',
 			'value',
 			[
-				'class' => 'kartik\grid\ActionColumn',
-				'template' => '{update}',
+				'class'      => 'kartik\grid\ActionColumn',
+				'template'   => '{update}',
 				'urlCreator' => function ($action, $model, $key, $index) {
 					return \yii\helpers\Url::to(["energy/" . $action, "id" => $model->id, "tournament_id" => $model->tournament->id]);
 				},

@@ -43,19 +43,19 @@ function (element, callback) {
 SCRIPT;
 
 		echo $form->field($model, 'user_id')->widget(Select2::classname(), [
-			'options' => ['placeholder' => Yii::t("app", 'Search for a User ...')],
-			'addon' => [
+			'options'       => ['placeholder' => Yii::t("app", 'Search for a User ...')],
+			'addon'         => [
 				"prepend" => [
 					"content" => '<i class="glyphicon glyphicon-user"></i>'
 				],
 			],
 			'pluginOptions' => [
-				'allowClear' => true,
+				'allowClear'    => true,
 				'minimumInputLength' => 3,
-				'ajax' => [
-					'url' => $url,
+				'ajax'          => [
+					'url'     => $url,
 					'dataType' => 'json',
-					'data' => new JsExpression('function(term,page) { return {search:term}; }'),
+					'data'    => new JsExpression('function(term,page) { return {search:term}; }'),
 					'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
 				],
 				'initSelection' => new JsExpression($initScript)

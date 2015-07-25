@@ -12,7 +12,8 @@ use yii\web\UploadedFile;
 /**
  * Signup form
  */
-class SignupForm extends Model {
+class SignupForm extends Model
+{
 
 	public $email;
 	public $password;
@@ -26,7 +27,8 @@ class SignupForm extends Model {
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			[['password', 'password_repeat', 'email', 'givenname', 'surename', 'societies_id'], 'required'],
 			['email', 'email'],
@@ -46,7 +48,8 @@ class SignupForm extends Model {
 	 * @param type $attribute
 	 * @param type $params
 	 */
-	public function validateIsUrlAllowed($attribute, $params) {
+	public function validateIsUrlAllowed($attribute, $params)
+	{
 		foreach (get_class_methods(\frontend\controllers\UserController::className()) as $key => $value) {
 			if (substr($value, 0, 6) == "action" && $value != "actions") {
 				$actions[] = strtolower(substr($value, 6));
@@ -61,16 +64,17 @@ class SignupForm extends Model {
 	/**
 	 * @inheritdoc
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return [
-			'url_slug' => Yii::t('app', 'Username'),
-			'email' => Yii::t('app', 'Email'),
+			'url_slug'  => Yii::t('app', 'Username'),
+			'email'     => Yii::t('app', 'Email'),
 			'givenname' => Yii::t('app', 'Givenname'),
-			'surename' => Yii::t('app', 'Surename'),
-			'picture' => Yii::t('app', 'Profile Picture'),
-			'time' => Yii::t('app', 'Time'),
+			'surename'  => Yii::t('app', 'Surename'),
+			'picture'   => Yii::t('app', 'Profile Picture'),
+			'time'      => Yii::t('app', 'Time'),
 			'societies_id' => Yii::t('app', 'Current Society'),
-			'gender' => Yii::t('app', 'With which gender do you identify yourself the most'),
+			'gender'    => Yii::t('app', 'With which gender do you identify yourself the most'),
 		];
 	}
 
@@ -79,7 +83,8 @@ class SignupForm extends Model {
 	 *
 	 * @return User|null the saved model or null if saving fails
 	 */
-	public function signup() {
+	public function signup()
+	{
 		if ($this->validate()) {
 
 			$pic = UploadedFile::getInstance($this, "picture");
@@ -101,25 +106,29 @@ class SignupForm extends Model {
 
 			if ($user->save()) {
 				$inSociety = new InSociety([
-					"user_id" => $user->id,
+					"user_id"  => $user->id,
 					"society_id" => $this->societies_id,
 					"starting" => date("Y-m-d"),
 				]);
 				$inSociety->save();
+
 				return $user;
 			}
 		}
+
 		return null;
 	}
 
-	public function getPictureImage($width_max, $height_max) {
-		$img_options = ["alt" => "",
-			"style" => "max-width: " . $width_max . "px; max-height: " . $height_max . "px;",
-			"width" => $width_max,
-			"height" => $height_max,
-			"id" => "previewImageUpload",
+	public function getPictureImage($width_max, $height_max)
+	{
+		$img_options = ["alt"    => "",
+						"style"  => "max-width: " . $width_max . "px; max-height: " . $height_max . "px;",
+						"width"  => $width_max,
+						"height" => $height_max,
+						"id"     => "previewImageUpload",
 		];
 		$img_options["class"] = "img-responsive img-rounded center-block";
+
 		return Html::img(User::defaultAvatar(), $img_options);
 	}
 

@@ -60,9 +60,9 @@ if ($this->context->hasMethod("_getContext")) {
 	?>
 	<div class="container">
 		<div class="breadcrumbs hidden-xs">
-		<?=
-		Breadcrumbs::widget(['links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],])
-		?>
+			<?=
+			Breadcrumbs::widget(['links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],])
+			?>
 		</div>
 		<?= $content ?>
 	</div>

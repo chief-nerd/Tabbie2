@@ -31,28 +31,28 @@ function (element, callback) {
 }
 SCRIPT;
 
-    $chairs = Yii::t("app", 'Chair');
-    $wings = Yii::t("app", 'Wing');
+	$chairs = Yii::t("app", 'Chair');
+	$wings = Yii::t("app", 'Wing');
 
 	$first = true;
 	foreach ($model->set_adjudicators as $adj_k => $adj_v) {
 
-        echo Html::label((($first) ? $chairs : $wings), 'set_adjudicators[' . $adj_k . ']');
+		echo Html::label((($first) ? $chairs : $wings), 'set_adjudicators[' . $adj_k . ']');
 
 		echo Select2::widget([
-				'model' => $model,
-				'attribute' => 'set_adjudicators[' . $adj_k . ']',
-				'options' => [
+				'model'         => $model,
+				'attribute'     => 'set_adjudicators[' . $adj_k . ']',
+				'options'       => [
 					'placeholder' => ($first) ? Yii::t("app", 'Add Chair ...') : Yii::t("app", 'Add Wing ...'),
 				],
 				'pluginOptions' => [
-					'allowClear' => true,
-					'multiple' => false,
+					'allowClear'    => true,
+					'multiple'      => false,
 					'minimumInputLength' => 3,
-					'ajax' => [
-						'url' => $url,
+					'ajax'          => [
+						'url'     => $url,
 						'dataType' => 'json',
-						'data' => new JsExpression('function(term,page) { return {search:term}; }'),
+						'data'    => new JsExpression('function(term,page) { return {search:term}; }'),
 						'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
 					],
 					'initSelection' => new JsExpression($initScript)

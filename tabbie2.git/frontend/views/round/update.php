@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $model common\models\Round */
 
 $this->title = Yii::t('app', 'Update {modelClass} #{number}', [
-		'modelClass' => 'Round',
-	'number' => $model->number,
+	'modelClass' => 'Round',
+	'number'     => $model->number,
 ]);
 $tournament = $this->context->_getContext();
 $this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];

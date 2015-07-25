@@ -21,7 +21,7 @@ foreach ($model->getRounds()->all() as $round) {
 ?>
 
 <script type="text/javascript"
-        src="https://www.google.com/jsapi?autoload={
+		src="https://www.google.com/jsapi?autoload={
             'modules':[{
               'name':'visualization',
               'version':'1',

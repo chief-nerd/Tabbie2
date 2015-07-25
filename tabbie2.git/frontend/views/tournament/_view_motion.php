@@ -64,12 +64,12 @@ use common\models\Round;
 										<?php echo $posMatrix["oo_x"] . "," . $posMatrix["oo_y"] ?>
 										<?php echo $posMatrix["co_x"] . "," . $posMatrix["co_y"] ?>
 										<?php echo $posMatrix["cg_x"] . "," . $posMatrix["cg_y"] ?>"
-										         style="fill:#AAF;"/>
+												 style="fill:#AAF;"/>
 										<line x1="0" y1="30" x2="60" y2="30" style="stroke:#DDD;stroke-width:1"/>
 										<line x1="30" y1="0" x2="30" y2="60" style="stroke:#DDD;stroke-width:1"/>
 
 										<polygon points="15,15 15,45, 45,45 45,15"
-										         style="fill:transparent;stroke:#EEE;stroke-width:1"/>
+												 style="fill:transparent;stroke:#EEE;stroke-width:1"/>
 									</svg>
 								</div>
 							</div>

@@ -6,7 +6,8 @@ use common\models\User;
 use Yii;
 use yii\web\Controller;
 
-class BaseUserController extends Controller {
+class BaseUserController extends Controller
+{
 
 	/**
 	 * Current User Scope
@@ -23,7 +24,8 @@ class BaseUserController extends Controller {
 	 *
 	 * @return boolean
 	 */
-	public function _setContext($id) {
+	public function _setContext($id)
+	{
 		$this->_user = User::findOne($id);
 		\Yii::trace("Set Context for " . $this->_user->name . " (" . $this->_user->id . ")", __METHOD__);
 		if ($this->_user instanceof User)
@@ -37,7 +39,8 @@ class BaseUserController extends Controller {
 	 *
 	 * @return Tournament
 	 */
-	public function _getContext() {
+	public function _getContext()
+	{
 		return $this->_user;
 	}
 

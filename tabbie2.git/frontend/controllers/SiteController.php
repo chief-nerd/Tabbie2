@@ -22,16 +22,18 @@ use yii\web\Controller;
 /**
  * Site controller
  */
-class SiteController extends Controller {
+class SiteController extends Controller
+{
 
 	/**
 	 * @inheritdoc
 	 */
-	public function behaviors() {
+	public function behaviors()
+	{
 		return [
 			'access' => [
 				'class' => AccessControl::className(),
-				'only' => ['logout', 'signup'],
+				'only'  => ['logout', 'signup'],
 				'rules' => [
 					[
 						'actions' => ['signup'],
@@ -51,9 +53,10 @@ class SiteController extends Controller {
 	/**
 	 * @inheritdoc
 	 */
-	public function actions() {
+	public function actions()
+	{
 		return [
-			'error' => [
+			'error'   => [
 				'class' => 'yii\web\ErrorAction',
 			],
 			'captcha' => [
@@ -64,7 +67,8 @@ class SiteController extends Controller {
 	}
 
 
-	public function actionIndex() {
+	public function actionIndex()
+	{
 
 		$tournaments = \common\models\Tournament::find()->where("start_date <= NOW() AND end_date >= NOW()")->all();
 
@@ -73,7 +77,8 @@ class SiteController extends Controller {
 		]);
 	}
 
-	public function actionLogin() {
+	public function actionLogin()
+	{
 		if (!\Yii::$app->user->isGuest) {
 			return $this->goHome();
 		}
@@ -99,32 +104,33 @@ class SiteController extends Controller {
 		]);
 	}
 
-	public function actionLogout() {
+	public function actionLogout()
+	{
 		Yii::$app->user->logout();
 
 		return $this->goHome();
 	}
 
-	public function actionContact() {
+	public function actionContact()
+	{
 		$model = new ContactForm();
 		if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 			if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
 				Yii::$app->session->setFlash('success', Yii::t("app", 'Thank you for contacting us. We will respond to you as soon as possible.'));
-			}
-			else {
+			} else {
 				Yii::$app->session->setFlash('error', Yii::t("app", 'There was an error sending email.'));
 			}
 
 			return $this->refresh();
-		}
-		else {
+		} else {
 			return $this->render('contact', [
 				'model' => $model,
 			]);
 		}
 	}
 
-	public function actionAbout() {
+	public function actionAbout()
+	{
 
 		$societies = Society::find()->where("country_id != " . Country::COUNTRY_UNKNOWN_ID)->asArray()->all();
 		for ($i = 0; $i < count($societies); $i++) {
@@ -137,11 +143,13 @@ class SiteController extends Controller {
 		]);
 	}
 
-	public function actionHowTo() {
+	public function actionHowTo()
+	{
 		return $this->render('how-to');
 	}
 
-	public function actionAddNewSociety() {
+	public function actionAddNewSociety()
+	{
 		$model = new Society();
 
 		if ($model->load(Yii::$app->request->post())) {
@@ -149,8 +157,7 @@ class SiteController extends Controller {
 			if ($form instanceof SignupForm && $model->save()) {
 				$form->societies_id = $model->id;
 				$this->finishSignup($form);
-			}
-			else
+			} else
 				Yii::$app->session->addFlash("error", Yii::t("app", "Error in wakeup"));
 		}
 
@@ -161,13 +168,15 @@ class SiteController extends Controller {
 		]);
 	}
 
-	public function actionSignup() {
+	public function actionSignup()
+	{
 		$model = new SignupForm();
 
 		$socid = Yii::$app->request->post("SignupForm")["societies_id"];
 		if (!is_numeric($socid) && $socid != "") {
 			$model->load(Yii::$app->request->post());
 			Yii::$app->session["signup"] = serialize($model);
+
 			return $this->redirect(["site/add-new-society"]);
 		}
 
@@ -185,34 +194,34 @@ class SiteController extends Controller {
 	 *
 	 * @return static
 	 */
-	private function finishSignup($model) {
+	private function finishSignup($model)
+	{
 		if ($model) {
 			$user = $model->signup();
 			if ($user !== null) {
 				if (Yii::$app->getUser()->login($user)) {
 					Yii::$app->session->addFlash("success", Yii::t("app", "User registered! Welcome {user}", ["user" => $user->name]));
+
 					return Yii::$app->getResponse()->redirect(["user/" . $user->url_slug]);
-				}
-				else
+				} else
 					Yii::$app->session->addFlash("error", Yii::t("app", "Login failed"));
-			}
-			else
-                Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
+			} else
+				Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
 		}
 	}
 
-	public function actionRequestPasswordReset() {
+	public function actionRequestPasswordReset()
+	{
 		$model = new PasswordResetRequestForm();
 		if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 			if ($model->sendEmail()) {
 				Yii::$app->getSession()
-				         ->setFlash('success', Yii::t("app", 'Check your email for further instructions.'));
+					->setFlash('success', Yii::t("app", 'Check your email for further instructions.'));
 
 				return $this->goHome();
-			}
-			else {
+			} else {
 				Yii::$app->getSession()
-                    ->setFlash('error', Yii::t("app", 'Sorry, we are unable to reset password for email provided.<br>{message}', ["message" => ObjectError::getMsg($model)]));
+					->setFlash('error', Yii::t("app", 'Sorry, we are unable to reset password for email provided.<br>{message}', ["message" => ObjectError::getMsg($model)]));
 			}
 		}
 
@@ -221,7 +230,8 @@ class SiteController extends Controller {
 		]);
 	}
 
-	public function actionResetPassword($token) {
+	public function actionResetPassword($token)
+	{
 		try {
 			$model = new ResetPasswordForm($token);
 		} catch (InvalidParamException $e) {

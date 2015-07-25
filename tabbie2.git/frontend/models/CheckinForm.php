@@ -10,9 +10,10 @@ use yii\base\Model;
 /**
  * ContactForm is the model behind the contact form.
  */
-class CheckinForm extends Model {
+class CheckinForm extends Model
+{
 
-	const ADJU  = "AA";
+	const ADJU = "AA";
 	const TEAMA = "TA";
 	const TEAMB = "TB";
 
@@ -22,7 +23,8 @@ class CheckinForm extends Model {
 	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
 			// name, email, subject and body are required
 			[['number'], 'required'],
@@ -32,14 +34,16 @@ class CheckinForm extends Model {
 	/**
 	 * @inheritdoc
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return [
 			'number' => 'Barcode',
 			'key' => 'Security Key',
 		];
 	}
 
-	public function save() {
+	public function save()
+	{
 		$messages = [];
 		$type = substr($this->number, 0, 2);
 		$real = intval(substr($this->number, 3, strlen($this->number)));
@@ -53,12 +57,10 @@ class CheckinForm extends Model {
 						$adj->checkedin = true;
 						$adj->save();
 						$messages[] = ["success" => Yii::t("app", "{adju} checked in!", ["adju" => $adj->name])];
-					}
-					else {
+					} else {
 						$messages[] = ["warning" => Yii::t("app", "{adju} already checked in!", ["adju" => $adj->name])];
 					}
-				}
-				else
+				} else
 					$messages[] = ["danger" => Yii::t("app", "{id} number not valid! Not an Adjudicator!", ["id" => $real])];
 
 				break;
@@ -72,12 +74,10 @@ class CheckinForm extends Model {
 						if ($team->speakerB_id === null) $team->speakerB_checkedin = true; //Ironman Team
 						$team->save();
 						$messages[] = ["success" => Yii::t("app", "{speaker} checked in!", ["speaker" => $team->speakerA->name])];
-					}
-					else {
+					} else {
 						$messages[] = ["warning" => Yii::t("app", "{speaker} already checked in!", ["speaker" => $team->speakerA->name])];
 					}
-				}
-				else
+				} else
 					$messages[] = ["danger" => Yii::t("app", "{id} number not valid! Not a Team!", ["id" => $real])];
 
 				break;
@@ -91,12 +91,10 @@ class CheckinForm extends Model {
 						if ($team->speakerA_id === null) $team->speakerA_checkedin = true; //Ironman Team
 						$team->save();
 						$messages[] = ["success" => Yii::t("app", "{speaker} checked in!", ["speaker" => $team->speakerB->name])];
-					}
-					else {
+					} else {
 						$messages[] = ["warning" => Yii::t("app", "{speaker} already checked in!", ["speaker" => $team->speakerB->name])];
 					}
-				}
-				else
+				} else
 					$messages[] = ["danger" => Yii::t("app", "{id} number not valid! Not a Team!", ["id" => $real])];
 
 				break;
@@ -105,7 +103,8 @@ class CheckinForm extends Model {
 				$messages[] = ["danger" => Yii::t("app", "Not a valid input")];
 				break;
 		}
+
 		return $messages;
-		}
+	}
 
 }

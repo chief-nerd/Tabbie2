@@ -8,7 +8,7 @@ $lines = PublishTabTeam::generateTeamTab($model);
 
 $dataProvider = new ArrayDataProvider([
 	'allModels' => $lines,
-	'sort' => [
+	'sort'      => [
 		'attributes' => ['enl_place'],
 	],
 	'pagination' => [
@@ -31,21 +31,21 @@ $dataProvider = new ArrayDataProvider([
 			'width' => '80px',
 		],
 		[
-			'class' => '\kartik\grid\DataColumn',
+			'class'   => '\kartik\grid\DataColumn',
 			'attribute' => 'esl_place',
-			'label' => Yii::t("app", 'ESL Place'),
-			'width' => '80px',
+			'label'   => Yii::t("app", 'ESL Place'),
+			'width'   => '80px',
 			'visible' => $model->has_esl,
-			'value' => function ($model, $key, $index, $widget) {
+			'value'   => function ($model, $key, $index, $widget) {
 				return ($model->esl_place) ? $model->esl_place : "";
 			},
 		],
 		[
-			'class' => '\kartik\grid\DataColumn',
+			'class'  => '\kartik\grid\DataColumn',
 			'attribute' => 'object.name',
-			'label' => Yii::t("app", 'Team'),
+			'label'  => Yii::t("app", 'Team'),
 			'format' => 'raw',
-			'value' => function ($model, $key, $index, $widget) {
+			'value'  => function ($model, $key, $index, $widget) {
 				return $model->object->name;
 			},
 		],
@@ -73,22 +73,22 @@ $dataProvider = new ArrayDataProvider([
 	}
 
 	echo GridView::widget([
-		'dataProvider' => $dataProvider,
+		'dataProvider'    => $dataProvider,
 		//'filterModel' => $searchModel,
-		'columns' => $columns,
+		'columns'         => $columns,
 		'showPageSummary' => false,
-		'layout' => "{items}\n{pager}",
-		'bootstrap' => true,
-		'pjax' => false,
-		'hover' => true,
-		'responsive' => false,
-		'floatHeader' => true,
+		'layout'          => "{items}\n{pager}",
+		'bootstrap'       => true,
+		'pjax'            => false,
+		'hover'           => true,
+		'responsive'      => false,
+		'floatHeader'     => true,
 		'floatHeaderOptions' => ['scrollingTop' => ($model->isTabMaster(Yii::$app->user->id) ? 100 : 50)],
-		'id' => 'team-tab',
-		'striped' => false,
-		'rowOptions' => function ($model, $key, $index, $grid) {
+		'id'              => 'team-tab',
+		'striped'         => false,
+		'rowOptions'      => function ($model, $key, $index, $grid) {
 			return ["class" => ($model->enl_place <= $this->context->_getContext()
-			                                                       ->getAmountBreakingTeams()) ? "bg-success" : ""];
+					->getAmountBreakingTeams()) ? "bg-success" : ""];
 		},
 	])
 	?>

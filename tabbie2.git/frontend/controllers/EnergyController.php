@@ -13,9 +13,11 @@ use yii\filters\AccessControl;
 /**
  * EnergyController implements the CRUD actions for EnergyConfig model.
  */
-class EnergyController extends BaseTournamentController {
+class EnergyController extends BaseTournamentController
+{
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return [
 			'tournamentFilter' => [
 				'class' => TournamentContextFilter::className(),
@@ -24,7 +26,7 @@ class EnergyController extends BaseTournamentController {
 				'class' => AccessControl::className(),
 				'rules' => [
 					[
-						'allow' => true,
+						'allow'   => true,
 						'actions' => ['index', 'update'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
@@ -32,7 +34,7 @@ class EnergyController extends BaseTournamentController {
 					],
 				],
 			],
-			'verbs' => [
+			'verbs'  => [
 				'class' => VerbFilter::className(),
 				'actions' => [
 					'delete' => ['post'],
@@ -46,7 +48,8 @@ class EnergyController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionIndex() {
+	public function actionIndex()
+	{
 		$dataProvider = new ActiveDataProvider([
 			'query' => EnergyConfig::find()->tournament($this->_tournament->id),
 		]);
@@ -63,7 +66,8 @@ class EnergyController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionView($id) {
+	public function actionView($id)
+	{
 		return $this->render('view', [
 			'model' => $this->findModel($id),
 		]);
@@ -75,7 +79,8 @@ class EnergyController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionCreate() {
+	public function actionCreate()
+	{
 		$model = new EnergyConfig();
 		$model->tournament_id = $this->_tournament->id;
 
@@ -96,13 +101,13 @@ class EnergyController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionUpdate($id) {
+	public function actionUpdate($id)
+	{
 		$model = $this->findModel($id);
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
 			return $this->redirect(['index', 'tournament_id' => $this->_tournament->id]);
-		}
-		else {
+		} else {
 			return $this->render('update', [
 				'model' => $model,
 			]);
@@ -117,7 +122,8 @@ class EnergyController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionDelete($id) {
+	public function actionDelete($id)
+	{
 		$this->findModel($id)->delete();
 
 		return $this->redirect(['index']);
@@ -132,11 +138,11 @@ class EnergyController extends BaseTournamentController {
 	 * @return EnergyConfig the loaded model
 	 * @throws NotFoundHttpException if the model cannot be found
 	 */
-	protected function findModel($id) {
+	protected function findModel($id)
+	{
 		if (($model = EnergyConfig::findOne($id)) !== null) {
 			return $model;
-		}
-		else {
+		} else {
 			throw new NotFoundHttpException('The requested page does not exist.');
 		}
 	}

@@ -23,279 +23,282 @@ use yii\web\UploadedFile;
 class TournamentController extends BaseTournamentController
 {
 
-    public function behaviors()
-    {
-        return [
-            'tournamentFilter' => [
-                'class' => TournamentContextFilter::className(),
-            ],
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'allow' => true,
+	public function behaviors()
+	{
+		return [
+			'tournamentFilter' => [
+				'class' => TournamentContextFilter::className(),
+			],
+			'access'           => [
+				'class' => AccessControl::className(),
+				'rules' => [
+					[
+						'allow' => true,
 						'actions' => ['index', 'archive', 'view', 'testimport', 'list'],
-                        'roles' => [],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['create'],
-                        'roles' => ['@'],
-                    ],
-                    [
-                        'allow' => true,
-                        'actions' => ['update', 'debreg-sync'],
-                        'matchCallback' => function ($rule, $action) {
-                            return ($this->_tournament->isTabMaster(Yii::$app->user->id) || $this->_tournament->isConvenor(Yii::$app->user->id));
-                        }
-                    ],
-                    [
-                        'allow' => true,
-						'actions' => ['migrate-tabbie', 'download-sql'],
-                        'matchCallback' => function ($rule, $action) {
-                            return ($this->_tournament->isTabMaster(Yii::$app->user->id));
-                        }
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['post'],
-                ],
-            ],
-        ];
-    }
+						'roles' => [],
+					],
+					[
+						'allow'   => true,
+						'actions' => ['create'],
+						'roles'   => ['@'],
+					],
+					[
+						'allow'         => true,
+						'actions'       => ['update', 'debreg-sync'],
+						'matchCallback' => function ($rule, $action) {
+							return ($this->_tournament->isTabMaster(Yii::$app->user->id) || $this->_tournament->isConvenor(Yii::$app->user->id));
+						}
+					],
+					[
+						'allow'         => true,
+						'actions'       => ['migrate-tabbie', 'download-sql'],
+						'matchCallback' => function ($rule, $action) {
+							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
+						}
+					],
+				],
+			],
+			'verbs'            => [
+				'class'   => VerbFilter::className(),
+				'actions' => [
+					'delete' => ['post'],
+				],
+			],
+		];
+	}
 
-    /**
-     * Lists all Tournament models.
-     *
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        $searchModel = new TournamentSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+	/**
+	 * Lists all Tournament models.
+	 *
+	 * @return mixed
+	 */
+	public function actionIndex()
+	{
+		$searchModel = new TournamentSearch();
+		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
+		return $this->render('index', [
+			'searchModel'  => $searchModel,
+			'dataProvider' => $dataProvider,
+		]);
+	}
 
-    /**
-     * Lists all Tournament models.
-     *
-     * @return mixed
-     */
-    public function actionArchive()
-    {
-        $searchModel = new TournamentSearch();
-        $dataProvider = $searchModel->searchArchive(Yii::$app->request->queryParams);
+	/**
+	 * Lists all Tournament models.
+	 *
+	 * @return mixed
+	 */
+	public function actionArchive()
+	{
+		$searchModel = new TournamentSearch();
+		$dataProvider = $searchModel->searchArchive(Yii::$app->request->queryParams);
 
-        return $this->render('archive', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
+		return $this->render('archive', [
+			'searchModel'  => $searchModel,
+			'dataProvider' => $dataProvider,
+		]);
+	}
 
-    /**
-     * Displays a current Tournament model.
-     *
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', ['model' => $this->findModel($id),]);
-    }
+	/**
+	 * Displays a current Tournament model.
+	 *
+	 * @return mixed
+	 */
+	public function actionView($id)
+	{
+		return $this->render('view', ['model' => $this->findModel($id),]);
+	}
 
-    /**
-     * Creates a new Tournament model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     *
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new Tournament();
-        $model->status = Tournament::STATUS_RUNNING;
+	/**
+	 * Creates a new Tournament model.
+	 * If creation is successful, the browser will be redirected to the 'view' page.
+	 *
+	 * @return mixed
+	 */
+	public function actionCreate()
+	{
+		$model = new Tournament();
+		$model->status = Tournament::STATUS_RUNNING;
 
-        if (Yii::$app->request->isPost) {
-            $file = UploadedFile::getInstance($model, 'logo');
-            $model->load(Yii::$app->request->post());
-            $model->generateUrlSlug();
-            if ($file instanceof UploadedFile) {
-                $model->saveLogo($file);
-            } else
-                $model->logo = null;
+		if (Yii::$app->request->isPost) {
+			$file = UploadedFile::getInstance($model, 'logo');
+			$model->load(Yii::$app->request->post());
+			$model->generateUrlSlug();
+			if ($file instanceof UploadedFile) {
+				$model->saveLogo($file);
+			} else
+				$model->logo = null;
 
-            if ($model->save()) {
-                $energyConf = new models\EnergyConfig();
-                if ($energyConf->setup($model))
-                    Yii::$app->session->addFlash("success", Yii::t("app", "Tournament successfully created"));
-                else
-                    Yii::$app->session->addFlash("warning", Yii::t("app", "Tournament created but Energy config failed!") . ObjectError::getMsg($energyConf));
+			if ($model->save()) {
+				$energyConf = new models\EnergyConfig();
+				if ($energyConf->setup($model))
+					Yii::$app->session->addFlash("success", Yii::t("app", "Tournament successfully created"));
+				else
+					Yii::$app->session->addFlash("warning", Yii::t("app", "Tournament created but Energy config failed!") . ObjectError::getMsg($energyConf));
 
-                return $this->redirect(['view', 'id' => $model->id]);
-            } else {
-                Yii::$app->session->setFlash("error", Yii::t("app", "Can't save Tournament!") . ObjectError::getMsg($model));
-            }
-        }
-        //Preset variables
-        $model->tabmaster_user_id = Yii::$app->user->id;
-        $model->tabAlgorithmClass = Yii::$app->params["stdTabAlgorithm"];
-        return $this->render('create', ['model' => $model,]);
-    }
+				return $this->redirect(['view', 'id' => $model->id]);
+			} else {
+				Yii::$app->session->setFlash("error", Yii::t("app", "Can't save Tournament!") . ObjectError::getMsg($model));
+			}
+		}
+		//Preset variables
+		$model->tabmaster_user_id = Yii::$app->user->id;
+		$model->tabAlgorithmClass = Yii::$app->params["stdTabAlgorithm"];
 
-    /**
-     * Updates an existing Tournament model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     *
-     * @param integer $id
-     *
-     * @return mixed
-     */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
+		return $this->render('create', ['model' => $model,]);
+	}
 
-        if (Yii::$app->request->isPost) {
+	/**
+	 * Updates an existing Tournament model.
+	 * If update is successful, the browser will be redirected to the 'view' page.
+	 *
+	 * @param integer $id
+	 *
+	 * @return mixed
+	 */
+	public function actionUpdate($id)
+	{
+		$model = $this->findModel($id);
 
-            //Upload File
-            $file = \yii\web\UploadedFile::getInstance($model, 'logo');
+		if (Yii::$app->request->isPost) {
 
-            //Save Old File Path
-            $oldFile = $model->logo;
-            //Load new values
-            $model->load(Yii::$app->request->post());
+			//Upload File
+			$file = \yii\web\UploadedFile::getInstance($model, 'logo');
 
-            if ($file instanceof UploadedFile) {
-                //Save new File
-                $model->saveLogo($file);
-            } else
-                $model->logo = $oldFile;
+			//Save Old File Path
+			$oldFile = $model->logo;
+			//Load new values
+			$model->load(Yii::$app->request->post());
 
-            if ($model->save()) {
-                Yii::$app->cache->set("tournament" . $model->id, $model, 120);
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-        }
+			if ($file instanceof UploadedFile) {
+				//Save new File
+				$model->saveLogo($file);
+			} else
+				$model->logo = $oldFile;
 
-        return $this->render('update', ['model' => $model,]);
-    }
+			if ($model->save()) {
+				Yii::$app->cache->set("tournament" . $model->id, $model, 120);
 
-    /**
-     * Deletes an existing Tournament model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     *
-     * @param integer $id
-     *
-     * @return mixed
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
+				return $this->redirect(['view', 'id' => $model->id]);
+			}
+		}
 
-        return $this->redirect(['index']);
-    }
+		return $this->render('update', ['model' => $model,]);
+	}
 
-    /**
-     * Finds the Tournament model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     *
-     * @param integer $id
-     *
-     * @return Tournament the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = Tournament::findByPk($id)) !== null) {
-            return $model;
-        } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
-    }
+	/**
+	 * Deletes an existing Tournament model.
+	 * If deletion is successful, the browser will be redirected to the 'index' page.
+	 *
+	 * @param integer $id
+	 *
+	 * @return mixed
+	 */
+	public function actionDelete($id)
+	{
+		$this->findModel($id)->delete();
 
-    /**
-     * @param Tournament $tournament
-     *
-     * @return int|false
-     */
-    public function activeInputAvailable($tournament)
-    {
-        $user_id = Yii::$app->user->id;
+		return $this->redirect(['index']);
+	}
 
-        $activeRound = models\Round::findOne(["tournament_id" => $tournament->id, "displayed" => 1, "published" => 1, "closed" => 0,]);
+	/**
+	 * Finds the Tournament model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 *
+	 * @param integer $id
+	 *
+	 * @return Tournament the loaded model
+	 * @throws NotFoundHttpException if the model cannot be found
+	 */
+	protected function findModel($id)
+	{
+		if (($model = Tournament::findByPk($id)) !== null) {
+			return $model;
+		} else {
+			throw new NotFoundHttpException('The requested page does not exist.');
+		}
+	}
 
-        if ($activeRound) {
-            $debate = models\Debate::findOneByChair($user_id, $tournament->id, $activeRound->id);
-            if ($debate instanceof models\Debate) return $debate->id;
-        }
+	/**
+	 * @param Tournament $tournament
+	 *
+	 * @return int|false
+	 */
+	public function activeInputAvailable($tournament)
+	{
+		$user_id = Yii::$app->user->id;
 
-        return false;
-    }
+		$activeRound = models\Round::findOne(["tournament_id" => $tournament->id, "displayed" => 1, "published" => 1, "closed" => 0,]);
+
+		if ($activeRound) {
+			$debate = models\Debate::findOneByChair($user_id, $tournament->id, $activeRound->id);
+			if ($debate instanceof models\Debate) return $debate->id;
+		}
+
+		return false;
+	}
 
 
-    /**
-     * Sync with DebReg System
-     *
-     * @param integer $id
-     *
-     * @return string|\yii\web\Response
-     * @throws \yii\web\NotFoundHttpException
-     */
-    public function actionDebregSync($id)
-    {
+	/**
+	 * Sync with DebReg System
+	 *
+	 * @param integer $id
+	 *
+	 * @return string|\yii\web\Response
+	 * @throws \yii\web\NotFoundHttpException
+	 */
+	public function actionDebregSync($id)
+	{
 
-        $tournament = $this->findModel($id);
-        $model = new DebregsyncForm();
+		$tournament = $this->findModel($id);
+		$model = new DebregsyncForm();
 
-        if (Yii::$app->request->isPost) {
+		if (Yii::$app->request->isPost) {
 
-            $a_fix = $t_fix = $s_fix = [];
+			$a_fix = $t_fix = $s_fix = [];
 
-            if (Yii::$app->request->post("mode") == "refactor") {
-                $a_fix = Yii::$app->request->post("Adju", []);
-                $t_fix = Yii::$app->request->post("Team", []);
-                $s_fix = Yii::$app->request->post("Soc", []);
-            }
+			if (Yii::$app->request->post("mode") == "refactor") {
+				$a_fix = Yii::$app->request->post("Adju", []);
+				$t_fix = Yii::$app->request->post("Team", []);
+				$s_fix = Yii::$app->request->post("Soc", []);
+			}
 
-            $model->load(Yii::$app->request->post());
-            $model->tournament = $this->_tournament;
+			$model->load(Yii::$app->request->post());
+			$model->tournament = $this->_tournament;
 
 			$error = $model->getAccessKey();
 
-            if ($error === true) {
-                $unresolved = $model->doSync($a_fix, $t_fix, $s_fix);
+			if ($error === true) {
+				$unresolved = $model->doSync($a_fix, $t_fix, $s_fix);
 
-                if (count($unresolved) == 0) {
-                    Yii::$app->session->addFlash("success", Yii::t("app", "DebReg Syncing successful"));
-                    return $this->redirect(['view', 'id' => $tournament->id]);
-                } else
-                    return $this->render('sync_resolve', [
-                        'unresolved' => $unresolved,
-                        'tournament' => $tournament,
-                        'model' => $model
-                    ]);
-            } else {
-                $model->addError("password", $error);
-            }
+				if (count($unresolved) == 0) {
+					Yii::$app->session->addFlash("success", Yii::t("app", "DebReg Syncing successful"));
 
-        }
+					return $this->redirect(['view', 'id' => $tournament->id]);
+				} else
+					return $this->render('sync_resolve', [
+						'unresolved' => $unresolved,
+						'tournament' => $tournament,
+						'model'      => $model
+					]);
+			} else {
+				$model->addError("password", $error);
+			}
 
-        return $this->render('sync_login', [
-            'model' => $model,
-            'tournament' => $tournament]);
-    }
+		}
 
-    /**
-     * Migrate back to Tabbie v1
-     *
-     * @param    integer $id
-     */
-    public function actionMigrateTabbie($id)
-    {
+		return $this->render('sync_login', [
+			'model'      => $model,
+			'tournament' => $tournament]);
+	}
+
+	/**
+	 * Migrate back to Tabbie v1
+	 *
+	 * @param    integer $id
+	 */
+	public function actionMigrateTabbie($id)
+	{
 		/** Make output UTF-8 */
 		mb_internal_encoding('UTF-8');
 		mb_http_output('UTF-8');
@@ -307,7 +310,7 @@ class TournamentController extends BaseTournamentController
 		$export = new TabbieExport();
 		echo implode("<br>\n", $export->generateV1SQL($this->_tournament));
 		exit();
-    }
+	}
 
 	/**
 	 * Migrate back to Tabbie v1

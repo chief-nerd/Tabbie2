@@ -30,16 +30,16 @@ $this->params['breadcrumbs'][] = $this->title;
 			'adjudicatorTo.name',
 
 			[
-				'class' => 'kartik\grid\ActionColumn',
-				'template' => '{update}&nbsp;&nbsp;{delete}',
-				'dropdown' => false,
-				'vAlign' => 'middle',
+				'class'      => 'kartik\grid\ActionColumn',
+				'template'   => '{update}&nbsp;&nbsp;{delete}',
+				'dropdown'   => false,
+				'vAlign'     => 'middle',
 				'urlCreator' => function ($action, $model, $key, $index) {
 					return \yii\helpers\Url::to(["strike/adjudicator_" . $action, "adjudicator_from_id" => $model->adjudicator_from_id, "adjudicator_to_id" => $model->adjudicator_to_id, "tournament_id" => $model->tournament_id]);
 				},
 				'updateOptions' => ['title' => Yii::t("app", "Update team"), 'data-toggle' => 'tooltip'],
 				'deleteOptions' => ['title' => Yii::t("app", "Delete team"), 'data-toggle' => 'tooltip'],
-				'width' => '100px',
+				'width'      => '100px',
 			],
 		],
 	]); ?>

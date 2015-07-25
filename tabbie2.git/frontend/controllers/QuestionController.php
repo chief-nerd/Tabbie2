@@ -12,9 +12,11 @@ use yii\web\NotFoundHttpException;
 /**
  * QuestionController implements the CRUD actions for question model.
  */
-class QuestionController extends BaseTournamentController {
+class QuestionController extends BaseTournamentController
+{
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return [
 			'tournamentFilter' => [
 				'class' => TournamentContextFilter::className(),
@@ -33,7 +35,8 @@ class QuestionController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionIndex() {
+	public function actionIndex()
+	{
 		$searchModel = new QuestionSearch();
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->_tournament->id);
 
@@ -50,7 +53,8 @@ class QuestionController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionView($id) {
+	public function actionView($id)
+	{
 		return $this->render('view', [
 			'model' => $this->findModel($id),
 		]);
@@ -62,7 +66,8 @@ class QuestionController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionCreate() {
+	public function actionCreate()
+	{
 		$model = new Question();
 
 		if ($model->load(Yii::$app->request->post())) {
@@ -75,8 +80,7 @@ class QuestionController extends BaseTournamentController {
 				else
 					$model->addError("id", Yii::t("app", "Can't save Tournament Connection"));
 			}
-		}
-		else {
+		} else {
 			return $this->render('create', [
 				'model' => $model,
 			]);
@@ -91,13 +95,13 @@ class QuestionController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionUpdate($id) {
+	public function actionUpdate($id)
+	{
 		$model = $this->findModel($id);
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
 			return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $this->_tournament->id]);
-		}
-		else {
+		} else {
 			return $this->render('update', [
 				'model' => $model,
 			]);
@@ -112,17 +116,18 @@ class QuestionController extends BaseTournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionDelete($id) {
+	public function actionDelete($id)
+	{
 		/* @var $model Question */
 		$model = $this->findModel($id);
 		if ($model) {
 			if ($model->tournamentHasQuestion[0]->delete())
 				if ($model->delete())
 					Yii::$app->session->addFlash("success", "Question deleted");
-		}
-		else {
+		} else {
 			Yii::$app->session->addFlash("error", Yii::t("app", "Can't delete Question"));
 		}
+
 		return $this->redirect(['index', "tournament_id" => $this->_tournament->id]);
 	}
 
@@ -135,11 +140,11 @@ class QuestionController extends BaseTournamentController {
 	 * @return question the loaded model
 	 * @throws NotFoundHttpException if the model cannot be found
 	 */
-	protected function findModel($id) {
+	protected function findModel($id)
+	{
 		if (($model = question::findOne($id)) !== null) {
 			return $model;
-		}
-		else {
+		} else {
 			throw new NotFoundHttpException('The requested page does not exist.');
 		}
 	}

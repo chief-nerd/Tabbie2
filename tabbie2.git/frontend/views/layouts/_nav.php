@@ -9,7 +9,7 @@ use kartik\helpers\Html;
 NavBar::begin([
 	'brandLabel' => Html::tag("img", "", ["src" => Yii::$app->params["base64_logo"], "alt" => Yii::$app->params["appName"] . " Logo"]) . "&nbsp;" . Yii::$app->params["appName"],
 	'brandUrl' => Yii::$app->homeUrl,
-	'options' => [
+	'options'  => [
 		'class' => 'navbar-inverse navbar-fixed-top',
 	],
 ]);
@@ -27,8 +27,7 @@ if (Yii::$app->user->isAdmin()) {
 if (Yii::$app->user->isGuest) {
 	$menuItems[] = ['label' => Html::icon("pencil") . "&nbsp;" . Yii::t("app", 'Signup'), 'url' => ['/site/signup']];
 	$menuItems[] = ['label' => Html::icon("log-in") . "&nbsp;" . Yii::t("app", 'Login'), 'url' => ['/site/login']];
-}
-else {
+} else {
 	$menuItems[] = [
 		'label' => Html::icon("user") . "&nbsp;" . Yii::t("app", "{user}'s Profile", ["user" => Yii::$app->user->getModel()->givenname]),
 		'url' => ['user/view', 'id' => Yii::$app->user->id],
@@ -39,13 +38,13 @@ else {
 	];
 	$menuItems[] = [
 		'label' => Html::icon("log-out") . "&nbsp;" . Yii::t("app", 'Logout'),
-		'url' => ['/site/logout'],
+		'url'   => ['/site/logout'],
 		'linkOptions' => ['data-method' => 'post']
 	];
 }
 echo Nav::widget([
 	'options' => ['class' => 'navbar-nav menu navbar-right'],
-	'items' => $menuItems,
+	'items'   => $menuItems,
 	'encodeLabels' => false,
 ]);
 NavBar::end();
