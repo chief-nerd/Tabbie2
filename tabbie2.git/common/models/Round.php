@@ -359,7 +359,10 @@ class Round extends \yii\db\ActiveRecord
 						$alloc->function = Panel::FUNCTION_WING;
 
 					if (!$alloc->save())
-						throw new Exception(Yii::t("app", "Can't save AdjudicatorInPanel {message}", ["message" => print_r($alloc->getErrors(), true)]));
+						Yii::$app->session->addFlash("error", Yii::t("app", "Can't save AdjudicatorInPanel {name} {message}", [
+							"message" => ObjectError::getMsg($alloc),
+							"name"    => $judge["name"],
+						]));
 				}
 			}
 
