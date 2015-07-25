@@ -250,7 +250,13 @@ class StrictWUDCRulesSOASTest extends DbTestCase
 			$line_a = clone $line[0];
 			$line_b = clone $line[1];
 
+			Debug::debug("A:" . implode(", ", ArrayHelper::getColumn($line_a->getAdjudicators(), "id")));
+			Debug::debug("B:" . implode(", ", ArrayHelper::getColumn($line_b->getAdjudicators(), "id")));
+
 			$this->algo->swap_adjudicator($line_a, $pos_a, $line_b, $pos_b);
+
+			Debug::debug("A:" . implode(", ", ArrayHelper::getColumn($line_a->getAdjudicators(), "id")));
+			Debug::debug("B:" . implode(", ", ArrayHelper::getColumn($line_b->getAdjudicators(), "id")));
 
 			expect("A change:", $line_a->getAdjudicator($pos_a)["id"])->equals($line[1]->getAdjudicator($pos_b)["id"]);
 			expect("B change:", $line_b->getAdjudicator($pos_b)["id"])->equals($line[0]->getAdjudicator($pos_a)["id"]);

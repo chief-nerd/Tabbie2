@@ -308,7 +308,7 @@ class Round extends \yii\db\ActiveRecord
 
 			$this->saveDraw($draw);
 
-			Yii::trace("We saved the draw, almost there", __METHOD__);
+			Yii::trace("We saved the draw.", __METHOD__);
 
 			$this->lastrun_temp = $algo->temp;
 			$this->energy = $algo->best_energy;
