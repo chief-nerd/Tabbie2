@@ -1,7 +1,7 @@
 <?php
 
-use kartik\grid\GridView;
 use kartik\export\ExportMenu;
+use kartik\grid\GridView;
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
