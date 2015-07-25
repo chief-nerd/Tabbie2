@@ -67,7 +67,6 @@ class DrawLine extends Model
 	 */
 	public $messages = [];
 
-
 	/**
 	 * Get the Average Strength of the Panel
 	 *
