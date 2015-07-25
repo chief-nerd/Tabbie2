@@ -270,7 +270,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 					}
 
 					if ($found_notice)
-						$ret .= "&nbsp;" . \kartik\helpers\Html::icon("info-sign", ["class" => "text-primary"]);
+						$ret .= "&nbsp;" . \kartik\helpers\Html::icon("info-sign", ["class" => "text-gray"]);
 					if ($found_warning)
 						$ret .= "&nbsp;" . \kartik\helpers\Html::icon("warning-sign", ["class" => "text-warning"]);
 					if ($found_error)

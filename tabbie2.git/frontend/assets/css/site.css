@@ -2,6 +2,10 @@
     clear: both;
 }
 
+.text-gray {
+    color: #777;
+}
+
 .not-set {
     display: none;
 }
