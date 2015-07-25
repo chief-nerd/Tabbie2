@@ -348,21 +348,21 @@ class Round extends \yii\db\ActiveRecord
 
 				$chairSet = false;
 				foreach ($line->adjudicators as $judge) {
-					/* @var $judge Adjudicator */
-					$alloc = new AdjudicatorInPanel();
-					$alloc->adjudicator_id = $judge["id"];
-					$alloc->panel_id = $line->panelID;
-					if (!$chairSet) {
-						$alloc->function = Panel::FUNCTION_CHAIR;
-						$chairSet = true; //only on first run
-					} else
-						$alloc->function = Panel::FUNCTION_WING;
+					try {
+						/* @var $judge Adjudicator */
+						$alloc = new AdjudicatorInPanel();
+						$alloc->adjudicator_id = $judge["id"];
+						$alloc->panel_id = $line->panelID;
+						if (!$chairSet) {
+							$alloc->function = Panel::FUNCTION_CHAIR;
+							$chairSet = true; //only on first run
+						} else
+							$alloc->function = Panel::FUNCTION_WING;
 
-					if (!$alloc->save())
-						Yii::$app->session->addFlash("error", Yii::t("app", "Can't save AdjudicatorInPanel {name} {message}", [
-							"message" => ObjectError::getMsg($alloc),
-							"name"    => $judge["name"],
-						]));
+						$alloc->save();
+					} catch (Exception $ex) {
+						Yii::$app->session->addFlash("error", $judge["id"] . "-" . $judge["name"] . ": " . $ex->getMessage());
+					}
 				}
 			}
 
