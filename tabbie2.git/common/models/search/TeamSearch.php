@@ -78,10 +78,6 @@ class TeamSearch extends Team {
 			return $dataProvider;
 		}
 
-		$query->andFilterWhere([
-			'id' => $this->id,
-			'active' => $this->active,
-		]);
 
 		// filter by user name
 		$query->andWhere(["like", "CONCAT(uA.givenname, ' ', uA.surename)", $this->speakerName]);
@@ -93,6 +89,7 @@ class TeamSearch extends Team {
 		}]);
 
 		$query->andFilterWhere(['id' => $this->id]);
+		$query->andFilterWhere(['active' => $this->active]);
 		$query->andFilterWhere(['team.language_status' => $this->language_status]);
 		$query->andFilterWhere(['like', 'name', $this->name]);
 

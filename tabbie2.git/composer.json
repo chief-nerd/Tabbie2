@@ -24,7 +24,7 @@
     "yiisoft/yii2-swiftmailer": "*",
     "kartik-v/yii2-datecontrol": "dev-master",
     "kartik-v/yii2-widgets": "dev-master",
-    "kartik-v/yii2-grid": "*",
+    "kartik-v/yii2-grid": "dev-master",
     "kartik-v/yii2-mpdf": "*",
     "kartik-v/yii2-sortable": "*",
     "kartik-v/yii2-widget-typeahead": "*",
@@ -33,7 +33,8 @@
     "kartik-v/yii2-helpers": "*",
     "jakobreiter/yii2-quagga-js": "*",
     "aws/aws-sdk-php": "*",
-    "kartik-v/yii2-slider": "*"
+    "kartik-v/yii2-slider": "*",
+    "kartik-v/yii2-export": "*"
   },
   "require-dev": {
     "yiisoft/yii2-codeception": "*",
