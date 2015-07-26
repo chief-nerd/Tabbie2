@@ -80,6 +80,20 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Table View");
 				'filterInputOptions' => ['placeholder' => 'Any Venue'],
 			],
 			[
+				'class'              => 'kartik\grid\DataColumn',
+				'attribute'          => "adjudicator.name",
+				'format'             => 'raw',
+				'vAlign'             => GridView::ALIGN_MIDDLE,
+				'value'              => function ($model, $key, $index, $widget) {
+					return $model->getChair()->name;
+				},
+				'filterType'         => GridView::FILTER_SELECT2,
+				'filter'             => \common\models\search\AdjudicatorSearch::getSearchArray($tournament->id),
+				'filterWidgetOptions' => [
+					'pluginOptions' => ['allowClear' => true],
+				],
+			],
+			[
 				'class'  => 'kartik\grid\DataColumn',
 				'attribute' => "result.og_place",
 				'format' => 'raw',
