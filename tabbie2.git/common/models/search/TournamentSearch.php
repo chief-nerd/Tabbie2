@@ -42,7 +42,7 @@ class TournamentSearch extends Tournament
 	 */
 	public function search($params)
 	{
-		$query = Tournament::find()->joinWith('hostedby')->where("end_date >= now()");
+		$query = Tournament::find()->joinWith('hostedby')->where("end_date >= DATE_ADD(NOW(), INTERVAL -3 DAY)");
 
 		$dataProvider = new ActiveDataProvider([
 			'query'      => $query,
