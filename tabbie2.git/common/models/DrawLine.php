@@ -39,7 +39,7 @@ class DrawLine extends Model
 	 *
 	 * @var array
 	 */
-	public $adj = [];
+	private $adj = [];
 
 	/**
 	 * Flag that marks if the panel already existed and should be saved
