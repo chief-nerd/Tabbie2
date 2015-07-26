@@ -13,6 +13,8 @@ use common\models\Result;
 class ResultSearch extends Result
 {
 
+	public $venueName;
+
 	/**
 	 * @inheritdoc
 	 */
@@ -23,6 +25,7 @@ class ResultSearch extends Result
 			[['time'], 'safe'],
 		];
 	}
+
 
 	/**
 	 * @inheritdoc
@@ -55,7 +58,17 @@ class ResultSearch extends Result
 		]);
 
 		$dataProvider->setSort([
-			'defaultOrder' => ['venue_id' => SORT_ASC],
+			'defaultOrder' => ['venueName' => SORT_ASC],
+			'attributes' => [
+				'id',
+				'debate_id',
+				'time',
+				'venueName' => [
+					'asc'   => ['venue.name' => SORT_ASC],
+					'desc'  => ['venue.name' => SORT_DESC],
+					'label' => 'Venue Name'
+				]
+			]
 		]);
 
 		if (!($this->load($params) && $this->validate())) {
