@@ -10,7 +10,7 @@ function triggerFlash() {
     $("div.flashes .alert").each(function (i) {
         $(this).hide();
         $(this).delay(i * 1000).slideDown(800, function () {
-            if (!($(this).hasClass("alert-error"))) {
+            if (($(this).hasClass("alert-success") || $(this).hasClass("alert-notice"))) {
                 $(this).delay(9000).slideUp(400, function () {
                     $(this).remove();
                 });

@@ -305,7 +305,7 @@ class RoundController extends BaseTournamentController
 				$model->improveAdjudicator($runs);
 				$model->save();
 				$diff = ($oldEnergy - $model->energy);
-				Yii::$app->session->addFlash(($diff > 0) ? "success" : "notice", Yii::t("app", "Improved Energy by {diff} points in {secs}s", [
+				Yii::$app->session->addFlash(($diff > 0) ? "success" : "info", Yii::t("app", "Improved Energy by {diff} points in {secs}s", [
 					"diff" => $diff,
 					"secs" => intval(microtime(true) - $time),
 				]));

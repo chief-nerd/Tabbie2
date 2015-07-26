@@ -244,13 +244,25 @@ class Adjudicator extends \yii\db\ActiveRecord
 	{
 		//Works without tournament_id because adjudicator is only valid in tournament scope
 
-		$sql = "SELECT a.adjudicator_id AS aid, b.adjudicator_id AS bid, a.panel_id AS pid FROM adjudicator_in_panel AS a LEFT JOIN adjudicator_in_panel AS b ON a.panel_id = b.panel_id
+		if ($exclude_current) {
+
+			$sql = "SELECT a.adjudicator_id AS aid, b.adjudicator_id AS bid, a.panel_id AS pid, c.round_id
+				FROM adjudicator_in_panel AS a
+				LEFT JOIN adjudicator_in_panel AS b ON a.panel_id = b.panel_id
 				LEFT JOIN panel AS p ON a.panel_id = p.id
 				LEFT JOIN debate AS c ON p.id = c.panel_id
-		WHERE a.adjudicator_id != b.adjudicator_id AND a.adjudicator_id = " . $this->id . " GROUP BY bid";
+				WHERE a.adjudicator_id != b.adjudicator_id AND a.adjudicator_id = " . $this->id . "
+				GROUP BY bid
+				HAVING c.round_id < MAX(c.round_id)";
 
-		if ($exclude_current) {
-			$sql .= " HAVING c.round_id < MAX(c.round_id)";
+		} else {
+			$sql = "SELECT a.adjudicator_id AS aid, b.adjudicator_id AS bid, a.panel_id AS pid
+				FROM adjudicator_in_panel AS a
+				LEFT JOIN adjudicator_in_panel AS b ON a.panel_id = b.panel_id
+				LEFT JOIN panel AS p ON a.panel_id = p.id
+				LEFT JOIN debate AS c ON p.id = c.panel_id
+				WHERE a.adjudicator_id != b.adjudicator_id AND a.adjudicator_id = " . $this->id . "
+				GROUP BY bid";
 		}
 
 		$model = \Yii::$app->db->createCommand($sql);
@@ -262,11 +274,15 @@ class Adjudicator extends \yii\db\ActiveRecord
 	public function getPastTeamIDs($exclude_current = false)
 	{
 
-		$sql = "SELECT og_team_id, oo_team_id, cg_team_id, co_team_id FROM adjudicator_in_panel AS aip LEFT JOIN panel ON panel.id = aip.panel_id RIGHT JOIN debate ON debate.panel_id = panel.id WHERE adjudicator_id = " . $this->id . " GROUP BY adjudicator_id";
-
 		if ($exclude_current) {
-			$sql .= " HAVING round_id < MAX(round_id)";
+
+			$sql = "SELECT og_team_id, oo_team_id, cg_team_id, co_team_id, round_id FROM adjudicator_in_panel AS aip LEFT JOIN panel ON panel.id = aip.panel_id RIGHT JOIN debate ON debate.panel_id = panel.id WHERE adjudicator_id = " . $this->id . " GROUP BY adjudicator_id HAVING round_id < MAX(round_id)";
+		} else {
+
+			$sql = "SELECT og_team_id, oo_team_id, cg_team_id, co_team_id FROM adjudicator_in_panel AS aip LEFT JOIN panel ON panel.id = aip.panel_id RIGHT JOIN debate ON debate.panel_id = panel.id WHERE adjudicator_id = " . $this->id . " GROUP BY adjudicator_id";
+
 		}
+
 
 		$model = \Yii::$app->db->createCommand($sql);
 		$queryresult = $model->queryAll();
