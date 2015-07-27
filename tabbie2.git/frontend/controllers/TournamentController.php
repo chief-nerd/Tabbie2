@@ -142,6 +142,7 @@ class TournamentController extends BaseTournamentController
 		if (Yii::$app->request->isPost) {
 			$file = UploadedFile::getInstance($model, 'logo');
 			$model->load(Yii::$app->request->post());
+			$model->name = preg_replace('/[^a-zA-Z\s]/', '', $model->name);
 			$model->generateUrlSlug();
 			if ($file instanceof UploadedFile) {
 				$model->saveLogo($file);
@@ -149,6 +150,43 @@ class TournamentController extends BaseTournamentController
 				$model->logo = null;
 
 			if ($model->save()) {
+
+				$convenors = Yii::$app->request->post("Tournament")['convenors'];
+				if ($convenors == "")
+					$convenors = [0 => Yii::$app->user->id];
+				models\Convenor::deleteAll(["tournament_id" => $model->id]);
+				foreach ($convenors as $user_id) {
+					$con = new models\Convenor([
+						"user_id"       => $user_id,
+						"tournament_id" => $model->id
+					]);
+					$con->save();
+				}
+
+				$cas = Yii::$app->request->post("Tournament")['cAs'];
+				if ($cas == "")
+					$cas = [Yii::$app->user->id];
+				models\Ca::deleteAll(["tournament_id" => $model->id]);
+				foreach ($cas as $user_id) {
+					$ca = new models\Ca([
+						"user_id"       => $user_id,
+						"tournament_id" => $model->id
+					]);
+					$ca->save();
+				}
+
+				$tabmasters = Yii::$app->request->post("Tournament")['tabmasters'];
+				if ($tabmasters == "")
+					$tabmasters = [Yii::$app->user->id];
+				models\Tabmaster::deleteAll(["tournament_id" => $model->id]);
+				foreach ($tabmasters as $user_id) {
+					$tab = new models\Tabmaster([
+						"user_id"       => $user_id,
+						"tournament_id" => $model->id
+					]);
+					$tab->save();
+				}
+
 				$energyConf = new models\EnergyConfig();
 				if ($energyConf->setup($model))
 					Yii::$app->session->addFlash("success", Yii::t("app", "Tournament successfully created"));
@@ -161,10 +199,13 @@ class TournamentController extends BaseTournamentController
 			}
 		}
 		//Preset variables
-		$model->tabmaster_user_id = Yii::$app->user->id;
 		$model->tabAlgorithmClass = Yii::$app->params["stdTabAlgorithm"];
+		$convenor = \yii\helpers\ArrayHelper::map($model->convenors, "id", "name");
 
-		return $this->render('create', ['model' => $model,]);
+		return $this->render('create', [
+			'model'    => $model,
+			'convenor' => $convenor
+		]);
 	}
 
 	/**
@@ -189,6 +230,8 @@ class TournamentController extends BaseTournamentController
 			//Load new values
 			$model->load(Yii::$app->request->post());
 
+			$model->name = preg_replace('/[^a-zA-Z\s]/', "", $model->name);
+
 			if ($file instanceof UploadedFile) {
 				//Save new File
 				$model->saveLogo($file);
@@ -198,7 +241,7 @@ class TournamentController extends BaseTournamentController
 			if ($model->save()) {
 
 				$convenors = Yii::$app->request->post("Tournament")['convenors'];
-				if (count($convenors) == 0)
+				if ($convenors == "")
 					$convenors = [Yii::$app->user->id];
 				models\Convenor::deleteAll(["tournament_id" => $model->id]);
 				foreach ($convenors as $user_id) {
@@ -210,7 +253,7 @@ class TournamentController extends BaseTournamentController
 				}
 
 				$cas = Yii::$app->request->post("Tournament")['cAs'];
-				if (count($cas) == 0)
+				if ($cas == "")
 					$cas = [Yii::$app->user->id];
 				models\Ca::deleteAll(["tournament_id" => $model->id]);
 				foreach ($cas as $user_id) {
@@ -222,7 +265,7 @@ class TournamentController extends BaseTournamentController
 				}
 
 				$tabmasters = Yii::$app->request->post("Tournament")['tabmasters'];
-				if (count($tabmasters) == 0)
+				if ($tabmasters == "")
 					$tabmasters = [Yii::$app->user->id];
 				models\Tabmaster::deleteAll(["tournament_id" => $model->id]);
 				foreach ($tabmasters as $user_id) {

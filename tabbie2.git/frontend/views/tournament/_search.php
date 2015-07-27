@@ -16,8 +16,8 @@ use yii\widgets\ActiveForm;
 	]);
 	?>
 	<div class="row">
-		<div class="col-xs-6"><?= $form->field($model, 'name') ?></div>
-		<div class="form-group col-xs-6 text-right btn-group buttons">
+		<div class="col-xs-8"><?= $form->field($model, 'name') ?></div>
+		<div class="form-group col-xs-4 text-right btn-group buttons">
 			<?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>
 			<?= Html::a(Yii::t('app', 'Reset'), ["tournament/index"], ['class' => 'btn btn-default']) ?>
 		</div>

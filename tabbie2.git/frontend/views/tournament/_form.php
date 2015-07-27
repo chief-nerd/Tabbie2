@@ -17,7 +17,7 @@ use yii\helpers\Url;
 	<?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
 	<?= $form->field($model, 'name')
-		->textInput(['maxlength' => 100, 'placeholder' => Yii::t("app", 'My super awesome IV')]); ?>
+		->textInput(['maxlength' => 100, 'placeholder' => Yii::t("app", 'My super awesome IV ... e.g. Vienna IV')]); ?>
 
 	<?
 	$urlSocietyList = Url::to(['society/list']);
@@ -35,7 +35,9 @@ function (element, callback) {
 SCRIPT;
 
 	echo $form->field($model, 'hosted_by_id')->widget(Select2::className(), [
-		'options'       => ['placeholder' => Yii::t("app", 'Search for a society ...')],
+		'options' => [
+			'placeholder' => Yii::t("app", 'Search for a society ...')
+		],
 		'addon'         => [
 			"prepend" => [
 				"content" => \kartik\helpers\Html::icon("education")
@@ -77,8 +79,6 @@ SCRIPT;
 				'data'     => new JsExpression('function(params) { return {q:params.term}; }')
 			],
 			'escapeMarkup'       => new JsExpression('function (markup) { return markup; }'),
-			'templateResult'     => new JsExpression('function(city) { return city.text; }'),
-			'templateSelection'  => new JsExpression('function (city) { return city.text; }'),
 		],
 	]);
 	?>
@@ -133,8 +133,6 @@ SCRIPT;
 				'data'     => new JsExpression('function(params) { return {q:params.term}; }')
 			],
 			'escapeMarkup'       => new JsExpression('function (markup) { return markup; }'),
-			'templateResult'     => new JsExpression('function(city) { return city.text; }'),
-			'templateSelection'  => new JsExpression('function (city) { return city.text; }'),
 		],
 	]);
 	?>
@@ -161,8 +159,6 @@ SCRIPT;
 				'data'     => new JsExpression('function(params) { return {q:params.term}; }')
 			],
 			'escapeMarkup'       => new JsExpression('function (markup) { return markup; }'),
-			'templateResult'     => new JsExpression('function(city) { return city.text; }'),
-			'templateSelection'  => new JsExpression('function (city) { return city.text; }'),
 		],
 	]);
 	?>

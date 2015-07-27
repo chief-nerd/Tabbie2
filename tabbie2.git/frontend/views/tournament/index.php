@@ -19,11 +19,12 @@ $this->params['breadcrumbs'][] = $this->title;
 	</div>
 
 	<div class="row">
-		<div class="col-xs-10">
+		<div class="col-xs-12 col-sm-8 col-md-9 col-lg-9">
 			<?php echo $this->render('_search', ['model' => $searchModel]); ?>
 		</div>
-		<div class="col-xs-2">
-			<?php echo Html::a(Yii::t("app", "Archive"), ["tournament/archive"], ["class" => "btn btn-default btn-block"]) ?>
+		<div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 text-right">
+			<?php echo Html::label("&nbsp;") ?>
+			<?php echo Html::a(\kartik\helpers\Html::icon("calendar") . "&nbsp;&nbsp;" . Yii::t("app", "Show old tournaments"), ["tournament/archive"], ["class" => "btn btn-default btn-block"]) ?>
 		</div>
 	</div>
 
