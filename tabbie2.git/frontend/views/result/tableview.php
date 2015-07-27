@@ -66,7 +66,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Table View");
 			],
 			[
 				'class'              => 'kartik\grid\DataColumn',
-				'attribute'          => "debate.venue",
+				'attribute'          => "venueName",
 				'format'             => 'raw',
 				'vAlign'             => GridView::ALIGN_MIDDLE,
 				'value'              => function ($model, $key, $index, $widget) {
