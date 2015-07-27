@@ -17,7 +17,7 @@ use common\models\Team;
 	</div>
 	<?php
 	if ($model->status === \common\models\Tournament::STATUS_RUNNING): ?>
-		<div class="col-xs-12 col-md-8 col-lg-7 col-lg-push-1">
+		<div class="col-xs-12 col-md-8 col-lg-7">
 			<?
 			$info = $model->getLastDebateInfo(Yii::$app->user->id);
 			$button_output_buffer = "";
@@ -161,7 +161,7 @@ use common\models\Team;
 			<? endif; ?>
 		</div>
 	<? endif; ?>
-	<div class="col-xs-12 col-md-4 col-lg-3 col-lg-push-1">
+	<div class="col-xs-12 col-md-4 col-lg-3">
 		<?=
 		DetailView::widget([
 			'model'      => $model,
