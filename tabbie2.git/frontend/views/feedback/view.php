@@ -23,10 +23,12 @@ $this->params['breadcrumbs'][] = $this->title;
 	];
 
 	foreach ($model->answers as $answer) {
-		array_push($att, [
+		$formatValue = $answer->value;
+		$line = [
 			'label' => $answer->question->text,
-			'value' => $answer->value,
-		]);
+			'value' => $formatValue,
+		];
+		array_push($att, $line);
 	}
 	?>
 
