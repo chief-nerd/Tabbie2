@@ -221,7 +221,7 @@ class DebregsyncForm extends Model
 
 							$matches = [];
 							foreach ($user[$id] as $match) {
-								$matches[$match->id] = $match->givenname . " " . $match->surename . " (" . $soc . ")";
+								$matches[$match->id] = $match->givenname . " " . $match->surename . " (" . $match->email . ")";
 							}
 							$this->FIX['t'][$u_name] = [
 								"key"     => $u_name,
