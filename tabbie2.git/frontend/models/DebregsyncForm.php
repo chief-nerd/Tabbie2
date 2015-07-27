@@ -85,53 +85,94 @@ class DebregsyncForm extends Model
 		return [];
 	}
 
-	/**
-	 * @return bool
-	 * @throws \yii\base\Exception
-	 */
-	public function getAccessKey()
+	private function syncAdjudicator()
 	{
-		if (strlen($this->key) > 0) return true;
+		try {
 
-		//grant_type=password&username=alice%40example.com&password=Password1!
-		$data = [
-			"grant_type" => "password",
-			"username"   => $this->username,
-			"password"   => $this->password,
-		];
-		$data = http_build_query($data);
+			$json = $this->readData(self::ADJU, $this->key);
+			$count = count($json);
 
-		$context = stream_context_create([
-			'http' => [
-				'method'        => 'POST',
-				'header'        => [
-					'Content-Type: application/x-www-form-urlencoded; charset=UTF-8',
-					'Content-Length: ' . strlen($data),
-				],
-				'content'       => $data,
-				'ignore_errors' => true,
-			]
-		]);
+			$oldAdjus = Adjudicator::find()
+				->tournament($this->tournament->id)
+				->asArray()
+				->all();
 
-		$json_string = @file_get_contents(self::DEBREG_URL . "/token", false, $context);
+			Adjudicator::deleteAll(["tournament_id" => $this->tournament->id]);
 
-		if (strlen($json_string) == 0) throw new Exception("No content received at: " . self::DEBREG_URL . "/token", 404);
-		$json = json_decode($json_string);
 
-		if (isset($json->access_token) && isset($json->token_type)) {
-			$this->key = $json->token_type . ' ' . $json->access_token;
+			for ($i = 0; $i < $count; $i++) {
+				$item = $json[$i];
+
+				$u = $item->user;
+
+				$u_first = $u->firstname;
+				$u_last = $u->lastname;
+				$u_name = $u_first . " " . $u_last;
+				$u_email = $u->eMail;
+
+
+				$society = $this->handleSociety($item);
+
+				$user = User::find()
+					->andWhere(["CONCAT(user.givenname,' ',user.surename)" => $u_name])
+					->orWhere(["email" => $u_email])
+					->all();
+
+				if (count($user) > 1) {
+					if (isset($this->FIX['a'][$u_name])) {
+						$user = User::findOne($this->FIX['a'][$u_name]);
+						if ($user instanceof User)
+							unset($this->FIX['a'][$u_name]);
+						else
+							throw new Exception("User no resolved");
+					} else {
+						$matches = [];
+						foreach ($user as $match) {
+							$matches[$match->id] = $match->givenname . " " . $match->surename . " (" . $match->email . ")";
+						}
+						$this->FIX['a'][$u_name] = [
+							"key"     => $u_name,
+							"msg"     => "Multiple user found! Select the right " . $u_name . " " . $u_email,
+							"matches" => $matches,
+						];
+					}
+				} else {
+					if (count($user) == 0) {
+						if ($society instanceof Society)
+							$user = User::NewViaImport($u_first, $u_last, $u_email, $society->id, true, $this->tournament);
+						else
+							$user = null; //Error in Society -> no user yet to be known
+					} else {
+						$user = $user[0];
+					}
+				}
+
+				if (!is_array($user) && $user instanceof User) {
+					if ($old = $this->helperGetAdju($oldAdjus, $user->id)) {
+						$adju = new Adjudicator($old);
+					} else {
+						$adju = new Adjudicator([
+							"tournament_id" => $this->tournament->id,
+							"user_id"       => $user->id,
+							"society_id"    => $society->id,
+							"strength"      => 0,
+						]);
+					}
+
+					if (!$adju->save()) {
+						throw new Exception("Error saving Adjudicator. " . print_r($adju->getErrors(), true));
+					}
+				}
+			}
 
 			return true;
+
+		} catch
+		(Exception $ex) {
+			Yii::$app->session->addFlash("error", $ex->getMessage() . " on " . __FUNCTION__ . ":" . $ex->getLine());
 		}
 
-		if (isset($json->error))
-			return $json->error;
-		else {
-			echo "<h1>DebReg Error Message:</h1>";
-			echo $json_string;
-			exit();
-		}
-
+		return false;
 	}
 
 	private function readData($object, $key = null)
@@ -167,6 +208,71 @@ class DebregsyncForm extends Model
 		if (!is_array($json)) throw new Exception("Return Object not a JSON: " . $json_string);
 
 		return $json;
+	}
+
+	private function handleSociety($item)
+	{
+		$org = $item->organization;
+		$org_name = $org->name;
+		$org_abr = $org->abbreviation;
+		$org_city = $org->address->city;
+		$org_country = $org->address->country;
+
+		$societies = Society::find()->where(["fullname" => $org_name])->orWhere(["abr" => $org_abr])->all();
+
+		if (count($societies) == 0) {
+
+			if (strlen($org_country) > 0)
+				$country = Country::find()->where(["like", "name", $org_country])->one();
+			else
+				$country = Country::COUNTRY_UNKNOWN_ID;
+
+			$society = new Society([
+				"fullname"   => $org_name,
+				"abr"        => (strlen($org_abr) > 0) ? Society::uniqueAbr($org_abr) : Society::generateAbr($org_name),
+				"city"       => (strlen($org_city) > 0) ? $org_city : null,
+				"country_id" => ($country instanceof Country) ? $country->id : Country::COUNTRY_UNKNOWN_ID,
+			]);
+			if (!$society->save())
+				throw new Exception("Cant save new Society error: " . print_r($society->getErrors(), true));
+
+			return $society;
+
+		} elseif (count($societies) == 1 && $societies[0] instanceof Society) {
+			return $societies[0];
+		} else {
+			//Do we find a FIX?
+			if (isset($this->FIX['s'][$org_name])) {
+				$society = Society::findOne($this->FIX['s'][$org_name]); //this has the ID
+				if ($society instanceof Society) {
+					unset($this->FIX['s'][$org_name]); //Fixed
+					return $society;
+				}
+			} else {
+				$matches = [];
+				foreach ($societies as $match) {
+					$matches[$match->id] = $match->fullname . " (" . $match->abr . ")";
+				}
+				$this->FIX['s'][$org_name] = [
+					"key"     => $org_name,
+					"msg"     => "Select the right " . $org_name,
+					"matches" => $matches,
+				];
+			}
+		}
+
+
+		return false;
+	}
+
+	private function helperGetAdju($array, $id)
+	{
+		$c = count($array);
+		for ($i = 0; $i < $c; $i++) {
+			if ($array[$i]["user_id"] == $id) return $array[$i];
+		}
+
+		return false;
 	}
 
 	private function syncTeams()
@@ -226,7 +332,7 @@ class DebregsyncForm extends Model
 							$this->FIX['t'][$u_name] = [
 								"key"     => $u_name,
 								"matches" => $matches,
-								"msg"     => "Multiple user matches for " . $u_name . " (" . $org_name . ")"
+								"msg"     => "Multiple user matches for " . $u_name . " " . $u_email . "(" . $org_name . ")"
 							];
 						}
 					} else {
@@ -271,106 +377,6 @@ class DebregsyncForm extends Model
 		return false;
 	}
 
-	private function syncAdjudicator()
-	{
-		try {
-
-			$json = $this->readData(self::ADJU, $this->key);
-			$count = count($json);
-
-			$oldAdjus = Adjudicator::find()
-				->tournament($this->tournament->id)
-				->asArray()
-				->all();
-
-			Adjudicator::deleteAll(["tournament_id" => $this->tournament->id]);
-
-
-			for ($i = 0; $i < $count; $i++) {
-				$item = $json[$i];
-
-				$u = $item->user;
-
-				$u_first = $u->firstname;
-				$u_last = $u->lastname;
-				$u_name = $u_first . " " . $u_last;
-				$u_email = $u->eMail;
-
-
-				$society = $this->handleSociety($item);
-
-				$user = User::find()
-					->andWhere(["CONCAT(user.givenname,' ',user.surename)" => $u_name])
-					->orWhere(["email" => $u_email])
-					->all();
-
-				if (count($user) > 1) {
-					if (isset($this->FIX['a'][$u_name])) {
-						$user = User::findOne($this->FIX['a'][$u_name]);
-						if ($user instanceof User)
-							unset($this->FIX['a'][$u_name]);
-						else
-							throw new Exception("User no resolved");
-					} else {
-						$matches = [];
-						foreach ($user as $match) {
-							$matches[$match->id] = $match->givenname . " " . $match->surename . " (" . $match->email . ")";
-						}
-						$this->FIX['a'][$u_name] = [
-							"key"     => $u_name,
-							"msg"     => "Multiple user found! Select the right " . $u_name,
-							"matches" => $matches,
-						];
-					}
-				} else {
-					if (count($user) == 0) {
-						if ($society instanceof Society)
-							$user = User::NewViaImport($u_first, $u_last, $u_email, $society->id, true, $this->tournament);
-						else
-							$user = null; //Error in Society -> no user yet to be known
-					} else {
-						$user = $user[0];
-					}
-				}
-
-				if (!is_array($user) && $user instanceof User) {
-					if ($old = $this->helperGetAdju($oldAdjus, $user->id)) {
-						$adju = new Adjudicator($old);
-					} else {
-						$adju = new Adjudicator([
-							"tournament_id" => $this->tournament->id,
-							"user_id"       => $user->id,
-							"society_id"    => $society->id,
-							"strength"      => 0,
-						]);
-					}
-
-					if (!$adju->save()) {
-						throw new Exception("Error saving Adjudicator. " . print_r($adju->getErrors(), true));
-					}
-				}
-			}
-
-			return true;
-
-		} catch
-		(Exception $ex) {
-			Yii::$app->session->addFlash("error", $ex->getMessage() . " on " . __FUNCTION__ . ":" . $ex->getLine());
-		}
-
-		return false;
-	}
-
-	private function helperGetAdju($array, $id)
-	{
-		$c = count($array);
-		for ($i = 0; $i < $c; $i++) {
-			if ($array[$i]["user_id"] == $id) return $array[$i];
-		}
-
-		return false;
-	}
-
 	private function helperGetTeam($array, $Aid, $Bid)
 	{
 		$c = count($array);
@@ -381,58 +387,52 @@ class DebregsyncForm extends Model
 		return false;
 	}
 
-	private function handleSociety($item)
+	/**
+	 * @return bool
+	 * @throws \yii\base\Exception
+	 */
+	public function getAccessKey()
 	{
-		$org = $item->organization;
-		$org_name = $org->name;
-		$org_abr = $org->abbreviation;
-		$org_city = $org->address->city;
-		$org_country = $org->address->country;
+		if (strlen($this->key) > 0) return true;
 
-		$societies = Society::find()->where(["fullname" => $org_name])->orWhere(["abr" => $org_abr])->all();
+		//grant_type=password&username=alice%40example.com&password=Password1!
+		$data = [
+			"grant_type" => "password",
+			"username"   => $this->username,
+			"password"   => $this->password,
+		];
+		$data = http_build_query($data);
 
-		if (count($societies) == 0) {
+		$context = stream_context_create([
+			'http' => [
+				'method'        => 'POST',
+				'header'        => [
+					'Content-Type: application/x-www-form-urlencoded; charset=UTF-8',
+					'Content-Length: ' . strlen($data),
+				],
+				'content'       => $data,
+				'ignore_errors' => true,
+			]
+		]);
 
-			if (strlen($org_country) > 0)
-				$country = Country::find()->where(["like", "name", $org_country])->one();
-			else
-				$country = Country::COUNTRY_UNKNOWN_ID;
+		$json_string = @file_get_contents(self::DEBREG_URL . "/token", false, $context);
 
-			$society = new Society([
-				"fullname"   => $org_name,
-				"abr"        => (strlen($org_abr) > 0) ? Society::uniqueAbr($org_abr) : Society::generateAbr($org_name),
-				"city"       => (strlen($org_city) > 0) ? $org_city : null,
-				"country_id" => ($country instanceof Country) ? $country->id : Country::COUNTRY_UNKNOWN_ID,
-			]);
-			if (!$society->save())
-				throw new Exception("Cant save new Society error: " . print_r($society->getErrors(), true));
+		if (strlen($json_string) == 0) throw new Exception("No content received at: " . self::DEBREG_URL . "/token", 404);
+		$json = json_decode($json_string);
 
-			return $society;
+		if (isset($json->access_token) && isset($json->token_type)) {
+			$this->key = $json->token_type . ' ' . $json->access_token;
 
-		} elseif (count($societies) == 1 && $societies[0] instanceof Society) {
-			return $societies[0];
-		} else {
-			//Do we find a FIX?
-			if (isset($this->FIX['s'][$org_name])) {
-				$society = Society::findOne($this->FIX['s'][$org_name]); //this has the ID
-				if ($society instanceof Society) {
-					unset($this->FIX['s'][$org_name]); //Fixed
-					return $society;
-				}
-			} else {
-				$matches = [];
-				foreach ($societies as $match) {
-					$matches[$match->id] = $match->fullname . " (" . $match->abr . ")";
-				}
-				$this->FIX['s'][$org_name] = [
-					"key"     => $org_name,
-					"msg"     => "Select the right " . $org_name,
-					"matches" => $matches,
-				];
-			}
+			return true;
 		}
 
+		if (isset($json->error))
+			return $json->error;
+		else {
+			echo "<h1>DebReg Error Message:</h1>";
+			echo $json_string;
+			exit();
+		}
 
-		return false;
 	}
 }
