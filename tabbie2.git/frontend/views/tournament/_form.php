@@ -3,6 +3,9 @@
 use kartik\widgets\ActiveForm;
 use kartik\widgets\DateTimePicker;
 use yii\helpers\Html;
+use \kartik\widgets\Select2;
+use yii\web\JsExpression;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Tournament */
@@ -13,18 +16,72 @@ use yii\helpers\Html;
 
 	<?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
 
-	<?= Html::activeHiddenInput($model, 'convenor_user_id', ["value" => Yii::$app->user->id]) ?>
-
 	<?= $form->field($model, 'name')
-		->textInput(['maxlength' => 100, 'placeholder' => Yii::t("app", 'My super awesome IV')]) ?>
+		->textInput(['maxlength' => 100, 'placeholder' => Yii::t("app", 'My super awesome IV')]); ?>
 
-	<?= $form->field($model, 'hosted_by_id', [
-		'addon' => ['prepend' => ['content' => "<i class=\"glyphicon glyphicon-education\"></i>"]]
-	])->dropDownList($model->getSocietiesOptions()) ?>
+	<?
+	$urlSocietyList = Url::to(['society/list']);
 
-	<?= $form->field($model, 'tabmaster_user_id', [
-		'addon' => ['prepend' => ['content' => "<i class=\"glyphicon glyphicon-user\"></i>"]]
-	])->dropDownList($model->getTabmasterOptions(true)) ?>
+	// Script to initialize the selection based on the value of the select2 element
+	$initSocietyScript = <<< SCRIPT
+function (element, callback) {
+    var id=\$(element).val();
+    if (id !== "") {
+        \$.ajax("{$urlSocietyList}?sid=" + id, {
+        dataType: "json"
+        }).done(function(data) { callback(data.results);});
+    }
+}
+SCRIPT;
+
+	echo $form->field($model, 'hosted_by_id')->widget(Select2::className(), [
+		'options'       => ['placeholder' => Yii::t("app", 'Search for a society ...')],
+		'addon'         => [
+			"prepend" => [
+				"content" => \kartik\helpers\Html::icon("education")
+			],
+		],
+		'pluginOptions' => [
+			'allowClear'         => false,
+			'minimumInputLength' => 3,
+			'ajax'               => [
+				'url'      => $urlSocietyList,
+				'dataType' => 'json',
+				'data'     => new JsExpression('function(term,page) { return {search:term}; }'),
+				'results'  => new JsExpression('function(data,page) { return {results:data.results}; }'),
+			],
+			'initSelection'      => new JsExpression($initSocietyScript)
+		],
+	]);
+	?>
+
+	<?
+	$urlUserList = Url::to(['user/list']);
+
+	echo $form->field($model, 'convenors')->widget(Select2::className(), [
+		'initValueText' => \yii\helpers\ArrayHelper::map($model->convenors, "id", "name"),
+		'addon'         => [
+			'prepend' => [
+				'content' => \kartik\helpers\Html::icon('king')
+			],
+		],
+		'options'       => [
+			'placeholder' => Yii::t("app", 'Select the Convenors ...'),
+		],
+		'pluginOptions' => [
+			'multiple'           => true,
+			'minimumInputLength' => 3,
+			'ajax'               => [
+				'url'      => $urlUserList,
+				'dataType' => 'json',
+				'data'     => new JsExpression('function(params) { return {q:params.term}; }')
+			],
+			'escapeMarkup'       => new JsExpression('function (markup) { return markup; }'),
+			'templateResult'     => new JsExpression('function(city) { return city.text; }'),
+			'templateSelection'  => new JsExpression('function (city) { return city.text; }'),
+		],
+	]);
+	?>
 
 	<?=
 	$form->field($model, 'start_date', [
@@ -51,6 +108,62 @@ use yii\helpers\Html;
 			'startDate' => date("Y-m-d H:i"),
 			'autoclose' => true,
 		]
+	]);
+	?>
+
+	<?
+	$urlUserList = Url::to(['user/list']);
+
+	echo $form->field($model, 'cAs')->label(Yii::t("app", "Chief Adjudicators"))->widget(Select2::className(), [
+		'initValueText' => \yii\helpers\ArrayHelper::map($model->cAs, "id", "name"),
+		'addon'         => [
+			'prepend' => [
+				'content' => \kartik\helpers\Html::icon('star')
+			],
+		],
+		'options'       => [
+			'placeholder' => Yii::t("app", 'Choose your CAs ...'),
+		],
+		'pluginOptions' => [
+			'multiple'           => true,
+			'minimumInputLength' => 3,
+			'ajax'               => [
+				'url'      => $urlUserList,
+				'dataType' => 'json',
+				'data'     => new JsExpression('function(params) { return {q:params.term}; }')
+			],
+			'escapeMarkup'       => new JsExpression('function (markup) { return markup; }'),
+			'templateResult'     => new JsExpression('function(city) { return city.text; }'),
+			'templateSelection'  => new JsExpression('function (city) { return city.text; }'),
+		],
+	]);
+	?>
+
+	<?
+	$urlUserList = Url::to(['user/list']);
+
+	echo $form->field($model, 'tabmasters')->widget(Select2::className(), [
+		'initValueText' => \yii\helpers\ArrayHelper::map($model->tabmasters, "id", "name"),
+		'addon'         => [
+			'prepend' => [
+				'content' => \kartik\helpers\Html::icon('sunglasses')
+			],
+		],
+		'options'       => [
+			'placeholder' => Yii::t("app", 'Choose your Tabmaster ...'),
+		],
+		'pluginOptions' => [
+			'multiple'           => true,
+			'minimumInputLength' => 3,
+			'ajax'               => [
+				'url'      => $urlUserList,
+				'dataType' => 'json',
+				'data'     => new JsExpression('function(params) { return {q:params.term}; }')
+			],
+			'escapeMarkup'       => new JsExpression('function (markup) { return markup; }'),
+			'templateResult'     => new JsExpression('function(city) { return city.text; }'),
+			'templateSelection'  => new JsExpression('function (city) { return city.text; }'),
+		],
 	]);
 	?>
 

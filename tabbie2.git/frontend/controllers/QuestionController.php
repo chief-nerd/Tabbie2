@@ -6,6 +6,7 @@ use common\components\filter\TournamentContextFilter;
 use common\models\Question;
 use common\models\search\QuestionSearch;
 use Yii;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 
@@ -20,6 +21,20 @@ class QuestionController extends BaseTournamentController
 		return [
 			'tournamentFilter' => [
 				'class' => TournamentContextFilter::className(),
+			],
+			'access'           => [
+				'class' => AccessControl::className(),
+				'rules' => [
+					[
+						'allow'         => true,
+						'actions'       => ['index', 'create', 'update', 'view', 'delete'],
+						'matchCallback' => function ($rule, $action) {
+							return ($this->_tournament->isTabMaster(Yii::$app->user->id) ||
+								$this->_tournament->isCA(Yii::$app->user->id) ||
+								$this->_tournament->isConvenor(Yii::$app->user->id));
+						}
+					],
+				],
 			],
 			'verbs' => [
 				'class' => VerbFilter::className(),

@@ -11,6 +11,7 @@ use common\models\Tournament;
 use frontend\models\DebregsyncForm;
 use kartik\helpers\Html;
 use Yii;
+use yii\base\Model;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\HtmlPurifier;
@@ -110,6 +111,24 @@ class TournamentController extends BaseTournamentController
 	}
 
 	/**
+	 * Finds the Tournament model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 *
+	 * @param integer $id
+	 *
+	 * @return Tournament the loaded model
+	 * @throws NotFoundHttpException if the model cannot be found
+	 */
+	protected function findModel($id)
+	{
+		if (($model = Tournament::findByPk($id)) !== null) {
+			return $model;
+		} else {
+			throw new NotFoundHttpException('The requested page does not exist.');
+		}
+	}
+
+	/**
 	 * Creates a new Tournament model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 *
@@ -177,6 +196,43 @@ class TournamentController extends BaseTournamentController
 				$model->logo = $oldFile;
 
 			if ($model->save()) {
+
+				$convenors = Yii::$app->request->post("Tournament")['convenors'];
+				if (count($convenors) == 0)
+					$convenors = [Yii::$app->user->id];
+				models\Convenor::deleteAll(["tournament_id" => $model->id]);
+				foreach ($convenors as $user_id) {
+					$con = new models\Convenor([
+						"user_id"       => $user_id,
+						"tournament_id" => $model->id
+					]);
+					$con->save();
+				}
+
+				$cas = Yii::$app->request->post("Tournament")['cAs'];
+				if (count($cas) == 0)
+					$cas = [Yii::$app->user->id];
+				models\Ca::deleteAll(["tournament_id" => $model->id]);
+				foreach ($cas as $user_id) {
+					$ca = new models\Ca([
+						"user_id"       => $user_id,
+						"tournament_id" => $model->id
+					]);
+					$ca->save();
+				}
+
+				$tabmasters = Yii::$app->request->post("Tournament")['tabmasters'];
+				if (count($tabmasters) == 0)
+					$tabmasters = [Yii::$app->user->id];
+				models\Tabmaster::deleteAll(["tournament_id" => $model->id]);
+				foreach ($tabmasters as $user_id) {
+					$tab = new models\Tabmaster([
+						"user_id"       => $user_id,
+						"tournament_id" => $model->id
+					]);
+					$tab->save();
+				}
+
 				Yii::$app->cache->set("tournament" . $model->id, $model, 120);
 
 				return $this->redirect(['view', 'id' => $model->id]);
@@ -199,24 +255,6 @@ class TournamentController extends BaseTournamentController
 		$this->findModel($id)->delete();
 
 		return $this->redirect(['index']);
-	}
-
-	/**
-	 * Finds the Tournament model based on its primary key value.
-	 * If the model is not found, a 404 HTTP exception will be thrown.
-	 *
-	 * @param integer $id
-	 *
-	 * @return Tournament the loaded model
-	 * @throws NotFoundHttpException if the model cannot be found
-	 */
-	protected function findModel($id)
-	{
-		if (($model = Tournament::findByPk($id)) !== null) {
-			return $model;
-		} else {
-			throw new NotFoundHttpException('The requested page does not exist.');
-		}
 	}
 
 	/**

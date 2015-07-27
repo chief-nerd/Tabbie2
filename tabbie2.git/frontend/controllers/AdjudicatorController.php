@@ -36,14 +36,18 @@ class AdjudicatorController extends BaseTournamentController
 						'allow'         => true,
 						'actions'       => ['index', 'view'],
 						'matchCallback' => function ($rule, $action) {
-							return ($this->_tournament->isTabMaster(Yii::$app->user->id) || $this->_tournament->isConvenor(Yii::$app->user->id));
+							return ($this->_tournament->isTabMaster(Yii::$app->user->id) ||
+								$this->_tournament->isConvenor(Yii::$app->user->id) ||
+								$this->_tournament->isCA(Yii::$app->user->id)
+							);
 						}
 					],
 					[
 						'allow'         => true,
 						'actions'       => ['create', 'update', 'delete', 'replace', 'move', 'import', 'active', 'popup', 'watch', 'list', 'resetwatched'],
 						'matchCallback' => function ($rule, $action) {
-							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
+							return ($this->_tournament->isTabMaster(Yii::$app->user->id) ||
+								$this->_tournament->isCA(Yii::$app->user->id));
 						}
 					],
 				],

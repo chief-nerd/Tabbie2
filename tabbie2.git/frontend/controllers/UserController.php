@@ -302,9 +302,13 @@ class UserController extends BaseUserController
 	 * @param type $search
 	 * @param type $id
 	 */
-	public function actionList(array $search = null, $id = null)
+	public function actionList(array $search = null, $id = null, $q = null)
 	{
 		$out = ['more' => false];
+
+		if ($search["term"] == "" && $q != null)
+			$search["term"] = $q;
+
 		if (!is_null($search["term"]) && $search["term"] != "") {
 			$query = new \yii\db\Query;
 			$query->select(["id", "concat(givenname, ' ', surename) as text", "picture"])

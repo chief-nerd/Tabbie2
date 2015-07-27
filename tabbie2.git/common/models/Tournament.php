@@ -15,8 +15,6 @@ use yii\helpers\Url;
  * @property integer                  $id
  * @property string                   $url_slug
  * @property integer                  $status
- * @property integer                  $convenor_user_id
- * @property integer                  $tabmaster_user_id
  * @property integer                  $hosted_by_id
  * @property string                   $name
  * @property string                   $fullname
@@ -37,10 +35,11 @@ use yii\helpers\Url;
  * @property Panel[]                  $panels
  * @property Round[]                  $rounds
  * @property Team[]                   $teams
- * @property User                     $convenorUser
- * @property User                     $tabmasterUser
- * @property TournamentHasQuestions[] $tournamentHasQuestions
- * @property Questions[]              $questions
+ * @property User[]                   $convenors
+ * @property User[]                   $tabmasters
+ * @property User[]                   $cas
+ * @property TournamentHasQuestion[]  $tournamentHasQuestions
+ * @property Question[]               $questions
  * @property Venue[]                  $venues
  */
 class Tournament extends \yii\db\ActiveRecord
@@ -64,8 +63,8 @@ class Tournament extends \yii\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['url_slug', 'convenor_user_id', 'tabmaster_user_id', 'hosted_by_id', 'name', 'start_date', 'end_date'], 'required'],
-			[['convenor_user_id', 'tabmaster_user_id', 'hosted_by_id', 'expected_rounds', 'status'], 'integer'],
+			[['url_slug', 'hosted_by_id', 'name', 'start_date', 'end_date'], 'required'],
+			[['hosted_by_id', 'expected_rounds', 'status'], 'integer'],
 			[['start_date', 'end_date', 'time', 'has_esl', 'has_final', 'has_semifinal', 'has_octofinal', 'has_quarterfinal'], 'safe'],
 			[['url_slug', 'name', 'tabAlgorithmClass', 'accessToken'], 'string', 'max' => 100],
 			[['logo', 'badge'], 'string', 'max' => 255],
@@ -80,8 +79,6 @@ class Tournament extends \yii\db\ActiveRecord
 	{
 		return [
 			'id'                => Yii::t('app', 'Tournament ID'),
-			'convenor_user_id'  => Yii::t('app', 'Convenor'),
-			'tabmaster_user_id' => Yii::t('app', 'Tabmaster'),
 			'hosted_by_id'      => Yii::t('app', 'Hosted by'),
 			'name'              => Yii::t('app', 'Tournament Name'),
 			'start_date'        => Yii::t('app', 'Start Date'),
@@ -134,9 +131,26 @@ class Tournament extends \yii\db\ActiveRecord
 	 */
 	public function isTabMaster($userID)
 	{
-		if ($this->tabmaster_user_id == $userID) {
-			//\Yii::trace("User is Tab Master for Tournament #" . $this->id, __METHOD__);
+		$count = Tabmaster::find()->tournament($this->id)->andWhere(["user_id" => $userID])->count();
+		if ($count > 0) {
+			return true;
+		} else if (Yii::$app->user->isAdmin()) //Admin secure override
+			return true;
+		else
+			return false;
+	}
 
+	/**
+	 * Check if user is the CA of the torunament
+	 *
+	 * @param int $userID
+	 *
+	 * @return boolean
+	 */
+	public function isCA($userID)
+	{
+		$count = Ca::find()->tournament($this->id)->andWhere(["user_id" => $userID])->count();
+		if ($count > 0) {
 			return true;
 		} else if (Yii::$app->user->isAdmin()) //Admin secure override
 			return true;
@@ -153,7 +167,8 @@ class Tournament extends \yii\db\ActiveRecord
 	 */
 	public function isConvenor($userID)
 	{
-		if ($this->convenor_user_id == $userID) {
+		$count = Convenor::find()->tournament($this->id)->andWhere(["user_id" => $userID])->count();
+		if ($count > 0) {
 			\Yii::trace("User is Convenor for Tournament #" . $this->id, __METHOD__);
 
 			return true;
@@ -166,10 +181,8 @@ class Tournament extends \yii\db\ActiveRecord
 	public function isLanguageOfficer($userID)
 	{
 		if ($this->status != Tournament::STATUS_CLOSED) {
-			if (LanguageOfficer::find()->where([
-					"tournament_id" => $this->id,
-					"user_id"       => $userID,
-				])->count() == 1
+			$count = LanguageOfficer::find()->tournament($this->id)->andWhere(["user_id" => $userID])->count();
+			if ($count > 0
 			) {
 				\Yii::trace("User is LanguageOfficer for Tournament #" . $this->id, __METHOD__);
 
@@ -407,34 +420,28 @@ class Tournament extends \yii\db\ActiveRecord
 		return $this->hasMany(Team::className(), ['tournament_id' => 'id']);
 	}
 
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getConvenorUser()
+	public function getCAs()
 	{
-		return $this->hasOne(User::className(), ['id' => 'convenor_user_id']);
-	}
-
-	/**
-	 * Returns a list of Tabmasters
-	 *
-	 * @return type
-	 */
-	public function getTabmasterOptions($includeMyself = false)
-	{
-		$tabmaster = \yii\helpers\ArrayHelper::map(User::find()->where("role>10")->all(), 'id', 'name');
-		if ($includeMyself)
-			$tabmaster[Yii::$app->user->id] = Yii::$app->user->getModel()->name;
-
-		return $tabmaster;
+		return $this->hasMany(User::className(), ['id' => 'user_id'])
+			->viaTable('ca', ['tournament_id' => 'id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getTabmasterUser()
+	public function getConvenors()
 	{
-		return $this->hasOne(User::className(), ['id' => 'tabmaster_user_id']);
+		return $this->hasMany(User::className(), ['id' => 'user_id'])
+			->viaTable('convenor', ['tournament_id' => 'id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getTabmasters()
+	{
+		return $this->hasMany(User::className(), ['id' => 'user_id'])
+			->viaTable('tabmaster', ['tournament_id' => 'id']);
 	}
 
 	/**
@@ -486,24 +493,6 @@ class Tournament extends \yii\db\ActiveRecord
 	public function getVenues()
 	{
 		return $this->hasMany(Venue::className(), ['tournament_id' => 'id']);
-	}
-
-	public function getCAs()
-	{
-		return Adjudicator::find()->tournament($this->id)->andWhere("strength >=" . (intval(Adjudicator::MAX_RATING / 10) * 10));
-	}
-
-	public function getCATeamText()
-	{
-		$string = "";
-		$first = true;
-		foreach ($this->getCAs()->all() as $ca) {
-			if (!$first) $string .= ", ";
-			$string .= $ca->user->givenname . " " . $ca->user->surename;
-			$first = false;
-		}
-
-		return $string;
 	}
 
 	/**
@@ -631,16 +620,6 @@ class Tournament extends \yii\db\ActiveRecord
 		$algoName = 'algorithms\\algorithms\\' . $algoClass;
 
 		return new $algoName();
-	}
-
-	public function getSocietiesOptions()
-	{
-		$choices = [];
-		/* @var $user User */
-		$user = Yii::$app->user->getModel();
-		$societies = $user->getCurrentSocieties()->asArray()->all();
-
-		return ArrayHelper::map($societies, "id", "fullname");
 	}
 
 	/**

@@ -30,16 +30,19 @@ class PanelController extends BaseTournamentController
 				'rules' => [
 					[
 						'allow'   => true,
-						'actions' => ['index', 'view', 'printballots', 'debatedetails'],
+						'actions'       => ['index', 'view'],
 						'matchCallback' => function ($rule, $action) {
-							return ($this->_tournament->isTabMaster(Yii::$app->user->id) || $this->_tournament->isConvenor(Yii::$app->user->id));
+							return ($this->_tournament->isTabMaster(Yii::$app->user->id) ||
+								$this->_tournament->isCA(Yii::$app->user->id) ||
+								$this->_tournament->isConvenor(Yii::$app->user->id));
 						}
 					],
 					[
 						'allow'   => true,
-						'actions' => ['create', 'update', 'changevenue', 'publish', 'redraw', 'improve'],
+						'actions'       => ['create', 'update', 'delete'],
 						'matchCallback' => function ($rule, $action) {
-							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
+							return ($this->_tournament->isTabMaster(Yii::$app->user->id) ||
+								$this->_tournament->isCA(Yii::$app->user->id));
 						}
 					],
 				],

@@ -37,7 +37,11 @@ class RoundController extends BaseTournamentController
 						'allow'   => true,
 						'actions' => ['index', 'view', 'printballots', 'debatedetails'],
 						'matchCallback' => function ($rule, $action) {
-							return ($this->_tournament->isTabMaster(Yii::$app->user->id) || $this->_tournament->isConvenor(Yii::$app->user->id));
+							return (
+								$this->_tournament->isTabMaster(Yii::$app->user->id) ||
+								$this->_tournament->isConvenor(Yii::$app->user->id) ||
+								$this->_tournament->isCA(Yii::$app->user->id)
+							);
 						}
 					],
 					[

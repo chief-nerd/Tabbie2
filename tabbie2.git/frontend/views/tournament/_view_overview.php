@@ -168,14 +168,24 @@ use common\models\Team;
 			'attributes' => [
 				'id',
 				'hostedby.fullname:text:Hosted By',
-				'convenorUser.name:text:Convenor',
+				[
+					"attribute" => 'convenor',
+					'label'     => "Convenor",
+					'format'    => 'raw',
+					'value'     => implode(", ", \yii\helpers\ArrayHelper::getColumn($model->convenors, "name")),
+				],
 				[
 					"attribute" => 'CATeam',
 					'label'     => "CA Team",
 					'format'    => 'raw',
-					'value'     => $model->getCATeamText(),
+					'value' => implode(", ", \yii\helpers\ArrayHelper::getColumn($model->cAs, "name")),
 				],
-				'tabmasterUser.name:text:Tabmaster',
+				[
+					"attribute" => 'tabmaster',
+					'label'     => "Tab Master",
+					'format'    => 'raw',
+					'value'     => implode(", ", \yii\helpers\ArrayHelper::getColumn($model->tabmasters, "name")),
+				],
 				[
 					"attribute" => 'start_date',
 					'format'    => 'raw',

@@ -29,7 +29,7 @@ class StrikeController extends BaseTournamentController
 						'allow'   => true,
 						'actions' => ['team_index', 'team_create', 'team_update', 'team_delete', 'adjudicator_index', 'adjudicator_create', 'adjudicator_update', 'adjudicator_delete'],
 						'matchCallback' => function ($rule, $action) {
-							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
+							return ($this->_tournament->isTabMaster(Yii::$app->user->id) || $this->_tournament->isCA(Yii::$app->user->id));
 						}
 					],
 				],
