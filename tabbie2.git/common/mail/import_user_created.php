@@ -16,8 +16,8 @@ I am writing you because you successfully registered for the<?= Html::a(Html::en
 Since this tournament is running on<?= Html::a(Yii::$app->params["appName"], Yii::$app->params["appUrl"]) ?>, a new user account has been created for you with the following login credentials:
 <br>
 <br>
-Username/Email:<?= $user->email ?><br>
-Temporary Password:<?= $password ?><br>
+Username/Email:&nbsp;&nbsp;&nbsp;&nbsp;<?= $user->email ?><br>
+Temporary Password:&nbsp;&nbsp;&nbsp;&nbsp;<?= $password ?><br>
 <br>
 Please login and fill the remaining fields of your profile (and change your password) at:<br>
 <?= Html::a(Html::encode($userlink), $userlink) ?><br>
