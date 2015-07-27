@@ -7,7 +7,7 @@ use common\models\Team;
 /** @var common\models\Tournament $model */
 ?>
 <div class="row" id="tournament_title">
-	<div class="col-xs-12 col-md-12 col-lg-9 col-lg-push-1" style="margin-bottom: 20px">
+	<div class="col-xs-12 col-md-12 col-lg-8" style="margin-bottom: 20px">
 		<div class="col-xs-6 col-sm-2 block-center">
 			<?= $model->getLogoImage("auto", "100") ?>
 		</div>
