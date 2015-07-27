@@ -2,6 +2,7 @@
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use kartik\helpers\Html;
+use yii\bootstrap\Modal;
 
 //$logoPath = Yii::getAlias("@frontend/assets/images/") . "Tabbie2LogoIcon.png";
 //$logo =  Yii::$app->assetManager->publish($logoPath)[1];
@@ -25,7 +26,7 @@ if (Yii::$app->user->isAdmin()) {
 }
 
 if (Yii::$app->user->isGuest) {
-	$menuItems[] = ['label' => Html::icon("pencil") . "&nbsp;" . Yii::t("app", 'Signup'), 'url' => ['/site/signup']];
+	$menuItems[] = ['label' => Html::icon("pencil") . "&nbsp;" . Yii::t("app", 'Register'), 'url' => ['/site/signup']];
 	$menuItems[] = ['label' => Html::icon("log-in") . "&nbsp;" . Yii::t("app", 'Login'), 'url' => ['/site/login']];
 } else {
 	$menuItems[] = [
