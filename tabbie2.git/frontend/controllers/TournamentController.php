@@ -249,6 +249,7 @@ class TournamentController extends BaseTournamentController
 	 */
 	public function actionDebregSync($id)
 	{
+		set_time_limit(0); //Prevent timeout ... this can take time
 
 		$tournament = $this->findModel($id);
 		$model = new DebregsyncForm();
