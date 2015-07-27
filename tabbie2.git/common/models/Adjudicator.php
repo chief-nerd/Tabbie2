@@ -48,24 +48,6 @@ class Adjudicator extends \yii\db\ActiveRecord
 		return new VTAQuery(get_called_class());
 	}
 
-	public static function starLabels($id = null)
-	{
-		$table = [
-			0 => "label label-danger",
-			1 => "label label-danger",
-			2 => "label label-warning",
-			3 => "label label-warning",
-			4 => "label label-info",
-			5 => "label label-info",
-			6 => "label label-primary",
-			7 => "label label-primary",
-			8 => "label label-success",
-			9 => "label label-success",
-		];
-
-		return ($id !== null) ? $table[$id] : $table;
-	}
-
 	public static function getCSSStrength($id = null)
 	{
 		return "st" . intval($id / 10);

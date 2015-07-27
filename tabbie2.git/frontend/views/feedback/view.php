@@ -23,7 +23,13 @@ $this->params['breadcrumbs'][] = $this->title;
 	];
 
 	foreach ($model->answers as $answer) {
-		$formatValue = $answer->value;
+		switch ($answer->question->type) {
+			case \common\models\Question::TYPE_STAR:
+				$formatValue = \common\models\Question::starLabels($answer->value);
+				break;
+			default:
+				$formatValue = $answer->value;
+		}
 		$line = [
 			'label' => $answer->question->text,
 			'value' => $formatValue,
