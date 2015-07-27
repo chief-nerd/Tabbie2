@@ -64,9 +64,9 @@ class DebateSearch extends Debate
 
 		$dataProvider = new ActiveDataProvider([
 			'query'      => $query,
-			'pagination' => [
-				'pageSize' => 9999,
-			],
+			/*'pagination' => [
+				'pageSize' => PHP_INT_MAX,
+			],*/
 		]);
 
 		$dataProvider->setSort([
