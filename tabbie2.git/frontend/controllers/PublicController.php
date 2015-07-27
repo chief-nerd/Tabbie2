@@ -117,11 +117,12 @@ class PublicController extends BaseTournamentController
 		}
 
 		$draw = new ArrayDataProvider([
-			'allModels' => $draw_array,
-			'sort' => [
+			'allModels'  => $draw_array,
+			'sort'       => [
 				'attributes' => ['draw_sort'],
 				'defaultOrder' => ['draw_sort' => SORT_ASC]
-			]
+			],
+			'pagination' => false,
 		]);
 
 		return $this->render("draw", [
