@@ -5,6 +5,8 @@ namespace frontend\controllers;
 use common\models\Tournament;
 use Yii;
 use yii\web\Controller;
+use yii\web\View;
+use kartik\helpers\Html;
 
 class BaseTournamentController extends Controller {
 
@@ -41,4 +43,26 @@ class BaseTournamentController extends Controller {
 		return $this->_tournament;
 	}
 
+	public function beforeAction($action)
+	{
+		Yii::$app->view->on(View::EVENT_BEGIN_PAGE, function () {
+			$view = Yii::$app->controller->view;
+			$model = $this->_tournament;
+			$view->registerMetaTag(["property" => "og:title", "content" => Yii::t("app", "{tournament} on Tabbie2", ["tournament" => $model->fullname])], "og:title");
+			$view->registerMetaTag(["property" => "og:image", "content" => $model->getLogo(true)], "og:image");
+			$view->registerMetaTag(["property" => "og:description", "content" =>
+				Yii::t("app", "{name} is taking place from {start} to {end} hosted by {host} in {country}", [
+					"name"    => $model->name,
+					"start"   => Yii::$app->formatter->asDate($model->start_date, "short"),
+					"end"     => Yii::$app->formatter->asDate($model->end_date, "short"),
+					"host"    => Html::encode($model->hostedby->fullname),
+					"country" => Html::encode($model->hostedby->country->name),
+				])],
+				"og:description");
+
+			$view->registerLinkTag(["rel" => "apple-touch-icon", "href" => $model->getLogo(true)], "apple-touch-icon");
+		});
+
+		return parent::beforeAction($action);
+	}
 }
