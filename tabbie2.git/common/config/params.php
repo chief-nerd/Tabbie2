@@ -19,5 +19,5 @@ return [
 	'societies_per_page'                       => 100,
 	'tournament_per_page'                      => 10,
 	'tournament_per_history'                   => 10,
-	'time_to_still_consider_active_in_society' => "+6 months",
+	'time_to_still_consider_active_in_society' => "6 month", //NOT months because of SQL Interval -X month
 ];

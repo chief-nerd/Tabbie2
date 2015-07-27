@@ -20,6 +20,7 @@ use yii\helpers\ArrayHelper;
  * @property Tournament           $tournament
  * @property User                 $user
  * @property Society              $society
+ * @property Society[]            $societies
  * @property AdjudicatorInPanel[] $adjudicatorInPanels
  * @property Panel[]              $panels
  * @property Team[]               $teams
@@ -40,6 +41,54 @@ class Adjudicator extends \yii\db\ActiveRecord
 
 	/**
 	 * @inheritdoc
+	 * @return VTAQuery
+	 */
+	public static function find()
+	{
+		return new VTAQuery(get_called_class());
+	}
+
+	public static function starLabels($id = null)
+	{
+		$table = [
+			0 => "label label-danger",
+			1 => "label label-danger",
+			2 => "label label-warning",
+			3 => "label label-warning",
+			4 => "label label-info",
+			5 => "label label-info",
+			6 => "label label-primary",
+			7 => "label label-primary",
+			8 => "label label-success",
+			9 => "label label-success",
+		];
+
+		return ($id !== null) ? $table[$id] : $table;
+	}
+
+	public static function getCSSStrength($id = null)
+	{
+		return "st" . intval($id / 10);
+	}
+
+	/**
+	 * Sort comparison function based on strength
+	 *
+	 * @param Adjudicator $a
+	 * @param Adjudicator $b
+	 *
+	 * @return boolean
+	 */
+	public static function compare_strength($a, $b)
+	{
+		$as = $a["strength"];
+		$bs = $b["strength"];
+
+		return ($as < $bs) ? 1 : (($as > $bs) ? -1 : 0);
+	}
+
+	/**
+	 * @inheritdoc
 	 */
 	public function rules()
 	{
@@ -48,15 +97,6 @@ class Adjudicator extends \yii\db\ActiveRecord
 			[['tournament_id', 'active', 'user_id', 'strength', 'can_chair', 'are_watched', 'society_id'], 'integer'],
 			['strength', 'integer', 'max' => self::MAX_RATING, 'min' => 0]
 		];
-	}
-
-	/**
-	 * @inheritdoc
-	 * @return VTAQuery
-	 */
-	public static function find()
-	{
-		return new VTAQuery(get_called_class());
 	}
 
 	/**
@@ -155,9 +195,33 @@ class Adjudicator extends \yii\db\ActiveRecord
 		return $this->hasMany(InSociety::className(), ['user_id' => 'user_id']);
 	}
 
+	/**
+	 * Gets the main society the user registered with.
+	 * DO NOT use for same society clash since user can have multiple active societies see
+	 * [[Adjudicator::getSocieties()]]
+	 * @return \yii\db\ActiveQuery
+	 */
 	public function getSociety()
 	{
 		return $this->hasOne(Society::className(), ['id' => 'society_id']);
+	}
+
+	/**
+	 * Gets all current Societies the user is in.
+	 *
+	 * @param bool $elasticMembership Virtually prolongs the membership to a Society by the config parameter
+	 *                                "time_to_still_consider_active_in_society".
+	 *
+	 * @return $this
+	 */
+	public function getSocieties($elasticMembership = false)
+	{
+		$query = Society::find()->rightJoin("in_society", ["society_id" => "id"])->where(["user_id" => $this->user_id]);
+
+		if ($elasticMembership)
+			return $query->andWhere("ending IS NULL OR ending > DATE_ADD(ending, INTERVAL -" . Yii::$app->params["time_to_still_consider_active_in_society"] . ")");
+		else
+			return $query->andWhere("ending IS NULL");
 	}
 
 	/**
@@ -168,10 +232,15 @@ class Adjudicator extends \yii\db\ActiveRecord
 		return $this->can_chair;
 	}
 
+	public function getStrengthOutput()
+	{
+		return Adjudicator::getStrengthLabel($this->strength) . " (" . $this->strength . ")";
+	}
+
 	/**
-	 * @param type $id
+	 * @param int $strength
 	 *
-	 * @return type
+	 * @return array|string
 	 */
 	public static function getStrengthLabel($strength = null)
 	{
@@ -194,50 +263,6 @@ class Adjudicator extends \yii\db\ActiveRecord
 		];
 
 		return (isset($table[$strength])) ? $table[$strength] : $table;
-	}
-
-	public function getStrengthOutput()
-	{
-		return Adjudicator::getStrengthLabel($this->strength) . " (" . $this->strength . ")";
-	}
-
-	public static function starLabels($id = null)
-	{
-		$table = [
-			0 => "label label-danger",
-			1 => "label label-danger",
-			2 => "label label-warning",
-			3 => "label label-warning",
-			4 => "label label-info",
-			5 => "label label-info",
-			6 => "label label-primary",
-			7 => "label label-primary",
-			8 => "label label-success",
-			9 => "label label-success",
-		];
-
-		return ($id !== null) ? $table[$id] : $table;
-	}
-
-	public static function getCSSStrength($id = null)
-	{
-		return "st" . intval($id / 10);
-	}
-
-	/**
-	 * Sort comparison function based on strength
-	 *
-	 * @param Adjudicator $a
-	 * @param Adjudicator $b
-	 *
-	 * @return boolean
-	 */
-	public static function compare_strength($a, $b)
-	{
-		$as = $a["strength"];
-		$bs = $b["strength"];
-
-		return ($as < $bs) ? 1 : (($as > $bs) ? -1 : 0);
 	}
 
 	public function getPastAdjudicatorIDs($exclude_current = false)

@@ -215,6 +215,7 @@ class Round extends \yii\db\ActiveRecord
 
 					$adjudicator = $adju->attributes;
 					$adjudicator["name"] = $adju->name;
+					$adjudicator["societies"] = ArrayHelper::getColumn($adju->getSocieties(true)->asArray()->all(), "id");
 
 					$strikedAdju = $adju->getStrikedAdjudicators()->asArray()->all();
 					$adjudicator["strikedAdjudicators"] = $strikedAdju;
@@ -242,9 +243,10 @@ class Round extends \yii\db\ActiveRecord
 
 				if (!in_array($adjudicatorsObjects[$i]->id, $AdjIDsalreadyinPanels)) {
 					//Only add if not already in Preset Panel
-
+					/** @var $adjudicatorsObjects [$i] Adjudicator */
 					$adjudicators[$i] = $adjudicatorsObjects[$i]->attributes;
 					$adjudicators[$i]["name"] = $adjudicatorsObjects[$i]->name;
+					$adjudicators[$i]["societies"] = ArrayHelper::getColumn($adjudicatorsObjects[$i]->getSocieties(true)->asArray()->all(), "id");
 
 					$strikedAdju = $adjudicatorsObjects[$i]->getStrikedAdjudicators()->asArray()->all();
 					$adjudicators[$i]["strikedAdjudicators"] = $strikedAdju;
