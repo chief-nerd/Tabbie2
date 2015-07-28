@@ -169,8 +169,6 @@ class Tournament extends \yii\db\ActiveRecord
 	{
 		$count = Convenor::find()->tournament($this->id)->andWhere(["user_id" => $userID])->count();
 		if ($count > 0) {
-			\Yii::trace("User is Convenor for Tournament #" . $this->id, __METHOD__);
-
 			return true;
 		} else if (Yii::$app->user->isAdmin()) //Admin secure override
 			return true;
