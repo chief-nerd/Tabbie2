@@ -151,7 +151,8 @@ class DebregsyncForm extends Model
 				}
 
 				if (!is_array($user) && $user instanceof User) {
-					if ($old = $this->helperGetAdju($oldAdjus, $user->id)) {
+					$old = $this->helperGetAdju($oldAdjus, $user->id);
+					if (is_array($old)) {
 						$adju = new Adjudicator($old);
 						$old_adju++;
 					} else {
@@ -172,8 +173,8 @@ class DebregsyncForm extends Model
 				}
 			}
 
-			Yii::$app->session->addFlash("notice", "Deleted: $deleted_adju. Saved: $saved_adju. Old: $old_adju. New: $new_adju.");
-			Yii::trace("DebReg Import: Deleted: $deleted_adju. Saved: $saved_adju. Old: $old_adju. New: $new_adju.", __METHOD__);
+			Yii::$app->session->addFlash("notice", "Adjudicator Deleted: $deleted_adju. Saved: $saved_adju. Old: $old_adju. New: $new_adju.");
+			Yii::trace("DebReg Adju Import: Deleted: $deleted_adju. Saved: $saved_adju. Old: $old_adju. New: $new_adju.", __METHOD__);
 
 			return true;
 
@@ -294,7 +295,10 @@ class DebregsyncForm extends Model
 				->asArray()
 				->all();
 
-			Team::deleteAll(["tournament_id" => $this->tournament->id]);
+			$deleted_teams = Team::deleteAll(["tournament_id" => $this->tournament->id]);
+			$saved_teams = 0;
+			$new_teams = 0;
+			$old_teams = 0;
 
 			$count = count($json);
 
@@ -359,8 +363,11 @@ class DebregsyncForm extends Model
 					$uAID = (isset($user[0]) && $user[0] instanceof User) ? $user[0]->id : null;
 					$uBID = (isset($user[1]) && $user[1] instanceof User) ? $user[1]->id : null;
 
-					if ($old = $this->helperGetTeam($oldTeams, $uAID, $uBID)) {
+					$old = $this->helperGetTeam($oldTeams, $uAID, $uBID);
+					if (is_array($old)) {
 						$team = new Team($old);
+						$old_teams++;
+
 					} else if ($society instanceof Society) {
 						$team = new Team([
 							"tournament_id" => $this->tournament->id,
@@ -369,13 +376,18 @@ class DebregsyncForm extends Model
 							"speakerB_id"   => $uBID,
 							"society_id"    => $society->id,
 						]);
+						$new_teams++;
 					}
 
 					if ($team instanceof Team && !$team->save()) {
 						throw new Exception("Can't save Team. " . print_r($team->attributes, true));
-					}
+					} else
+						$saved_teams++;
 				}
 			}
+
+			Yii::$app->session->addFlash("notice", "Team Deleted: $deleted_teams. Saved: $saved_teams. Old: $old_teams. New: $new_teams.");
+			Yii::trace("DebReg Team Import: Deleted: $deleted_teams. Saved: $saved_teams. Old: $old_teams. New: $new_teams.", __METHOD__);
 
 			return true;
 
