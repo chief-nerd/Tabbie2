@@ -97,10 +97,10 @@ class DebregsyncForm extends Model
 				->asArray()
 				->all();
 
-			$deleted = Adjudicator::deleteAll(["tournament_id" => $this->tournament->id]);
-			$saved = 0;
-			$new = 0;
-			$old = 0;
+			$deleted_adju = Adjudicator::deleteAll(["tournament_id" => $this->tournament->id]);
+			$saved_adju = 0;
+			$new_adju = 0;
+			$old_adju = 0;
 
 			for ($i = 0; $i < $count; $i++) {
 				$item = $json[$i];
@@ -152,7 +152,7 @@ class DebregsyncForm extends Model
 				if (!is_array($user) && $user instanceof User) {
 					if ($old = $this->helperGetAdju($oldAdjus, $user->id)) {
 						$adju = new Adjudicator($old);
-						$old++;
+						$old_adju++;
 					} else {
 						$adju = new Adjudicator([
 							"tournament_id" => $this->tournament->id,
@@ -160,18 +160,18 @@ class DebregsyncForm extends Model
 							"society_id"    => $society->id,
 							"strength"      => 0,
 						]);
-						$new++;
+						$new_adju++;
 					}
 
 					if (!$adju->save()) {
 						throw new Exception("Error saving Adjudicator. " . print_r($adju->getErrors(), true));
 					} else {
-						$saved++;
+						$saved_adju++;
 					}
 				}
 			}
 
-			Yii::$app->session->addFlash("notice", "Deleted: $deleted. Saved: $saved. Old: $old. New: $new.");
+			Yii::$app->session->addFlash("notice", "Deleted: $deleted_adju. Saved: $saved_adju. Old: $old_adju. New: $new_adju.");
 
 			return true;
 
