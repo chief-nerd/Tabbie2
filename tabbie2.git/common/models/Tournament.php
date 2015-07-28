@@ -675,9 +675,9 @@ class Tournament extends \yii\db\ActiveRecord
 
 		$team = Team::find()
 			->tournament($this->id)
-			->andWhere(["speakerA_id" => $id])
-			->orWhere(["speakerB_id" => $id])
+			->andWhere("speakerA_id = $id OR speakerB_id = $id")
 			->one();
+
 		if ($team instanceof Team)
 			return $team;
 
