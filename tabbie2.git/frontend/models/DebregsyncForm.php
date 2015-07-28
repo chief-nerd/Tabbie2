@@ -211,7 +211,7 @@ class DebregsyncForm extends Model
 
 		if (strlen($this->debregId) == 0) throw new Exception("No Tournament");
 
-		$url = self::DEBREG_URL . "/api/" . $object . "?tournamentId=" . $this->debregId;
+		$url = self::DEBREG_URL . "/api/" . $object . "?tournamentId=" . $this->debregId . "&v=" . time();
 		$json_string = @file_get_contents($url, false, $context);
 
 		if (strlen($json_string) == 0) throw new Exception("No content received for " . $object, 404);
