@@ -2,6 +2,7 @@
 
 namespace frontend\models;
 
+use common\components\ObjectError;
 use common\models\Adjudicator;
 use common\models\Country;
 use common\models\InSociety;
@@ -164,7 +165,7 @@ class DebregsyncForm extends Model
 					}
 
 					if (!$adju->save()) {
-						throw new Exception("Error saving Adjudicator. " . print_r($adju->getErrors(), true));
+						throw new Exception("Error saving Adjudicator: " . ObjectError::getMsg($adju));
 					} else {
 						$saved_adju++;
 					}
@@ -172,11 +173,11 @@ class DebregsyncForm extends Model
 			}
 
 			Yii::$app->session->addFlash("notice", "Deleted: $deleted_adju. Saved: $saved_adju. Old: $old_adju. New: $new_adju.");
+			Yii::trace("DebReg Import: Deleted: $deleted_adju. Saved: $saved_adju. Old: $old_adju. New: $new_adju.", __METHOD__);
 
 			return true;
 
-		} catch
-		(Exception $ex) {
+		} catch (Exception $ex) {
 			Yii::$app->session->addFlash("error", $ex->getMessage() . " on " . __FUNCTION__ . ":" . $ex->getLine());
 		}
 
