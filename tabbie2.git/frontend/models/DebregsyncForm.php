@@ -307,6 +307,8 @@ class DebregsyncForm extends Model
 			$saved_teams = 0;
 			$new_teams = 0;
 			$old_teams = 0;
+			$not_set_society = 0;
+			$not_created_teams = 0;
 
 			$count = count($json);
 			Yii::trace("$count lines of teams received", __METHOD__);
@@ -326,7 +328,7 @@ class DebregsyncForm extends Model
 					/** @var User $user [$id] */
 
 					if (!isset($item->speakers[$id])) {
-						Yii::trace("Continue item->speaker[$id] due to not set: \n" . print_r($item, true), __METHOD__);
+						$not_set_society++;
 						continue;
 					}
 
@@ -397,11 +399,15 @@ class DebregsyncForm extends Model
 						throw new Exception("Can't save Team. " . print_r($team->attributes, true));
 					} else
 						$saved_teams++;
+				} else {
+					$not_created_teams++;
 				}
 			}
 
 			Yii::$app->session->addFlash("info", "Team Deleted: $deleted_teams. Saved: $saved_teams. Old: $old_teams. New: $new_teams.");
-			Yii::trace("DebReg Team Import: Deleted: $deleted_teams. Saved: $saved_teams. Old: $old_teams. New: $new_teams.", __METHOD__);
+			Yii::trace("DebReg Team Import: \n
+			Deleted: $deleted_teams. Saved: $saved_teams. Old: $old_teams. New: $new_teams\n
+			Not set society: $not_set_society. Not created Teams: $not_created_teams.", __METHOD__);
 
 			return true;
 
