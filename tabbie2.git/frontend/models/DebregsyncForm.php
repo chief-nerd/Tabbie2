@@ -92,6 +92,7 @@ class DebregsyncForm extends Model
 
 			$json = $this->readData(self::ADJU, $this->key);
 			$count = count($json);
+			Yii::trace("$count lines of adjudicators received", __METHOD__);
 
 			$oldAdjus = Adjudicator::find()
 				->tournament($this->tournament->id)
@@ -141,11 +142,14 @@ class DebregsyncForm extends Model
 					}
 				} else {
 					if (count($user) == 0) {
-						if ($society instanceof Society)
+						if ($society instanceof Society) {
 							$user = User::NewViaImport($u_first, $u_last, $u_email, $society->id, true, $this->tournament);
-						else
+							Yii::trace("New user created: $u_first $u_last, $u_email for $society->id", __METHOD__);
+						} else {
+							Yii::trace("No User + No Society\n" . print_r($item, true), __METHOD__);
 							$user = null; //Error in Society -> no user yet to be known
-					} else {
+						}
+					} else { // must be == 1
 						$user = $user[0];
 					}
 				}
@@ -301,6 +305,7 @@ class DebregsyncForm extends Model
 			$old_teams = 0;
 
 			$count = count($json);
+			Yii::trace("$count lines of teams received", __METHOD__);
 
 			for ($i = 0; $i < $count; $i++) {
 				$item = $json[$i];
@@ -336,8 +341,6 @@ class DebregsyncForm extends Model
 								throw new Exception("User " . $key . " no resolved");
 						} else {
 
-							$soc = (isset($society->fullname)) ? $society->fullname : $org_name;
-
 							$matches = [];
 							foreach ($user[$id] as $match) {
 								$matches[$match->id] = $match->givenname . " " . $match->surename . " (" . $match->email . ")";
@@ -351,6 +354,7 @@ class DebregsyncForm extends Model
 					} else {
 						if (count($user[$id]) == 0) {
 							$user[$id] = User::NewViaImport($u_first, $u_last, $u_email, $society->id, true, $this->tournament);
+							Yii::trace("New user created: $u_first $u_last, $u_email for $society->id", __METHOD__);
 						} else {
 							$user[$id] = $user[$id][0];
 						}
