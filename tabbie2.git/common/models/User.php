@@ -516,10 +516,10 @@ class User extends ActiveRecord implements IdentityInterface
 	public static function getLanguageStatusLabel($id = null, $short = false)
 	{
 
-		if ($id === -1)
+		if ($id == -1)
 			return Yii::t("app", "mixed");
 
-		if ($id === self::LANGUAGE_NONE)
+		if ($id == self::LANGUAGE_NONE)
 			return Yii::t("app", "Not set");
 
 		$status = [
