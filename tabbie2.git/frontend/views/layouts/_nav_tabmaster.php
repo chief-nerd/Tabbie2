@@ -7,7 +7,7 @@ use kartik\helpers\Html;
 $icon_class = ["class" => "hidden-md"];
 
 NavBar::begin([
-	'brandLabel' => Yii::t("app", "{tournament} - Tabmaster", ["tournament" => $tournament->name]),
+	'brandLabel' => Yii::t("app", "{tournament} - Manager", ["tournament" => $tournament->name]),
 	'brandUrl' => Yii::$app->urlManager->createUrl(["tournament/view", "id" => $tournament->id]),
 	'options'  => [
 		'class' => 'navbar navbar-default navbar-fixed-top navbar-sub',

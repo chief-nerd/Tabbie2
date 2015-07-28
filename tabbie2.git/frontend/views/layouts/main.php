@@ -48,7 +48,7 @@ if ($this->context->hasMethod("_getContext")) {
 		$tournament = $this->context->_getContext();
 		if ($tournament instanceof \common\models\Tournament) {
 
-			if ($tournament->isTabMaster(Yii::$app->user->id))
+			if ($tournament->isTabMaster(Yii::$app->user->id) || $tournament->isConvenor(Yii::$app->user->id) || $tournament->isCA(Yii::$app->user->id))
 				echo $this->render("_nav_tabmaster", ["tournament" => $tournament]);
 			else if ($tournament->isLanguageOfficer(Yii::$app->user->id))
 				echo $this->render("_nav_languageofficer", ["tournament" => $tournament]);
