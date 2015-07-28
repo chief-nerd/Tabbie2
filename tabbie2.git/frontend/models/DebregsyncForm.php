@@ -117,6 +117,9 @@ class DebregsyncForm extends Model
 
 				$society = $this->handleSociety($item);
 
+				if (!$society instanceof Society)
+					Yii::trace("Not a Society: \n" . print_r($item, true), __METHOD__);
+
 				$user = User::find()
 					->andWhere(["CONCAT(user.givenname,' ',user.surename)" => $u_name])
 					->orWhere(["email" => $u_email])
@@ -150,6 +153,7 @@ class DebregsyncForm extends Model
 							$user = null; //Error in Society -> no user yet to be known
 						}
 					} else { // must be == 1
+						//Yii::trace("User matched:" . $user[0]->name, __METHOD__);
 						$user = $user[0];
 					}
 				}
@@ -177,7 +181,7 @@ class DebregsyncForm extends Model
 				}
 			}
 
-			Yii::$app->session->addFlash("notice", "Adjudicator Deleted: $deleted_adju. Saved: $saved_adju. Old: $old_adju. New: $new_adju.");
+			Yii::$app->session->addFlash("info", "Adjudicator Deleted: $deleted_adju. Saved: $saved_adju. Old: $old_adju. New: $new_adju.");
 			Yii::trace("DebReg Adju Import: Deleted: $deleted_adju. Saved: $saved_adju. Old: $old_adju. New: $new_adju.", __METHOD__);
 
 			return true;
@@ -312,13 +316,19 @@ class DebregsyncForm extends Model
 
 				$society = $this->handleSociety($item);
 
+				if (!$society instanceof Society)
+					Yii::trace("Not a Society: \n" . print_r($item, true), __METHOD__);
+
 				$user = [];
 				/*** A & B ***/
 
 				foreach (["A" => 0, "B" => 1] as $key => $id) {
 					/** @var User $user [$id] */
 
-					if (!isset($item->speakers[$id])) continue;
+					if (!isset($item->speakers[$id])) {
+						Yii::trace("Continue item->speaker[$id] due to not set: \n" . print_r($item, true), __METHOD__);
+						continue;
+					}
 
 					$speaker = $item->speakers[$id];
 					$u_first = $speaker->firstname;
@@ -353,8 +363,8 @@ class DebregsyncForm extends Model
 						}
 					} else {
 						if (count($user[$id]) == 0) {
-							$user[$id] = User::NewViaImport($u_first, $u_last, $u_email, $society->id, true, $this->tournament);
 							Yii::trace("New user created: $u_first $u_last, $u_email for $society->id", __METHOD__);
+							$user[$id] = User::NewViaImport($u_first, $u_last, $u_email, $society->id, true, $this->tournament);
 						} else {
 							$user[$id] = $user[$id][0];
 						}
@@ -390,7 +400,7 @@ class DebregsyncForm extends Model
 				}
 			}
 
-			Yii::$app->session->addFlash("notice", "Team Deleted: $deleted_teams. Saved: $saved_teams. Old: $old_teams. New: $new_teams.");
+			Yii::$app->session->addFlash("info", "Team Deleted: $deleted_teams. Saved: $saved_teams. Old: $old_teams. New: $new_teams.");
 			Yii::trace("DebReg Team Import: Deleted: $deleted_teams. Saved: $saved_teams. Old: $old_teams. New: $new_teams.", __METHOD__);
 
 			return true;

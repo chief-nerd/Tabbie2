@@ -11,6 +11,7 @@ use common\models\Tournament;
 use frontend\models\DebregsyncForm;
 use kartik\helpers\Html;
 use Yii;
+use yii\base\Exception;
 use yii\base\Model;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -351,8 +352,11 @@ class TournamentController extends BaseTournamentController
 			$error = $model->getAccessKey();
 
 			if ($error === true) {
-				$unresolved = $model->doSync($a_fix, $t_fix, $s_fix);
-
+				try {
+					$unresolved = $model->doSync($a_fix, $t_fix, $s_fix);
+				} catch (Exception $ex) {
+					Yii::$app->session->addFlash("error", $ex->getMessage() . " :" . $ex->getLine());
+				}
 				if (count($unresolved) == 0) {
 					Yii::$app->session->addFlash("success", Yii::t("app", "DebReg Syncing successful"));
 
