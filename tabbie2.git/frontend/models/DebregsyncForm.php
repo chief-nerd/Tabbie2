@@ -307,7 +307,7 @@ class DebregsyncForm extends Model
 			$saved_teams = 0;
 			$new_teams = 0;
 			$old_teams = 0;
-			$not_set_society = 0;
+			$not_set_speaker = 0;
 			$not_created_teams = 0;
 
 			$count = count($json);
@@ -328,7 +328,7 @@ class DebregsyncForm extends Model
 					/** @var User $user [$id] */
 
 					if (!isset($item->speakers[$id])) {
-						$not_set_society++;
+						$not_set_speaker++;
 						continue;
 					}
 
@@ -405,9 +405,9 @@ class DebregsyncForm extends Model
 			}
 
 			Yii::$app->session->addFlash("info", "Team Deleted: $deleted_teams. Saved: $saved_teams. Old: $old_teams. New: $new_teams.");
-			Yii::trace("DebReg Team Import: \n
-			Deleted: $deleted_teams. Saved: $saved_teams. Old: $old_teams. New: $new_teams\n
-			Not set society: $not_set_society. Not created Teams: $not_created_teams.", __METHOD__);
+			Yii::trace("DebReg Team Import:
+			Deleted: $deleted_teams. Saved: $saved_teams. Old: $old_teams. New: $new_teams
+			Not set speaker: $not_set_speaker. Not created Teams: $not_created_teams.", __METHOD__);
 
 			return true;
 
