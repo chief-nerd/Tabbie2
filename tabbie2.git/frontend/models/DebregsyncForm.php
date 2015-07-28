@@ -97,8 +97,10 @@ class DebregsyncForm extends Model
 				->asArray()
 				->all();
 
-			Adjudicator::deleteAll(["tournament_id" => $this->tournament->id]);
-
+			$deleted = Adjudicator::deleteAll(["tournament_id" => $this->tournament->id]);
+			$saved = 0;
+			$new = 0;
+			$old = 0;
 
 			for ($i = 0; $i < $count; $i++) {
 				$item = $json[$i];
@@ -150,6 +152,7 @@ class DebregsyncForm extends Model
 				if (!is_array($user) && $user instanceof User) {
 					if ($old = $this->helperGetAdju($oldAdjus, $user->id)) {
 						$adju = new Adjudicator($old);
+						$old++;
 					} else {
 						$adju = new Adjudicator([
 							"tournament_id" => $this->tournament->id,
@@ -157,13 +160,18 @@ class DebregsyncForm extends Model
 							"society_id"    => $society->id,
 							"strength"      => 0,
 						]);
+						$new++;
 					}
 
 					if (!$adju->save()) {
 						throw new Exception("Error saving Adjudicator. " . print_r($adju->getErrors(), true));
+					} else {
+						$saved++;
 					}
 				}
 			}
+
+			Yii::$app->session->addFlash("notice", "Deleted: $deleted. Saved: $saved. Old: $old. New: $new.");
 
 			return true;
 
