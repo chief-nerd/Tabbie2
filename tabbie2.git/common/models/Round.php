@@ -503,6 +503,7 @@ class Round extends \yii\db\ActiveRecord
 			$adju = $inPanel->adjudicator;
 			$adjudicator = $adju->attributes;
 			$adjudicator["name"] = $adju->name;
+			$adjudicator["societies"] = ArrayHelper::getColumn($adju->getSocieties(true)->asArray()->all(), "id");
 
 			$strikedAdju = $adju->getStrikedAdjudicators()->asArray()->all();
 			$adjudicator["strikedAdjudicators"] = $strikedAdju;

@@ -512,7 +512,6 @@ class User extends ActiveRecord implements IdentityInterface
 	{
 		$letter = strtoupper($letter);
 		$user = new User([
-			"username"    => "Speaker " . $letter,
 			"givenname"   => "Speaker",
 			"surename"    => $letter,
 			"email"       => "speaker." . $letter . "@tabbie.com",
