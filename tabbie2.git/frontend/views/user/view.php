@@ -37,6 +37,58 @@ $this->params['breadcrumbs'][] = $this->title;
 		</div>
 	</div>
 
+	<h2><?= Yii::t("app", "Individual Clashes") ?></h2>
+
+	<p>
+		<? if (Yii::$app->user->id == Yii::$app->request->get("id") || Yii::$app->user->isAdmin()): ?>
+			<?= Html::a(\kartik\helpers\Html::icon("plus") . "&nbsp" . Yii::t('app', 'Add new individual clash'), ['clash/create', 'user_id' => $model->id], ['class' => 'btn btn-primary']) ?>
+		<? endif; ?>
+	</p>
+
+	<?
+	$gridColumns = [
+		[
+			'class' => '\kartik\grid\SerialColumn',
+		],
+		[
+			'class'     => 'kartik\grid\DataColumn',
+			'attribute' => 'clashWith.name',
+		],
+		[
+			'class'     => '\kartik\grid\DataColumn',
+			'attribute' => 'reason',
+		],
+		[
+			'class'     => '\kartik\grid\DataColumn',
+			'attribute' => 'date',
+		],
+		[
+			'class'         => 'kartik\grid\ActionColumn',
+			'template'      => '{update} {delete}',
+			'vAlign'        => 'middle',
+			'urlCreator'    => function ($action, $model, $key, $index) {
+				return \yii\helpers\Url::to(["clash/" . $action, "user_id" => $model->user_id, "id" => $model->id]);
+			},
+			'updateOptions' => ['title' => Yii::t("app", "Update Clash Info"), 'data-toggle' => 'tooltip'],
+			'deleteOptions' => ['title' => Yii::t("app", "Delete Clash"), 'data-toggle' => 'tooltip'],
+			'width'         => '100px'
+		],
+	];
+
+	echo GridView::widget([
+		'dataProvider'    => $dataClashProvider,
+		'columns'         => $gridColumns,
+		'id'              => 'clash',
+		'pjax'            => true,
+		'showPageSummary' => false,
+		'responsive'      => true,
+		'hover'           => true,
+		'floatHeader'     => false,
+		'emptyText'       => Yii::t("app", "No clash known to the system."),
+	])
+	?>
+
+	<hr>
 
 	<h2><?= Yii::t("app", "Debate Society History") ?></h2>
 
@@ -84,15 +136,12 @@ $this->params['breadcrumbs'][] = $this->title;
 	echo GridView::widget([
 		'dataProvider'    => $dataSocietyProvider,
 		'columns'         => $gridColumns,
-		'id'              => 'venues',
+		'id' => 'society',
 		'pjax'            => true,
 		'showPageSummary' => false,
 		'responsive'      => true,
 		'hover'           => true,
 		'floatHeader'     => false,
-		'floatHeaderOptions' => ['scrollingTop' => '150'],
 	])
 	?>
-
-
 </div>

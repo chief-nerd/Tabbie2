@@ -8,6 +8,7 @@ use common\models\search\UserSearch;
 use common\models\Society;
 use common\models\Tournament;
 use common\models\User;
+use common\models\UserClash;
 use Yii;
 use yii\base\Exception;
 use yii\data\ArrayDataProvider;
@@ -112,9 +113,17 @@ class UserController extends BaseUserController
 			],
 		]);
 
+		$dataUserClashProvider = new ArrayDataProvider([
+			'allModels' => UserClash::find()->where(["user_id" => $id])->all(),
+			'sort'      => [
+				//'attributes' => ['id', 'username', 'email'],
+			],
+		]);
+
 		return $this->render('view', [
 			'model' => $model,
 			'dataSocietyProvider' => $dataSocietyProvider,
+			'dataClashProvider' => $dataUserClashProvider,
 		]);
 	}
 
