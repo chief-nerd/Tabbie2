@@ -115,7 +115,7 @@ $this->title = "Round " . $round->number . " Draw";
 		</div>
 	</div>
 <? else: ?>
-	<div class="row" id="drawdisplay" style="width: 90%; margin: 0 auto; display:none;">
+	<div class="row" id="drawdisplay" style="width: 100%; margin: 0 auto; display:none; margin-left: -15px;">
 		<center>
 			<?= yii\helpers\Html::button(Yii::t("app", "Show Motion"), ["class" => "btn btn-success", "id" => 'motion']) ?>
 		</center>
