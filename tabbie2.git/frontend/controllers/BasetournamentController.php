@@ -48,7 +48,7 @@ class BaseTournamentController extends Controller
 
 	public function beforeAction($action)
 	{
-		if ($action->id != "index")
+		if (isset($this->_tournament) && $this->_tournament instanceof Tournament)
 			Yii::$app->view->on(View::EVENT_BEGIN_PAGE, function () {
 				$view = Yii::$app->controller->view;
 				$model = $this->_tournament;
