@@ -535,7 +535,7 @@ class User extends ActiveRecord implements IdentityInterface
 		if ($id == -1)
 			return Yii::t("app", "mixed");
 
-		if ($id == self::LANGUAGE_NONE && $id != null)
+		if ($id == self::LANGUAGE_NONE && $id !== null)
 			return Yii::t("app", "Not set");
 
 		$status = [
