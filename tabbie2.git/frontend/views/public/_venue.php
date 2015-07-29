@@ -6,5 +6,5 @@
 <?= \kartik\helpers\Html::a(
 	'<div class="status ' . (($model->result) ? "entered" : "missing") . '"></div>' . $model->venue->name,
 	["result/create", "tournament_id" => $model->tournament_id, "id" => $model->id],
-	["class" => "btn btn-default"]
+	["class" => "btn btn-default", "data-pjax" => 0]
 ) ?>
