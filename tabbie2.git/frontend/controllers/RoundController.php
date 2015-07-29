@@ -12,6 +12,7 @@ use common\models\search\DebateSearch;
 use kartik\mpdf\Pdf;
 use mPDF;
 use Yii;
+use yii\base\Exception;
 use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
 use yii\filters\AccessControl;
@@ -322,7 +323,7 @@ class RoundController extends BaseTournamentController
 		$model = Round::findOne(["id" => $id]);
 
 		$pdf = new Pdf([
-			'mode'    => Pdf::MODE_CORE, // leaner size using standard fonts
+			'mode' => Pdf::MODE_UTF8, // leaner size using standard fonts
 			'format'  => Pdf::FORMAT_A4,
 			'orientation' => Pdf::ORIENT_LANDSCAPE,
 			'cssFile' => '@frontend/assets/css/ballot.css',

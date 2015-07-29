@@ -253,7 +253,7 @@ class CheckinController extends BaseTournamentController
 				$set = $setting["A6"];
 
 			$pdf = new Pdf([
-				'mode'         => Pdf::MODE_BLANK, // leaner size using standard fonts
+				'mode' => Pdf::MODE_UTF8, // leaner size using standard fonts
 				'format'       => $set["format"],
 				'orientation'  => Pdf::ORIENT_LANDSCAPE,
 				'cssInline'    => $set["css"],
