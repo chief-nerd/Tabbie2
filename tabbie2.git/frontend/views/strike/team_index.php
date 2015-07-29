@@ -19,13 +19,19 @@ $this->params['breadcrumbs'][] = $this->title;
 		<?= Html::a(Yii::t('app', 'Create Additional {modelClass}', [
 			'modelClass' => 'Team Strikes',
 		]), ['team_create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success']) ?>
+
+		<?= Html::a(Yii::t('app', 'Import Strikes'), ['import', "tournament_id" => $tournament->id], ['class' => 'btn btn-default']) ?>
 	</p>
 
 	<?= GridView::widget([
 		'dataProvider' => $dataProvider,
 		'columns' => [
 			['class' => 'yii\grid\SerialColumn'],
-
+			[
+				'class'     => 'kartik\grid\BooleanColumn',
+				'attribute' => 'accepted',
+				'vAlign'    => 'middle',
+			],
 			'team.name',
 			'adjudicator.name',
 

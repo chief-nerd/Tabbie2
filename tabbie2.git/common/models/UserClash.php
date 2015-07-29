@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\base\Object;
 
 /**
  * This is the model class for table "user_clash".
@@ -87,5 +88,51 @@ class UserClash extends \yii\db\ActiveRecord
 	public function getClashWith()
 	{
 		return $this->hasOne(User::className(), ['id' => 'clash_with']);
+	}
+
+	public function getTypeLabel($tournament_id)
+	{
+		switch (get_class($this->getClashedObject($tournament_id))) {
+			case Team::className():
+				return Yii::t("app", "Team Clash");
+			case Adjudicator::className():
+				return Yii::t("app", "Adjudicator Clash");
+			default:
+				return Yii::t("app", "No type found");
+		}
+	}
+
+	public function getClashedObject($tournament_id)
+	{
+		$a = Adjudicator::find()->tournament($tournament_id)->where(["user_id" => $this->clash_with])->one();
+		if ($a instanceof Adjudicator)
+			return $a;
+		else {
+			$t = Team::find()->tournament($tournament_id)->where("speakerA_id = :user OR speakerB_id = :user", [
+				"user" => $this->clash_with
+			])->one();
+			if ($t instanceof Team) {
+				return $t;
+			}
+		}
+
+		return new Object();
+	}
+
+	public function getOwnObject($tournament_id)
+	{
+		$a = Adjudicator::find()->tournament($tournament_id)->where(["user_id" => $this->user_id])->one();
+		if ($a instanceof Adjudicator)
+			return $a;
+		else {
+			$t = Team::find()->tournament($tournament_id)->where("speakerA_id = :user OR speakerB_id = :user", [
+				"user" => $this->user_id
+			])->one();
+			if ($t instanceof Team) {
+				return $t;
+			}
+		}
+
+		return new Object();
 	}
 }

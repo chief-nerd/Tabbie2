@@ -394,6 +394,22 @@ class User extends ActiveRecord implements IdentityInterface
 	}
 
 	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getClashes()
+	{
+		return $this->hasMany(UserClash::className(), ['user_id' => 'id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getClashedFrom()
+	{
+		return $this->hasMany(UserClash::className(), ['clash_with' => 'id']);
+	}
+
+	/**
 	 * Returns all Teams for this user
 	 *
 	 * @return type

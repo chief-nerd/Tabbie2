@@ -148,7 +148,9 @@ class Adjudicator extends \yii\db\ActiveRecord
 	public function getStrikedTeams()
 	{
 		return $this->hasMany(Team::className(), ['id' => 'team_id'])
-			->viaTable('team_strike', ['adjudicator_id' => 'id']);
+			->viaTable('team_strike', ['adjudicator_id' => 'id'], function ($query) {
+				$query->onCondition(['accepted' => 1]);
+			});
 	}
 
 	/**
@@ -157,7 +159,9 @@ class Adjudicator extends \yii\db\ActiveRecord
 	public function getStrikedAdjudicators()
 	{
 		return $this->hasMany(Adjudicator::className(), ['id' => 'adjudicator_from_id'])
-			->viaTable('adjudicator_strike', ['adjudicator_to_id' => 'id']);
+			->viaTable('adjudicator_strike', ['adjudicator_to_id' => 'id'], function ($query) {
+				$query->onCondition(['accepted' => 1]);
+			});
 	}
 
 	/**

@@ -11,6 +11,7 @@ use Yii;
  * @property integer     $team_id
  * @property integer     $adjudicator_id
  * @property integer     $tournament_id
+ * @property bool        $accepted
  * @property Team        $team
  * @property Adjudicator $adjudicator
  */
@@ -40,8 +41,8 @@ class TeamStrike extends \yii\db\ActiveRecord
 	{
 		return [
 			[['team_id', 'adjudicator_id'], 'required'],
-			[['team_id', 'adjudicator_id'], 'integer'],
-			['tournament_id', 'safe']
+			[['team_id', 'adjudicator_id', 'accepted'], 'integer'],
+			[['tournament_id', 'accepted'], 'safe']
 		];
 	}
 

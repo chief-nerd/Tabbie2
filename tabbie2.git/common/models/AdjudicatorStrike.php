@@ -7,9 +7,10 @@ use Yii;
 /**
  * This is the model class for table "adjudicator_strike".
  *
- * @property integer     $adjudicator_id
- * @property integer     $adjudicator_id1
+ * @property integer     $adjudicator_from_id
+ * @property integer     $adjudicator_to_id
  * @property integer     $tournament_id
+ * @property bool        $accepted
  * @property Adjudicator $adjudicator
  * @property Adjudicator $adjudicatorId1
  */
@@ -39,8 +40,8 @@ class AdjudicatorStrike extends \yii\db\ActiveRecord
 	{
 		return [
 			[['adjudicator_to_id', 'adjudicator_from_id'], 'required'],
-			[['adjudicator_to_id', 'adjudicator_from_id'], 'integer'],
-			['tournament_id', 'safe']
+			[['adjudicator_to_id', 'adjudicator_from_id', 'accepted'], 'integer'],
+			[['tournament_id', 'accepted'], 'safe']
 		];
 	}
 

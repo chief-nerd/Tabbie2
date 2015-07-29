@@ -42,7 +42,7 @@ function (element, callback) {
 }
 SCRIPT;
 
-	echo $form->field($model, 'clash_with')->widget(Select2::classname(), [
+	echo $form->field($model, 'clash_with')->hint(Yii::t("app", "Not every debater is yet in the system. :)"))->widget(Select2::classname(), [
 		'options'       => ['placeholder' => Yii::t("app", 'Search for a user ...')],
 		'addon'         => [
 			"prepend" => [
@@ -67,7 +67,7 @@ SCRIPT;
 	?>
 
 	<?=
-	$form->field($model, 'reason')->textarea()->hint(Yii::t("app", "Please give the CAs the rough reason why you think you are clashed from the above person."));
+	$form->field($model, 'reason')->textarea()->hint(Yii::t("app", "Please give the CAs a rough understanding why you think you are clashed from the above person."));
 	?>
 	<span id='remainingC'></span>
 
