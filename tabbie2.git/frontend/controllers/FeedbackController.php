@@ -56,12 +56,6 @@ class FeedbackController extends BaseTournamentController
 					],
 				],
 			],
-			'verbs'  => [
-				'class' => VerbFilter::className(),
-				'actions' => [
-					'delete' => ['post'],
-				],
-			],
 		];
 	}
 

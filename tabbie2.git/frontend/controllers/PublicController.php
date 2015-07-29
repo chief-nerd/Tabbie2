@@ -49,12 +49,6 @@ class PublicController extends BaseTournamentController
 					],
 				],
 			],
-			'verbs'  => [
-				'class' => VerbFilter::className(),
-				'actions' => [
-					'delete' => ['post'],
-				],
-			],
 		];
 	}
 

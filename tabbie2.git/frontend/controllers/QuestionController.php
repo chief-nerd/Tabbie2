@@ -36,12 +36,6 @@ class QuestionController extends BaseTournamentController
 					],
 				],
 			],
-			'verbs' => [
-				'class' => VerbFilter::className(),
-				'actions' => [
-					'delete' => ['post'],
-				],
-			],
 		];
 	}
 

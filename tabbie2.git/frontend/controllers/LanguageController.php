@@ -39,12 +39,6 @@ class LanguageController extends BaseTournamentController
 					],
 				],
 			],
-			'verbs'  => [
-				'class' => VerbFilter::className(),
-				'actions' => [
-					'logout' => ['post'],
-				],
-			],
 		];
 	}
 

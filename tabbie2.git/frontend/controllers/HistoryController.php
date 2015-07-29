@@ -31,12 +31,6 @@ class HistoryController extends BaseUserController
 					],
 				],
 			],
-			'verbs'  => [
-				'class' => VerbFilter::className(),
-				'actions' => [
-					'delete' => ['post'],
-				],
-			],
 		];
 	}
 

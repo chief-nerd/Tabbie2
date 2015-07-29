@@ -60,12 +60,6 @@ class TournamentController extends BaseTournamentController
 					],
 				],
 			],
-			'verbs'            => [
-				'class'   => VerbFilter::className(),
-				'actions' => [
-					'delete' => ['post'],
-				],
-			],
 		];
 	}
 

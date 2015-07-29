@@ -49,12 +49,6 @@ class VenueController extends BaseTournamentController
 					],
 				],
 			],
-			'verbs'  => [
-				'class' => VerbFilter::className(),
-				'actions' => [
-					'delete' => ['post'],
-				],
-			],
 		];
 	}
 
