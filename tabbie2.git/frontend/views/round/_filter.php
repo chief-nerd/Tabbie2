@@ -50,7 +50,7 @@ $form = ActiveForm::begin([
 			<div class="col-md-<?= $cols ?>">
 				<?
 				echo $form->field($debateSearchModel, 'language_status')->widget(Select2::classname(), [
-					'data'         => \common\models\User::getLanguageStatusLabel(),
+					'data' => \common\models\User::getLanguageStatusLabelArray(true),
 					'options'      => ['placeholder' => Yii::t("app", 'Select a Language ...')],
 					'pluginOptions' => [
 						'allowClear' => true
