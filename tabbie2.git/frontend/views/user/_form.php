@@ -61,7 +61,7 @@ use yii\web\JsExpression;
 
 	<div class="form-group">
 		<?= Html::a(Yii::t('app', 'Cancel'), ["view", "id" => $model->id], ["class" => "btn btn-default"]) ?>
-		<?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create clash') : (\kartik\helpers\Html::icon("send") . "&nbsp" . Yii::t('app', 'Update clash')), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+		<?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create User') : (\kartik\helpers\Html::icon("send") . "&nbsp" . Yii::t('app', 'Update User')), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
 	</div>
 
 	<?php ActiveForm::end(); ?>

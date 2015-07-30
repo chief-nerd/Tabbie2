@@ -10,7 +10,7 @@ function pageScroll() {
     window.scrollBy(0, 1);
     //$('#team-table-container .table').css("top", window.current_top);
 
-    if (window.scrollY < (window.ScrollUntil + 40)) {
+    if (window.pageYOffset < (window.ScrollUntil + 40)) {
         notEnd = true;
     }
     else {
