@@ -1,6 +1,7 @@
 <?
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
+use kartik\helpers\Html;
 
 NavBar::begin([
 	'brandLabel' => Yii::t("app", "{tournament} - Language Officer", ["tournament" => $tournament->name]),
