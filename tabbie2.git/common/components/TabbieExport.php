@@ -93,6 +93,7 @@
 						$a->strength*10,
 						($a->active) ? "'Y'" : "'N'",
 						"'N'", //@todo Special needs
+						"'0'",
 						"'normal'",
 						"NULL",
 					]) . ")";
