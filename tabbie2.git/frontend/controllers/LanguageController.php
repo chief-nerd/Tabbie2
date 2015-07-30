@@ -85,17 +85,19 @@ class LanguageController extends BaseTournamentController
 
 			if ($user->save()) {
 
-				$teams = $user->getTeams()->where(["tournament_id" => $this->_tournament->id])->all();
+				$teams = Team::find()->tournament($this->_tournament->id)->andWhere("speakerA_id = $user->id OR speakerB_id = $user->id")->all();
 				$addon = "";
 				foreach ($teams as $team) {
 					/** @var $team Team */
-					if ($team->speakerA->language_status == $team->speakerB->language_status) {
-						$team->language_status = $team->speakerA->language_status;
-						$addon = Yii::t("app", " + Team upgraded to {status}", ["status" => User::getLanguageStatusLabel($team->language_status, true)]);
-						$team->save();
-					} else {
-						$team->language_status = User::LANGUAGE_NONE;
-						$team->save();
+					if (isset($team->speakerA) && isset($team->speakerB)) {
+						if ($team->speakerA->language_status == $team->speakerB->language_status) {
+							$team->language_status = $team->speakerA->language_status;
+							$addon = Yii::t("app", " + Team upgraded to {status}", ["status" => User::getLanguageStatusLabel($team->language_status, true)]);
+							$team->save();
+						} else {
+							$team->language_status = User::LANGUAGE_NONE;
+							$team->save();
+						}
 					}
 				}
 

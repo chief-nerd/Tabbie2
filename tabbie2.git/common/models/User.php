@@ -416,7 +416,7 @@ class User extends ActiveRecord implements IdentityInterface
 	 */
 	public function getTeams()
 	{
-		return Team::find()->andWhere(["speakerA_id" => $this->id])->orWhere(["speakerB_id" => $this->id]);
+		return Team::find()->andWhere("speakerA_id = $this->id OR speakerB_id = $this->id");
 	}
 
 	/**
@@ -543,7 +543,18 @@ class User extends ActiveRecord implements IdentityInterface
 			self::LANGUAGE_EFL => Yii::t("app", "EFL") . (($short) ? "" : (" ," . Yii::t("app", "English as a foreign language"))),
 		];
 
-		return (isset($status[$id]) ? $status[$id] : $status);
+		return (isset($status[$id]) ? $status[$id] : "");
+	}
+
+	public static function getLanguageStatusLabelArray($short)
+	{
+		$status = [
+			self::LANGUAGE_ENL => Yii::t("app", "ENL") . (($short) ? "" : (" ," . Yii::t("app", "English as a native language"))),
+			self::LANGUAGE_ESL => Yii::t("app", "ESL") . (($short) ? "" : (" ," . Yii::t("app", "English as a second language"))),
+			self::LANGUAGE_EFL => Yii::t("app", "EFL") . (($short) ? "" : (" ," . Yii::t("app", "English as a foreign language"))),
+		];
+
+		return $status;
 	}
 
 	public function getGenderIcon()

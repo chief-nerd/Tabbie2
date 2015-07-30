@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			},
 			'width'              => '25%',
 			'filterType'         => GridView::FILTER_SELECT2,
-			'filter'             => \common\models\User::getLanguageStatusLabel(),
+			'filter' => \common\models\User::getLanguageStatusLabelArray(true),
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
