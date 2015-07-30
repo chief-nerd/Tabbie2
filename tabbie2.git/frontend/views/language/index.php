@@ -16,9 +16,6 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="language-index">
 
-	<h1><?= Html::encode($this->title) ?></h1>
-
-
 	<?
 	$gridColumns = [
 		[
@@ -97,6 +94,11 @@ $this->params['breadcrumbs'][] = $this->title;
 		],
 	];
 
+	$toolbar = [
+		'{export}',
+		'{toggleData}',
+	];
+
 	echo GridView::widget([
 		'dataProvider'    => $dataProvider,
 		'filterModel'     => $searchModel,
@@ -108,6 +110,11 @@ $this->params['breadcrumbs'][] = $this->title;
 		'hover'           => true,
 		'floatHeader'     => true,
 		'floatHeaderOptions' => ['scrollingTop' => 100],
+		'panel'   => [
+			'type'    => GridView::TYPE_DEFAULT,
+			'heading' => Html::encode($this->title),
+		],
+		'toolbar' => $toolbar,
 
 	])
 	?>
