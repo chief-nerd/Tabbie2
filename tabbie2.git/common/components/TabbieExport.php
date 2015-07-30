@@ -75,6 +75,7 @@
   `ranking` MEDIUMINT(9) NOT NULL DEFAULT '0',
   `active` ENUM('Y','N') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Y',
   `adjud_specialneeds` ENUM('Y','N') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'N',
+  `region_id` MEDIUMINT(9) NOT NULL DEFAULT '0',
   `status` ENUM('normal','trainee','watcher','watched') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'normal',
   `conflicts` VARCHAR(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`adjud_id`),
@@ -92,6 +93,7 @@
 						$a->strength*10,
 						($a->active) ? "'Y'" : "'N'",
 						"'N'", //@todo Special needs
+						"'0'",
 						"'normal'",
 						"NULL",
 					]) . ")";
