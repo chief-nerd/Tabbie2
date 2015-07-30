@@ -43,7 +43,7 @@ class ResultController extends BaseTournamentController
 					],
 					[
 						'allow'   => true,
-						'actions' => ['index', 'round', 'create', 'view', 'update', 'manual', 'correctcache'],
+						'actions' => ['index', 'round', 'create', 'view', 'update', 'manual', 'correctcache', 'checked'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
 						}
@@ -72,6 +72,59 @@ class ResultController extends BaseTournamentController
 		return $this->render('index', [
 			'rounds' => $rounds,
 		]);
+	}
+
+	/**
+	 * Displays a single Result model.
+	 *
+	 * @param integer $id
+	 *
+	 * @return mixed
+	 */
+	public function actionView($id)
+	{
+		return $this->render('view', [
+			'model' => $this->findModel($id),
+		]);
+	}
+
+	/**
+	 * Finds the Result model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 *
+	 * @param integer $id
+	 *
+	 * @return Result the loaded model
+	 * @throws NotFoundHttpException if the model cannot be found
+	 */
+	protected function findModel($id)
+	{
+		if (($model = Result::findOne($id)) !== null) {
+			return $model;
+		} else {
+			throw new NotFoundHttpException('The requested page does not exist.');
+		}
+	}
+
+	/**
+	 * Checks a Result
+	 *
+	 * @param integer $id
+	 *
+	 * @return mixed
+	 */
+	public function actionChecked($id)
+	{
+		$result = $this->findModel($id);
+		if ($result instanceof Result) {
+			if ($result->checked == 1)
+				$result->checked = 0;
+			else
+				$result->checked = 1;
+			$result->save();
+		}
+
+		return $this->actionRound($result->debate->round_id, "table");
 	}
 
 	/**
@@ -111,24 +164,10 @@ class ResultController extends BaseTournamentController
 		}
 
 		return $this->render($view, [
-			'round_id'    => $id,
+			'round_id'     => $id,
 			'round_number' => $number,
-			'searchModel' => $searchModel,
+			'searchModel'  => $searchModel,
 			'dataProvider' => $dataProvider,
-		]);
-	}
-
-	/**
-	 * Displays a single Result model.
-	 *
-	 * @param integer $id
-	 *
-	 * @return mixed
-	 */
-	public function actionView($id)
-	{
-		return $this->render('view', [
-			'model' => $this->findModel($id),
 		]);
 	}
 
@@ -158,7 +197,7 @@ class ResultController extends BaseTournamentController
 						$roundid = Debate::findOne($id)->round_id;
 						$place = Result::find()->joinWith("debate")->where([
 							"debate.tournament_id" => $this->_tournament->id,
-							"round_id" => $roundid
+							"round_id"             => $roundid
 						])->count();
 						$max = Debate::find()
 							->tournament($this->_tournament->id)
@@ -168,7 +207,7 @@ class ResultController extends BaseTournamentController
 						return $this->render('thankyou', [
 							"model" => $model,
 							"place" => $place,
-							"max" => $max,
+							"max"   => $max,
 						]);
 					} else {
 						Yii::error("Save Results: " . ObjectError::getMsg($model), __METHOD__);
@@ -191,7 +230,7 @@ class ResultController extends BaseTournamentController
 			return $this->render('thankyou', [
 				"model" => $result,
 				"place" => 0,
-				"max" => 0,
+				"max"   => 0,
 			]);
 		}
 	}
@@ -249,24 +288,6 @@ class ResultController extends BaseTournamentController
 		$this->findModel($id)->delete();
 
 		return $this->redirect(['index']);
-	}
-
-	/**
-	 * Finds the Result model based on its primary key value.
-	 * If the model is not found, a 404 HTTP exception will be thrown.
-	 *
-	 * @param integer $id
-	 *
-	 * @return Result the loaded model
-	 * @throws NotFoundHttpException if the model cannot be found
-	 */
-	protected function findModel($id)
-	{
-		if (($model = Result::findOne($id)) !== null) {
-			return $model;
-		} else {
-			throw new NotFoundHttpException('The requested page does not exist.');
-		}
 	}
 
 	public function actionManual()

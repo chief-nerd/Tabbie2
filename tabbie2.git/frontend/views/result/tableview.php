@@ -145,9 +145,23 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Table View");
 				},
 			],
 			[
+				'class'     => 'kartik\grid\BooleanColumn',
+				'attribute' => 'result.checked',
+				'vAlign'    => 'middle',
+			],
+			[
 				'class'       => 'kartik\grid\ActionColumn',
 				'width'       => "100px",
-				'template'    => '{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}',
+				'template' => '{checked}&nbsp;&nbsp;{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}',
+				'buttons'  => [
+					"checked" => function ($url, $model) {
+						return Html::a(\kartik\helpers\Html::icon("check"), $url, [
+							'title'              => Yii::t('app', 'Checked'),
+							'data-pjax'          => '1',
+							'data-toggle-active' => $model->id
+						]);
+					}
+				],
 				'dropdown'    => false,
 				'vAlign'      => 'middle',
 				'urlCreator'  => function ($action, $model, $key, $index) {
