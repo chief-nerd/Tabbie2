@@ -177,7 +177,7 @@
  						$sqlFile[] = "INSERT INTO speaker VALUES(" . implode(",", [
 								$sp->id,
 								$t->id,
-								$this->strquote(substr($sp->name,0,99)),
+								str_replace("O'", "O’",$this->strquote(substr($sp->name,0,99))),
 								($sp->language_status == models\User::LANGUAGE_ESL) ? "'Y'" : "'N'",
 								(isset($sp->novice) && $sp->novice) ? "'Y'" : "'N'", //Not yet implemented
 								"'N'",
