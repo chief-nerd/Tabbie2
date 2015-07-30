@@ -66,8 +66,8 @@ SCRIPT;
 	]);
 	?>
 
-	<?=
-	$form->field($model, 'reason')->textarea()->hint(Yii::t("app", "Please give the CAs a rough understanding why you think you are clashed from the above person."));
+	<?
+	//echo $form->field($model, 'reason')->textarea()->hint(Yii::t("app", "Please give the CAs a rough understanding why you think you are clashed from the above person."));
 	?>
 	<span id='remainingC'></span>
 

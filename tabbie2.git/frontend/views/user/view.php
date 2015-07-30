@@ -54,10 +54,10 @@ $this->params['breadcrumbs'][] = $this->title;
 			'class'     => 'kartik\grid\DataColumn',
 			'attribute' => 'clashWith.name',
 		],
-		[
+		/*[
 			'class'     => '\kartik\grid\DataColumn',
 			'attribute' => 'reason',
-		],
+		],*/
 		[
 			'class'     => '\kartik\grid\DataColumn',
 			'attribute' => 'date',
