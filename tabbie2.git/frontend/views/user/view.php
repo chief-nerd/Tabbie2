@@ -27,6 +27,10 @@ $this->params['breadcrumbs'][] = $this->title;
 					'id',
 					'name',
 					'email:email',
+					[
+						'label' => Yii::t("app", "Language Status"),
+						'value' => \common\models\User::getLanguageStatusLabel($model->language_status)
+					],
 					'last_change',
 				],
 			])
