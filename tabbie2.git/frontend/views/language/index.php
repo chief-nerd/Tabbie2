@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			},
 			'width'              => '25%',
 			'filterType'         => GridView::FILTER_SELECT2,
-			'filter' => \common\models\User::getLanguageStatusLabelArray(true),
+			'filter' => \common\models\User::getLanguageStatusLabelArray(true, true),
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
@@ -58,8 +58,16 @@ $this->params['breadcrumbs'][] = $this->title;
 		],*/
 		[
 			'class'    => 'kartik\grid\ActionColumn',
-			'template' => '{ENL}&nbsp;{ESL}&nbsp;{EFL}',
+			'template' => '{ENL}&nbsp;{ESL}&nbsp;{EFL}&nbsp;{Interview}',
 			'buttons'  => [
+				"Interview" => function ($url, $model) {
+					return Html::a("Request Interview", $url, [
+						'title'              => Yii::t('app', 'Request an interview'),
+						'data-pjax'          => '0',
+						'data-toggle-active' => $model->id,
+						'class'              => 'btn btn-default',
+					]);
+				},
 				"ENL" => function ($url, $model) {
 					return Html::a("Set to ENL", $url, [
 						'title'     => Yii::t('app', 'Set ENL'),
