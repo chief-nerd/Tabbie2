@@ -89,7 +89,7 @@
 				$values[] = "(" . implode(",", [
 						$a->id,
 						$a->society->id,
-						$this->strquote(substr($a->user->name,0,99)),
+						str_replace("'", "’", $this->strquote(substr($a->user->name,0,99))),
 						$a->strength*10,
 						($a->active) ? "'Y'" : "'N'",
 						"'N'", //@todo Special needs
