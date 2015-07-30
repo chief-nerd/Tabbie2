@@ -37,12 +37,12 @@ class UserController extends BaseUserController
 					],
 					[
 						'allow' => true,
-						'actions' => ['view', 'list', 'test'],
+						'actions' => ['list', 'test'],
 						'roles' => ['@'],
 					],
 					[
 						'allow'   => true,
-						'actions' => ['update', 'societies', 'history'],
+						'actions' => ['view', 'update', 'societies', 'history'],
 						'matchCallback' => function ($rule, $action) {
 							return (Yii::$app->user->id == Yii::$app->request->get("id") || Yii::$app->user->isAdmin());
 						}
