@@ -77,6 +77,9 @@ class LanguageController extends BaseTournamentController
 				case "EFL":
 					$user->language_status = User::LANGUAGE_EFL;
 					break;
+				case "Interview":
+					$user->language_status = User::LANGUAGE_INTERVIEW;
+					break;
 				default:
 					Yii::$app->session->addFlash("error", Yii::t("app", "Not a valid Language Options in params"));
 			}
@@ -84,19 +87,20 @@ class LanguageController extends BaseTournamentController
 			$user->language_status_update = date("Y-m-d H:i:s");
 
 			if ($user->save()) {
-
-				$teams = Team::find()->tournament($this->_tournament->id)->andWhere("speakerA_id = $user->id OR speakerB_id = $user->id")->all();
 				$addon = "";
-				foreach ($teams as $team) {
-					/** @var $team Team */
-					if (isset($team->speakerA) && isset($team->speakerB)) {
-						if ($team->speakerA->language_status == $team->speakerB->language_status) {
-							$team->language_status = $team->speakerA->language_status;
-							$addon = Yii::t("app", " + Team upgraded to {status}", ["status" => User::getLanguageStatusLabel($team->language_status, true)]);
-							$team->save();
-						} else {
-							$team->language_status = User::LANGUAGE_NONE;
-							$team->save();
+				if ($user->language_status != User::LANGUAGE_INTERVIEW) {
+					$teams = Team::find()->tournament($this->_tournament->id)->andWhere("speakerA_id = $user->id OR speakerB_id = $user->id")->all();
+					foreach ($teams as $team) {
+						/** @var $team Team */
+						if (isset($team->speakerA) && isset($team->speakerB)) {
+							if ($team->speakerA->language_status == $team->speakerB->language_status) {
+								$team->language_status = $team->speakerA->language_status;
+								$addon = Yii::t("app", " + Team upgraded to {status}", ["status" => User::getLanguageStatusLabel($team->language_status, true)]);
+								$team->save();
+							} else {
+								$team->language_status = User::LANGUAGE_NONE;
+								$team->save();
+							}
 						}
 					}
 				}

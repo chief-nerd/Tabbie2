@@ -60,6 +60,7 @@ class User extends ActiveRecord implements IdentityInterface
 	const LANGUAGE_ENL = 1;
 	const LANGUAGE_ESL = 2;
 	const LANGUAGE_EFL = 3;
+	const LANGUAGE_INTERVIEW = 4;
 
 	const NONE = "(not set)";
 
@@ -126,7 +127,7 @@ class User extends ActiveRecord implements IdentityInterface
 			['gender', 'in', 'range' => [self::GENDER_MALE, self::GENDER_FEMALE, self::GENDER_OTHER, self::GENDER_NOTREVEALING]],
 
 			['language_status', 'default', 'value' => self::LANGUAGE_NONE],
-			['language_status', 'in', 'range' => [self::LANGUAGE_NONE, self::LANGUAGE_ENL, self::LANGUAGE_ESL, self::LANGUAGE_EFL]],
+			['language_status', 'in', 'range' => [self::LANGUAGE_NONE, self::LANGUAGE_ENL, self::LANGUAGE_ESL, self::LANGUAGE_EFL, self::LANGUAGE_INTERVIEW]],
 
 			[['password', 'password_repeat', 'url_slug', 'auth_key', 'time', 'last_change', 'societies_id', 'language_status_update'], 'safe'],
 		];
@@ -537,6 +538,9 @@ class User extends ActiveRecord implements IdentityInterface
 		if ($id == self::LANGUAGE_NONE && $id !== null)
 			return Yii::t("app", "Not yet set");
 
+		if ($id == self::LANGUAGE_INTERVIEW)
+			return Yii::t("app", "Interview needed");
+
 		$status = [
 			self::LANGUAGE_ENL => Yii::t("app", "ENL") . (($short) ? "" : (", " . Yii::t("app", "English as a native language"))),
 			self::LANGUAGE_ESL => Yii::t("app", "ESL") . (($short) ? "" : (", " . Yii::t("app", "English as a second language"))),
@@ -546,13 +550,18 @@ class User extends ActiveRecord implements IdentityInterface
 		return (isset($status[$id]) ? $status[$id] : "");
 	}
 
-	public static function getLanguageStatusLabelArray($short)
+	public static function getLanguageStatusLabelArray($short, $more = false)
 	{
 		$status = [
 			self::LANGUAGE_ENL => Yii::t("app", "ENL") . (($short) ? "" : (" ," . Yii::t("app", "English as a native language"))),
 			self::LANGUAGE_ESL => Yii::t("app", "ESL") . (($short) ? "" : (" ," . Yii::t("app", "English as a second language"))),
 			self::LANGUAGE_EFL => Yii::t("app", "EFL") . (($short) ? "" : (" ," . Yii::t("app", "English as a foreign language"))),
 		];
+
+		if ($more) {
+			$status[self::LANGUAGE_NONE] = Yii::t("app", "Not set");
+			$status[self::LANGUAGE_INTERVIEW] = Yii::t("app", "Interview needed");
+		}
 
 		return $status;
 	}
