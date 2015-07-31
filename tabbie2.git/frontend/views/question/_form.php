@@ -18,7 +18,7 @@ use kartik\helpers\Html;
 		<?= $form->field($model, 'apply_W2C')->checkbox() ?>
 	</div>
 	<div class="row">
-		<?= $form->field($model, 'text')->textInput(['maxlength' => 45]) ?>
+		<?= $form->field($model, 'text')->textInput(['maxlength' => 255]) ?>
 	</div>
 	<div class="row">
 		<?= $form->field($model, 'type')->dropDownList($model->getTypeOptions()) ?>
