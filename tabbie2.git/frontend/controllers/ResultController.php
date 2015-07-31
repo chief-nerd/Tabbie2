@@ -192,6 +192,7 @@ class ResultController extends BaseTournamentController
 			if ($model->load(Yii::$app->request->post()) && $model->validate(["debate_id"])) {
 				if ($model->confirmed == "true") {
 
+					/** @todo entered_by_id Make better for runners */
 					$model->entered_by_id = (Yii::$app->user->id) ? Yii::$app->user->id : 1;
 
 					if ($model->save()) {
@@ -253,6 +254,7 @@ class ResultController extends BaseTournamentController
 		if ($model->load(Yii::$app->request->post())) {
 			if ($model->confirmed == "true") {
 
+				/** @todo entered_by_id Make better for runners */
 				$model->entered_by_id = (Yii::$app->user->id) ? Yii::$app->user->id : 1;
 
 				if ($model->save()) {
