@@ -46,7 +46,7 @@ class ResultController extends BaseTournamentController
 					],
 					[
 						'allow'   => true,
-						'actions' => ['index', 'round', 'view', 'update', 'manual', 'correctcache', 'checked'],
+						'actions' => ['index', 'round', 'create', 'view', 'update', 'manual', 'correctcache', 'checked'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
 						}
