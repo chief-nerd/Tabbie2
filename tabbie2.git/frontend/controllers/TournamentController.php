@@ -406,6 +406,8 @@ class TournamentController extends BaseTournamentController
 		mb_language('uni');
 		mb_regex_encoding('UTF-8');
 		ob_start('mb_output_handler');
+		header('Content-Type: application/octet-stream');
+    	header('Content-Disposition: attachment; filename='.basename($this->_tournament->name).' - '.date("Y-m-d H:i:s"));
 
 		$export = new TabbieExport();
 		echo implode("<br>\n", $export->generateSQL($this->_tournament));
