@@ -209,8 +209,10 @@ class VenueController extends BaseTournamentController
 						$venue->active = $row[1];
 						$venue->group = $row[2];
 						$venue->tournament_id = $this->_tournament->id;
-						$venue->save();
-					}
+						if (!$venue->save())
+							Yii::$app->session->addFlash("error", ObjectError::getMsg($venue));
+					} else
+						Yii::trace("Venue " . $row[0] . " already existed");
 				}
 
 				return $this->redirect(['index', "tournament_id" => $this->_tournament->id]);

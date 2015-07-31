@@ -50,7 +50,7 @@ class Result extends \yii\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['debate_id', 'og_A_speaks', 'og_B_speaks', 'og_place', 'oo_A_speaks', 'oo_B_speaks', 'oo_place', 'cg_A_speaks', 'cg_B_speaks', 'cg_place', 'co_A_speaks', 'co_B_speaks', 'co_place', 'entered_by_id'], 'required'],
+			[['debate_id', 'og_A_speaks', 'og_B_speaks', 'og_place', 'oo_A_speaks', 'oo_B_speaks', 'oo_place', 'cg_A_speaks', 'cg_B_speaks', 'cg_place', 'co_A_speaks', 'co_B_speaks', 'co_place'], 'required'],
 			[['debate_id', 'og_place', 'oo_place', 'cg_place', 'co_place', 'entered_by_id', 'og_irregular', 'oo_irregular', 'cg_irregular', 'co_irregular', 'checked'], 'integer'],
 			[['og_A_speaks', 'og_B_speaks', 'oo_A_speaks', 'oo_B_speaks', 'cg_A_speaks', 'cg_B_speaks', 'co_A_speaks', 'co_B_speaks'],
 				"integer", "max" => Yii::$app->params["speaks_max"], "min" => Yii::$app->params["speaks_min"]],
