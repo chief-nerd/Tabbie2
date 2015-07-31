@@ -410,7 +410,7 @@ class TournamentController extends BaseTournamentController
     	header('Content-Disposition: attachment; filename='.basename($this->_tournament->name).' - '.date("Y-m-d H:i:s"));
 
 		$export = new TabbieExport();
-		echo implode("<br>\n", $export->generateSQL($this->_tournament));
+		echo implode("\n", $export->generateSQL($this->_tournament));
 		exit();
 	}
 
