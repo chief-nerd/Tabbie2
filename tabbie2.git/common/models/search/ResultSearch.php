@@ -62,8 +62,17 @@ class ResultSearch extends Result
 			'attributes' => [
 				'id',
 				'debate_id',
-				'time',
-				'venueName' => [
+				'result.time' => [
+					'asc'   => ['result.time' => SORT_DESC],
+					'desc'  => ['result.time' => SORT_ASC],
+					'label' => 'Time'
+				],
+				'entered'     => [
+					'asc'   => ['result.id' => SORT_DESC],
+					'desc'  => ['result.id' => SORT_ASC],
+					'label' => 'Entered'
+				],
+				'venueName'   => [
 					'asc'   => ['venue.name' => SORT_ASC],
 					'desc'  => ['venue.name' => SORT_DESC],
 					'label' => 'Venue Name'

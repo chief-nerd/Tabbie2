@@ -43,9 +43,6 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Table View");
 		'filterModel'  => $searchModel,
 		'id'           => 'debates',
 		'pjax'         => true,
-		'pjaxSettings' => [
-			'loadingCssClass' => false,
-		],
 		'striped'      => false,
 		'responsive'   => true,
 		'hover'        => true,
@@ -58,7 +55,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Table View");
 			['class' => 'yii\grid\SerialColumn'],
 			[
 				'class'  => 'kartik\grid\BooleanColumn',
-				'attribute' => 'Entered',
+				'attribute' => 'entered',
 				'vAlign' => 'middle',
 				'value'  => function ($model, $key, $index, $widget) {
 					return ($model->result instanceof Result) ? true : false;
@@ -82,6 +79,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Table View");
 			[
 				'class'              => 'kartik\grid\DataColumn',
 				'attribute'          => "adjudicator.name",
+				'label' => "Chair",
 				'format'             => 'raw',
 				'vAlign'             => GridView::ALIGN_MIDDLE,
 				'value'              => function ($model, $key, $index, $widget) {

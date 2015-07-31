@@ -431,4 +431,12 @@ a.desc:after {
     margin-right: 10px;
     margin-left: 20px;
 }
+
+.result-index .panel-body {
+    padding: 0px;
+}
+
+.result-index .panel-heading {
+    padding: 4px 15px;
+}
 /** LOADER ENDE */
