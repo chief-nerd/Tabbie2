@@ -422,4 +422,13 @@ a.desc:after {
     border-radius: 40px;
 }
 
+.feedback-create input[type=checkbox] {
+    /* All browsers except webkit*/
+    transform: scale(2.5);
+
+    /* Webkit browsers*/
+    -webkit-transform: scale(2.5);
+    margin-right: 10px;
+    margin-left: 20px;
+}
 /** LOADER ENDE */

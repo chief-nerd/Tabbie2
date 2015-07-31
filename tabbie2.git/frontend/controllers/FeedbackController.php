@@ -90,6 +90,24 @@ class FeedbackController extends BaseTournamentController
 	}
 
 	/**
+	 * Finds the feedback model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 *
+	 * @param integer $id
+	 *
+	 * @return feedback the loaded model
+	 * @throws NotFoundHttpException if the model cannot be found
+	 */
+	protected
+	function findModel($id)
+	{
+		if (($model = feedback::findOne($id)) !== null) {
+			return $model;
+		} else
+			throw new NotFoundHttpException('The requested page does not exist.');
+	}
+
+	/**
 	 * Creates a new feedback model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 *
@@ -152,7 +170,12 @@ class FeedbackController extends BaseTournamentController
 			$feedback->save();
 
 			foreach ($this->_tournament->getQuestions($type)->all() as $question) {
-				$models[$question->id]->value = $answers[$question->id];
+				if (is_array($answers[$question->id])) {
+					$answer = json_encode($answers[$question->id]);
+				} else
+					$answer = $answers[$question->id];
+
+				$models[$question->id]->value = $answer;
 				$models[$question->id]->feedback_id = $feedback->id;
 
 				if ($models[$question->id]->save()) {
@@ -185,6 +208,7 @@ class FeedbackController extends BaseTournamentController
 			return $this->redirect(['tournament/view', "id" => $this->_tournament->id]);
 		} else
 			return $this->render('create', ['models' => $models,]);
+
 	}
 
 
@@ -197,6 +221,7 @@ class FeedbackController extends BaseTournamentController
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
 		]);
+
 	}
 
 	/**
@@ -213,25 +238,7 @@ class FeedbackController extends BaseTournamentController
 		$this->findModel($id)->delete();
 
 		return $this->redirect(['index']);
-	}
 
-	/**
-	 * Finds the feedback model based on its primary key value.
-	 * If the model is not found, a 404 HTTP exception will be thrown.
-	 *
-	 * @param integer $id
-	 *
-	 * @return feedback the loaded model
-	 * @throws NotFoundHttpException if the model cannot be found
-	 */
-	protected
-	function findModel($id)
-	{
-		if (($model = feedback::findOne($id)) !== null) {
-			return $model;
-		} else {
-			throw new NotFoundHttpException('The requested page does not exist.');
-		}
 	}
 
 	public function actionTournament()

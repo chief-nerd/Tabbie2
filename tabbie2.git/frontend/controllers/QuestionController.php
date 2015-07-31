@@ -70,6 +70,24 @@ class QuestionController extends BaseTournamentController
 	}
 
 	/**
+	 * Finds the question model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 *
+	 * @param integer $id
+	 *
+	 * @return question the loaded model
+	 * @throws NotFoundHttpException if the model cannot be found
+	 */
+	protected function findModel($id)
+	{
+		if (($model = question::findOne($id)) !== null) {
+			return $model;
+		} else {
+			throw new NotFoundHttpException('The requested page does not exist.');
+		}
+	}
+
+	/**
 	 * Creates a new question model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 *
@@ -78,8 +96,9 @@ class QuestionController extends BaseTournamentController
 	public function actionCreate()
 	{
 		$model = new Question();
-
+		$model->param = "[]";
 		if ($model->load(Yii::$app->request->post())) {
+			$model->param = json_encode(explode("\r\n", Yii::$app->request->post("Question", ["param" => ""])["param"]));
 			if ($model->save()) {
 				$ThasQ = new \common\models\TournamentHasQuestion();
 				$ThasQ->tournament_id = $this->_tournament->id;
@@ -89,11 +108,12 @@ class QuestionController extends BaseTournamentController
 				else
 					$model->addError("id", Yii::t("app", "Can't save Tournament Connection"));
 			}
-		} else {
-			return $this->render('create', [
-				'model' => $model,
-			]);
 		}
+		$model->param = implode("\r\n", json_decode($model->param));
+
+		return $this->render('create', [
+			'model' => $model,
+		]);
 	}
 
 	/**
@@ -108,13 +128,18 @@ class QuestionController extends BaseTournamentController
 	{
 		$model = $this->findModel($id);
 
-		if ($model->load(Yii::$app->request->post()) && $model->save()) {
-			return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $this->_tournament->id]);
-		} else {
-			return $this->render('update', [
-				'model' => $model,
-			]);
+		if ($model->load(Yii::$app->request->post())) {
+			$model->param = json_encode(explode("\r\n", Yii::$app->request->post("Question", ["param" => ""])["param"]));
+			if ($model->save()) {
+				return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $this->_tournament->id]);
+			}
 		}
+
+		$model->param = implode("\r\n", json_decode($model->param));
+
+		return $this->render('update', [
+			'model' => $model,
+		]);
 	}
 
 	/**
@@ -138,24 +163,6 @@ class QuestionController extends BaseTournamentController
 		}
 
 		return $this->redirect(['index', "tournament_id" => $this->_tournament->id]);
-	}
-
-	/**
-	 * Finds the question model based on its primary key value.
-	 * If the model is not found, a 404 HTTP exception will be thrown.
-	 *
-	 * @param integer $id
-	 *
-	 * @return question the loaded model
-	 * @throws NotFoundHttpException if the model cannot be found
-	 */
-	protected function findModel($id)
-	{
-		if (($model = question::findOne($id)) !== null) {
-			return $model;
-		} else {
-			throw new NotFoundHttpException('The requested page does not exist.');
-		}
 	}
 
 }

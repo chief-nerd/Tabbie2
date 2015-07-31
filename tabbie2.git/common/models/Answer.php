@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use kartik\checkbox\CheckboxX;
 use kartik\rating\StarRating;
 use Yii;
 use yii\helpers\Html;
@@ -68,14 +69,14 @@ class Answer extends \yii\db\ActiveRecord
 		return $this->hasOne(Feedback::className(), ['id' => 'feedback_id']);
 	}
 
-	public function getName($q_id)
-	{
-		return "Answer[" . $q_id . "]";
-	}
-
 	public function renderLabel($q_id)
 	{
 		return '<label class="control-label" for="' . Html::encode($this->getName($q_id)) . '">' . Html::encode($this->question->text) . '</label>';
+	}
+
+	public function getName($q_id)
+	{
+		return "Answer[" . $q_id . "]";
 	}
 
 	/**
@@ -111,6 +112,13 @@ class Answer extends \yii\db\ActiveRecord
 						"step"  => 1,
 						"size"  => "md",
 					],
+				]);
+				break;
+			case Question::TYPE_CHECKBOX:
+				$selection = json_decode($this->question->param);
+				$element = Html::checkboxList("Answer[" . $q_id . "]", null, $selection, [
+					"id"          => "Answer_" . $q_id,
+					'itemOptions' => [],
 				]);
 				break;
 		}
