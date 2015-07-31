@@ -34,12 +34,14 @@ class ResultController extends BaseTournamentController
 						'allow'   => true,
 						'actions' => ['create'],
 						'matchCallback' => function ($rule, $action) {
-							/** @TODO: Faster call
- *
-* $info = $this->_tournament->getLastDebateInfo(Yii::$app->user->id);
- *
-* return Yii::$app->user->hasChairedLastRound($info);*/
-							return true;
+							/** @TODO: Faster call */
+
+							if ($this->_tournament->validateAccessToken(Yii::$app->request->get("accessToken", false)))
+								return true;
+
+							$info = $this->_tournament->getLastDebateInfo(Yii::$app->user->id);
+
+							return Yii::$app->user->hasChairedLastRound($info);
 						},
 					],
 					[

@@ -335,6 +335,8 @@ class Tournament extends \yii\db\ActiveRecord
 	 */
 	public function validateAccessToken($testToken)
 	{
+		if ($testToken == false) return false;
+
 		if ($testToken == $this->accessToken)
 			return true;
 
