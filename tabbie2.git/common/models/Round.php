@@ -254,7 +254,7 @@ class Round extends \yii\db\ActiveRecord
 					$strikedTeam = $adjudicatorsObjects[$i]->getStrikedTeams()->asArray()->all();
 					$adjudicators[$i]["strikedTeams"] = $strikedTeam;
 
-					$adjudicators[$i]["pastAdjudicatorIDs"] = $adjudicatorsObjects[$i]->getPastAdjudicatorIDs(true);
+					$adjudicators[$i]["pastAdjudicatorIDs"] = $adjudicatorsObjects[$i]->getPastAdjudicatorIDs($this->id);
 					$adjudicators[$i]["pastTeamIDs"] = $adjudicatorsObjects[$i]->getPastTeamIDs(true);
 				}
 			}
@@ -344,7 +344,7 @@ class Round extends \yii\db\ActiveRecord
 
 				//Save Panel
 				if (!$panel->save())
-					throw new Exception(Yii::t("app", "Can't save Panel {message}", ["message" => print_r($panel->getErrors(), true)]));
+					throw new Exception(Yii::t("app", "Can't save Panel {message}", ["message" => ObjectError::getMsg($panel)]));
 
 				$line->panelID = $panel->id;
 
@@ -363,10 +363,16 @@ class Round extends \yii\db\ActiveRecord
 
 						$alloc->save();
 					} catch (Exception $ex) {
-						Yii::trace($judge["id"] . "-" . $judge["name"] . ": " . $ex->getMessage(), __METHOD__);
+						Yii::error($judge["id"] . "-" . $judge["name"] . ": " . $ex->getMessage(), __METHOD__);
 						Yii::$app->session->addFlash("error", $judge["id"] . "-" . $judge["name"] . ": " . $ex->getMessage());
 					}
 				}
+			} else {
+				//is a preset Panel
+				$presetP = Panel::find()->tournament($this->tournament_id)->andWhere(["id" => $line->panelID])->one();
+				$presetP->used = 1;
+				if (!$presetP->save())
+					Yii::error("Cant save preset panel" . ObjectError::getMsg($presetP), __METHOD__);
 			}
 
 			$debate = new Debate();

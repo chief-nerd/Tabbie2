@@ -255,8 +255,7 @@ class Adjudicator extends \yii\db\ActiveRecord
 	{
 		//Works without tournament_id because adjudicator is only valid in tournament scope
 
-		if ($exclude_current) {
-
+		if (is_int($exclude_current)) {
 			$sql = "SELECT a.adjudicator_id AS aid, b.adjudicator_id AS bid, a.panel_id AS pid, c.round_id
 				FROM adjudicator_in_panel AS a
 				LEFT JOIN adjudicator_in_panel AS b ON a.panel_id = b.panel_id
@@ -264,7 +263,7 @@ class Adjudicator extends \yii\db\ActiveRecord
 				LEFT JOIN debate AS c ON p.id = c.panel_id
 				WHERE a.adjudicator_id != b.adjudicator_id AND a.adjudicator_id = " . $this->id . "
 				GROUP BY bid
-				HAVING c.round_id < MAX(c.round_id)";
+				HAVING c.round_id != " . $exclude_current . ";";
 
 		} else {
 			$sql = "SELECT a.adjudicator_id AS aid, b.adjudicator_id AS bid, a.panel_id AS pid
