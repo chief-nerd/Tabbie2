@@ -12,7 +12,7 @@ use yii\helpers\ArrayHelper;
  * @property integer              $tournament_id
  * @property integer              $active
  * @property integer              $user_id
- * @property integer              $strength 0-9
+ * @property integer              $strength 0-99
  * @property integer              $society_id
  * @property integer              $can_chair
  * @property integer              $are_watched
