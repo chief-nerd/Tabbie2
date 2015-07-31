@@ -241,7 +241,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "#{number}", ["number" => $model-
 		],
 		[
 			'class' => '\kartik\grid\DataColumn',
-			'attribute' => 'strength',
+			'attribute' => 'panel.strength',
 			'label' => Yii::t("app", 'Strength'),
 			'width' => "80px",
 		],
