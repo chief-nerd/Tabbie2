@@ -192,7 +192,8 @@ class ResultController extends BaseTournamentController
 			if ($model->load(Yii::$app->request->post()) && $model->validate(["debate_id"])) {
 				if ($model->confirmed == "true") {
 
-					$model->entered_by_id = Yii::$app->user->id;
+					$user_id = (Yii::$app->user->id) ? Yii::$app->user->id : 1;
+					$model->entered_by_id = $user_id;
 
 					if ($model->save()) {
 						$model->updateTeamCache();
