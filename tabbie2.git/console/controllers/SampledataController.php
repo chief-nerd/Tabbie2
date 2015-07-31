@@ -83,7 +83,7 @@ class SampledataController extends Controller
 				addslashes($faker->firstName) . ";" .
 				addslashes($faker->lastName) . ";" .
 				$faker->email . ";" .
-				$faker->numberBetween(0, 9) . "\n";
+				$faker->numberBetween(0, 99) . "\n";
 			//echo $line;
 			$output_adjudicator .= $line;
 			echo ".";
