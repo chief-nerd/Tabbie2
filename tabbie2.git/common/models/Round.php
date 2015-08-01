@@ -550,7 +550,7 @@ class Round extends \yii\db\ActiveRecord
 			$strikedTeam = $adju->getStrikedTeams()->asArray()->all();
 			$adjudicator["strikedTeams"] = $strikedTeam;
 
-			$adjudicator["pastAdjudicatorIDs"] = $adju->getPastAdjudicatorIDs(true);
+			$adjudicator["pastAdjudicatorIDs"] = $adju->getPastAdjudicatorIDs($this->id);
 			$adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs(true);
 
 			if ($inPanel->function == Panel::FUNCTION_CHAIR)
