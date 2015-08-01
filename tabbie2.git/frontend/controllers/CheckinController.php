@@ -174,7 +174,7 @@ class CheckinController extends BaseTournamentController
 
 	public function actionGenerateBadges()
 	{
-
+		set_time_limit(0); //Prevent timeout ... this can take time
 		if (Yii::$app->request->post()) {
 
 			$new_file = UploadedFile::getInstanceByName("badge");
