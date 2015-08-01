@@ -13,6 +13,7 @@ use common\models;
 use common\components\filter\TournamentContextFilter;
 use kartik\mpdf\Pdf;
 use Yii;
+use yii\base\Exception;
 use yii\filters\AccessControl;
 use frontend\models\CheckinForm;
 use common\models\Tournament;
@@ -178,49 +179,87 @@ class CheckinController extends BaseTournamentController
 		if (Yii::$app->request->post()) {
 
 			$person = [];
+			$adjuText = Yii::t("app", "Adjudicator");
 			$new_file = UploadedFile::getInstanceByName("badge");
 			if ($new_file instanceof UploadedFile) {
 				$this->_tournament->saveBadge($new_file);
 				$this->_tournament->save();
 			}
 
-			$teams = models\Team::find()->tournament($this->_tournament->id)->all();
-			$adju = models\Adjudicator::find()->tournament($this->_tournament->id)->all();
-
-			if (count($teams) > 0) {
-				$len_t = strlen($teams[0]->id);
-				if ($teams[0]->id[0] > 7) $len_t++;
-
-				for ($i = 0; $i < count($teams); $i++) {
-					$society = $teams[$i]->society->fullname;
-
-					if ($teams[$i]->speakerA) {
+			$do_person = Yii::$app->request->post("person", false);
+			if (is_array($do_person)) {
+				foreach ($do_person as $todo) {
+					$adju = models\Adjudicator::find()->tournament($this->_tournament->id)->andWhere(["user_id" => $todo])->one();
+					if ($adju instanceof models\Adjudicator) {
 						$person[] = $this->cPerson(
-							$teams[$i]->speakerA->name,
-							$teams[$i]->name,
-							CheckinForm::TEAMA . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
-							$society
+							$adju->user->name,
+							$adjuText,
+							CheckinForm::ADJU . "-" . $adju->id,
+							$adju->society->fullname
 						);
-					}
-					if ($teams[$i]->speakerB) {
-						$person[] = $this->cPerson(
-							$teams[$i]->speakerB->name,
-							$teams[$i]->name,
-							CheckinForm::TEAMB . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
-							$society
-						);
+					} else {
+						$team = models\Team::find()->tournament($this->_tournament->id)->andWhere("speakerA_id = $todo OR speakerB_id = $todo")->one();
+						if ($team instanceof models\Team) {
+							if ($team->speakerA_id == $todo) {
+								$person[] = $this->cPerson(
+									$team->speakerA->name,
+									$team->name,
+									CheckinForm::TEAMA . "-" . $team->id,
+									$team->society->fullname
+								);
+							} else {
+								$person[] = $this->cPerson(
+									$team->speakerB->name,
+									$team->name,
+									CheckinForm::TEAMB . "-" . $team->id,
+									$team->society->fullname
+								);
+							}
+						} else {
+							throw new Exception("User $todo not found");
+						}
 					}
 				}
-			}
-			if (count($adju) > 0) {
-				$len_a = strlen($adju[0]->id) + 1;
-				for ($i = 0; $i < count($adju); $i++) {
-					$person[] = $this->cPerson(
-						$adju[$i]->user->name,
-						Yii::t("app", "Adjudicator"),
-						CheckinForm::ADJU . "-" . str_pad($adju[$i]->id, $len_a, "0", STR_PAD_LEFT),
-						$adju[$i]->society->fullname
-					);
+			} else {
+				//All of them
+				$teams = models\Team::find()->tournament($this->_tournament->id)->all();
+				$adju = models\Adjudicator::find()->tournament($this->_tournament->id)->all();
+
+				if (count($teams) > 0) {
+					$len_t = strlen($teams[0]->id);
+					if ($teams[0]->id[0] > 7) $len_t++;
+
+					for ($i = 0; $i < count($teams); $i++) {
+						$society = $teams[$i]->society->fullname;
+
+						if ($teams[$i]->speakerA) {
+							$person[] = $this->cPerson(
+								$teams[$i]->speakerA->name,
+								$teams[$i]->name,
+								CheckinForm::TEAMA . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
+								$society
+							);
+						}
+						if ($teams[$i]->speakerB) {
+							$person[] = $this->cPerson(
+								$teams[$i]->speakerB->name,
+								$teams[$i]->name,
+								CheckinForm::TEAMB . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
+								$society
+							);
+						}
+					}
+				}
+				if (count($adju) > 0) {
+					$len_a = strlen($adju[0]->id) + 1;
+					for ($i = 0; $i < count($adju); $i++) {
+						$person[] = $this->cPerson(
+							$adju[$i]->user->name,
+							$adjuText,
+							CheckinForm::ADJU . "-" . str_pad($adju[$i]->id, $len_a, "0", STR_PAD_LEFT),
+							$adju[$i]->society->fullname
+						);
+					}
 				}
 			}
 

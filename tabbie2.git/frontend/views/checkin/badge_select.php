@@ -79,6 +79,56 @@ $this->params['breadcrumbs'][] = $this->title;
 			<?= Html::textInput("height", 70) ?>
 		</div>
 	</div>
+
+	<hr>
+
+	<div class="row">
+		<div class="col-xs-2">
+			<?= Html::label("Single Person", "person"); ?>
+		</div>
+		<?
+		$urlUserList = \yii\helpers\Url::to(['user/list']);
+
+		// Script to initialize the selection based on the value of the select2 element
+		$initUserScript = <<< SCRIPT
+function (element, callback) {
+    var id=\$(element).val();
+    if (id !== "") {
+        \$.ajax("{$urlUserList}?id=" + id, {
+        dataType: "json"
+        }).done(function(data) { callback(data.results);});
+    }
+}
+SCRIPT;
+
+		?>
+		<div class="col-xs-10">
+			<?= \kartik\widgets\Select2::widget([
+				'name'          => 'person',
+				'options'       => ['placeholder' => Yii::t("app", 'Only do for User ...')],
+				'addon'         => [
+					"prepend" => [
+						"content" => \kartik\helpers\Html::icon("user")
+					],
+				],
+				'pluginOptions' => [
+					'multiple'           => true,
+					'allowClear'         => true,
+					'minimumInputLength' => 3,
+					'ajax'               => [
+						'url'      => $urlUserList,
+						'dataType' => 'json',
+						'data'     => new \yii\web\JsExpression('function(term,page) { return {search:term}; }'),
+						'results'  => new \yii\web\JsExpression('function(data,page) { return {results:data.results}; }'),
+					],
+					'initSelection'      => new \yii\web\JsExpression($initUserScript)
+				],
+				'pluginEvents'  => [
+					"select2-selecting" => "function(obj) { console.log(obj); }",
+				],
+			]); ?>
+		</div>
+	</div>
 	<br>
 
 	<div class="form-group">
