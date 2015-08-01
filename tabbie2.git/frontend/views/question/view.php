@@ -38,6 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'apply_T2C',
 			'apply_C2W',
 			'apply_W2C',
+			'param',
 		],
 	]);
 	?>
