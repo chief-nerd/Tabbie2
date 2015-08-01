@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="tournament-view">
 
 	<div class="tabarea">
-		<? if ($model->status === \common\models\Tournament::STATUS_CLOSED): ?>
+		<? if ($model->status >= \common\models\Tournament::STATUS_CLOSED): ?>
 			<ul class="nav nav-tabs">
 				<li class="active"><a data-toggle="tab" href="#Overview">Overview</a></li>
 				<li><a data-toggle="tab" href="#Motion">Motions</a></li>
@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			<div id="Overview" class="tab-pane fade in active">
 				<?php echo $this->render("_view_overview", compact("model")); ?>
 			</div>
-			<? if ($model->status === \common\models\Tournament::STATUS_CLOSED): ?>
+			<? if ($model->status >= \common\models\Tournament::STATUS_CLOSED): ?>
 				<div id="Motion" class="tab-pane fade">
 					<?php echo $this->render("_view_motion", compact("model")); ?>
 				</div>
