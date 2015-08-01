@@ -135,7 +135,8 @@ class QuestionController extends BaseTournamentController
 			}
 		}
 
-		$model->param = implode("\r\n", json_decode($model->param));
+		if ($model->param)
+			$model->param = implode("\r\n", json_decode($model->param));
 
 		return $this->render('update', [
 			'model' => $model,
