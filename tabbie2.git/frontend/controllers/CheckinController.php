@@ -177,6 +177,7 @@ class CheckinController extends BaseTournamentController
 		set_time_limit(0); //Prevent timeout ... this can take time
 		if (Yii::$app->request->post()) {
 
+			$person = [];
 			$new_file = UploadedFile::getInstanceByName("badge");
 			if ($new_file instanceof UploadedFile) {
 				$this->_tournament->saveBadge($new_file);
@@ -184,41 +185,42 @@ class CheckinController extends BaseTournamentController
 			}
 
 			$teams = models\Team::find()->tournament($this->_tournament->id)->all();
-			$a_teams = [];
 			$adju = models\Adjudicator::find()->tournament($this->_tournament->id)->all();
-			$a_adjus = [];
 
 			if (count($teams) > 0) {
 				$len_t = strlen($teams[0]->id);
 				if ($teams[0]->id[0] > 7) $len_t++;
 
 				for ($i = 0; $i < count($teams); $i++) {
-					$a_teams[$i] = $teams[$i]->attributes;
-					$a_teams[$i]["society"] = $teams[$i]->society->fullname;
+					$society = $teams[$i]->society->fullname;
 
 					if ($teams[$i]->speakerA) {
-						$a_teams[$i]["A"] = [
-							"code" => CheckinForm::TEAMA . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
-							"name" => $teams[$i]->speakerA->name
-						];
+						$person[] = $this->cPerson(
+							$teams[$i]->speakerA->name,
+							$teams[$i]->name,
+							CheckinForm::TEAMA . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
+							$society
+						);
 					}
 					if ($teams[$i]->speakerB) {
-						$a_teams[$i]["B"] = [
-							"code" => CheckinForm::TEAMB . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
-							"name" => $teams[$i]->speakerB->name
-						];
+						$person[] = $this->cPerson(
+							$teams[$i]->speakerA->name,
+							$teams[$i]->name,
+							CheckinForm::TEAMB . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
+							$society
+						);
 					}
 				}
 			}
 			if (count($adju) > 0) {
 				$len_a = strlen($adju[0]->id) + 1;
 				for ($i = 0; $i < count($adju); $i++) {
-					$a_adjus[$i] = array_merge($adju[$i]->attributes, [
-						"code" => CheckinForm::ADJU . "-" . str_pad($adju[$i]->id, $len_a, "0", STR_PAD_LEFT),
-						"name" => $adju[$i]->user->name
-					]);
-					$a_adjus[$i]["society"] = $adju[$i]->society->fullname;
-
+					$person[] = $this->cPerson(
+						$adju[$i]->user->name,
+						Yii::t("app", "Adjudicator"),
+						CheckinForm::ADJU . "-" . str_pad($adju[$i]->id, $len_a, "0", STR_PAD_LEFT),
+						$adju[$i]->society->fullname
+					);
 				}
 			}
 
@@ -252,15 +254,16 @@ class CheckinController extends BaseTournamentController
 			else
 				$set = $setting["A6"];
 
+			usort($person, 'self::sortPerson');
+
 			$pdf = new Pdf([
-				'mode' => Pdf::MODE_UTF8, // leaner size using standard fonts
+				'mode'         => Pdf::MODE_UTF8, // leaner size using standard fonts
 				'format'       => $set["format"],
 				'orientation'  => Pdf::ORIENT_LANDSCAPE,
 				'cssInline'    => $set["css"],
 				'cssFile'      => '@frontend/assets/css/badge.css',
 				'content'      => $this->renderPartial("badges", [
-					"teams"      => $a_teams,
-					"adjus"      => $a_adjus,
+					"person" => $person,
 					"tournament" => $this->_tournament,
 					"backurl"    => $badgeURL,
 					"height" => Yii::$app->request->post("height", 70),
@@ -282,5 +285,20 @@ class CheckinController extends BaseTournamentController
 		}
 
 		return $this->render("badge_select");
+	}
+
+	public function sortPerson($a, $b)
+	{
+		return strcmp($a["name"], $b["name"]);
+	}
+
+	public function cPerson($name, $extra, $code, $society)
+	{
+		return [
+			"name"    => $name,
+			"extra"   => $extra,
+			"code"    => $code,
+			"society" => $society,
+		];
 	}
 }
