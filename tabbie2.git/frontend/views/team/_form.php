@@ -21,7 +21,7 @@ use yii\widgets\ActiveForm;
 
 	<?= $form->field($model, 'isSwing')->checkbox() ?>
 
-	<?= $form->field($model, 'language_status')->dropDownList(\common\models\User::getLanguageStatusLabel()) ?>
+	<?= $form->field($model, 'language_status')->dropDownList(\common\models\User::getLanguageStatusLabelArray(true)) ?>
 
 	<?
 	$urlUserList = Url::to(['user/list']);
