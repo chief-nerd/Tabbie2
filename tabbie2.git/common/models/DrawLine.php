@@ -77,6 +77,10 @@ class DrawLine extends Model
 		$total = 0;
 		$n = 0;
 		foreach ($this->adj as $adj) {
+			if (!isset($adj["strength"])) {
+				Yii::error("Adjudicator as no strength: " . print_r($adj, true));
+				$adj["strength"] = 0;
+			}
 			$total += $adj["strength"];
 			$n++;
 		}

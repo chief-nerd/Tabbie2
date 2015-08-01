@@ -68,7 +68,7 @@ function init() {
                 console.log("Saved!");
 
                 var obj = [obj.newPanel, obj.oldPanel];
-                var noticeString = '<span class="glyphicon glyphicon-info-sign text-primary"></span>';
+                var noticeString = '<span class="glyphicon glyphicon-info-sign text-gray"></span>';
                 var warningString = '<span class="glyphicon glyphicon-warning-sign text-warning"></span>';
                 var errorString = '<span class="glyphicon glyphicon-exclamation-sign text-danger"></span>';
 

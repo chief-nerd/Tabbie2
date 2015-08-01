@@ -302,4 +302,32 @@ class Panel extends \yii\db\ActiveRecord
 		return $this->save();
 	}
 
+	/**
+	 * @param Array $a
+	 * @param Array $b
+	 *
+	 * @return int
+	 */
+	public function compare_length_strength($a, $b)
+	{
+		$l_a = count($a["adju"]);
+		$l_b = count($b["adju"]);
+
+		if ($l_a < $l_b)
+			return -1;
+		elseif ($l_a > $l_b)
+			return 1;
+		else {
+
+			$s_a = $a["strength"];
+			$s_b = $b["strength"];
+			if ($s_a < $s_b)
+				return 1;
+			elseif ($s_a > $s_b)
+				return -1;
+			else
+				return 0;
+		}
+	}
+
 }

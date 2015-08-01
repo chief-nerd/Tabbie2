@@ -62,6 +62,14 @@ class Round extends \yii\db\ActiveRecord
 		return (is_numeric($code)) ? $labels[$code] : $labels;
 	}
 
+	/**
+	 * @inheritdoc
+	 */
+	public static function tableName()
+	{
+		return 'round';
+	}
+
 	public function getStatus()
 	{
 
@@ -79,6 +87,11 @@ class Round extends \yii\db\ActiveRecord
 			return Round::STATUS_CREATED;
 		else
 			throw new Exception("Unknow Round status for Round" . $this->number . " No create time");
+	}
+
+	public function hasAllResultsEntered()
+	{
+		return false;
 	}
 
 	public function isJudgingTime()
@@ -106,19 +119,6 @@ class Round extends \yii\db\ActiveRecord
 		}
 
 		return false;
-	}
-
-	public function hasAllResultsEntered()
-	{
-		return false;
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public static function tableName()
-	{
-		return 'round';
 	}
 
 	/**
@@ -223,8 +223,8 @@ class Round extends \yii\db\ActiveRecord
 					$strikedTeam = $adju->getStrikedTeams()->asArray()->all();
 					$adjudicator["strikedTeams"] = $strikedTeam;
 
-					$adjudicator["pastAdjudicatorIDs"] = $adju->getPastAdjudicatorIDs();
-					$adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs();
+					$adjudicator["pastAdjudicatorIDs"] = $adju->getPastAdjudicatorIDs($this->id);
+					$adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs(true);
 
 					$total += $adju->strength;
 
@@ -254,8 +254,8 @@ class Round extends \yii\db\ActiveRecord
 					$strikedTeam = $adjudicatorsObjects[$i]->getStrikedTeams()->asArray()->all();
 					$adjudicators[$i]["strikedTeams"] = $strikedTeam;
 
-					$adjudicators[$i]["pastAdjudicatorIDs"] = $adjudicatorsObjects[$i]->getPastAdjudicatorIDs($this->id);
-					$adjudicators[$i]["pastTeamIDs"] = $adjudicatorsObjects[$i]->getPastTeamIDs(true);
+					$adjudicators[$i]["pastAdjudicatorIDs"] = $adjudicatorsObjects[$i]->getPastAdjudicatorIDs();
+					$adjudicators[$i]["pastTeamIDs"] = $adjudicatorsObjects[$i]->getPastTeamIDs();
 				}
 			}
 
@@ -289,6 +289,7 @@ class Round extends \yii\db\ActiveRecord
 					]), "500");
 
 			/* Setup */
+			/** @var StrictWUDCRules $algo */
 			$algo = $this->tournament->getTabAlgorithmInstance();
 			$algo->tournament_id = $this->tournament->id;
 			$algo->energyConfig = EnergyConfig::loadArray($this->tournament->id);
@@ -324,6 +325,29 @@ class Round extends \yii\db\ActiveRecord
 		return false;
 	}
 
+	public static function stats_standard_deviation(array $a)
+	{
+		$n = count($a);
+		if ($n === 0) {
+			trigger_error("The array has zero elements", E_USER_WARNING);
+
+			return false;
+		}
+		if ($n === 1) {
+			trigger_error("The array has only 1 element", E_USER_WARNING);
+
+			return false;
+		}
+		$mean = array_sum($a) / $n;
+		$carry = 0.0;
+		foreach ($a as $val) {
+			$d = ((double)$val) - $mean;
+			$carry += $d * $d;
+		};
+
+		return sqrt($carry / $n);
+	}
+
 	/**
 	 * Saves a full draw
 	 *
@@ -334,6 +358,8 @@ class Round extends \yii\db\ActiveRecord
 	private function saveDraw($draw)
 	{
 		Yii::trace("Save Draw with " . count($draw) . "lines", __METHOD__);
+		$set_pp = 0;
+		$lineAdju_total = 0;
 		foreach ($draw as $line) {
 			/* @var $line DrawLine */
 
@@ -361,7 +387,9 @@ class Round extends \yii\db\ActiveRecord
 						} else
 							$alloc->function = Panel::FUNCTION_WING;
 
-						$alloc->save();
+						if (!$alloc->save())
+							throw new Exception($judge["name"] . " could not be saved: " . ObjectError::getMsg($alloc));
+
 					} catch (Exception $ex) {
 						Yii::error($judge["id"] . "-" . $judge["name"] . ": " . $ex->getMessage(), __METHOD__);
 						Yii::$app->session->addFlash("error", $judge["id"] . "-" . $judge["name"] . ": " . $ex->getMessage());
@@ -370,9 +398,32 @@ class Round extends \yii\db\ActiveRecord
 			} else {
 				//is a preset Panel
 				$presetP = Panel::find()->tournament($this->tournament_id)->andWhere(["id" => $line->panelID])->one();
+				$alreadyIn = ArrayHelper::getColumn($presetP->getAdjudicatorsObjects(), "id");
 				$presetP->used = 1;
+
 				if (!$presetP->save())
 					Yii::error("Cant save preset panel" . ObjectError::getMsg($presetP), __METHOD__);
+				else
+					$set_pp++;
+
+				foreach ($line->adjudicators as $judge) {
+					try {
+						if (!in_array($judge["id"], $alreadyIn)) {
+							/* @var $judge Adjudicator */
+							$alloc = new AdjudicatorInPanel();
+							$alloc->adjudicator_id = $judge["id"];
+							$alloc->panel_id = $line->panelID;
+							$alloc->function = Panel::FUNCTION_WING;
+
+							if (!$alloc->save())
+								throw new Exception($judge["name"] . " could not be saved: " . ObjectError::getMsg($alloc));
+						}
+
+					} catch (Exception $ex) {
+						Yii::error($judge["id"] . "-" . $judge["name"] . ": " . $ex->getMessage(), __METHOD__);
+						Yii::$app->session->addFlash("error", $judge["id"] . "-" . $judge["name"] . ": " . $ex->getMessage());
+					}
+				}
 			}
 
 			$debate = new Debate();
@@ -389,32 +440,14 @@ class Round extends \yii\db\ActiveRecord
 
 			if (!$debate->save())
 				throw new Exception(Yii::t("app", "Can't save Debate {message}", ["message" => print_r($debate->getErrors(), true)]));
-			else
-				Yii::trace("Debate #" . $debate->id . " saved", __METHOD__);
+			else {
+				$lineAdju = $debate->panel->getAdjudicators()->count();
+				$lineAdju_total += $lineAdju;
+				Yii::trace("Debate #" . $debate->id . " saved with " . $lineAdju . " Adjudicators", __METHOD__);
+			}
 		}
-	}
-
-	public static function stats_standard_deviation(array $a)
-	{
-		$n = count($a);
-		if ($n === 0) {
-			trigger_error("The array has zero elements", E_USER_WARNING);
-
-			return false;
-		}
-		if ($n === 1) {
-			trigger_error("The array has only 1 element", E_USER_WARNING);
-
-			return false;
-		}
-		$mean = array_sum($a) / $n;
-		$carry = 0.0;
-		foreach ($a as $val) {
-			$d = ((double)$val) - $mean;
-			$carry += $d * $d;
-		};
-
-		return sqrt($carry / $n);
+		Yii::trace($set_pp . " PP saved as used", __METHOD__);
+		Yii::trace($lineAdju_total . " Adjudicators saved", __METHOD__);
 	}
 
 	public function improveAdjudicator($runs)

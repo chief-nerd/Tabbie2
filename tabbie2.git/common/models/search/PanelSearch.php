@@ -45,6 +45,7 @@ class PanelSearch extends Panel
 
 		$dataProvider = new ActiveDataProvider([
 			'query' => $query,
+			'pagination' => false,
 		]);
 
 		$this->load($params);

@@ -29,7 +29,7 @@ class PanelController extends BaseTournamentController
 				'class' => AccessControl::className(),
 				'rules' => [
 					[
-						'allow'   => true,
+						'allow' => true,
 						'actions'       => ['index', 'view'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id) ||
@@ -38,7 +38,7 @@ class PanelController extends BaseTournamentController
 						}
 					],
 					[
-						'allow'   => true,
+						'allow' => true,
 						'actions'       => ['create', 'update', 'delete'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id) ||
@@ -78,6 +78,24 @@ class PanelController extends BaseTournamentController
 		return $this->render('view', [
 			'model' => $this->findModel($id),
 		]);
+	}
+
+	/**
+	 * Finds the Panel model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 *
+	 * @param integer $id
+	 *
+	 * @return Panel the loaded model
+	 * @throws NotFoundHttpException if the model cannot be found
+	 */
+	protected function findModel($id)
+	{
+		if (($model = Panel::findOne($id)) !== null) {
+			return $model;
+		} else {
+			throw new NotFoundHttpException('The requested page does not exist.');
+		}
 	}
 
 	/**
@@ -151,26 +169,17 @@ class PanelController extends BaseTournamentController
 	 */
 	public function actionDelete($id)
 	{
-		$this->findModel($id)->delete();
-
-		return $this->redirect(['index']);
-	}
-
-	/**
-	 * Finds the Panel model based on its primary key value.
-	 * If the model is not found, a 404 HTTP exception will be thrown.
-	 *
-	 * @param integer $id
-	 *
-	 * @return Panel the loaded model
-	 * @throws NotFoundHttpException if the model cannot be found
-	 */
-	protected function findModel($id)
-	{
-		if (($model = Panel::findOne($id)) !== null) {
-			return $model;
-		} else {
-			throw new NotFoundHttpException('The requested page does not exist.');
+		$model = $this->findModel($id);
+		$go = true;
+		foreach ($model->adjudicatorInPanels as $aip) {
+			if (!$aip->delete())
+				Yii::$app->session->addFlash("error", "Cant delete AIP: " . ObjectError::getMsg($aip));
 		}
+		if (!$model->delete())
+			Yii::$app->session->addFlash("error", "Cant delete Panel: " . ObjectError::getMsg($model));
+		else
+			Yii::$app->session->addFlash("success", Yii::t("app", "Panel deleted"));
+
+		return $this->redirect(['index', "tournament_id" => $this->_tournament->id]);
 	}
 }
