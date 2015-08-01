@@ -80,7 +80,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			},
 			'visible'             => $tournament->has_esl,
 			'filterType'          => GridView::FILTER_SELECT2,
-			'filter'              => \common\models\User::getLanguageStatusLabel(null, true),
+			'filter' => \common\models\User::getLanguageStatusLabelArray(true, true),
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
