@@ -38,9 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				<?= $form->field($model, $pos . '_place', $fieldOption)
 					->label($model->getResultLabel($debate, $pos))
 					->textInput($textOption) ?>
-				<?= $form->field($model, $pos . '_speaks', $fieldOption)
-					->label("")
-					->textInput($textOption) ?>
+				<? // echo $form->field($model, $pos . '_speaks', $fieldOption) ->label("") ->textInput($textOption) ?>
 			</div>
 		<? endforeach; ?>
 	</div>

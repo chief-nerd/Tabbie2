@@ -110,6 +110,7 @@ class PanelController extends BaseTournamentController
 		$model->tournament_id = $this->_tournament->id;
 		$model->used = 0;
 		$model->is_preset = 1;
+		/** @todo Make strength override able */
 
 		if ($model->load(Yii::$app->request->post())) {
 			if ($model->createAIP()) {

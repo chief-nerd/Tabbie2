@@ -439,4 +439,8 @@ a.desc:after {
 .result-index .panel-heading {
     padding: 4px 15px;
 }
+
+.checkboxlist label {
+    line-height: 30px;
+}
 /** LOADER ENDE */

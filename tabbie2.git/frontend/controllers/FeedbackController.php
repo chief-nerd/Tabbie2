@@ -170,18 +170,20 @@ class FeedbackController extends BaseTournamentController
 			$feedback->save();
 
 			foreach ($this->_tournament->getQuestions($type)->all() as $question) {
-				if (is_array($answers[$question->id])) {
-					$answer = json_encode($answers[$question->id]);
-				} else
-					$answer = $answers[$question->id];
+				if (isset($answers[$question->id])) {
+					if (is_array($answers[$question->id])) {
+						$answer = json_encode($answers[$question->id]);
+					} else
+						$answer = $answers[$question->id];
 
-				$models[$question->id]->value = $answer;
-				$models[$question->id]->feedback_id = $feedback->id;
+					$models[$question->id]->value = $answer;
+					$models[$question->id]->feedback_id = $feedback->id;
 
-				if ($models[$question->id]->save()) {
-					$allGood = true;
-				} else {
-					$allGood = false;
+					if ($models[$question->id]->save()) {
+						$allGood = true;
+					} else {
+						$allGood = false;
+					}
 				}
 			}
 

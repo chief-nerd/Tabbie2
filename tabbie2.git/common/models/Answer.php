@@ -7,6 +7,7 @@ use kartik\rating\StarRating;
 use Yii;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\widgets\MaskedInput;
 
 /**
  * This is the model class for table "answer".
@@ -95,6 +96,15 @@ class Answer extends \yii\db\ActiveRecord
 					"name"  => "Answer[" . $q_id . "]",
 				]);
 				break;
+			case Question::TYPE_NUMBER:
+				$element = MaskedInput::widget([
+					'name'          => $this->getName($q_id),
+					'mask'          => '9',
+					"class"         => "form-control",
+					'clientOptions' => ['repeat' => 2, 'greedy' => false]
+					/** @todo Make repeat aka digits variable */
+				]);
+				break;
 			case Question::TYPE_TEXT:
 				$element = Html::textarea($this->getName($q_id), $this->value, [
 					"class" => "form-control",
@@ -118,6 +128,7 @@ class Answer extends \yii\db\ActiveRecord
 				$selection = json_decode($this->question->param);
 				$element = Html::checkboxList("Answer[" . $q_id . "]", null, $selection, [
 					"id"          => "Answer_" . $q_id,
+					'class' => 'checkboxlist',
 					'itemOptions' => [],
 				]);
 				break;
