@@ -48,6 +48,7 @@ class Tournament extends \yii\db\ActiveRecord
 	const STATUS_CREATED = 0;
 	const STATUS_RUNNING = 1;
 	const STATUS_CLOSED = 2;
+	const STATUS_HIDDEN = 3;
 
 	/**
 	 * @inheritdoc
