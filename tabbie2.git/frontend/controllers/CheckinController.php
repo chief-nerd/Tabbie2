@@ -204,7 +204,7 @@ class CheckinController extends BaseTournamentController
 					}
 					if ($teams[$i]->speakerB) {
 						$person[] = $this->cPerson(
-							$teams[$i]->speakerA->name,
+							$teams[$i]->speakerB->name,
 							$teams[$i]->name,
 							CheckinForm::TEAMB . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
 							$society
