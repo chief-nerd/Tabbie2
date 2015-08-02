@@ -184,7 +184,7 @@ class Result extends \yii\db\ActiveRecord
 	 */
 	public function getPoints($p)
 	{
-		if ($this->{$p . "_irregular"} > 0) {
+		if ($this->{$p . "_irregular"} == Team::IRREGULAR_SWING) {
 			return 0;
 		}
 
@@ -201,8 +201,11 @@ class Result extends \yii\db\ActiveRecord
 	public function getPlaceText($p)
 	{
 		$points = $this->getPoints($p);
+		if ($this->{$p . "_irregular"} == Team::IRREGULAR_SWING)
+			return "-";
+
 		if ($this->{$p . "_irregular"} > Team::IRREGULAR_NORMAL)
-			$points = "-";
+			$points = $points . "<sup>*</sup>";
 
 		return $points;
 	}
