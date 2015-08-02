@@ -24,7 +24,7 @@
 							<thead>
 							<tr>
 								<th><?= Yii::t("app", "Team") ?></th>
-								<th width="200">ENL Place</th>
+								<th width="200"><?= Yii::t("app", "EPL Place") ?></th>
 								<? if ($model->tournament->has_esl && $tab->esl_place): ?>
 									<th width="200"><?= Yii::t("app", "ESL Place") ?></th>
 								<? endif; ?>

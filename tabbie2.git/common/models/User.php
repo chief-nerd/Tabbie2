@@ -542,7 +542,7 @@ class User extends ActiveRecord implements IdentityInterface
 			return Yii::t("app", "Interview needed");
 
 		$status = [
-			self::LANGUAGE_ENL => Yii::t("app", "ENL") . (($short) ? "" : (", " . Yii::t("app", "English as a native language"))),
+			self::LANGUAGE_ENL => Yii::t("app", "EPL") . (($short) ? "" : (", " . Yii::t("app", "English as a proficient language"))),
 			self::LANGUAGE_ESL => Yii::t("app", "ESL") . (($short) ? "" : (", " . Yii::t("app", "English as a second language"))),
 			self::LANGUAGE_EFL => Yii::t("app", "EFL") . (($short) ? "" : (", " . Yii::t("app", "English as a foreign language"))),
 		];
@@ -553,7 +553,7 @@ class User extends ActiveRecord implements IdentityInterface
 	public static function getLanguageStatusLabelArray($short, $more = false)
 	{
 		$status = [
-			self::LANGUAGE_ENL => Yii::t("app", "ENL") . (($short) ? "" : (" ," . Yii::t("app", "English as a native language"))),
+			self::LANGUAGE_ENL => Yii::t("app", "EPL") . (($short) ? "" : (" ," . Yii::t("app", "English as a proficient language"))),
 			self::LANGUAGE_ESL => Yii::t("app", "ESL") . (($short) ? "" : (" ," . Yii::t("app", "English as a second language"))),
 			self::LANGUAGE_EFL => Yii::t("app", "EFL") . (($short) ? "" : (" ," . Yii::t("app", "English as a foreign language"))),
 		];
