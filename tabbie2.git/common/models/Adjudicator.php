@@ -202,12 +202,12 @@ class Adjudicator extends \yii\db\ActiveRecord
 	 */
 	public function getSocieties($elasticMembership = false)
 	{
-		$query = Society::find()->rightJoin("in_society", ["society_id" => "id"])->where(["user_id" => $this->user_id]);
+		$query = Society::find()->leftJoin("in_society", "id = society_id")->andWhere(["user_id" => $this->user_id]);
 
 		if ($elasticMembership)
-			return $query->andWhere("ending IS NULL OR ending > DATE_ADD(ending, INTERVAL -" . Yii::$app->params["time_to_still_consider_active_in_society"] . ")");
+			return $query->andWhere("(ending IS NULL OR ending > DATE_ADD(ending, INTERVAL -" . Yii::$app->params["time_to_still_consider_active_in_society"] . "))");
 		else
-			return $query->andWhere("ending IS NULL");
+			return $query->andWhere("(ending IS NULL)");
 	}
 
 	/**
