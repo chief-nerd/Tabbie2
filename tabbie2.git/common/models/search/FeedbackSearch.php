@@ -59,7 +59,7 @@ class FeedbackSearch extends Feedback
 		]);
 
 		$dataProvider->setSort([
-			'defaultOrder' => ['venue_name' => SORT_ASC],
+			'defaultOrder' => ['time' => SORT_DESC],
 			'attributes'   => [
 				'venue_name'   => [
 					'asc'  => ['CHAR_LENGTH(venue.name), venue.name' => SORT_ASC],
@@ -69,6 +69,10 @@ class FeedbackSearch extends Feedback
 					'asc'  => ['round.number' => SORT_ASC],
 					'desc' => ['round.number' => SORT_DESC],
 				],
+				'time' => [
+					'asc'  => ['time' => SORT_ASC],
+					'desc' => ['time' => SORT_DESC],
+				]
 			]
 		]);
 

@@ -115,8 +115,6 @@ class FeedbackController extends BaseTournamentController
 	 */
 	public function actionCreate($id, $type, $ref)
 	{
-
-		$models = [];
 		$already_entered = false;
 
 		$feedback = new Feedback();
@@ -157,60 +155,101 @@ class FeedbackController extends BaseTournamentController
 				throw new Exception(Yii::t("app", "No type"));
 		}
 
-		foreach ($this->_tournament->getQuestions($type)->all() as $question) {
-			$models[$question->id] = new Answer([
-				"question_id" => $question->id,
-			]);
+		$model_group = [];
+		if ($type == Feedback::FROM_CHAIR) {
+			foreach ($object->panel->getAdjudicators()->all() as $a) {
+				if ($a->id != $ref) {
+					$model_group[] = [
+						"title" => $a->name,
+						"item"  => $this->addQuestions($type),
+						"id"    => $a->id,
+					];
+				}
+			}
+		} else {
+			$model_group[] = [
+				"title" => $object->panel->getChairInPanel()->adjudicator->name,
+				"item"  => $this->addQuestions($type),
+				"to"    => $object->panel->getChairInPanel()->adjudicator->id,
+			];
 		}
 
 		if (Yii::$app->request->isPost && !$already_entered) {
 			$allGood = true;
-			$answers = Yii::$app->request->post("Answer");
+			$answers_group = Yii::$app->request->post("Answer");
 
-			$feedback->save();
+			for ($group = 0; $group < count($answers_group); $group++) {
 
-			foreach ($this->_tournament->getQuestions($type)->all() as $question) {
-				if (isset($answers[$question->id])) {
-					if (is_array($answers[$question->id])) {
-						$answer = json_encode($answers[$question->id]);
-					} else
-						$answer = $answers[$question->id];
+				if ($type == Feedback::FROM_CHAIR) {
+					$toOption = Feedback::TO_WING;
+				} else {
+					$toOption = Feedback::TO_CHAIR;
+				}
 
-					$models[$question->id]->value = $answer;
-					$models[$question->id]->feedback_id = $feedback->id;
+				$feedbackIterate = clone $feedback;
+				$feedbackIterate->to_id = $model_group[$group]["to"];
+				$feedbackIterate->to_type = $toOption;
+				$feedbackIterate->save();
 
-					if ($models[$question->id]->save()) {
-						$allGood = true;
-					} else {
-						$allGood = false;
+				$answers = $answers_group[$group];
+
+				foreach ($this->_tournament->getQuestions($type)->all() as $question) {
+					if (isset($answers[$question->id])) {
+						if (is_array($answers[$question->id])) {
+							$answer = json_encode($answers[$question->id]);
+						} else
+							$answer = $answers[$question->id];
+
+						$model_group[$group]["item"][$question->id]->value = $answer;
+						$model_group[$group]["item"][$question->id]->feedback_id = $feedbackIterate->id;
+						$model_group[$group]["item"][$question->id]->question_id = $question->id;
+
+						if ($model_group[$group]["item"][$question->id]->save()) {
+							$allGood = true;
+						} else {
+							$allGood = false;
+						}
 					}
 				}
-			}
 
-			if ($allGood) {
-				switch ($type) {
-					case Feedback::FROM_CHAIR:
-					case Feedback::FROM_WING:
-						$object->got_feedback = 1;
-						break;
-					case Feedback::FROM_TEAM:
-						$object->{$team_pos . "_feedback"} = 1;
-						break;
+				if ($allGood) {
+					switch ($type) {
+						case Feedback::FROM_CHAIR:
+						case Feedback::FROM_WING:
+							$object->got_feedback = 1;
+							break;
+						case Feedback::FROM_TEAM:
+							$object->{$team_pos . "_feedback"} = 1;
+							break;
+					}
+
+					if (!$object->save())
+						throw new Exception("Save error " . ObjectError::getMsg($object));
 				}
-
-				if (!$object->save())
-					throw new Exception("Save error " . ObjectError::getMsg($object));
+				$already_entered = true;
 			}
-			$already_entered = true;
 		}
 
 		if ($already_entered) {
 			Yii::$app->session->addFlash("success", Yii::t("app", "Feedback successfully submitted"));
 
 			return $this->redirect(['tournament/view', "id" => $this->_tournament->id]);
-		} else
-			return $this->render('create', ['models' => $models,]);
+		} else {
+			return $this->render('create', ['model_group' => $model_group]);
+		}
 
+	}
+
+	public function addQuestions($type)
+	{
+		$models = [];
+		foreach ($this->_tournament->getQuestions($type)->all() as $question) {
+			$models[$question->id] = new Answer([
+				"question_id" => $question->id,
+			]);
+		}
+
+		return $models;
 	}
 
 

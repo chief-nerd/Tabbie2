@@ -10,6 +10,8 @@ use Yii;
  * @property integer             $id
  * @property integer             $debate_id
  * @property string              $time
+ * @property integer             $to_type
+ * @property integer             $to_id
  * @property Debate              $debate
  * @property FeedbackHasAnswer[] $feedbackHasAnswers
  * @property Answer[]            $answers
@@ -20,6 +22,9 @@ class Feedback extends \yii\db\ActiveRecord
 	const FROM_CHAIR = 1;
 	const FROM_WING = 2;
 	const FROM_TEAM = 3;
+
+	const TO_CHAIR = 1;
+	const TO_WING = 2;
 
 	/**
 	 * @inheritdoc
@@ -36,7 +41,7 @@ class Feedback extends \yii\db\ActiveRecord
 	{
 		return [
 			[['debate_id'], 'required'],
-			[['debate_id'], 'integer'],
+			[['debate_id', 'to_type', 'to_id'], 'integer'],
 			[['time'], 'safe']
 		];
 	}
@@ -50,6 +55,8 @@ class Feedback extends \yii\db\ActiveRecord
 			'id'        => Yii::t('app', 'ID'),
 			'debate_id' => Yii::t('app', 'Debate ID'),
 			'time'      => Yii::t('app', 'Time'),
+			'to_type' => Yii::t('app', 'Type'),
+			'to_id'   => Yii::t('app', 'To ID'),
 		];
 	}
 
@@ -67,5 +74,14 @@ class Feedback extends \yii\db\ActiveRecord
 	public function getAnswers()
 	{
 		return $this->hasMany(Answer::className(), ['feedback_id' => 'id']);
+	}
+
+	public function getTo()
+	{
+		switch ($this->to_type) {
+			case self::TO_CHAIR:
+			case self::TO_WING:
+				return Adjudicator::find()->where(["id" => $this->to_id]);
+		}
 	}
 }

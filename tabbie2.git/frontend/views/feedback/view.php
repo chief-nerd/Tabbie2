@@ -20,6 +20,16 @@ $this->params['breadcrumbs'][] = $this->title;
 	$att = [
 		'debate.venue.name:text:Room',
 		'time',
+		[
+			"label" => "Given to",
+			"value" => (\common\models\Adjudicator::findOne($model->to_id)) ?
+				\common\models\Adjudicator::findOne($model->to_id)->name :
+				"not found #" . $model->to_id,
+		],
+		[
+			"label" => "Given to role",
+			"value" => ($model->to_type == \common\models\Feedback::TO_CHAIR) ? Yii::t("app", "Chair") : Yii::t("app", "Wing"),
+		],
 	];
 
 	foreach ($model->answers as $answer) {

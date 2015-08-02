@@ -51,7 +51,10 @@ $this->params['breadcrumbs'][] = $this->title;
 			],
 			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any Venue ...')],
 		],
-		'time',
+		[
+			'class'     => '\kartik\grid\DataColumn',
+			'attribute' => 'time',
+		],
 		[
 			'class'       => 'kartik\grid\ActionColumn',
 			'width'       => "100px",
@@ -63,7 +66,6 @@ $this->params['breadcrumbs'][] = $this->title;
 			},
 			'viewOptions' => ['label' => '<i class="glyphicon glyphicon-folder-open"></i>', 'title' => Yii::t("app", 'View {modelClass}', ['modelClass' => 'Feedback']), 'data-toggle' => 'tooltip'],
 			'updateOptions' => ['title' => Yii::t("app", 'Update {modelClass}', ['modelClass' => 'Feedback']), 'data-toggle' => 'tooltip'],
-			'width'       => '100px'
 		]
 	];
 

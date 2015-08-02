@@ -70,14 +70,14 @@ class Answer extends \yii\db\ActiveRecord
 		return $this->hasOne(Feedback::className(), ['id' => 'feedback_id']);
 	}
 
-	public function renderLabel($q_id)
+	public function renderLabel($group, $q_id)
 	{
-		return '<label class="control-label" for="' . Html::encode($this->getName($q_id)) . '">' . Html::encode($this->question->text) . '</label>';
+		return '<label class="control-label" for="' . Html::encode($this->getName($group, $q_id)) . '">' . Html::encode($this->question->text) . '</label>';
 	}
 
-	public function getName($q_id)
+	public function getName($group, $q_id)
 	{
-		return "Answer[" . $q_id . "]";
+		return "Answer[" . $group . "][" . $q_id . "]";
 	}
 
 	/**
@@ -85,20 +85,19 @@ class Answer extends \yii\db\ActiveRecord
 	 *
 	 * @return string
 	 */
-	public function renderField($q_id)
+	public function renderField($group, $q_id)
 	{
 		//<input id="answer-value" class="form-control" name="Answer[value]" type="text">
 		$element = null;
 		switch ($this->question->type) {
 			case Question::TYPE_INPUT:
-				$element = Html::textInput($this->getName($q_id), $this->value, [
+				$element = Html::textInput($this->getName($group, $q_id), $this->value, [
 					"class" => "form-control",
-					"name"  => "Answer[" . $q_id . "]",
 				]);
 				break;
 			case Question::TYPE_NUMBER:
 				$element = MaskedInput::widget([
-					'name'          => $this->getName($q_id),
+					'name' => $this->getName($group, $q_id),
 					'mask'          => '9',
 					"class"         => "form-control",
 					'clientOptions' => ['repeat' => 2, 'greedy' => false]
@@ -106,15 +105,14 @@ class Answer extends \yii\db\ActiveRecord
 				]);
 				break;
 			case Question::TYPE_TEXT:
-				$element = Html::textarea($this->getName($q_id), $this->value, [
+				$element = Html::textarea($this->getName($group, $q_id), $this->value, [
 					"class" => "form-control",
-					"name"  => "Answer[" . $q_id . "]",
 				]);
 				break;
 			case Question::TYPE_STAR:
 				$element = StarRating::widget([
-					"name"          => "Answer[" . $q_id . "]",
-					"id"            => "Answer_" . $q_id,
+					"name" => $this->getName($group, $q_id),
+					"id"   => "Answer_$group" . "_$q_id",
 					"pluginOptions" => [
 						"stars" => 5,
 						"min"   => 0,
@@ -126,8 +124,8 @@ class Answer extends \yii\db\ActiveRecord
 				break;
 			case Question::TYPE_CHECKBOX:
 				$selection = json_decode($this->question->param);
-				$element = Html::checkboxList("Answer[" . $q_id . "]", null, $selection, [
-					"id"          => "Answer_" . $q_id,
+				$element = Html::checkboxList("Answer[$group][" . $q_id . "]", null, $selection, [
+					"id" => "Answer_$group" . "_" . $q_id,
 					'class' => 'checkboxlist',
 					'itemOptions' => [],
 				]);
