@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			<?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
 			<?= $form->field($model, 'email') ?>
 			<?= $form->field($model, 'password')->passwordInput() ?>
-			<?= $form->field($model, 'rememberMe')->checkbox() ?>
+			<?= $form->field($model, 'rememberMe')->hiddenInput(["value" => 1])->label("") ?>
 			<div style="color:#999;margin:1em 0">
 				<?= Yii::t("app", "If you forgot your password you can {resetIt}", ["resetIt" => Html::a(Yii::t("app", 'reset it'), ['site/request-password-reset'])]) ?>
 				.
