@@ -105,7 +105,7 @@ class PublicController extends BaseTournamentController
 		foreach ($dataProvider->models as $model) {
 			foreach (Team::getPos() as $pos) {
 				$item = clone $model;
-				$item->draw_sort = $model->{$pos . "_team"}->name;
+				$item->draw_sort = strtoupper($model->{$pos . "_team"}->name);
 				$draw_array[] = $item;
 			}
 		}

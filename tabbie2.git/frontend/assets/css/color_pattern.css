@@ -161,17 +161,17 @@
  * Gender
  */
 .gender .MALE {
-    background-color: #47689B;
+    background-color: #1e1e69;
 }
 
 .gender .FEMA {
-    background-color: #9F5EAB;
+    background-color: #c43939;
 }
 
 .gender .OTHE {
-    background-color: #95BD56;
+    background-color: #39c439;
 }
 
 .gender .NORE {
-    background-color: #A35540;
+    background-color: #222222;
 }
