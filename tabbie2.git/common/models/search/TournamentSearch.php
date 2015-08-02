@@ -118,7 +118,7 @@ class TournamentSearch extends Tournament
 		return $dataProvider;
 	}
 
-	public function getRoundOptions($tournament)
+	static public function getRoundOptions($tournament)
 	{
 		$t = Round::find()->where(["tournament_id" => $tournament])->asArray()->all();
 
