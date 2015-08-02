@@ -308,7 +308,7 @@ class Panel extends \yii\db\ActiveRecord
 	 *
 	 * @return int
 	 */
-	public function compare_length_strength($a, $b)
+	static public function compare_length_strength($a, $b)
 	{
 		$l_a = count($a["adju"]);
 		$l_b = count($b["adju"]);
