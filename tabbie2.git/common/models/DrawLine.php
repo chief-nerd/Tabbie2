@@ -49,6 +49,12 @@ class DrawLine extends Model
 	public $hasPresetPanel = false;
 
 	/**
+	 * If this is a preset panel, then DO NOT touch adju indexes up to this
+	 * @var integer
+	 */
+	public $offLimit = false;
+
+	/**
 	 * Holds the Panel ID
 	 *
 	 * @var integer

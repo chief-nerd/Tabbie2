@@ -66,7 +66,6 @@ class DebateSearch extends Debate
 			'query'      => $query,
 			'pagination' => false,
 		]);
-
 		$dataProvider->setSort([
 			'defaultOrder' => ['highestPoints' => SORT_ASC],
 			'attributes'   => [
