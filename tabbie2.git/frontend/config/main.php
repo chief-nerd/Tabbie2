@@ -24,7 +24,7 @@ $config = [
 		],
 		'user'         => [
 			'identityClass' => 'common\models\User',
-			'enableAutoLogin' => true,
+			'enableAutoLogin' => false,
 		],
 		'urlManager'   => [
 			'enablePrettyUrl' => true,
