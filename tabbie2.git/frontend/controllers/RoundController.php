@@ -320,6 +320,7 @@ class RoundController extends BaseTournamentController
 
 	public function actionPrintballots($id, $debug = false)
 	{
+		set_time_limit(0);
 		$model = Round::findOne(["id" => $id]);
 
 		$pdf = new Pdf([
