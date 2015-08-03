@@ -216,7 +216,8 @@ class CheckinController extends BaseTournamentController
 								);
 							}
 						} else {
-							throw new Exception("User $todo not found");
+							Yii::$app->session->addFlash("error", "User $todo not found");
+							continue;
 						}
 					}
 				}
