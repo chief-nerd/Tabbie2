@@ -34,7 +34,7 @@ use common\models\Team;
 				if (is_array($ref) && $model->getTournamentHasQuestions()->count() > 0) {
 					$button_output_buffer .= "&nbsp;" . Html::a(
 							Html::icon("comment") . "&nbsp;" . Yii::t('app', 'Feedback'),
-							array_merge($ref, ['feedback/create', "tournament_id" => $model->id]),
+							array_merge(['feedback/create', "tournament_id" => $model->id], $ref),
 							['class' => 'btn btn-success']);
 				}
 			} else {
