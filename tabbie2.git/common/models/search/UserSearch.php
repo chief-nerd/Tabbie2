@@ -23,6 +23,13 @@ class UserSearch extends User
 	 */
 	public $name;
 
+	public static function getArray()
+	{
+		$user = User::find()->all();
+
+		return ArrayHelper::map($user, "name", "name");
+	}
+
 	/**
 	 * @inheritdoc
 	 */
@@ -163,18 +170,14 @@ class UserSearch extends User
 		$query->andFilterWhere(['like', "CONCAT(givenname, ' ', surename)", $this->name]);
 	}
 
-	public static function getArray()
-	{
-		$user = User::find()->all();
-
-		return ArrayHelper::map($user, "name", "name");
-	}
-
-	public function getSearchTournamentArray($tournamentid)
+	public static function getSearchTournamentArray($tournamentid, $index_id = false)
 	{
 		$user = User::findByTournament($tournamentid)->all();
 
-		return ArrayHelper::map($user, "name", "name");
+		if ($index_id)
+			return ArrayHelper::map($user, "id", "name");
+		else
+			return ArrayHelper::map($user, "name", "name");
 	}
 
 	/**

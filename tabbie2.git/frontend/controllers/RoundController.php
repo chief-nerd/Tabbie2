@@ -4,6 +4,8 @@ namespace frontend\controllers;
 
 use common\components\filter\TournamentContextFilter;
 use common\components\ObjectError;
+use common\models\Adjudicator;
+use common\models\AdjudicatorInPanel;
 use common\models\Debate;
 use common\models\DrawLine;
 use common\models\Panel;
@@ -36,7 +38,7 @@ class RoundController extends BaseTournamentController
 				'rules' => [
 					[
 						'allow'   => true,
-						'actions' => ['index', 'view', 'update', 'printballots', 'debatedetails', 'changevenue'],
+						'actions' => ['index', 'view', 'update', 'printballots', 'debatedetails', 'changevenue', 'switch-adjudicators'],
 						'matchCallback' => function ($rule, $action) {
 							return (
 								$this->_tournament->isTabMaster(Yii::$app->user->id) ||
@@ -106,6 +108,24 @@ class RoundController extends BaseTournamentController
 			'debateSearchModel' => $debateSearchModel,
 			'debateDataProvider' => $debateDataProvider,
 		]);
+	}
+
+	/**
+	 * Finds the Round model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 *
+	 * @param integer $id
+	 *
+	 * @return Round the loaded model
+	 * @throws NotFoundHttpException if the model cannot be found
+	 */
+	protected function findModel($id)
+	{
+		if (($model = Round::findOne($id)) !== null) {
+			return $model;
+		} else {
+			throw new NotFoundHttpException('The requested page does not exist.');
+		}
 	}
 
 	/**
@@ -240,24 +260,6 @@ class RoundController extends BaseTournamentController
 		return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
 	}
 
-	/**
-	 * Finds the Round model based on its primary key value.
-	 * If the model is not found, a 404 HTTP exception will be thrown.
-	 *
-	 * @param integer $id
-	 *
-	 * @return Round the loaded model
-	 * @throws NotFoundHttpException if the model cannot be found
-	 */
-	protected function findModel($id)
-	{
-		if (($model = Round::findOne($id)) !== null) {
-			return $model;
-		} else {
-			throw new NotFoundHttpException('The requested page does not exist.');
-		}
-	}
-
 	public function actionRedraw($id)
 	{
 		$model = Round::findOne(["id" => $id]);
@@ -324,7 +326,7 @@ class RoundController extends BaseTournamentController
 		$model = Round::findOne(["id" => $id]);
 
 		$pdf = new Pdf([
-			'mode' => Pdf::MODE_UTF8, // leaner size using standard fonts
+			'mode'    => Pdf::MODE_UTF8, // leaner size using standard fonts
 			'format'  => Pdf::FORMAT_A4,
 			'orientation' => Pdf::ORIENT_LANDSCAPE,
 			'cssFile' => '@frontend/assets/css/ballot.css',
@@ -338,6 +340,51 @@ class RoundController extends BaseTournamentController
 
 		//renderAjax does the trick for no layout
 		return $pdf->render();
+	}
+
+	/**
+	 * @param integer $aID UserID
+	 * @param integer $bID USerID
+	 */
+	public function actionSwitchAdjudicators($id, $aID, $bID)
+	{
+		$a = Adjudicator::find()->tournament($this->_tournament->id)->andWhere([
+			"user_id" => $aID
+		])->one();
+		$b = Adjudicator::find()->tournament($this->_tournament->id)->andWhere([
+			"user_id" => $bID
+		])->one();
+
+		if ($a instanceof Adjudicator && $b instanceof Adjudicator) {
+			/** @var AdjudicatorInPanel $a_in_panel */
+			$a_in_panel = AdjudicatorInPanel::find()->joinWith("panel")->where([
+				"adjudicator_id" => $a->id,
+				"panel.used"     => 1,
+			])->orderBy(["panel_id" => SORT_DESC])->one();
+
+			$b_in_panel = AdjudicatorInPanel::find()->joinWith("panel")->where([
+				"adjudicator_id" => $b->id,
+				"panel.used"     => 1,
+			])->orderBy(["panel_id" => SORT_DESC])->one();
+
+			$temp = $a_in_panel->panel_id;
+			$a_in_panel->panel_id = $b_in_panel->panel_id;
+			$b_in_panel->panel_id = $temp;
+
+			if ($a_in_panel->validate() && $b_in_panel->validate()) {
+				if ($a_in_panel->save() && $b_in_panel->save())
+					Yii::$app->session->addFlash("success", Yii::t("app", "Judges {n1} and {n2} switched", [
+						"n1" => $a->getName(),
+						"n2" => $b->getName(),
+					]));
+			} else {
+				Yii::$app->session->addFlash("error", Yii::t("app", "Could not switch because: " .
+					ObjectError::getMsg($a_in_panel) . "<br>and<br>" .
+					ObjectError::getMsg($b_in_panel)));
+			}
+		}
+
+		$this->redirect(['view', 'id' => $id, "tournament_id" => $this->_tournament->id]);
 	}
 
 	public function actionDebatedetails()
