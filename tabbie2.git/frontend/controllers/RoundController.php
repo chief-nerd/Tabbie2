@@ -36,7 +36,7 @@ class RoundController extends BaseTournamentController
 				'rules' => [
 					[
 						'allow'   => true,
-						'actions' => ['index', 'view', 'printballots', 'debatedetails'],
+						'actions' => ['index', 'view', 'update', 'printballots', 'debatedetails', 'changevenue'],
 						'matchCallback' => function ($rule, $action) {
 							return (
 								$this->_tournament->isTabMaster(Yii::$app->user->id) ||
@@ -47,7 +47,7 @@ class RoundController extends BaseTournamentController
 					],
 					[
 						'allow'   => true,
-						'actions' => ['create', 'update', 'changevenue', 'publish', 'redraw', 'improve'],
+						'actions' => ['create', 'publish', 'redraw', 'improve'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
 						}
