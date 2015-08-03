@@ -162,7 +162,7 @@ class FeedbackController extends BaseTournamentController
 					$model_group[] = [
 						"title" => $a->name,
 						"item"  => $this->addQuestions($type),
-						"id"    => $a->id,
+						"to" => $a->id,
 					];
 				}
 			}
