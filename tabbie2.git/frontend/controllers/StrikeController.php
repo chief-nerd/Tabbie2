@@ -150,8 +150,9 @@ class StrikeController extends BaseTournamentController
 						"adjudicator_to_id"   => $c_a->id,
 					])->count();
 
-					if ($already == 0)
+					if ($already === 0)
 						$clashes[] = $c;
+
 				} else { //No Adjudicator ... id might belong to a Team
 					$c_a = Team::find()->tournament($this->_tournament->id)->where("speakerA_id = :user OR speakerB_id = :user", [
 						"user" => $c->clash_with,
@@ -163,7 +164,7 @@ class StrikeController extends BaseTournamentController
 							"adjudicator_id" => $j->id,
 						])->count();
 
-						if ($already == 0)
+						if ($already === 0)
 							$clashes[] = $c;
 					}
 				}
@@ -183,7 +184,7 @@ class StrikeController extends BaseTournamentController
 							"adjudicator_id" => $c_a->id,
 						])->count();
 
-						if ($already == 0)
+						if ($already === 0)
 							$clashes[] = $c;
 					} // No Team2Team Clash :D
 				}
@@ -198,7 +199,7 @@ class StrikeController extends BaseTournamentController
 							"adjudicator_id" => $c_a->id,
 						])->count();
 
-						if ($already == 0)
+						if ($already === 0)
 							$clashes[] = $c;
 					} // No Team2Team Clash :D
 				}
