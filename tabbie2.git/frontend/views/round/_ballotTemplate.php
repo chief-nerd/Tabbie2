@@ -108,7 +108,7 @@ $total = Yii::t("app" ,"Total");
 						<td class="value">
 							<div class="help"><?= $speaks ?></td>
 						<td class="rank" rowspan="2">
-							<div class="help"><?= $rank ?></td>
+							<div class="help"><?= $total ?></td>
 					</tr>
 					<tr>
 						<td><?= ($debate->oo_team->speakerB) ? Html::encode($debate->oo_team->speakerB->name) : "" ?></td>
@@ -134,7 +134,7 @@ $total = Yii::t("app" ,"Total");
 						<td class="value">
 							<div class="help"><?= $speaks ?></td>
 						<td class="rank" rowspan="2">
-							<div class="help"><?= $rank ?></td>
+							<div class="help"><?= $total ?></td>
 					</tr>
 					<tr>
 						<td><?= ($debate->cg_team->speakerB) ? Html::encode($debate->cg_team->speakerB->name) : "" ?></td>
@@ -158,7 +158,7 @@ $total = Yii::t("app" ,"Total");
 						<td class="value">
 							<div class="help"><?= $speaks ?></td>
 						<td class="rank" rowspan="2">
-							<div class="help"><?= $rank ?></div>
+							<div class="help"><?= $total ?></div>
 						</td>
 					</tr>
 					<tr>
