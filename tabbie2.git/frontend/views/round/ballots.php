@@ -5,7 +5,8 @@
 </head>
 <body>
 <?php
-foreach ($model->debates as $debate): ?>
+/** @var \common\models\Round $debate */
+foreach ($model->getDebates()->orderBy("venue_id")->all() as $debate): ?>
 	<div class="page">
 		<?
 		echo $this->render('_ballotTemplate', [
