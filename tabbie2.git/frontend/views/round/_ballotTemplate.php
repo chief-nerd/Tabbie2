@@ -8,7 +8,7 @@ use kartik\helpers\Html;
 
 $speaks = Yii::t("app", "Speaker Points");
 $rank = Yii::t("app", "Rank");
-$total = Yii::t("app" ,"Total");
+$total = Yii::t("app", "Total");
 ?>
 <div class="tournamentlogo">
 	<img src="<?= $tournament->logo ?>">
@@ -72,7 +72,7 @@ $total = Yii::t("app" ,"Total");
 				<table>
 					<tr>
 						<th colspan="2" class="pos"><?= Yii::t("app", "Opening Government") ?></th>
-						<td rowspan ="2" class="value">
+						<td rowspan="2" class="value">
 							<div class="help"><?= $rank ?></td>
 					</tr>
 					<tr>
@@ -97,7 +97,7 @@ $total = Yii::t("app" ,"Total");
 				<table>
 					<tr>
 						<th colspan="2" class="pos"><?= Yii::t("app", "Opening Opposition") ?></th>
-						<td rowspan ="2" class="value">
+						<td rowspan="2" class="value">
 							<div class="help"><?= $rank ?></td>
 					</tr>
 					<tr>
@@ -123,7 +123,7 @@ $total = Yii::t("app" ,"Total");
 				<table>
 					<tr>
 						<th colspan="2" class="pos"><?= Yii::t("app", "Closing Government") ?></th>
-						<td rowspan ="2" class="value">
+						<td rowspan="2" class="value">
 							<div class="help"><?= $rank ?></td>
 					</tr>
 					<tr>
@@ -147,7 +147,7 @@ $total = Yii::t("app" ,"Total");
 				<table>
 					<tr>
 						<th colspan="2" class="pos"><?= Yii::t("app", "Closing Opposition") ?></th>
-						<td rowspan ="2" class="value">
+						<td rowspan="2" class="value">
 							<div class="help"><?= $rank ?></td>
 					</tr>
 					<tr>
@@ -171,4 +171,9 @@ $total = Yii::t("app" ,"Total");
 		</tr>
 	</table>
 </div>
-The best team gets Rank 1. A better rank has a higher total score (no equal scores). Speakers are not to be asked about their preferred pronouns. Speakers are allowed to introduce themselves with preferred gender pronouns. All speakers and judges must strive to use gender neutral language.
+<div>
+	The best team gets Rank 1. A better rank has a higher total score (no equal scores).
+	Speakers are not to be asked about their preferred pronouns. Speakers are allowed to introduce themselves with
+	preferred gender pronouns.
+	All speakers and judges must strive to use gender neutral language.
+</div>

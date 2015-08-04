@@ -162,6 +162,61 @@ class UserSearch extends User
 		return $dataProvider;
 	}
 
+	/**
+	 * Creates data provider instance with search query applied
+	 *
+	 * @param array $params
+	 *
+	 * @return ActiveDataProvider
+	 */
+	public function searchTeam($params, $tournamentid)
+	{
+
+		$query = User::find()->leftJoin("team", "(speakerA_id = user.id OR speakerB_id = user.id)")->andWhere(["tournament_id" => $tournamentid]);
+
+		$dataProvider = new ActiveDataProvider([
+			'query'      => $query,
+			'pagination' => [
+				'pageSize' => Yii::$app->params["users_per_page"],
+			],
+		]);
+
+		$dataProvider->setSort([
+			'attributes' => [
+				'id',
+				'url_slug',
+				'email',
+				'team.name',
+				'role',
+				'last_change',
+				'name' => [
+					'asc'   => ["CONCAT(givenname, ' ', surename)" => SORT_ASC],
+					'desc'  => ["CONCAT(givenname, ' ', surename)" => SORT_DESC],
+					'label' => 'Name'
+				]
+			]
+		]);
+
+		if (!($this->load($params) && $this->validate())) {
+			return $dataProvider;
+		}
+
+		$this->setFilter($query);
+
+		$query->andFilterWhere([
+			'id'          => $this->id,
+			'role'        => $this->role,
+			'status'      => $this->status,
+			'last_change' => $this->last_change,
+			'time'        => $this->time,
+		]);
+
+		$query->andFilterWhere(['like', 'email', $this->email])
+			->andFilterWhere(['like', "CONCAT(givenname, ' ', surename)", $this->name]);
+
+		return $dataProvider;
+	}
+
 	private function setFilter($query)
 	{
 		$query->andFilterWhere([

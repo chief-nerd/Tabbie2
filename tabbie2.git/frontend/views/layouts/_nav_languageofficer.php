@@ -12,8 +12,8 @@ NavBar::begin([
 ]);
 
 $menuItems = [
-	['label' => Html::icon("list-alt") . "&nbsp;" . Yii::t("app", 'Review Language Status'), 'url' => ['tournament/language', "id" => $tournament->id]],
+	['label' => Html::icon("list-alt") . "&nbsp;" . Yii::t("app", 'Review Language Status'), 'url' => ['language/index', "tournament_id" => $tournament->id]],
 ];
 
-echo Nav::widget(['options' => ['class' => 'navbar-nav navbar-right'], 'items' => $menuItems,]);
+echo Nav::widget(['options' => ['class' => 'navbar-nav navbar-right'], 'items' => $menuItems, 'encodeLabels' => false]);
 NavBar::end();

@@ -45,7 +45,7 @@ class LanguageController extends BaseTournamentController
 	public function actionIndex()
 	{
 		$searchModel = new UserSearch();
-		$dataProvider = $searchModel->searchTournament(Yii::$app->request->queryParams, $this->_tournament->id);
+		$dataProvider = $searchModel->searchTeam(Yii::$app->request->queryParams, $this->_tournament->id);
 
 		return $this->render('index', [
 			'searchModel' => $searchModel,
