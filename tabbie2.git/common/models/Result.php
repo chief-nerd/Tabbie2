@@ -205,7 +205,7 @@ class Result extends \yii\db\ActiveRecord
 			return "-";
 
 		if ($this->{$p . "_irregular"} > Team::IRREGULAR_NORMAL)
-			$points = $points . "<sup>*</sup>";
+			$points = $points . "*";
 
 		return $points;
 	}
