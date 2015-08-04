@@ -142,7 +142,7 @@ class FeedbackController extends BaseTournamentController
 						"cg" => $ref,
 						"co" => $ref,
 					]
-				)->one();
+				)->orderBy(["id" => SORT_DESC])->one();
 
 				if (!($object instanceof Debate)) {
 					Yii::error("Team not found!!!", __METHOD__);
