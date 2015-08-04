@@ -115,6 +115,8 @@ class FeedbackController extends BaseTournamentController
 	 */
 	public function actionCreate($id, $type, $ref)
 	{
+
+		Yii::info("New Feedback: id=" . $id . " type=" . $type . " ref=" . $ref, __METHOD__);
 		$already_entered = false;
 
 		$feedback = new Feedback();
@@ -125,7 +127,8 @@ class FeedbackController extends BaseTournamentController
 			case Feedback::FROM_CHAIR:
 			case Feedback::FROM_WING:
 				$object = AdjudicatorInPanel::findOne(["adjudicator_id" => $ref, "panel_id" => $feedback->debate->panel_id]);
-				if (!$object) {
+			if (!($object instanceof AdjudicatorInPanel)) {
+				Yii::error("Chair in Panel " . $feedback->debate->panel_id . " not found", __METHOD__);
 					throw new Exception(Yii::t("app", "Chair in Panel not found - type wrong?"));
 				}
 				$already_entered = $object->got_feedback;
@@ -140,7 +143,9 @@ class FeedbackController extends BaseTournamentController
 						"co" => $ref,
 					]
 				)->one();
-				if (!$object) {
+
+				if (!($object instanceof Debate)) {
+					Yii::error("Team not found!!!", __METHOD__);
 					throw new Exception(Yii::t("app", "Team not found - type wrong?"));
 				}
 
@@ -152,6 +157,7 @@ class FeedbackController extends BaseTournamentController
 				}
 				break;
 			default:
+				Yii::error("Type goes default", __METHOD__);
 				throw new Exception(Yii::t("app", "No type"));
 		}
 
@@ -175,11 +181,13 @@ class FeedbackController extends BaseTournamentController
 		}
 
 		if (Yii::$app->request->isPost && !$already_entered) {
+			Yii::info("Was Post and not entered", __METHOD__);
 			$allGood = true;
 			$answers_group = Yii::$app->request->post("Answer");
 
 			for ($group = 0; $group < count($answers_group); $group++) {
 
+				Yii::info("Do Group #" . $group . " with type=" . $type, __METHOD__);
 				if ($type == Feedback::FROM_CHAIR) {
 					$toOption = Feedback::TO_WING;
 				} else {
@@ -189,12 +197,15 @@ class FeedbackController extends BaseTournamentController
 				$feedbackIterate = clone $feedback;
 				$feedbackIterate->to_id = $model_group[$group]["to"];
 				$feedbackIterate->to_type = $toOption;
-				$feedbackIterate->save();
+				if (!$feedbackIterate->save()) {
+					Yii::error("Saving Feedback failed: " . ObjectError::getMsg($feedbackIterate), __METHOD__);
+				}
 
 				$answers = $answers_group[$group];
 
 				foreach ($this->_tournament->getQuestions($type)->all() as $question) {
 					if (isset($answers[$question->id])) {
+						Yii::info("Add Question #" . $question->id, __METHOD__);
 						if (is_array($answers[$question->id])) {
 							$answer = json_encode($answers[$question->id]);
 						} else
@@ -205,14 +216,17 @@ class FeedbackController extends BaseTournamentController
 						$model_group[$group]["item"][$question->id]->question_id = $question->id;
 
 						if ($model_group[$group]["item"][$question->id]->save()) {
+							Yii::info("Saved Question!", __METHOD__);
 							$allGood = true;
 						} else {
+							Yii::error("Can't save Question: " . ObjectError::getMsg($model_group[$group]["item"][$question->id]), __METHOD__);
 							$allGood = false;
 						}
 					}
 				}
 
 				if ($allGood) {
+					Yii::info("All are good", __METHOD__);
 					switch ($type) {
 						case Feedback::FROM_CHAIR:
 						case Feedback::FROM_WING:
@@ -223,18 +237,22 @@ class FeedbackController extends BaseTournamentController
 							break;
 					}
 
-					if (!$object->save())
+					if (!$object->save()) {
+						Yii::error("Save error " . ObjectError::getMsg($object), __METHOD__);
 						throw new Exception("Save error " . ObjectError::getMsg($object));
+					}
 				}
 				$already_entered = true;
 			}
 		}
 
 		if ($already_entered) {
+			Yii::info("SUCCESS!", __METHOD__);
 			Yii::$app->session->addFlash("success", Yii::t("app", "Feedback successfully submitted"));
 
 			return $this->redirect(['tournament/view', "id" => $this->_tournament->id]);
 		} else {
+			Yii::info("show create form", __METHOD__);
 			return $this->render('create', ['model_group' => $model_group]);
 		}
 
