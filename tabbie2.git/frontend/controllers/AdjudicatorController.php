@@ -209,6 +209,7 @@ class AdjudicatorController extends BaseTournamentController
 		if (!$model->save()) {
 			Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
 		}
+		$model->refresh();
 
 		if (Yii::$app->request->isAjax)
 			return $this->actionIndex();
@@ -480,6 +481,7 @@ class AdjudicatorController extends BaseTournamentController
 			Yii::$app->session->addFlash("error", $model->getErrors("active"));
 		}
 
+		$model->refresh();
 		if (Yii::$app->request->isAjax)
 			$this->actionIndex();
 		else

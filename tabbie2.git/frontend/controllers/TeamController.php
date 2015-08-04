@@ -106,6 +106,7 @@ class TeamController extends BaseTournamentController
 			Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
 		}
 
+		$model->refresh();
 		if (Yii::$app->request->isAjax)
 			return $this->actionIndex();
 		else
