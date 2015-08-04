@@ -151,8 +151,13 @@ class PublicController extends BaseTournamentController
 		$teams = Team::find()
 			->tournament($this->_tournament->id)
 			->andWhere("speakerA_checkedin = 0 OR speakerB_checkedin = 0")
+			->andWhere("active = 1")
 			->all();
-		$adjudicators = Adjudicator::find()->tournament($this->_tournament->id)->andWhere(["checkedin" => 0])->all();
+		$adjudicators = Adjudicator::find()
+			->tournament($this->_tournament->id)
+			->andWhere(["checkedin" => 0])
+			->andWhere("active = 1")
+			->all();
 
 		return $this->render('missing', [
 			"teams" => $teams,
