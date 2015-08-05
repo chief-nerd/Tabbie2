@@ -172,8 +172,6 @@ $total = Yii::t("app", "Total");
 	</table>
 </div>
 <div>
-	The best team gets Rank 1. A better rank has a higher total score (no equal scores).
-	Speakers are not to be asked about their preferred pronouns. Speakers are allowed to introduce themselves with
-	preferred gender pronouns.
-	All speakers and judges must strive to use gender neutral language.
+<br />
+<b>CHAIR JUDGES:</b> please provide contact details on which we can reach you between 1800 and 2100 tonight _________________________________
 </div>
