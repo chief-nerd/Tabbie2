@@ -39,12 +39,25 @@ class Debate extends \yii\db\ActiveRecord
 
 	public $draw_sort = "";
 
-	/**
-	 * @inheritdoc
-	 */
-	public static function tableName()
+	public static function findOneByChair($user_id, $tournament_id, $round_id)
 	{
-		return 'debate';
+		$query = static::find();
+		$query->sql = "SELECT debate.* FROM " . Adjudicator::tableName() . " "
+			. "LEFT JOIN " . AdjudicatorInPanel::tableName() . " ON " . Adjudicator::tableName() . ".id = adjudicator_id "
+			. "LEFT JOIN " . Panel::tableName() . " ON panel_id = " . Panel::tableName() . ".id "
+			. "LEFT JOIN " . Debate::tableName() . " ON " . Debate::tableName() . ".panel_id = " . Panel::tableName() . ".id "
+			. "WHERE user_id = :user_id "
+			. "AND FUNCTION = " . Panel::FUNCTION_CHAIR . " "
+			. "AND round_id = :round_id "
+			. "AND debate.tournament_id = :tournament_id";
+
+		$params = [
+			":user_id"       => $user_id,
+			":round_id"      => $round_id,
+			":tournament_id" => $tournament_id,
+		];
+
+		return $query->params($params)->one();
 	}
 
 	/**
@@ -227,6 +240,14 @@ class Debate extends \yii\db\ActiveRecord
 	}
 
 	/**
+	 * @inheritdoc
+	 */
+	public static function tableName()
+	{
+		return 'debate';
+	}
+
+	/**
 	 * @return mixed
 	 */
 	public function getChair()
@@ -235,27 +256,6 @@ class Debate extends \yii\db\ActiveRecord
 			"debate.id"                     => $this->id,
 			"adjudicator_in_panel.function" => Panel::FUNCTION_CHAIR,
 		])->one();
-	}
-
-	public static function findOneByChair($user_id, $tournament_id, $round_id)
-	{
-		$query = static::find();
-		$query->sql = "SELECT debate.* FROM " . Adjudicator::tableName() . " "
-			. "LEFT JOIN " . AdjudicatorInPanel::tableName() . " ON " . Adjudicator::tableName() . ".id = adjudicator_id "
-			. "LEFT JOIN " . Panel::tableName() . " ON panel_id = " . Panel::tableName() . ".id "
-			. "LEFT JOIN " . Debate::tableName() . " ON " . Debate::tableName() . ".panel_id = " . Panel::tableName() . ".id "
-			. "WHERE user_id = :user_id "
-			. "AND FUNCTION = " . Panel::FUNCTION_CHAIR . " "
-			. "AND round_id = :round_id "
-			. "AND debate.tournament_id = :tournament_id";
-
-		$params = [
-			":user_id"       => $user_id,
-			":round_id"      => $round_id,
-			":tournament_id" => $tournament_id,
-		];
-
-		return $query->params($params)->one();
 	}
 
 	public function isOGTeamMember($id)

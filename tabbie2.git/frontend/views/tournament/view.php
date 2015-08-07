@@ -5,6 +5,7 @@ use yii\widgets\DetailView;
 use kartik\helpers\Html;
 use \common\models\Team;
 use common\models\Panel;
+use yii\jui\Tabs;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Tournament */
@@ -33,34 +34,38 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="tournament-view">
 
 	<div class="tabarea">
-		<? if ($model->status >= \common\models\Tournament::STATUS_CLOSED): ?>
-			<ul class="nav nav-tabs">
-				<li class="active"><a data-toggle="tab" href="#Overview">Overview</a></li>
-				<li><a data-toggle="tab" href="#Motion">Motions</a></li>
-				<li><a data-toggle="tab" href="#Speaks">Speaks Distrubution</a></li>
-				<li><a data-toggle="tab" href="#SpeakerTab">Speaker Tab</a></li>
-				<li><a data-toggle="tab" href="#TeamTab">Team Tab</a></li>
-			</ul>
-		<? endif; ?>
-		<div class="tab-content">
+		<? if ($model->status >= \common\models\Tournament::STATUS_CLOSED) {
+			$items = [
+				[
+					'label'   => Yii::t("app", "Overview"),
+					'content' => $this->render("_view_overview", compact("model"))
+				],
+				[
+					'label' => Yii::t("app", "Motions"),
+					'url'   => ['stats/motion', "tournament_id" => $model->id],
+				],
+				[
+					'label' => Yii::t("app", "Speaks Distrubution"),
+					'url'   => ['stats/speaks', "tournament_id" => $model->id],
+				],
+				[
+					'label' => Yii::t("app", "Speaker Tab"),
+					'url'   => ['stats/speaker-tab', "tournament_id" => $model->id],
+				],
+				[
+					'label' => Yii::t("app", "Team Tab"),
+					'url'   => ['stats/team-tab', "tournament_id" => $model->id],
+				],
+			];
+			echo Tabs::widget([
+				'items'    => $items,
+				'position' => Tabs::POS_ABOVE,
+			]);
 
-			<div id="Overview" class="tab-pane fade in active">
-				<?php echo $this->render("_view_overview", compact("model")); ?>
-			</div>
-			<? if ($model->status >= \common\models\Tournament::STATUS_CLOSED): ?>
-				<div id="Motion" class="tab-pane fade">
-					<?php echo $this->render("_view_motion", compact("model")); ?>
-				</div>
-				<div id="Speaks" class="tab-pane fade">
-					<?php echo $this->render("_view_speaks", compact("model")); ?>
-				</div>
-				<div id="SpeakerTab" class="tab-pane fade">
-					<?php echo $this->render("_view_tab_speaker", compact("model")); ?>
-				</div>
-				<div id="TeamTab" class="tab-pane fade">
-					<?php echo $this->render("_view_tab_team", compact("model")); ?>
-				</div>
-			<? endif; ?>
+		} else {
+			echo $this->render("_view_overview", compact("model"));
+		}
+		?>
 		</div>
 	</div>
 </div>

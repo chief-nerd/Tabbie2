@@ -14,6 +14,7 @@ use yii\helpers\ArrayHelper;
  * @property integer         $id
  * @property integer         $number
  * @property integer         $tournament_id
+ * @property integer         $type
  * @property integer         $energy
  * @property string          $motion
  * @property string          $infoslide
@@ -37,6 +38,25 @@ class Round extends \yii\db\ActiveRecord
 	const STATUS_STARTED = 3;
 	const STATUS_JUDGING = 4;
 	const STATUS_CLOSED = 5;
+
+	const TYP_IN = 0;
+	const TYP_OUT = 1;
+	const TYP_ESL = 2;
+	const TYP_EFL = 3;
+	const TYP_NOVICE = 4;
+
+	public static function getTypeOptions($id = null)
+	{
+		$options = [
+			self::TYP_IN     => Yii::t("app", "In-Round"),
+			self::TYP_OUT    => Yii::t("app", "Out-Round"),
+			self::TYP_EFL    => Yii::t("app", "ESL Out-Round"),
+			self::TYP_EFL    => Yii::t("app", "EFL Out-Round"),
+			self::TYP_NOVICE => Yii::t("app", "Novice Out-Round")
+		];
+
+		return (isset($options[$id])) ? $options[$id] : $options;
+	}
 
 	/**
 	 * @inheritdoc

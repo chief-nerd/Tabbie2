@@ -1,5 +1,5 @@
 {
-  "name": "Tabbie2 Webapp",
+  "name": "tabbie2 webapp",
   "description": "A BP Debate-Tab Webapp written in Yii2",
   "keywords": [
     "BP",
@@ -17,6 +17,7 @@
     "source": "https://github.com/yiisoft/yii2"
   },
   "minimum-stability": "dev",
+  "prefer-stable": true,
   "require": {
     "php": ">=5.4.0",
     "yiisoft/yii2": "*",
@@ -34,7 +35,8 @@
     "jakobreiter/yii2-quagga-js": "*",
     "aws/aws-sdk-php": "*",
     "kartik-v/yii2-slider": "*",
-    "kartik-v/yii2-export": "*"
+    "kartik-v/yii2-export": "*",
+    "kartik-v/yii2-tabs-x": "*"
   },
   "require-dev": {
     "yiisoft/yii2-codeception": "*",
