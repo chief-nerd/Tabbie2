@@ -61,7 +61,6 @@ $this->params['breadcrumbs'][] = $this->title;
 				'items'    => $items,
 				'position' => TabsX::POS_ABOVE,
 				'align'    => TabsX::ALIGN_CENTER,
-				'bordered' => true,
 			]);
 
 		} else {
