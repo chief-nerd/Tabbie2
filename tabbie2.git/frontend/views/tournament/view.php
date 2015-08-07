@@ -67,6 +67,5 @@ $this->params['breadcrumbs'][] = $this->title;
 			echo $this->render("_view_overview", compact("model"));
 		}
 		?>
-		</div>
 	</div>
 </div>
