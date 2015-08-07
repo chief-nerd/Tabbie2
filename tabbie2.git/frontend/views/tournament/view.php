@@ -60,6 +60,8 @@ $this->params['breadcrumbs'][] = $this->title;
 			echo TabsX::widget([
 				'items'    => $items,
 				'position' => TabsX::POS_ABOVE,
+				'align'    => TabsX::ALIGN_CENTER,
+				'bordered' => true,
 			]);
 
 		} else {
