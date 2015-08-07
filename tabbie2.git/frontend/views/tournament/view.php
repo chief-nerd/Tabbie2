@@ -44,10 +44,10 @@ $this->params['breadcrumbs'][] = $this->title;
 					'label' => Yii::t("app", "Motions"),
 					'linkOptions' => ['data-url' => \yii\helpers\Url::to(['stats/motion', "tournament_id" => $model->id])]
 				],
-				[
+				/*[
 					'label' => Yii::t("app", "Speaks Distrubution"),
 					'linkOptions' => ['data-url' => \yii\helpers\Url::to(['stats/speaks', "tournament_id" => $model->id])]
-				],
+				],*/
 				[
 					'label' => Yii::t("app", "Speaker Tab"),
 					'linkOptions' => ['data-url' => \yii\helpers\Url::to(['stats/speaker-tab', "tournament_id" => $model->id])]
