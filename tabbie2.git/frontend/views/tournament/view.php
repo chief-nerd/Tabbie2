@@ -59,7 +59,6 @@ $this->params['breadcrumbs'][] = $this->title;
 			];
 			echo Tabs::widget([
 				'items'    => $items,
-				'position' => Tabs::POS_ABOVE,
 			]);
 
 		} else {
