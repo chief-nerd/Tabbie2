@@ -80,3 +80,4 @@ use common\models\Round;
 		</ul>
 	</div>
 </div>
+<div class="clear"></div>

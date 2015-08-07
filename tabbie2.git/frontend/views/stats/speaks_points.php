@@ -75,3 +75,4 @@ foreach ($model->getRounds()->all() as $round) {
 		<div id="speaker_chart"></div>
 	</div>
 </div>
+<div class="clear"></div>

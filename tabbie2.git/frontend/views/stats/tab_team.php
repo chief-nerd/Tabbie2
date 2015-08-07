@@ -94,3 +94,4 @@ $dataProvider = new ArrayDataProvider([
 	?>
 
 </div>
+<div class="clear"></div>
