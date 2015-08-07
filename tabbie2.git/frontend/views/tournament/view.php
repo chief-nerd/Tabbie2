@@ -5,7 +5,7 @@ use yii\widgets\DetailView;
 use kartik\helpers\Html;
 use \common\models\Team;
 use common\models\Panel;
-use yii\jui\Tabs;
+use kartik\tabs\TabsX;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Tournament */
@@ -42,23 +42,24 @@ $this->params['breadcrumbs'][] = $this->title;
 				],
 				[
 					'label' => Yii::t("app", "Motions"),
-					'url'   => ['stats/motion', "tournament_id" => $model->id],
+					'linkOptions' => ['data-url' => \yii\helpers\Url::to(['stats/motion', "tournament_id" => $model->id])]
 				],
 				[
 					'label' => Yii::t("app", "Speaks Distrubution"),
-					'url'   => ['stats/speaks', "tournament_id" => $model->id],
+					'linkOptions' => ['data-url' => \yii\helpers\Url::to(['stats/speaks', "tournament_id" => $model->id])]
 				],
 				[
 					'label' => Yii::t("app", "Speaker Tab"),
-					'url'   => ['stats/speaker-tab', "tournament_id" => $model->id],
+					'linkOptions' => ['data-url' => \yii\helpers\Url::to(['stats/speaker-tab', "tournament_id" => $model->id])]
 				],
 				[
 					'label' => Yii::t("app", "Team Tab"),
-					'url'   => ['stats/team-tab', "tournament_id" => $model->id],
+					'linkOptions' => ['data-url' => \yii\helpers\Url::to(['stats/team-tab', "tournament_id" => $model->id])]
 				],
 			];
-			echo Tabs::widget([
+			echo TabsX::widget([
 				'items'    => $items,
+				'position' => TabsX::POS_ABOVE,
 			]);
 
 		} else {
