@@ -162,7 +162,7 @@ class SiteController extends Controller
 				Yii::$app->session->addFlash("error", Yii::t("app", "Error in wakeup"));
 		}
 
-		$model->fullname = ($model->fullname) ? $model->fullname : unserialize(Yii::$app->session["signup"])->societies_id;
+		$model->fullname = (isset($model->fullname)) ? $model->fullname : unserialize(Yii::$app->session["signup"])->societies_id;
 
 		return $this->render("newSociety", [
 			"model" => $model,
