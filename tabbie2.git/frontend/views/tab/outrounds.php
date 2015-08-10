@@ -23,7 +23,10 @@ $this->params['breadcrumbs'][] = $this->title;
 	?>
 	<?
 	/** @var \common\models\Round $r */
-	$old = $rounds[0]->level;
+	if (isset($rounds[0]))
+		$old = $rounds[0]->level;
+	else
+		$old = 0;
 	foreach ($rounds as $r):
 		if ($r->level != $old) {
 			echo "<hr>";
