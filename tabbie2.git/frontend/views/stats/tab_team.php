@@ -63,7 +63,7 @@ $dataProvider = new ArrayDataProvider([
 		],
 	];
 
-	foreach ($model->rounds as $r) {
+	foreach ($model->inrounds as $r) {
 		$columns[] = [
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'results_array.' . $r->number,
