@@ -338,8 +338,8 @@ class Round extends \yii\db\ActiveRecord
 
 			return true;
 		} catch (Exception $ex) {
-			throw $ex;
-			//$this->addError("TabAlgorithmus", $ex->getMessage());
+			//throw $ex;
+			$this->addError("TabAlgorithm", $ex->getMessage());
 		}
 
 		return false;

@@ -182,7 +182,7 @@ class RoundController extends BaseTournamentController
 		if ($model->load(Yii::$app->request->post())) {
 
 			if (!$model->save() || !$model->generateWorkingDraw()) {
-				Yii::$app->session->setFlash("error", ObjectError::getMsg($model));
+				Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
 			}
 
 			return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
