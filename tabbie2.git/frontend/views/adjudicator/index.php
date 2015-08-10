@@ -25,11 +25,26 @@ $this->params['breadcrumbs'][] = $this->title;
 			'class'     => 'kartik\grid\BooleanColumn',
 			'attribute' => 'active',
 			'vAlign'    => 'middle',
+			'width' => '50px',
 		],
 		[
 			'class'     => '\kartik\grid\BooleanColumn',
 			'attribute' => 'can_chair',
-			'width'     => '5%',
+			'label'      => Yii::t("app", "Chair"),
+			'trueLabel'  => Yii::t("app", "Can chair"),
+			'falseLabel' => Yii::t("app", "Should not chair"),
+			'width'      => '50px',
+		],
+		[
+			'class'      => 'kartik\grid\BooleanColumn',
+			'attribute'  => 'breaking',
+			'label'      => Yii::t("app", "Break"),
+			'vAlign'     => 'middle',
+			'trueIcon'   => \kartik\helpers\Html::icon("star", ['class' => 'text-warning']),
+			'trueLabel'  => Yii::t("app", "Breaking"),
+			'falseLabel' => Yii::t("app", "not breaking"),
+			'falseIcon'  => "&nbsp;",
+			'width'      => '50px',
 		],
 		[
 			'class'               => '\kartik\grid\DataColumn',
@@ -68,23 +83,41 @@ $this->params['breadcrumbs'][] = $this->title;
 			'falseIcon' => \kartik\helpers\Html::icon("eye-close", ['class' => 'text-muted']),
 			'vAlign'    => 'middle',
 			'width'     => '5%',
+			'trueLabel'  => Yii::t("app", "Watched"),
+			'falseLabel' => Yii::t("app", "Unwatched"),
 		],
 		[
 			'class'         => 'kartik\grid\ActionColumn',
-			'template'      => '{active}&nbsp;&nbsp;{watch}&nbsp;&nbsp;{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{delete}',
+			'template'      => '{active}&nbsp{break}&nbsp;{watch}&nbsp;{view}&nbsp;{update}&nbsp;{delete}',
 			'dropdown'      => false,
 			'vAlign'        => 'middle',
 			'buttons'       => [
 				"watch"  => function ($url, $model) {
-					return Html::a(\kartik\helpers\Html::icon("eye-open"), $url, [
+					if ($model->are_watched == 1) $icon = "eye-close";
+					else $icon = "eye-open";
+
+					return Html::a(\kartik\helpers\Html::icon($icon), $url, [
 						'title'              => Yii::t('app', 'Toogle Watch'),
 						'data-pjax'          => '1',
 						'data-toggle-active' => $model->id
 					]);
 				},
 				"active" => function ($url, $model) {
-					return Html::a(\kartik\helpers\Html::icon("pause"), $url, [
+					if ($model->active == 1) $icon = "pause";
+					else $icon = "play";
+
+					return Html::a(\kartik\helpers\Html::icon($icon), $url, [
 						'title'              => Yii::t('app', 'Toogle Active'),
+						'data-pjax'          => '1',
+						'data-toggle-active' => $model->id
+					]);
+				},
+				"break"  => function ($url, $model) {
+					if ($model->breaking == 1) $icon = "star-empty";
+					else $icon = "star";
+
+					return Html::a(\kartik\helpers\Html::icon($icon), $url, [
+						'title' => Yii::t('app', 'Toogle Breaking'),
 						'data-pjax'          => '1',
 						'data-toggle-active' => $model->id
 					]);

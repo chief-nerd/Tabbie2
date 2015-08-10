@@ -76,7 +76,7 @@ class Adjudicator extends \yii\db\ActiveRecord
 	{
 		return [
 			[['tournament_id', 'user_id', 'society_id'], 'required'],
-			[['tournament_id', 'active', 'user_id', 'strength', 'can_chair', 'are_watched', 'society_id'], 'integer'],
+			[['tournament_id', 'active', 'user_id', 'strength', 'can_chair', 'are_watched', 'society_id', 'breaking'], 'integer'],
 			['strength', 'integer', 'max' => self::MAX_RATING, 'min' => 0]
 		];
 	}

@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		],
 	];
 
-	foreach ($tournament->rounds as $r) {
+	foreach ($tournament->inrounds as $r) {
 		$columns[] = [
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'results_array.' . $r->number,

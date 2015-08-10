@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 
 	<?php $form = ActiveForm::begin(); ?>
 
-	<?= $form->field($model, 'number')->textInput(["readonly" => "readonly"]); ?>
+	<?= Html::activeHiddenInput($model, 'label') ?>
 
 	<?= Html::activeHiddenInput($model, 'tournament_id') ?>
 
@@ -20,12 +20,10 @@ use yii\widgets\ActiveForm;
 
 	<?= $form->field($model, 'infoslide')->textarea(['rows' => 6]) ?>
 
-	<?= $form->field($model, 'published')->checkbox(); ?>
-
 	<div class="form-group">
 		<?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'),
 			[
-				'class' => $model->isNewRecord ? 'btn btn-success loading' : 'btn btn-primary',
+				'class' => $model->isNewRecord ? 'btn btn-success btn-block loading' : 'btn btn-primary',
 			]) ?>
 	</div>
 

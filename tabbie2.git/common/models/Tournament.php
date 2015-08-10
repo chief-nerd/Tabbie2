@@ -34,6 +34,8 @@ use yii\helpers\Url;
  * @property Adjudicator[]            $adjudicators
  * @property Panel[]                  $panels
  * @property Round[]                  $rounds
+ * @property Round[]                  $Inrounds
+ * @property Round[]                  $Outrounds
  * @property Team[]                   $teams
  * @property User[]                   $convenors
  * @property User[]                   $tabmasters
@@ -56,6 +58,47 @@ class Tournament extends \yii\db\ActiveRecord
 	public static function tableName()
 	{
 		return 'tournament';
+	}
+
+	/**
+	 * Find a Tournament by Primary Key
+	 *
+	 * @param integer $id
+	 *
+	 * @uses Tournamnet::findOne
+	 * @return null|Tournamnet
+	 */
+	public static function findByPk($id)
+	{
+		$tournament = Yii::$app->cache->get("tournament" . $id);
+		if (!$tournament instanceof Tournament) {
+			$tournament = Tournament::findOne(["id" => $id]);
+			Yii::$app->cache->set("tournament" . $id, $tournament, 120);
+		}
+
+		return $tournament;
+	}
+
+	public static function getTabAlgorithmOptions()
+	{
+		$algos = [];
+		$files = scandir(Yii::getAlias("@algorithms/algorithms/"));
+		foreach ($files as $className) {
+			if (substr($className, 0, 1) == ".") continue;
+			$filename = pathinfo($className)['filename'];
+			$class = Tournament::getTabAlgorithm($filename);
+			if ($class::version() !== null)
+				$algos[$filename] = $class::title() . " (v" . $class::version() . ")";
+		}
+
+		return $algos;
+	}
+
+	public static function getTabAlgorithm($algoClass)
+	{
+		$algoName = 'algorithms\\algorithms\\' . $algoClass;
+
+		return new $algoName();
 	}
 
 	/**
@@ -99,48 +142,6 @@ class Tournament extends \yii\db\ActiveRecord
 		];
 	}
 
-	public static function findByUrlSlug($slug)
-	{
-		return Tournament::findOne(["url_slug" => $slug]);
-	}
-
-	/**
-	 * Find a Tournament by Primary Key
-	 *
-	 * @param integer $id
-	 *
-	 * @uses Tournamnet::findOne
-	 * @return null|Tournamnet
-	 */
-	public static function findByPk($id)
-	{
-		$tournament = Yii::$app->cache->get("tournament" . $id);
-		if (!$tournament instanceof Tournament) {
-			$tournament = Tournament::findOne(["id" => $id]);
-			Yii::$app->cache->set("tournament" . $id, $tournament, 120);
-		}
-
-		return $tournament;
-	}
-
-	/**
-	 * Check if user is the tabmaster of the torunament
-	 *
-	 * @param int $userID
-	 *
-	 * @return boolean
-	 */
-	public function isTabMaster($userID)
-	{
-		$count = Tabmaster::find()->tournament($this->id)->andWhere(["user_id" => $userID])->count();
-		if ($count > 0) {
-			return true;
-		} else if (Yii::$app->user->isAdmin()) //Admin secure override
-			return true;
-		else
-			return false;
-	}
-
 	/**
 	 * Check if user is the CA of the torunament
 	 *
@@ -157,6 +158,26 @@ class Tournament extends \yii\db\ActiveRecord
 			return true;
 		else
 			return false;
+	}
+
+	/**
+	 * Check if user is registered
+	 *
+	 * @param integer $userID
+	 *
+	 * @return bool
+	 */
+	public function isRegistered($userID)
+	{
+
+		if (Yii::$app->user->isAdmin() || $this->isConvenor($userID) || $this->isLanguageOfficer($userID) || $this->isTabMaster($userID))
+			return true;
+
+		if ($this->isTeam($userID) || $this->isAdjudicator($userID))
+			return true;
+
+		return false;
+
 	}
 
 	/**
@@ -194,23 +215,21 @@ class Tournament extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * Check if user is registered
+	 * Check if user is the tabmaster of the torunament
 	 *
-	 * @param integer $userID
+	 * @param int $userID
 	 *
-	 * @return bool
+	 * @return boolean
 	 */
-	public function isRegistered($userID)
+	public function isTabMaster($userID)
 	{
-
-		if (Yii::$app->user->isAdmin() || $this->isConvenor($userID) || $this->isLanguageOfficer($userID) || $this->isTabMaster($userID))
+		$count = Tabmaster::find()->tournament($this->id)->andWhere(["user_id" => $userID])->count();
+		if ($count > 0) {
 			return true;
-
-		if ($this->isTeam($userID) || $this->isAdjudicator($userID))
+		} else if (Yii::$app->user->isAdmin()) //Admin secure override
 			return true;
-
-		return false;
-
+		else
+			return false;
 	}
 
 	/**
@@ -297,37 +316,6 @@ class Tournament extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * Generate a unique URL SLUG ... never fails  ;)
-	 */
-	public function generateUrlSlug()
-	{
-		$potential_slug = str_replace(" ", "-", $this->fullname);
-
-		if (Tournament::findByUrlSlug($potential_slug) !== null) {
-			$i = 1;
-			$iterate_slug = $potential_slug . "-" . $i;
-			while (Tournament::findByUrlSlug($iterate_slug) !== null) {
-				$i++;
-				$iterate_slug = $potential_slug . "-" . $i;
-			}
-			$potential_slug = $iterate_slug;
-		}
-		$this->url_slug = $potential_slug;
-
-		return true;
-	}
-
-	/**
-	 * Generate an accessURL for Runners and DrawDisplay
-	 *
-	 * @return string
-	 */
-	public function generateAccessToken()
-	{
-		return $this->accessToken = substr(md5(uniqid(mt_rand(), true)), 0, 10);
-	}
-
-	/**
 	 * Validate an AccessToken with the object
 	 *
 	 * @param $testToken
@@ -366,9 +354,40 @@ class Tournament extends \yii\db\ActiveRecord
 		return false;
 	}
 
-	public function getFullname()
+	/**
+	 * Generate a unique URL SLUG ... never fails  ;)
+	 */
+	public function generateUrlSlug()
 	{
-		return $this->name . " " . Yii::$app->formatter->asDate($this->end_date, "Y");
+		$potential_slug = str_replace(" ", "-", $this->fullname);
+
+		if (Tournament::findByUrlSlug($potential_slug) !== null) {
+			$i = 1;
+			$iterate_slug = $potential_slug . "-" . $i;
+			while (Tournament::findByUrlSlug($iterate_slug) !== null) {
+				$i++;
+				$iterate_slug = $potential_slug . "-" . $i;
+			}
+			$potential_slug = $iterate_slug;
+		}
+		$this->url_slug = $potential_slug;
+
+		return true;
+	}
+
+	public static function findByUrlSlug($slug)
+	{
+		return Tournament::findOne(["url_slug" => $slug]);
+	}
+
+	/**
+	 * Generate an accessURL for Runners and DrawDisplay
+	 *
+	 * @return string
+	 */
+	public function generateAccessToken()
+	{
+		return $this->accessToken = substr(md5(uniqid(mt_rand(), true)), 0, 10);
 	}
 
 	/**
@@ -398,19 +417,17 @@ class Tournament extends \yii\db\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getRounds()
+	public function getInrounds()
 	{
-		return $this->hasMany(Round::className(), ['tournament_id' => 'id']);
+		return $this->hasMany(Round::className(), ['tournament_id' => 'id'])->andWhere("type = " . Round::TYP_IN);
 	}
 
 	/**
-	 * Get's the last round
-	 *
-	 * @return Round
+	 * @return \yii\db\ActiveQuery
 	 */
-	public function getLastRound()
+	public function getOutrounds()
 	{
-		return $this->getRounds()->where(["displayed" => 1])->orderBy(['id' => SORT_DESC])->one();
+		return $this->hasMany(Round::className(), ['tournament_id' => 'id'])->andWhere("type > " . Round::TYP_IN);
 	}
 
 	/**
@@ -506,20 +523,6 @@ class Tournament extends \yii\db\ActiveRecord
 		return $this->hasMany(Panel::className(), ['tournament_id' => 'id']);
 	}
 
-	public function getLogo($absolute = false)
-	{
-		if ($this->logo !== null) {
-			if ($absolute && substr($this->logo, 0, 4) != "http")
-				return Url::to($this->logo, true);
-			else
-				return $this->logo;
-		} else {
-			$defaultPath = Yii::getAlias("@frontend/assets/images/") . "default-tournament.png";
-
-			return Yii::$app->assetManager->publish($defaultPath)[1];
-		}
-	}
-
 	public function getLogoImage($width_max = null, $height_max = null, $options = [])
 	{
 
@@ -532,6 +535,25 @@ class Tournament extends \yii\db\ActiveRecord
 		$img_options["class"] = "img-responsive img-rounded center-block" . (isset($img_options["class"]) ? " " . $img_options["class"] : "");
 
 		return Html::img($this->getLogo(), $img_options);
+	}
+
+	public function getFullname()
+	{
+		return $this->name . " " . Yii::$app->formatter->asDate($this->end_date, "Y");
+	}
+
+	public function getLogo($absolute = false)
+	{
+		if ($this->logo !== null) {
+			if ($absolute && substr($this->logo, 0, 4) != "http")
+				return Url::to($this->logo, true);
+			else
+				return $this->logo;
+		} else {
+			$defaultPath = Yii::getAlias("@frontend/assets/images/") . "default-tournament.png";
+
+			return Yii::$app->assetManager->publish($defaultPath)[1];
+		}
 	}
 
 	/**
@@ -591,19 +613,22 @@ class Tournament extends \yii\db\ActiveRecord
 		return false;
 	}
 
-	public static function getTabAlgorithmOptions()
+	/**
+	 * Get's the last round
+	 *
+	 * @return Round
+	 */
+	public function getLastRound()
 	{
-		$algos = [];
-		$files = scandir(Yii::getAlias("@algorithms/algorithms/"));
-		foreach ($files as $className) {
-			if (substr($className, 0, 1) == ".") continue;
-			$filename = pathinfo($className)['filename'];
-			$class = Tournament::getTabAlgorithm($filename);
-			if ($class::version() !== null)
-				$algos[$filename] = $class::title() . " (v" . $class::version() . ")";
-		}
+		return $this->getRounds()->where(["displayed" => 1])->orderBy(['id' => SORT_DESC])->one();
+	}
 
-		return $algos;
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getRounds()
+	{
+		return $this->hasMany(Round::className(), ['tournament_id' => 'id']);
 	}
 
 	/**
@@ -614,13 +639,6 @@ class Tournament extends \yii\db\ActiveRecord
 	public function getTabAlgorithmInstance()
 	{
 		return Tournament::getTabAlgorithm($this->tabAlgorithmClass);
-	}
-
-	public static function getTabAlgorithm($algoClass)
-	{
-		$algoName = 'algorithms\\algorithms\\' . $algoClass;
-
-		return new $algoName();
 	}
 
 	/**

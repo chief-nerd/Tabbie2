@@ -44,7 +44,7 @@ class AdjudicatorController extends BaseTournamentController
 					],
 					[
 						'allow'         => true,
-						'actions'       => ['create', 'update', 'delete', 'replace', 'move', 'import', 'active', 'popup', 'watch', 'list', 'resetwatched'],
+						'actions' => ['create', 'update', 'delete', 'replace', 'move', 'import', 'active', 'popup', 'watch', 'break', 'list', 'resetwatched'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id) ||
 								$this->_tournament->isCA(Yii::$app->user->id));
@@ -53,27 +53,6 @@ class AdjudicatorController extends BaseTournamentController
 				],
 			],
 		];
-	}
-
-	/**
-	 * Lists all Adjudicator models.
-	 *
-	 * @return mixed
-	 */
-	public function actionIndex()
-	{
-		$searchModel = new AdjudicatorSearch(["tournament_id" => $this->_tournament->id]);
-		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-		$stat["amount"] = Adjudicator::find()->active()->tournament($this->_tournament->id)->count();
-		$stat["venues"] = Venue::find()->active()->tournament($this->_tournament->id)->count();
-		$stat["inactive"] = Adjudicator::find()->active(false)->tournament($this->_tournament->id)->count();
-
-		return $this->render('index', [
-			'searchModel'  => $searchModel,
-			'dataProvider' => $dataProvider,
-			'stat'         => $stat,
-		]);
 	}
 
 	/**
@@ -190,6 +169,24 @@ class AdjudicatorController extends BaseTournamentController
 	}
 
 	/**
+	 * Finds the Adjudicator model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 *
+	 * @param integer $id
+	 *
+	 * @return Adjudicator the loaded model
+	 * @throws NotFoundHttpException if the model cannot be found
+	 */
+	protected function findModel($id)
+	{
+		if (($model = Adjudicator::findOne($id)) !== null) {
+			return $model;
+		} else {
+			throw new NotFoundHttpException('The requested page does not exist.');
+		}
+	}
+
+	/**
 	 * Toggle a Adjudicator visability
 	 *
 	 * @param integer $id
@@ -215,6 +212,27 @@ class AdjudicatorController extends BaseTournamentController
 			return $this->actionIndex();
 		else
 			return $this->redirect(['adjudicator/index', 'tournament_id' => $this->_tournament->id]);
+	}
+
+	/**
+	 * Lists all Adjudicator models.
+	 *
+	 * @return mixed
+	 */
+	public function actionIndex()
+	{
+		$searchModel = new AdjudicatorSearch(["tournament_id" => $this->_tournament->id]);
+		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+		$stat["amount"] = Adjudicator::find()->active()->tournament($this->_tournament->id)->count();
+		$stat["venues"] = Venue::find()->active()->tournament($this->_tournament->id)->count();
+		$stat["inactive"] = Adjudicator::find()->active(false)->tournament($this->_tournament->id)->count();
+
+		return $this->render('index', [
+			'searchModel'  => $searchModel,
+			'dataProvider' => $dataProvider,
+			'stat'         => $stat,
+		]);
 	}
 
 	/**
@@ -271,24 +289,6 @@ class AdjudicatorController extends BaseTournamentController
 		$this->findModel($id)->delete();
 
 		return $this->redirect(['index']);
-	}
-
-	/**
-	 * Finds the Adjudicator model based on its primary key value.
-	 * If the model is not found, a 404 HTTP exception will be thrown.
-	 *
-	 * @param integer $id
-	 *
-	 * @return Adjudicator the loaded model
-	 * @throws NotFoundHttpException if the model cannot be found
-	 */
-	protected function findModel($id)
-	{
-		if (($model = Adjudicator::findOne($id)) !== null) {
-			return $model;
-		} else {
-			throw new NotFoundHttpException('The requested page does not exist.');
-		}
 	}
 
 	public function actionImport()
@@ -478,7 +478,28 @@ class AdjudicatorController extends BaseTournamentController
 		}
 
 		if (!$model->save()) {
-			Yii::$app->session->addFlash("error", $model->getErrors("active"));
+			Yii::$app->session->addFlash("error", $model->getErrors("are_watched"));
+		}
+
+		$model->refresh();
+		if (Yii::$app->request->isAjax)
+			$this->actionIndex();
+		else
+			return $this->redirect(['adjudicator/index', 'tournament_id' => $this->_tournament->id]);
+	}
+
+	public function actionBreak($id)
+	{
+		$model = $this->findModel($id);
+
+		if ($model->breaking == 0)
+			$model->breaking = 1;
+		else {
+			$model->breaking = 0;
+		}
+
+		if (!$model->save()) {
+			Yii::$app->session->addFlash("error", $model->getErrors("breaking"));
 		}
 
 		$model->refresh();

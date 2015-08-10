@@ -30,7 +30,7 @@ class TabController extends BaseTournamentController
 				'rules' => [
 					[
 						'allow'   => true,
-						'actions' => ['live-team', 'live-speaker', 'publish'],
+						'actions' => ['live-team', 'live-speaker', 'outrounds', 'publish'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
 						}
@@ -55,9 +55,7 @@ class TabController extends BaseTournamentController
 			'sort'      => [
 				'attributes' => ['enl_place'],
 			],
-			'pagination' => [
-				'pageSize' => 99999,
-			],
+			'pagination' => false
 		]);
 
 		return $this->render('team', [
@@ -89,6 +87,20 @@ class TabController extends BaseTournamentController
 		return $this->render('speaker', [
 			'lines' => $lines,
 			'dataProvider' => $dataProvider,
+		]);
+	}
+
+	/**
+	 * Lists all Team models.
+	 *
+	 * @return mixed
+	 */
+	public function actionOutrounds()
+	{
+		$model = $this->_tournament;
+
+		return $this->render('outrounds', [
+			'model' => $model
 		]);
 	}
 

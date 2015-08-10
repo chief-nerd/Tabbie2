@@ -32,7 +32,7 @@ class VenueController extends BaseTournamentController
 				'rules' => [
 					[
 						'allow'   => true,
-						'actions' => ['index', 'view'],
+						'actions' => ['index', 'view', 'list'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id) ||
 								$this->_tournament->isConvenor(Yii::$app->user->id) ||
@@ -53,21 +53,6 @@ class VenueController extends BaseTournamentController
 	}
 
 	/**
-	 * Lists all Venue models.
-	 *
-	 * @return mixed
-	 */
-	public function actionIndex()
-	{
-		$search = new VenueSearch(["tournament_id" => $this->_tournament->id]);
-		$dataProvider = $search->search(Yii::$app->request->queryParams);
-
-		return $this->render('index', [
-			'dataProvider' => $dataProvider,
-		]);
-	}
-
-	/**
 	 * Displays a single Venue model.
 	 *
 	 * @param integer $id
@@ -79,6 +64,24 @@ class VenueController extends BaseTournamentController
 		return $this->render('view', [
 			'model' => $this->findModel($id),
 		]);
+	}
+
+	/**
+	 * Finds the Venue model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 *
+	 * @param integer $id
+	 *
+	 * @return Venue the loaded model
+	 * @throws NotFoundHttpException if the model cannot be found
+	 */
+	protected function findModel($id)
+	{
+		if (($model = Venue::findOne($id)) !== null) {
+			return $model;
+		} else {
+			throw new NotFoundHttpException('The requested page does not exist.');
+		}
 	}
 
 	/**
@@ -167,21 +170,18 @@ class VenueController extends BaseTournamentController
 	}
 
 	/**
-	 * Finds the Venue model based on its primary key value.
-	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 * Lists all Venue models.
 	 *
-	 * @param integer $id
-	 *
-	 * @return Venue the loaded model
-	 * @throws NotFoundHttpException if the model cannot be found
+	 * @return mixed
 	 */
-	protected function findModel($id)
+	public function actionIndex()
 	{
-		if (($model = Venue::findOne($id)) !== null) {
-			return $model;
-		} else {
-			throw new NotFoundHttpException('The requested page does not exist.');
-		}
+		$search = new VenueSearch(["tournament_id" => $this->_tournament->id]);
+		$dataProvider = $search->search(Yii::$app->request->queryParams);
+
+		return $this->render('index', [
+			'dataProvider' => $dataProvider,
+		]);
 	}
 
 	public function actionImport()
@@ -251,6 +251,32 @@ class VenueController extends BaseTournamentController
 			"model" => $model,
 			"tournament" => $tournament
 		]);
+	}
+
+	/**
+	 * Returns 20 Adjudicators in an JSON List
+	 *
+	 * @param type $search
+	 * @param type $id
+	 */
+	public function actionList(array $search = null, $id = null, $tournament_id)
+	{
+		$out = ['more' => false];
+		if (!is_null($search["term"]) && $search["term"] != "") {
+			$query = new \yii\db\Query;
+			$query->select(["venue.id", "venue.name as text"])
+				->from('venue')
+				->where('tournament_id = "' . $tournament_id . '" AND venue.name LIKE "%' . $search["term"] . '%"')
+				->limit(20);
+			$command = $query->createCommand();
+			$data = $command->queryAll();
+			$out['results'] = array_values($data);
+		} elseif ($id > 0) {
+			$out['results'] = ['id' => $id, 'text' => Venue::findOne($id)->name];
+		} else {
+			$out['results'] = ['id' => 0, 'text' => Yii::t("app", 'No matching records found')];
+		}
+		echo \yii\helpers\Json::encode($out);
 	}
 
 }

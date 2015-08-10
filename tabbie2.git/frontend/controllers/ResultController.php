@@ -45,7 +45,7 @@ class ResultController extends BaseTournamentController
 						},
 					],
 					[
-						'allow'   => true,
+						'allow' => true,
 						'actions'       => ['round', 'view'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id) || $this->_tournament->isCA(Yii::$app->user->id));
@@ -160,7 +160,7 @@ class ResultController extends BaseTournamentController
 			$this->redirect(["result/index", "tournament_id" => $this->_tournament->id]);
 		}
 
-		$number = $dataProvider->getModels()[0]->round->number;
+		$round = $dataProvider->getModels()[0]->round;
 
 		switch ($view) {
 			case "venue":
@@ -175,7 +175,7 @@ class ResultController extends BaseTournamentController
 
 		return $this->render($view, [
 			'round_id'     => $id,
-			'round_number' => $number,
+			'round' => $round,
 			'searchModel'  => $searchModel,
 			'dataProvider' => $dataProvider,
 		]);

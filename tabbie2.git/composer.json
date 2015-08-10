@@ -1,5 +1,5 @@
 {
-  "name": "tabbie2 webapp",
+  "name": "Tabbie2 Webapp",
   "description": "A BP Debate-Tab Webapp written in Yii2",
   "keywords": [
     "BP",
@@ -17,7 +17,6 @@
     "source": "https://github.com/yiisoft/yii2"
   },
   "minimum-stability": "dev",
-  "prefer-stable": true,
   "require": {
     "php": ">=5.4.0",
     "yiisoft/yii2": "*",
@@ -25,18 +24,18 @@
     "yiisoft/yii2-swiftmailer": "*",
     "kartik-v/yii2-datecontrol": "dev-master",
     "kartik-v/yii2-widgets": "dev-master",
-    "kartik-v/yii2-grid": "dev-master",
+    "kartik-v/yii2-grid": "*",
     "kartik-v/yii2-mpdf": "*",
     "kartik-v/yii2-sortable": "*",
     "kartik-v/yii2-widget-typeahead": "*",
     "kartik-v/yii2-popover-x": "*",
     "kartik-v/yii2-checkbox-x": "*",
     "kartik-v/yii2-helpers": "*",
+    "rmrevin/yii2-minify-view": "*",
     "jakobreiter/yii2-quagga-js": "*",
-    "aws/aws-sdk-php": "*",
-    "kartik-v/yii2-slider": "*",
-    "kartik-v/yii2-export": "*",
-    "kartik-v/yii2-tabs-x": "*"
+    "kartik-v/yii2-tabs-x": "dev-master",
+    "kartik-v/yii2-slider": "dev-master",
+    "kartik-v/yii2-export": "*"
   },
   "require-dev": {
     "yiisoft/yii2-codeception": "*",

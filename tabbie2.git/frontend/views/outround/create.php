@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $model common\models\Round */
 
 $this->title = Yii::t('app', 'Create {modelClass}', [
-	'modelClass' => 'Round',
+	'modelClass' => 'Out-Round',
 ]);
 $tournament = $this->context->_getContext();
 $this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
@@ -19,7 +19,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<?=
 	$this->render('_form', [
-		'model' => $model,
+		'model'        => $model,
+		'amount_rooms' => $amount_rooms,
 	])
 	?>
 

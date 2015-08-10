@@ -17,13 +17,24 @@ class AdjudicatorSearch extends Adjudicator
 	public $name;
 	public $societyName;
 
+	public static function getSearchArray($tid)
+	{
+		$adjudicators = Adjudicator::find()->joinWith("user")->where(["tournament_id" => $tid])->all();
+		$filter = [];
+		foreach ($adjudicators as $a) {
+			$filter[$a->name] = $a->name;
+		}
+
+		return $filter;
+	}
+
 	/**
 	 * @inheritdoc
 	 */
 	public function rules()
 	{
 		return [
-			[['id', 'active', 'can_chair', 'are_watched'], 'integer'],
+			[['id', 'active', 'can_chair', 'are_watched', 'breaking'], 'integer'],
 			[['societyName', 'strength'], 'safe'],
 			['name', 'string', 'max' => 255]
 		];
@@ -65,6 +76,7 @@ class AdjudicatorSearch extends Adjudicator
 				'id',
 				'active',
 				'can_chair',
+				'breaking',
 				'are_watched',
 				'name'        => [
 					'asc'   => ['user.surename' => SORT_ASC],
@@ -89,6 +101,7 @@ class AdjudicatorSearch extends Adjudicator
 			'active'      => $this->active,
 			'are_watched' => $this->are_watched,
 			'can_chair'   => $this->can_chair,
+			'breaking' => $this->breaking,
 		]);
 
 		switch (substr($this->strength, 0, 1)) {
@@ -111,17 +124,6 @@ class AdjudicatorSearch extends Adjudicator
 			$query->andWhere('society.fullname LIKE "%' . $this->societyName . '%"');
 
 		return $dataProvider;
-	}
-
-	public static function getSearchArray($tid)
-	{
-		$adjudicators = Adjudicator::find()->joinWith("user")->where(["tournament_id" => $tid])->all();
-		$filter = [];
-		foreach ($adjudicators as $a) {
-			$filter[$a->name] = $a->name;
-		}
-
-		return $filter;
 	}
 
 }

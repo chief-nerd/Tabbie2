@@ -15,12 +15,11 @@ use common\models\Round;
 					<div class="row">
 						<div class="col-xs-12 col-sm-12 col-md-2">
 							<?
-							$linktext = Yii::t("app", "Round #{number}:", ["number" => $round->number]);
 							if ($model->isTabMaster(Yii::$app->user->id) || $model->isConvenor(Yii::$app->user->id)):
 								?>
-								<?= Html::a($linktext, ["round/view", "id" => $round->id, "tournament_id" => $model->id]); ?>
+								<?= Html::a($round->name, ["round/view", "id" => $round->id, "tournament_id" => $model->id]); ?>
 							<? else: ?>
-								<?= $linktext ?>
+								<?= $round->name ?>
 							<? endif; ?>
 						</div>
 						<div class="col-xs-12 col-sm-10 col-md-8">
@@ -37,9 +36,11 @@ use common\models\Round;
 							$sum = 0;
 							foreach ($round->getDebates()->all() as $debate) {
 								$result = $debate->result;
-								foreach (\common\models\Team::getPos() as $pos) {
-									$posMatrix[$pos] += $result->{$pos . "_place"};
-									$sum += $result->{$pos . "_place"} / 2.3;
+								if ($result instanceof \common\models\Result) {
+									foreach (\common\models\Team::getPos() as $pos) {
+										$posMatrix[$pos] += $result->{$pos . "_place"};
+										$sum += $result->{$pos . "_place"} / 2.3;
+									}
 								}
 							}
 							$base = 30;

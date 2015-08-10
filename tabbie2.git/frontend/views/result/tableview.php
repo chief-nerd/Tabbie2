@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Table View");
 ?>
 <div class="result-index">
 
-	<h1><?= Yii::t("app", "Results for Round #{number}", ["number" => $round_number]) ?></h1>
+	<h1><?= Yii::t("app", "Results for {label}", ["label" => $round->name]) ?></h1>
 
 	<p class="text-right">
 		<?=

@@ -16,9 +16,10 @@ NavBar::begin([
 
 $rounds = [];
 $results = [];
-foreach ($tournament->rounds as $r) {
-	$rounds[] = ['label' => Yii::t("app", "Round #{number}", ["number" => $r->number]), 'url' => ['round/view', "id" => $r->id, "tournament_id" => $tournament->id]];
-	$results[] = ['label' => Yii::t("app", "Result Round #{number}", ["number" => $r->number]), 'url' => ['result/round', "id" => $r->id, "tournament_id" => $tournament->id]];
+$round_object = $tournament->rounds;
+foreach ($round_object as $r) {
+	$rounds[] = ['label' => $r->name, 'url' => [($r->type >= \common\models\Round::TYP_OUT) ? 'outround/view' : 'round/view', "id" => $r->id, "tournament_id" => $tournament->id]];
+	$results[] = ['label' => Yii::t("app", "Result") . " " . $r->name, 'url' => ['result/round', "id" => $r->id, "tournament_id" => $tournament->id]];
 }
 
 $venue_items = [
@@ -57,6 +58,7 @@ $tournament_items = [
 	(($tournament->status < Tournament::STATUS_CLOSED) ? '<li class="divider"></li>' : ""),
 	['label' => Html::icon("list") . "&nbsp;" . Yii::t("app", 'Display Team Tab'), 'url' => ['tab/live-team', "tournament_id" => $tournament->id]],
 	['label' => Html::icon("list") . "&nbsp;" . Yii::t("app", 'Display Speaker Tab'), 'url' => ['tab/live-speaker', "tournament_id" => $tournament->id]],
+	['label' => Html::icon("list") . "&nbsp;" . Yii::t("app", 'Display Outrounds'), 'url' => ['tab/outrounds', "tournament_id" => $tournament->id]],
 	'<li class="divider"></li>',
 	(($tournament->status < Tournament::STATUS_CLOSED) ? ['label'       => Html::icon("export") . "&nbsp;" . Yii::t("app", 'Publish Tab'), 'url' => ['tab/publish', "tournament_id" => $tournament->id],
 														  'linkOptions' => ['data' => [
@@ -93,7 +95,8 @@ $menuItems = [
 	['label' => Html::icon("th-list", $icon_class) . "&nbsp;" . Yii::t("app", 'Rounds'), 'url' => '#',
 	 "items" => array_merge_recursive([
 		 ['label' => Html::icon("list") . "&nbsp;" . Yii::t("app", 'List Rounds'), 'url' => ['round/index', "tournament_id" => $tournament->id]],
-		 (($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Html::icon("plus") . "&nbsp;" . Yii::t("app", 'Create Round'), 'url' => ['round/create', "tournament_id" => $tournament->id]] : ""),
+		 (($tournament->status < Tournament::STATUS_CLOSED) ?
+			 ['label' => Html::icon("plus") . "&nbsp;" . Yii::t("app", 'Create Round'), 'url' => (count($round_object) < $tournament->expected_rounds) ? ['round/create', "tournament_id" => $tournament->id] : ['outround/create', "tournament_id" => $tournament->id]] : ""),
 		 '<li class="divider"></li>',
 		 ['label' => Yii::t("app", 'Energy Options'), 'url' => ['energy/index', "tournament_id" => $tournament->id]],
 		 '<li class="divider"></li>',

@@ -13,6 +13,8 @@ use yii\helpers\ArrayHelper;
  *
  * @property integer         $id
  * @property integer         $number
+ * @property string          $label
+ * @property string          $level
  * @property integer         $tournament_id
  * @property integer         $type
  * @property integer         $energy
@@ -45,28 +47,6 @@ class Round extends \yii\db\ActiveRecord
 	const TYP_EFL = 3;
 	const TYP_NOVICE = 4;
 
-	public static function getTypeOptions($id = null)
-	{
-		$options = [
-			self::TYP_IN     => Yii::t("app", "In-Round"),
-			self::TYP_OUT    => Yii::t("app", "Out-Round"),
-			self::TYP_EFL    => Yii::t("app", "ESL Out-Round"),
-			self::TYP_EFL    => Yii::t("app", "EFL Out-Round"),
-			self::TYP_NOVICE => Yii::t("app", "Novice Out-Round")
-		];
-
-		return (isset($options[$id])) ? $options[$id] : $options;
-	}
-
-	/**
-	 * @inheritdoc
-	 * @return TournamentQuery
-	 */
-	public static function find()
-	{
-		return new TournamentQuery(get_called_class());
-	}
-
 	static function statusLabel($code = null)
 	{
 
@@ -88,6 +68,136 @@ class Round extends \yii\db\ActiveRecord
 	public static function tableName()
 	{
 		return 'round';
+	}
+
+	public function getTypeOptions()
+	{
+		$t = $this->tournament;
+
+		$options[self::TYP_OUT] = Yii::t("app", "Main");
+		if ($t->has_esl)
+			$options[self::TYP_ESL] = Yii::t("app", "ESL");
+		//if($t->has_efl)
+		//$options[self::TYP_EFL] = Yii::t("app", "EFL");
+		$options[self::TYP_NOVICE] = Yii::t("app", "Novice");
+
+		return $options;
+	}
+
+	public function getLevelOptions()
+	{
+		$t = $this->tournament;
+		if ($t->has_final)
+			$options[1] = Yii::t("app", "Final");
+		if ($t->has_semifinal)
+			$options[2] = Yii::t("app", "Semifinal");
+		if ($t->has_quarterfinal)
+			$options[4] = Yii::t("app", "Quarterfinal");
+		if ($t->has_octofinal)
+			$options[8] = Yii::t("app", "Octofinal");
+
+		return $options;
+	}
+
+	public function getName()
+	{
+		if ($this->type == self::TYP_IN && $this->label <= $this->tournament->expected_rounds)
+			return Yii::t("app", "Round #{num}", ["num" => $this->getNumber()]);
+		else {
+			return $this->getOutRoundName();
+		}
+	}
+
+	public function getNumber()
+	{
+		return intval($this->label);
+	}
+
+	public function getOutRoundName()
+	{
+		return (($this->type != self::TYP_OUT) ? $this->getTypeLabel() . " " : "") . $this->getLevelLabel();
+	}
+
+	public function getTypeLabel()
+	{
+		$options = [
+			self::TYP_IN     => Yii::t("app", "Inround"),
+			self::TYP_OUT    => Yii::t("app", "Outround"),
+			self::TYP_NOVICE => Yii::t("app", "Novice"),
+			self::TYP_ESL    => Yii::t("app", "ESL"),
+			self::TYP_EFL    => Yii::t("app", "EFL"),
+		];
+
+		return $options[$this->type];
+	}
+
+	public function getLevelLabel()
+	{
+		switch ($this->level) {
+			case 1:
+				return Yii::t("app", "Final");
+			case 2:
+				return Yii::t("app", "Semifinal");
+			case 4:
+				return Yii::t("app", "Quarterfinal");
+			case 8:
+				return Yii::t("app", "Octofinal");
+		}
+	}
+
+	public function setNumber($value)
+	{
+		$this->label = $value;
+	}
+
+	public function setNextRound()
+	{
+		$t = $this->tournament;
+		$rounds = Round::find()
+			->where(["tournament_id" => $t->id])
+			->orderBy(["label" => SORT_ASC])
+			->asArray()
+			->all();
+		if (!$rounds) {
+			$this->label = 1;
+			$this->type = self::TYP_IN;
+			$this->level = 0;
+		} else {
+			if (count($rounds) >= $t->expected_rounds) {
+				$this->label = "X";
+
+				if ($t->has_final && in_array(2, ArrayHelper::getColumn($rounds, "level")) || !$t->has_semifinal) {
+					$this->label = "final";
+					$this->level = 1;
+				} else if ($t->has_semifinal && in_array(4, ArrayHelper::getColumn($rounds, "level")) || !$t->has_quarterfinal) {
+					$this->label = "semi";
+					$this->level = 2;
+				} else if (
+					$t->has_quarterfinal && in_array(8, ArrayHelper::getColumn($rounds, "level")) || !$t->has_octofinal
+				) {
+					$this->label = "quarter";
+					$this->level = 4;
+				} else if ($t->has_octofinal) {
+					$this->label = "octo";
+					$this->level = 8;
+				}
+				$this->type = self::TYP_OUT;
+			} else {
+				$lastRound = array_pop($rounds);
+				$this->label = (intval($lastRound["label"]) + 1);
+				$this->type = self::TYP_IN;
+				$this->level = 0;
+			}
+		}
+	}
+
+	/**
+	 * @inheritdoc
+	 * @return TournamentQuery
+	 */
+	public static function find()
+	{
+		return new TournamentQuery(get_called_class());
 	}
 
 	public function getStatus()
@@ -161,7 +271,7 @@ class Round extends \yii\db\ActiveRecord
 	{
 		return [
 			'id'            => Yii::t('app', 'Round ID'),
-			'id'            => Yii::t('app', 'Round Number'),
+			'label' => Yii::t('app', 'Round'),
 			'tournament_id' => Yii::t('app', 'Tournament ID'),
 			'energy'        => Yii::t('app', 'Energy'),
 			'motion'        => Yii::t('app', 'Motion'),
@@ -377,7 +487,7 @@ class Round extends \yii\db\ActiveRecord
 	 *
 	 * @throws \yii\base\Exception
 	 */
-	private function saveDraw($draw)
+	protected function saveDraw($draw)
 	{
 		Yii::trace("Save Draw with " . count($draw) . "lines", __METHOD__);
 		$set_pp = 0;

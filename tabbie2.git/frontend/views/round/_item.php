@@ -9,9 +9,14 @@ use yii\helpers\Html;
  */
 ?>
 
-<div class="col-sm-1">
-	<?= Html::encode("#" . $model->number) ?>
+<div class="col-xs-12 col-sm-2">
+	<?= Html::encode($model->name) ?>
 </div>
-<div class="col-sm-8">
-	<?= Html::a(Html::encode($model->motion), ['view', 'id' => $model->id, "tournament_id" => $model->tournament->id], ["class" => "btn btn-default"]); ?>
+<div class="col-xs-12 col-sm-10">
+	<?= Html::a(Html::encode($model->motion), [
+		($model->type > \common\models\Round::TYP_IN) ? 'outround/view' : 'round/view',
+		'id'            => $model->id,
+		"tournament_id" => $model->tournament->id],
+		["class" => "btn btn-default"]);
+	?>
 </div>

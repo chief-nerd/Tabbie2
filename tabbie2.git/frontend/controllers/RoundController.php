@@ -168,7 +168,6 @@ class RoundController extends BaseTournamentController
 	 */
 	public function actionCreate()
 	{
-
 		if (\common\models\Team::find()->active()->tournament($this->_tournament->id)->count() % 4 != 0) {
 			\Yii::$app->session->setFlash("error", Yii::t("app", "Can't create Round: Amount of Teams is not dividable by 4"));
 
@@ -176,8 +175,11 @@ class RoundController extends BaseTournamentController
 		}
 
 		$model = new Round();
-		$model->number = $this->nextRoundNumber();
 		$model->tournament_id = $this->_tournament->id;
+		$model->setNextRound();
+
+		if ($model->type >= Round::TYP_OUT)
+			$this->redirect(["outround/create", "tournament_id" => $this->_tournament->id]); //We are already on outround
 
 		if ($model->load(Yii::$app->request->post())) {
 
@@ -191,18 +193,6 @@ class RoundController extends BaseTournamentController
 		return $this->render('create', [
 			'model' => $model,
 		]);
-	}
-
-	public function nextRoundNumber()
-	{
-		$lastRound = Round::find()
-			->where(["tournament_id" => $this->_tournament->id])
-			->orderBy(["number" => SORT_DESC])
-			->one();
-		if (!$lastRound)
-			return 1;
-		else
-			return ($lastRound->number + 1);
 	}
 
 	/**

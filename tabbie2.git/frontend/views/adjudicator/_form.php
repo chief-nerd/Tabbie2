@@ -92,13 +92,13 @@ SCRIPT;
 	]);
 	?>
 
-	<?=
-	$form->field($model, 'can_chair')->checkbox();
-	?>
+	<?= $form->field($model, 'can_chair')->checkbox(); ?>
 
-	<?=
-	$form->field($model, 'are_watched')->checkbox();
-	?>
+	<?= $form->field($model, 'are_watched')->checkbox(); ?>
+
+	<?= $form->field($model, 'active')->checkbox(); ?>
+
+	<?= $form->field($model, 'breaking')->checkbox(); ?>
 
 	<?
 	$jsExpression = "function(val) { ";
