@@ -1,21 +1,17 @@
 <?php
-
-namespace tests\codeception\common\unit\components;
+namespace tests\codeception\common\algorithm;
 
 use algorithms\algorithms\StrictWUDCRules;
-use algorithms\algorithms\StrictWUDCRulesSOAS;
 use common\models\DrawLine;
 use common\models\EnergyConfig;
 use common\models\Panel;
 use common\models\Round;
 use common\models\Tournament;
 use Yii;
-use tests\codeception\common\unit\DbTestCase;
 use Codeception\Specify;
 use Codeception\Verify;
-use common\components\TabAlgorithmus;
-use Codeception\Util\Debug;
 use common\models\Team;
+use Codeception\Util\Debug;
 use common\models\Venue;
 use common\models\Adjudicator;
 use yii\base\Exception;
@@ -24,11 +20,11 @@ use yii\helpers\ArrayHelper;
 /**
  * Test StrictWUDCRules Class
  */
-class StrictWUDCRulesSOASTest extends DbTestCase
+class StrictWUDCRulesTest extends DbTestCase
 {
 
 	/**
-	 * @var StrictWUDCRulesSOAS
+	 * @var StrictWUDCRules
 	 */
 	public $algo = false;
 	/** @var  Tournament */
@@ -37,6 +33,7 @@ class StrictWUDCRulesSOASTest extends DbTestCase
 	public $teams;
 	public $adjudicators;
 	public $venues;
+	public $DRAW;
 
 	public function setUp()
 	{
@@ -74,6 +71,7 @@ class StrictWUDCRulesSOASTest extends DbTestCase
 
 					$adjudicator = $adju->attributes;
 					$adjudicator["name"] = $adju->name;
+					$adjudicator["societies"] = [];
 
 					$strikedAdju = $adju->getStrikedAdjudicators()->asArray()->all();
 					$adjudicator["strikedAdjudicators"] = $strikedAdju;
@@ -104,6 +102,7 @@ class StrictWUDCRulesSOASTest extends DbTestCase
 
 					$this->adjudicators[$i] = $adjudicatorsObjects[$i]->attributes;
 					$this->adjudicators[$i]["name"] = "Name " . $adjudicatorsObjects[$i]["id"]; //$adjudicatorsObjects[$i]->name;
+					$this->adjudicators[$i]["societies"] = [];
 
 					$strikedAdju = $adjudicatorsObjects[$i]->getStrikedAdjudicators()->asArray()->all();
 					$this->adjudicators[$i]["strikedAdjudicators"] = $strikedAdju;
@@ -164,11 +163,6 @@ class StrictWUDCRulesSOASTest extends DbTestCase
 		}
 	}
 
-	protected function tearDown()
-	{
-		parent::tearDown();
-	}
-
 	public function testSortAdjudicators()
 	{
 		if ($this->algo === false) {
@@ -209,12 +203,12 @@ class StrictWUDCRulesSOASTest extends DbTestCase
 	{
 
 		$pos_a = rand(0, 3);
-		$id_a = rand(1, 15);
+		$id_a = rand(0, count($this->teams) - 1);
 		$line_a = new \common\models\DrawLine();
 		$line_a->setTeamOn($pos_a, $this->teams[$id_a]);
 
 		$pos_b = rand(0, 3);
-		$id_b = rand(1, 15);
+		$id_b = rand(0, count($this->teams) - 1);
 		$line_b = new \common\models\DrawLine();
 		$line_b->setTeamOn($pos_b, $this->teams[$id_b]);
 
@@ -377,9 +371,6 @@ class StrictWUDCRulesSOASTest extends DbTestCase
 		}
 	}
 
-	public $DRAW;
-
-
 	public function xtestRunFullDraw()
 	{
 		try {
@@ -447,7 +438,6 @@ class StrictWUDCRulesSOASTest extends DbTestCase
 		}
 	}
 
-
 	/**
 	 * @inheritdoc
 	 */
@@ -483,6 +473,11 @@ class StrictWUDCRulesSOASTest extends DbTestCase
 				'dataFile' => '@tests/codeception/common/fixtures/data/energyconfig.php',
 			],
 		];
+	}
+
+	protected function tearDown()
+	{
+		parent::tearDown();
 	}
 
 }

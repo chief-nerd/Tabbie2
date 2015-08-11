@@ -54,5 +54,11 @@ return [
 		"label"         => Yii::t("app", "Panel is wrong strength for room"),
 		"key"           => "panel_steepness",
 		"value"         => 1,
-	]
+	],
+	[
+		"tournament_id" => 1,
+		"label"         => Yii::t("app", "Adjudicator has already judged in this combination"),
+		"key"           => "rich_allocation",
+		"value"         => 0,
+	],
 ];
