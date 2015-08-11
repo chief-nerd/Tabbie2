@@ -106,7 +106,7 @@ class TabController extends BaseTournamentController
 
 	public function actionPublish()
 	{
-		$lines_team = PublishTabTeam::generateTeamTab($this->_tournament);
+		$lines_team = PublishTabTeam::generateTeamTab($this->_tournament, true);
 
 		foreach ($lines_team as $line) {
 			$ptt = new PublishTabTeam([
@@ -121,7 +121,7 @@ class TabController extends BaseTournamentController
 				throw new Exception("Save Error " . ObjectError::getMsg($ptt));
 		}
 
-		$lines_speaker = PublishTabSpeaker::generateSpeakerTab($this->_tournament);
+		$lines_speaker = PublishTabSpeaker::generateSpeakerTab($this->_tournament, true);
 
 		foreach ($lines_speaker as $line) {
 			if ($line->object) {

@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'label'     => Yii::t("app", 'Speaker'),
 			'format'    => 'raw',
 			'value'     => function ($model, $key, $index, $widget) {
-				return ($model->object) ? Html::a($model->object->name, ["user/view", "id" => $model->object->id]) : "(not set)";
+				return ($model->object) ? Html::a($model->object["name"], ["user/view", "id" => $model->object["id"]]) : "(not set)";
 			},
 		],
 		[

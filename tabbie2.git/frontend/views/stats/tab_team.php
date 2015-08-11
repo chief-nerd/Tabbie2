@@ -46,7 +46,7 @@ $dataProvider = new ArrayDataProvider([
 			'label'  => Yii::t("app", 'Team'),
 			'format' => 'raw',
 			'value'  => function ($model, $key, $index, $widget) {
-				return $model->object->name;
+				return $model->object["name"];
 			},
 		],
 		[

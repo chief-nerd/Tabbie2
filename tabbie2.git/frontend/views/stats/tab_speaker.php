@@ -44,7 +44,7 @@ $dataProvider = new ArrayDataProvider([
 			'label'  => Yii::t("app", 'Speaker'),
 			'format' => 'raw',
 			'value'  => function ($model, $key, $index, $widget) {
-				return ($model->object) ? $model->object->name : "(not set)";
+				return ($model->object) ? $model->object["name"] : "(not set)";
 			},
 		],
 		[

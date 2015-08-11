@@ -142,6 +142,11 @@ class Tournament extends \yii\db\ActiveRecord
 		];
 	}
 
+	public function cacheKey($key)
+	{
+		return $this->url_slug . "_" . $key;
+	}
+
 	/**
 	 * Check if user is the CA of the torunament
 	 *
