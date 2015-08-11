@@ -149,7 +149,7 @@ class SiteController extends Controller
 		return $this->render('how-to');
 	}
 
-	public function actionAddNewSociety()
+	public function actionAddNewSociety($name = "")
 	{
 		$model = new Society();
 
@@ -162,31 +162,12 @@ class SiteController extends Controller
 				Yii::$app->session->addFlash("error", Yii::t("app", "Error in wakeup"));
 		}
 
-		$model->fullname = (isset($model->fullname)) ? $model->fullname : unserialize(Yii::$app->session["signup"])->societies_id;
+		if (!isset($model->fullname)) {
+			$model->fullname = $name;
+		}
 
 		return $this->render("newSociety", [
 			"model" => $model,
-		]);
-	}
-
-	public function actionSignup()
-	{
-		$model = new SignupForm();
-
-		$socid = Yii::$app->request->post("SignupForm")["societies_id"];
-		if (!is_numeric($socid) && $socid != "") {
-			$model->load(Yii::$app->request->post());
-			Yii::$app->session["signup"] = serialize($model);
-
-			return $this->redirect(["site/add-new-society"]);
-		}
-
-		if ($model->load(Yii::$app->request->post())) {
-			$this->finishSignup($model, Yii::$app->request->post());
-		}
-
-		return $this->render('signup', [
-			'model' => $model,
 		]);
 	}
 
@@ -209,6 +190,27 @@ class SiteController extends Controller
 			} else
 				Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
 		}
+	}
+
+	public function actionSignup()
+	{
+		$model = new SignupForm();
+
+		$socid = Yii::$app->request->post("SignupForm")["societies_id"];
+		if (!is_numeric($socid) && $socid != "") {
+			$model->load(Yii::$app->request->post());
+			Yii::$app->session["signup"] = serialize($model);
+
+			return $this->redirect(["site/add-new-society", "name" => $model->societies_id]);
+		}
+
+		if ($model->load(Yii::$app->request->post())) {
+			$this->finishSignup($model, Yii::$app->request->post());
+		}
+
+		return $this->render('signup', [
+			'model' => $model,
+		]);
 	}
 
 	public function actionRequestPasswordReset()
