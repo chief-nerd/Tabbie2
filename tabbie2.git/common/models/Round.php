@@ -4,6 +4,7 @@ namespace common\models;
 
 use algorithms\algorithms\StrictWUDCRules;
 use common\components\ObjectError;
+use kartik\helpers\Html;
 use Yii;
 use yii\base\Exception;
 use yii\helpers\ArrayHelper;
@@ -30,6 +31,8 @@ use yii\helpers\ArrayHelper;
  * @property datetime        $finished_time
  * @property TabAfterRound[] $tabAfterRounds
  * @property Tournament      $tournament
+ * @property Tag[]           $tags
+ * @property MotionTag[]     $motionTags
  */
 class Round extends \yii\db\ActiveRecord
 {
@@ -86,6 +89,7 @@ class Round extends \yii\db\ActiveRecord
 
 	public function getLevelOptions()
 	{
+		$options = [];
 		$t = $this->tournament;
 		if ($t->has_final)
 			$options[1] = Yii::t("app", "Final");
@@ -97,6 +101,34 @@ class Round extends \yii\db\ActiveRecord
 			$options[8] = Yii::t("app", "Octofinal");
 
 		return $options;
+	}
+
+	public function getTags()
+	{
+		return ArrayHelper::getColumn($this->motionTags, "id");
+	}
+
+	public function setTags($value)
+	{
+		Tag::deleteAll(["round_id" => $this->id]);
+		foreach ($value as $t) {
+			if (!is_numeric($t)) {
+				$new_Tag = new MotionTag([
+					"name" => htmlentities(trim($t)),
+					"abr"  => null,
+				]);
+				$new_Tag->save();
+				$t = $new_Tag->id;
+			}
+
+			$tag = new Tag([
+				"motion_tag_id" => $t,
+				"round_id"      => $this->id,
+			]);
+			$tag->save();
+		}
+
+		return true;
 	}
 
 	public function getName()
@@ -257,10 +289,10 @@ class Round extends \yii\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['number', 'tournament_id', 'motion'], 'required'],
+			[['number', 'tournament_id', 'motion', 'tags'], 'required'],
 			[['id', 'number', 'tournament_id', 'published', 'type', 'level'], 'integer'],
 			[['motion', 'infoslide'], 'string'],
-			[['time'], 'safe']
+			[['time', 'tags'], 'safe']
 		];
 	}
 
@@ -282,6 +314,7 @@ class Round extends \yii\db\ActiveRecord
 			'prep_started'  => Yii::t('app', 'PrepTime started'),
 			'lastrun_temp'  => Yii::t('app', 'Last Temperature'),
 			'lastrun_time'  => Yii::t('app', 'ms to calculate'),
+			'tags'  => Yii::t("app", "Motion Tags"),
 		];
 	}
 
@@ -307,6 +340,14 @@ class Round extends \yii\db\ActiveRecord
 	public function getDebates()
 	{
 		return $this->hasMany(Debate::className(), ['round_id' => 'id', 'tournament_id' => 'tournament_id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getMotionTags()
+	{
+		return $this->hasMany(MotionTag::className(), ['id' => 'motion_tag_id'])->viaTable('tag', ['round_id' => 'id']);
 	}
 
 	/**

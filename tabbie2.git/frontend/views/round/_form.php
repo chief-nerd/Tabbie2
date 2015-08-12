@@ -18,6 +18,40 @@ use yii\widgets\ActiveForm;
 
 	<?= $form->field($model, 'motion')->textarea(['rows' => 2]) ?>
 
+	<?
+	$urlTagSearch = \yii\helpers\Url::to(['motiontag/list']);
+	$newDataScript = <<< SCRIPT
+function (query) {
+    return {
+      id: query.term,
+      text: query.term,
+      tag: true
+    }
+  }
+SCRIPT;
+
+	echo $form->field($model, 'tags')->widget(\kartik\widgets\Select2::classname(), [
+		'initValueText' => \yii\helpers\ArrayHelper::map($model->motionTags, "id", "name"),
+		'options'       => [
+			'placeholder' => Yii::t("app", 'Search for a Motion tag ...'),
+		],
+		'pluginOptions' => [
+			'multiple'           => true,
+			'minimumInputLength' => 2,
+			'ajax'               => [
+				'url'      => $urlTagSearch,
+				'dataType' => 'json',
+				'data'     => new \yii\web\JsExpression('function(term,page) { return {search:term}; }'),
+				'results'  => new \yii\web\JsExpression('function(data,page) { return {results:data.results}; }'),
+			],
+			'createSearchChoice' => new \yii\web\JsExpression($newDataScript),
+			'tags'               => true,
+			'createTag'          => new \yii\web\JsExpression($newDataScript),
+			'tokenSeparators'    => [',', ';'],
+		],
+	]);
+	?>
+
 	<?= $form->field($model, 'infoslide')->textarea(['rows' => 6]) ?>
 
 	<div class="form-group">

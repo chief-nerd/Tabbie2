@@ -33,6 +33,7 @@ $config = [
 				'' => 'site/index',
 				['class' => 'common\components\UserUrlRule'],
 				['class' => 'common\components\TournamentUrlRule'],
+				['class' => 'common\components\MotiontagUrlRule'],
 			],
 		],
 		'log'          => [

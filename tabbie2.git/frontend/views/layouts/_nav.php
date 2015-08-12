@@ -15,7 +15,6 @@ NavBar::begin([
 	],
 ]);
 $menuItems = [
-	['label' => Yii::t("app", 'Home'), 'url' => ['/site/index']],
 	['label' => Yii::t("app", 'About'), 'url' => ['/site/about']],
 	['label' => Yii::t("app", 'How-To'), 'url' => ['/site/how-to']],
 	['label' => Html::icon("calendar") . "&nbsp;" . Yii::t("app", 'Tournaments'), 'url' => ['tournament/index']],
@@ -24,6 +23,7 @@ $menuItems = [
 if (Yii::$app->user->isAdmin()) {
 	$menuItems[] = ['label' => Html::icon("globe") . "&nbsp;" . Yii::t("app", 'Users'), 'url' => ['user/index']];
 }
+$menuItems[] = ['label' => Html::icon("list") . "&nbsp;" . Yii::t("app", 'Motions'), 'url' => ['motiontag/index']];
 
 if (Yii::$app->user->isGuest) {
 	$menuItems[] = ['label' => Html::icon("pencil") . "&nbsp;" . Yii::t("app", 'Register'), 'url' => ['/site/signup']];

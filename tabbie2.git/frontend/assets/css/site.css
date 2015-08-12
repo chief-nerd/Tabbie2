@@ -35,6 +35,16 @@
     display: block;
 }
 
+/* Pagination CENTER HACK */
+.pagination {
+    display: table;
+    margin: 20px auto;
+}
+
+.kv-panel-pager .pagination {
+    margin: 0 auto;
+}
+
 html, body {
     height: 100%;
 }
@@ -443,4 +453,7 @@ a.desc:after {
 .checkboxlist label {
     line-height: 30px;
 }
-/** LOADER ENDE */
+
+.motion_group .info {
+    margin-bottom: 10px;
+}
