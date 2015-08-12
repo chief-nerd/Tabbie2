@@ -7,10 +7,12 @@ use common\models\InSociety;
 use common\models\search\UserSearch;
 use common\models\Team;
 use common\models\Tournament;
+use kartik\helpers\Html;
 use Yii;
 use common\models\Society;
 use common\models\search\SocietySearch;
 use yii\base\Exception;
+use yii\helpers\ArrayHelper;
 use yii\helpers\HtmlPurifier;
 use yii\helpers\Json;
 use yii\web\Controller;
@@ -81,6 +83,24 @@ class SocietyController extends Controller
 			'memberSearchModel'  => $searchModel,
 			'memberDataProvider' => $dataProvider,
 		]);
+	}
+
+	/**
+	 * Finds the Society model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 *
+	 * @param integer $id
+	 *
+	 * @return Society the loaded model
+	 * @throws NotFoundHttpException if the model cannot be found
+	 */
+	protected function findModel($id)
+	{
+		if (($model = Society::findOne($id)) !== null) {
+			return $model;
+		} else {
+			throw new NotFoundHttpException('The requested page does not exist.');
+		}
 	}
 
 	/**
@@ -160,6 +180,8 @@ class SocietyController extends Controller
 
 	public function actionImport()
 	{
+
+		echo "<table>";
 		if (Yii::$app->request->isPost) {
 			$file = \yii\web\UploadedFile::getInstanceByName('csvFile');
 			$import = [];
@@ -172,14 +194,14 @@ class SocietyController extends Controller
 						continue;
 					}
 
-					if (($num = count($data)) != 4) {
+					if (($num = count($data)) < 4) {
 						throw new \yii\base\Exception("500", Yii::t("app", "File Syntax Wrong"));
 					}
 					$import[] = [
-						"fullname"   => $data[0],
-						"abr"        => $data[1],
-						"city"       => $data[2],
-						"country_id" => $data[3],
+						"fullname"   => utf8_encode(str_replace("_", "", $data[0])),
+						"abr"        => utf8_encode($data[1]),
+						"city"       => utf8_encode($data[2]),
+						"country_id" => utf8_encode($data[3]),
 					];
 					$row++;
 				}
@@ -189,52 +211,59 @@ class SocietyController extends Controller
 			for ($i = 0; $i < $c_import; $i++) {
 				$l = $import[$i];
 
-				$country = Country::find()->where(["LIKE", "name", $l['country_id']])->one();
-				if ($country instanceof Country)
-					$l["country_id"] = $country->id;
-				else
-					$l["country_id"] = Country::COUNTRY_UNKNOWN_ID;
+				if (trim($l['fullname']) != "") {
+					$country = Country::find()->where(["LIKE", "name", $l['country_id']])->one();
+					if ($country instanceof Country)
+						$l["country_id"] = $country->id;
+					else
+						$l["country_id"] = Country::COUNTRY_UNKNOWN_ID;
 
-				$socMatch = Society::find()
-					->where(["fullname" => $l['fullname']])
-					->orWhere(["abr" => $l['abr']])
-					->all();
+					$name = trim($l['fullname']);
+					$socMatch = Society::find()
+						->where(["LIKE", "fullname", $name]);
 
-				if (count($socMatch) == 0) {
-					$soc = new Society($l);
-					if (!$soc->save())
-						throw new Exception(print_r($soc->getErrors(), true));
-				} else if (count($socMatch) == 1) {
-					//already exist
-					$soc = $socMatch[0];
-					$soc->load($l);
-					if (!$soc->save())
-						throw new Exception(print_r($soc->getErrors(), true));
-				} else {
-					throw new Exception("Multiple Matches: " . print_r($socMatch, true));
+					if ($l['abr'] != "")
+						$socMatch->orWhere(["abr" => $l['abr']]);
+
+					$socMatch = $socMatch->all();
+
+					if (count($socMatch) == 0) {
+
+						$soc = new Society($l);
+						if ($l["city"] == "")
+							$l["city"] = null;
+
+						if ($l["abr"] == "")
+							$l["abr"] = $soc->generateAbr($l['fullname']);
+						else {
+							$l["abr"] = Society::uniqueAbr($l["abr"]);
+						}
+
+						$soc = new Society($l);
+						if (!$soc->save()) {
+							$string = print_r($soc->getErrors(), true) . " " . print_r($l, true);
+							throw new Exception($string);
+						}
+					} else if (count($socMatch) == 1) {
+						//already exist
+						$soc = $socMatch[0];
+						$soc->load($l);
+						if (!$soc->save())
+							throw new Exception(print_r($soc->getErrors(), true));
+					} else {
+						$debugLine = "<tr><th>" . $l['fullname'] . " (" . $l['abr'] . ")</th><td>";
+						$items = ArrayHelper::map($socMatch, "id", "fullname");
+						$debugLine .= Html::ul($items);
+						$debugLine .= "</td></tr>";
+
+						echo $debugLine;
+					}
 				}
 			}
 		}
+		echo "</table>";
 
 		return $this->render("import");
-	}
-
-	/**
-	 * Finds the Society model based on its primary key value.
-	 * If the model is not found, a 404 HTTP exception will be thrown.
-	 *
-	 * @param integer $id
-	 *
-	 * @return Society the loaded model
-	 * @throws NotFoundHttpException if the model cannot be found
-	 */
-	protected function findModel($id)
-	{
-		if (($model = Society::findOne($id)) !== null) {
-			return $model;
-		} else {
-			throw new NotFoundHttpException('The requested page does not exist.');
-		}
 	}
 
 	/**

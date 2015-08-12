@@ -29,6 +29,37 @@ class Society extends \yii\db\ActiveRecord
 		return 'society';
 	}
 
+	public static function generateAbr($name)
+	{
+		$name = trim($name);
+		$abr = "";
+		$parts = explode(" ", $name);
+		if (count($parts) == 1) {
+			return Society::uniqueAbr($name);
+		}
+
+		foreach ($parts as $part) {
+			if (isset($part[0]))
+				$abr .= $part[0];
+		}
+		$abr = strtoupper($abr);
+
+		return Society::uniqueAbr($abr);
+	}
+
+	public static function uniqueAbr($abr)
+	{
+		$candidate = $abr;
+		$count = 1;
+		$i = 1;
+		while (Society::find()->where(["abr" => $candidate])->exists()) {
+			$candidate = $abr . $i;
+			$i++;
+		}
+
+		return $candidate;
+	}
+
 	/**
 	 * @inheritdoc
 	 */
@@ -104,33 +135,5 @@ class Society extends \yii\db\ActiveRecord
 	public function getTeams()
 	{
 		return $this->hasMany(Team::className(), ['society_id' => 'id']);
-	}
-
-	public static function generateAbr($name)
-	{
-		$abr = "";
-		$parts = explode(" ", trim($name));
-		foreach ($parts as $part) {
-			$abr .= $part[0];
-		}
-		$abr = strtoupper($abr);
-
-		return Society::uniqueAbr($abr);
-	}
-
-	public static function uniqueAbr($abr)
-	{
-		$candidate = $abr;
-		$count = 1;
-		$i = 1;
-		while ($count != 0) {
-			$count = Society::find()->where(["abr" => $candidate])->count();
-			if ($count > 0) {
-				$candidate = $abr . $i;
-				$i++;
-			}
-		}
-
-		return $candidate;
 	}
 }
