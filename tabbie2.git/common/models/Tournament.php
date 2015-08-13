@@ -406,8 +406,6 @@ class Tournament extends \yii\db\ActiveRecord
 			"image"     => $this->getLogo(true),
 			"organizer" => [
 				"name"      => $this->hostedby->fullname,
-				"legalName" => $this->hostedby->fullname,
-				"address"   => $this->hostedby->city . " ," . $this->hostedby->country->name
 			],
 			"startDate" => $objStartDateTime->format(\DateTime::ISO8601),
 			"endDate"   => $objEndDateTime->format(\DateTime::ISO8601),
