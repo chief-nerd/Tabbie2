@@ -25,7 +25,7 @@ use yii\helpers\ArrayHelper;
  */
 class LegacyMotion extends \yii\db\ActiveRecord
 {
-	public $_tags = [];
+	private $_tags = [];
 
 	/**
 	 * @inheritdoc
@@ -89,7 +89,7 @@ class LegacyMotion extends \yii\db\ActiveRecord
 					"abr"  => null,
 				]);
 				if (!$new_Tag->save())
-					Yii::error("Save new_Tag error", ObjectError::getMsg($new_Tag));
+					Yii::error("Save new MotionTag error", ObjectError::getMsg($new_Tag), __METHOD__);
 				$t = $new_Tag->id;
 			}
 
@@ -98,7 +98,7 @@ class LegacyMotion extends \yii\db\ActiveRecord
 				"legacy_motion_id" => $this->id,
 			]);
 			if (!$tag->save()) {
-				Yii::error("Save tag error", ObjectError::getMsg($tag));
+				Yii::error("Save LegacyTag error", ObjectError::getMsg($tag), __METHOD__);
 			}
 		}
 
