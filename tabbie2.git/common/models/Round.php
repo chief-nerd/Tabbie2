@@ -114,8 +114,7 @@ class Round extends \yii\db\ActiveRecord
 		foreach ($value as $t) {
 			if (!is_numeric($t)) {
 				$new_Tag = new MotionTag([
-					"name" => htmlentities(trim($t)),
-					"abr"  => null,
+					"name" => ucwords(htmlentities(trim($t))),
 				]);
 				$new_Tag->save();
 				$t = $new_Tag->id;
