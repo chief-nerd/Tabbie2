@@ -395,6 +395,49 @@ class Tournament extends \yii\db\ActiveRecord
 		return $this->accessToken = substr(md5(uniqid(mt_rand(), true)), 0, 10);
 	}
 
+	public function getSchema($json = true)
+	{
+		$objStartDateTime = new \DateTime($this->start_date);
+		$objEndDateTime = new \DateTime($this->end_date);
+
+		$schema = [
+			"@type"     => "Festival",
+			"name"      => $this->fullname,
+			"image"     => $this->getLogo(true),
+			"organizer" => [
+				"name"      => $this->hostedby->fullname,
+				"legalName" => $this->hostedby->fullname,
+				"address"   => $this->hostedby->city . " ," . $this->hostedby->country->name
+			],
+			"startDate" => $objStartDateTime->format(\DateTime::ISO8601),
+			"endDate"   => $objEndDateTime->format(\DateTime::ISO8601),
+			"url"       => \yii\helpers\Url::to(["tournament/view", "id" => $this->id], true),
+			"sameAs"    => \yii\helpers\Url::to(["tournament/view", "id" => $this->id], true),
+			"location"  => [
+				"@type"   => "Place",
+				"name"    => $this->hostedby->fullname,
+				"address" => $this->hostedby->city . ", " . $this->hostedby->country->name
+			]
+		];
+		if ($json) $schema = ["@context" => "http://schema.org"] + $schema;
+
+		return ($json) ? json_encode($schema, JSON_UNESCAPED_SLASHES) : $schema;
+	}
+
+	public function getLogo($absolute = false)
+	{
+		if ($this->logo !== null) {
+			if ($absolute && substr($this->logo, 0, 4) != "http")
+				return Url::to($this->logo, true);
+			else
+				return $this->logo;
+		} else {
+			$defaultPath = Yii::getAlias("@frontend/assets/images/") . "default-tournament.png";
+
+			return Yii::$app->assetManager->publish($defaultPath)[1];
+		}
+	}
+
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
@@ -545,20 +588,6 @@ class Tournament extends \yii\db\ActiveRecord
 	public function getFullname()
 	{
 		return $this->name . " " . Yii::$app->formatter->asDate($this->end_date, "Y");
-	}
-
-	public function getLogo($absolute = false)
-	{
-		if ($this->logo !== null) {
-			if ($absolute && substr($this->logo, 0, 4) != "http")
-				return Url::to($this->logo, true);
-			else
-				return $this->logo;
-		} else {
-			$defaultPath = Yii::getAlias("@frontend/assets/images/") . "default-tournament.png";
-
-			return Yii::$app->assetManager->publish($defaultPath)[1];
-		}
 	}
 
 	/**

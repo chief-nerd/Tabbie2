@@ -72,34 +72,5 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <!-- Google Structured Data -->
 <script type="application/ld+json">
-{
-  "@context": "http://schema.org",
-  "@type": "Festival",
-  "name": "<?= $model->fullname ?>",
-  "image" : "<?= $model->getLogo(true) ?>",
-  "organizer" : {
-    "name" : "<?= $model->hostedby->fullname ?>",
-  	"legalName" : "<?= $model->hostedby->fullname ?>",
-  	"address" : "<?= $model->hostedby->city ?>, <?= $model->hostedby->country->name ?>",
-  },
-  "startDate" : "<?
-	$objDateTime = new DateTime($model->start_date);
-	echo $objDateTime->format(DateTime::ISO8601);
-	?>",
-  "endDate" : "<?
-	$objDateTime = new DateTime($model->end_date);
-	echo $objDateTime->format(DateTime::ISO8601);
-	?>",
-  "url" : "<?= \yii\helpers\Url::to(["tournament/view", "id" => $model->id], true) ?>",
-  <? if ($model->hosted_by_id): ?>
-  "location" : {
-    "@type" : "Place",
-    "name" : "<?= $model->hostedby->fullname ?>",
-    "address" : "<?= $model->hostedby->city ?>, <?= $model->hostedby->country->name ?>"
-  }
-  <? endif; ?>
-}
-
-
-
+<?= $model->getSchema() ?>
 </script>

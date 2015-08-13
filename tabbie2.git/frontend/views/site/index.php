@@ -101,3 +101,32 @@ $this->title = Yii::$app->params["slogan"];
 
 	</div>
 </div>
+
+<script type="application/ld+json">
+<?
+	$schema = [
+		"@context"      => "http://schema.org",
+		"@type"         => "NGO",
+		"name"          => Yii::$app->params["appName"],
+		"alternateName" => "TabbieTwo",
+		"url"           => Yii::$app->params["appUrl"],
+		"description"   => Yii::$app->params["slogan"],
+		"email"         => Yii::$app->params["supportEmail"],
+		"logo"          => "https://s3.eu-central-1.amazonaws.com/tabbie-assets/FB_logo.jpg",
+		"location"      => "Vienna, Austria",
+		"sameAs"        => [
+			"https://www.facebook.com/TabbieTwo",
+			"https://twitter.com/TabbieTwo",
+		],
+		"events"        => [],
+	];
+
+	/** @var common\models\Tournament $t */
+	foreach ($upcoming as $t) {
+		$schema["events"][] = $t->getSchema(false);
+	}
+
+	echo json_encode($schema, JSON_UNESCAPED_SLASHES);
+	?>
+
+</script>

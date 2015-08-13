@@ -70,11 +70,12 @@ class SiteController extends Controller
 
 	public function actionIndex()
 	{
-
 		$tournaments = \common\models\Tournament::find()->where("start_date <= NOW() AND end_date >= NOW()")->all();
+		$upcoming = \common\models\Tournament::find()->where("start_date <= DATE_ADD(NOW(), INTERVAL 30 day) AND end_date >= NOW()")->all();
 
 		return $this->render('index', [
-			"tournaments" => $tournaments
+			"tournaments" => $tournaments,
+			"upcoming"    => $upcoming,
 		]);
 	}
 
