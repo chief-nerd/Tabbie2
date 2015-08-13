@@ -74,9 +74,14 @@ $this->params['breadcrumbs'][] = $this->title;
 <script type="application/ld+json">
 {
   "@context": "http://schema.org",
-  "@type": "Event",
+  "@type": "Festival",
   "name": "<?= $model->fullname ?>",
   "image" : "<?= $model->getLogo(true) ?>",
+  "organizer" : {
+    "name" : "<?= $model->hostedby->fullname ?>",
+  	"legalName" : "<?= $model->hostedby->fullname ?>",
+  	"address" : "<?= $model->hostedby->city ?>, <?= $model->hostedby->country->name ?>",
+  },
   "startDate" : "<?
 	$objDateTime = new DateTime($model->start_date);
 	echo $objDateTime->format(DateTime::ISO8601);
