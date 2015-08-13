@@ -86,10 +86,6 @@ $this->params['breadcrumbs'][] = $this->title;
 	echo $objDateTime->format(DateTime::ISO8601);
 	?>",
   "url" : "<?= \yii\helpers\Url::to(["tournament/view", "id" => $model->id], true) ?>",
-  "offers": {
-    "@type": "Offer",
-    "url": "<?= \yii\helpers\Url::to(["tournament/view", "id" => $model->id], true) ?>"
-  },
   <? if ($model->hosted_by_id): ?>
   "location" : {
     "@type" : "Place",
