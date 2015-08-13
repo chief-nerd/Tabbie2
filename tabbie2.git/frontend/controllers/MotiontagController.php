@@ -178,6 +178,7 @@ class MotiontagController extends Controller
 		$model->language = 'en';
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
+			$model->saveTags();
 			Yii::$app->session->addFlash("success", Yii::t("app", "Thank you for your submission."));
 
 			return $this->redirect(['index']);

@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\components\ObjectError;
 use Yii;
 use yii\helpers\ArrayHelper;
 
@@ -24,6 +25,8 @@ use yii\helpers\ArrayHelper;
  */
 class LegacyMotion extends \yii\db\ActiveRecord
 {
+	public $_tags = [];
+
 	/**
 	 * @inheritdoc
 	 */
@@ -72,14 +75,21 @@ class LegacyMotion extends \yii\db\ActiveRecord
 
 	public function setTags($value)
 	{
-		LegacyTag::deleteAll(["legacy_motion_id" => $this->id]);
-		foreach ($value as $t) {
+		$this->_tags = $value;
+	}
+
+	public function saveTags()
+	{
+		if (is_int($this->id))
+			LegacyTag::deleteAll(["legacy_motion_id" => $this->id]);
+		foreach ($this->_tags as $t) {
 			if (!is_numeric($t)) {
 				$new_Tag = new MotionTag([
 					"name" => ucwords(htmlentities(trim($t))),
 					"abr"  => null,
 				]);
-				$new_Tag->save();
+				if (!$new_Tag->save())
+					Yii::error("Save new_Tag error", ObjectError::getMsg($new_Tag));
 				$t = $new_Tag->id;
 			}
 
@@ -87,7 +97,9 @@ class LegacyMotion extends \yii\db\ActiveRecord
 				"motion_tag_id"    => $t,
 				"legacy_motion_id" => $this->id,
 			]);
-			$tag->save();
+			if (!$tag->save()) {
+				Yii::error("Save tag error", ObjectError::getMsg($tag));
+			}
 		}
 
 		return true;
