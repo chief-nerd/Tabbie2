@@ -2,9 +2,14 @@
 
 namespace backend\controllers;
 
+use common\models\LegacyTag;
+use common\models\Motion;
+use common\models\Tag;
 use Yii;
 use common\models\MotionTag;
 use common\models\search\MotionTagSearch;
+use yii\data\ArrayDataProvider;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -17,6 +22,17 @@ class MotiontagController extends Controller
 	public function behaviors()
 	{
 		return [
+			'access' => [
+				'class' => AccessControl::className(),
+				'rules' => [
+					[
+						'allow'         => true,
+						'matchCallback' => function ($rule, $action) {
+							return (Yii::$app->user->isAdmin());
+						}
+					],
+				],
+			],
 			'verbs' => [
 				'class'   => VerbFilter::className(),
 				'actions' => [
@@ -50,8 +66,17 @@ class MotiontagController extends Controller
 	 */
 	public function actionView($id)
 	{
+		$motions = Motion::findAllByTags([$id]);
+
+		// add conditions that should always apply here
+
+		$dataProvider = new ArrayDataProvider([
+			'allModels' => $motions,
+		]);
+
 		return $this->render('view', [
-			'model' => $this->findModel($id),
+			'model'        => $this->findModel($id),
+			'dataProvider' => $dataProvider,
 		]);
 	}
 
@@ -110,6 +135,26 @@ class MotiontagController extends Controller
 				'model' => $model,
 			]);
 		}
+	}
+
+	/**
+	 * Updates an existing MotionTag model.
+	 * If update is successful, the browser will be redirected to the 'view' page.
+	 *
+	 * @param integer $id
+	 *
+	 * @return mixed
+	 */
+	public function actionMerge($id, $other)
+	{
+		$count = Tag::updateAll(["motion_tag_id" => $other], ["motion_tag_id" => $id]);
+		$count += LegacyTag::updateAll(["motion_tag_id" => $other], ["motion_tag_id" => $id]);
+
+		$this->findModel($id)->delete();
+
+		Yii::$app->session->addFlash("notice", Yii::t("app", "{count} Tags switched", ["count" => $count]));
+
+		return $this->redirect(['index']);
 	}
 
 	/**

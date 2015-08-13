@@ -18,13 +18,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 		<?php $form = \kartik\widgets\ActiveForm::begin(); ?>
 
-		<?= $form->field($model, 'tournament')->textInput() ?>
-
-		<?= $form->field($model, 'round')->textInput([
-			'options' => ['placeholder' => Yii::t("app", 'Round #1')],
+		<?= $form->field($model, 'tournament')->textInput([
+			"placeholder" => Yii::t("app", "Your amazing IV")
 		]) ?>
-
-		<?= $form->field($model, 'link')->textInput(['maxlength' => true]) ?>
 
 		<?= $form->field($model, 'time', [
 			'addon' => ['prepend' => ['content' => "<i class=\"glyphicon glyphicon-calendar\"></i>"]]
@@ -38,7 +34,13 @@ $this->params['breadcrumbs'][] = $this->title;
 		]);
 		?>
 
-		<?= $form->field($model, 'motion')->textInput() ?>
+		<?= $form->field($model, 'round')->textInput([
+			'placeholder' => Yii::t("app", 'Round #1 or Final'),
+		]) ?>
+
+		<?= $form->field($model, 'motion')->textInput([
+			"placeholder" => Yii::t("app", "THW ...")
+		]) ?>
 
 		<?
 		$urlTagSearch = \yii\helpers\Url::to(['motiontag/list']);
@@ -76,8 +78,12 @@ SCRIPT;
 
 		<?= $form->field($model, 'infoslide')->textarea(['rows' => 6]) ?>
 
+		<?= $form->field($model, 'link')->textInput([
+			"placeholder" => Yii::t("app", "http://give.credit.where.credit.is.due.com")
+		]) ?>
+
 		<div class="form-group">
-			<?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+			<?= Html::submitButton(Yii::t('app', 'Add this motion'), ['class' => 'btn btn-success btn-block']) ?>
 		</div>
 
 		<?php \kartik\widgets\ActiveForm::end(); ?>

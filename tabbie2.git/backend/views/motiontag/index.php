@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\search\MotionTagSearch */
@@ -26,7 +26,18 @@ $this->params['breadcrumbs'][] = $this->title;
 			['class' => 'yii\grid\SerialColumn'],
 			'name',
 			'abr',
-			['class' => 'yii\grid\ActionColumn'],
+			'count',
+			[
+				'class'    => 'kartik\grid\ActionColumn',
+				'width'    => '120px',
+				'template' => '{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{merge}&nbsp;&nbsp;{delete}',
+				'buttons'  => [
+					"merge" => function ($url, $model) {
+
+						return $this->render("_merge", ["model" => $model]);
+					},
+				],
+			],
 		],
 	]); ?>
 

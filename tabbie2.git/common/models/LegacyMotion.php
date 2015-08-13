@@ -76,7 +76,7 @@ class LegacyMotion extends \yii\db\ActiveRecord
 		foreach ($value as $t) {
 			if (!is_numeric($t)) {
 				$new_Tag = new MotionTag([
-					"name" => htmlentities(trim($t)),
+					"name" => ucwords(htmlentities(trim($t))),
 					"abr"  => null,
 				]);
 				$new_Tag->save();

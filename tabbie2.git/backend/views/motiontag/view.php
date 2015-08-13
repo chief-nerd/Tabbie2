@@ -25,13 +25,11 @@ $this->params['breadcrumbs'][] = $this->title;
 		]) ?>
 	</p>
 
-	<?= DetailView::widget([
-		'model'      => $model,
-		'attributes' => [
-			'id',
-			'name',
-			'abr',
-		],
-	]) ?>
+	<?= \yii\widgets\ListView::widget([
+		'dataProvider' => $dataProvider,
+		'itemView'     => '_item',
+
+	]);
+	?>
 
 </div>

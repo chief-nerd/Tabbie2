@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "motion_tag".
@@ -10,6 +11,7 @@ use Yii;
  * @property integer        $id
  * @property string         $name
  * @property string         $abr
+ * @property-read integer   $count
  *
  * @property LegacyTag[]    $legacyTags
  * @property LegacyMotion[] $legacyMotions
@@ -44,9 +46,10 @@ class MotionTag extends \yii\db\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'id'   => Yii::t('app', 'ID'),
-			'name' => Yii::t('app', 'Name'),
-			'abr'  => Yii::t('app', 'Abr'),
+			'id'    => Yii::t('app', 'ID'),
+			'name'  => Yii::t('app', 'Name'),
+			'abr'   => Yii::t('app', 'Abr'),
+			'count' => Yii::t('app', 'Amount'),
 		];
 	}
 
@@ -80,5 +83,17 @@ class MotionTag extends \yii\db\ActiveRecord
 	public function getRounds()
 	{
 		return $this->hasMany(Round::className(), ['id' => 'round_id'])->viaTable('tag', ['motion_tag_id' => 'id']);
+	}
+
+	public function getOptions()
+	{
+		$tags = MotionTag::find()->asArray()->all();
+
+		return ArrayHelper::map($tags, "id", "name");
+	}
+
+	public function getCount()
+	{
+		return count($this->tags) + count($this->legacyTags);
 	}
 }

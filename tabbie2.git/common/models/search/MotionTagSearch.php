@@ -47,6 +47,9 @@ class MotionTagSearch extends MotionTag
 
 		$dataProvider = new ActiveDataProvider([
 			'query' => $query,
+			'pagination' => [
+				'pageSize' => 100,
+			]
 		]);
 
 		$this->load($params);

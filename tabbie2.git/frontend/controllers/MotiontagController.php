@@ -59,7 +59,7 @@ class MotiontagController extends Controller
 		$dataProvider = new ArrayDataProvider([
 			'allModels'  => $motions,
 			'pagination' => [
-				'pageSize' => 10,
+				'pageSize' => Yii::$app->params["motions_per_page"],
 			],
 		]);
 
@@ -83,6 +83,9 @@ class MotiontagController extends Controller
 
 		$dataProvider = new ArrayDataProvider([
 			'allModels' => $motions,
+			'pagination' => [
+				'pageSize' => Yii::$app->params["motions_per_page"],
+			]
 		]);
 
 		return $this->render('view', [
@@ -175,7 +178,7 @@ class MotiontagController extends Controller
 		$model->language = 'en';
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
-			Yii::$app->session->addFlash("success", Yii::t("app", "Thank you for your motion."));
+			Yii::$app->session->addFlash("success", Yii::t("app", "Thank you for your submission."));
 
 			return $this->redirect(['index']);
 		} else {
