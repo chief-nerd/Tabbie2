@@ -54,7 +54,32 @@ class MotiontagController extends Controller
 	{
 		$motions = Motion::findAllByTags(false, 100);
 
-		// add conditions that should always apply here
+		$cloud = MotionTag::find()
+			->select(["motion_tag.*", "count(id) as count"])
+			->leftJoin("tag", "motion_tag_id = motion_tag.id")
+			->groupBy("id")
+			->orderBy(["count" => SORT_DESC])
+			->asArray()
+			->limit(30)
+			->all();
+
+		$heighest = $cloud[0]["count"];
+		$lowest = $cloud[count($cloud) - 1]["count"];
+
+		$span = $heighest - $lowest;
+
+		for ($i = 0; $i < count($cloud); $i++) {
+			$count = $cloud[$i]["count"];
+			$percent = floor((($count - $lowest) / $span) * 100);
+
+			$cloud[$i]["size"] = "s" . intval($percent / 20);
+
+		}
+
+		//shuffle($cloud);
+		usort($cloud, function ($a, $b) {
+			return strcasecmp($a["name"], $b["name"]);
+		});
 
 		$dataProvider = new ArrayDataProvider([
 			'allModels'  => $motions,
@@ -65,6 +90,7 @@ class MotiontagController extends Controller
 
 		return $this->render('index', [
 			'dataProvider' => $dataProvider,
+			'cloud' => $cloud,
 		]);
 	}
 

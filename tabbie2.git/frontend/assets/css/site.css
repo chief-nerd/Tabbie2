@@ -457,3 +457,43 @@ a.desc:after {
 .motion_group .info {
     margin-bottom: 10px;
 }
+
+.tags {
+    text-align: center;
+    margin: 0px 0 15px 0;
+}
+
+.tags:after {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+.tags a {
+    padding: 0 3px;
+    margin: 2px 3px;
+}
+
+.tags .s0 {
+    font-size: 100%;
+}
+
+.tags .s1 {
+    font-size: 120%;
+}
+
+.tags .s2 {
+    font-size: 140%;
+}
+
+.tags .s3 {
+    font-size: 160%;
+}
+
+.tags .s4 {
+    font-size: 180%;
+}
+
+.tags .s5 {
+    font-size: 200%;
+}
