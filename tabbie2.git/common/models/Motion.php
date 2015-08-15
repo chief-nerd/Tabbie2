@@ -47,7 +47,10 @@ class Motion extends Model
 			$legacy = $legacy->leftJoin("legacy_tag", "legacy_motion.id = legacy_motion_id")
 				->andWhere(["IN", "motion_tag_id", $tags]);
 
-		$legacy = $legacy->limit($limit - count($rounds))->all();
+		if (is_int($limit))
+			$legacy->limit($limit - count($rounds));
+
+		$legacy = $legacy->all();
 
 		foreach ($legacy as $l) {
 			$m[] = new Motion(["object" => $l]);

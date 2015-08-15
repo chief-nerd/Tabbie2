@@ -53,6 +53,22 @@ class MotionTag extends \yii\db\ActiveRecord
 		];
 	}
 
+	public function fields()
+	{
+		$fields = parent::fields();
+
+		$fields["count"] = function () {
+			return $this->getCount();
+		};
+
+		return $fields;
+	}
+
+	public function getCount()
+	{
+		return count($this->tags) + count($this->legacyTags);
+	}
+
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
@@ -90,10 +106,5 @@ class MotionTag extends \yii\db\ActiveRecord
 		$tags = MotionTag::find()->asArray()->all();
 
 		return ArrayHelper::map($tags, "id", "name");
-	}
-
-	public function getCount()
-	{
-		return count($this->tags) + count($this->legacyTags);
 	}
 }

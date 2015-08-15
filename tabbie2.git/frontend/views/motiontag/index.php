@@ -28,7 +28,8 @@ $this->params['breadcrumbs'][] = $this->title;
 			<div class="tags">
 				<? foreach ($cloud as $c): ?>
 					<a href="<?= \yii\helpers\Url::to(["motiontag/view", "id" => $c["id"]]) ?>"
-					   class="<?= $c["size"] ?>">
+					   class="<?= $c["size"] ?>"
+					   title="<?= $c["count"] ?> <?= $c["name"] ?>">
 						<?= $c["name"] ?>
 					</a>
 				<? endforeach; ?>

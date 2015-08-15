@@ -56,19 +56,29 @@ class MotiontagController extends Controller
 
 		$cloud = MotionTag::find()
 			->select(["motion_tag.*", "count(id) as count"])
-			->leftJoin("tag", "motion_tag_id = motion_tag.id")
-			->groupBy("id")
+			->innerJoin("tag", "motion_tag_id = motion_tag.id")
+			->groupBy("motion_tag_id")
 			->orderBy(["count" => SORT_DESC])
-			->asArray()
-			->limit(30)
-			->all();
+			->having("count > 0")
+			->union(
+				MotionTag::find()->select(["motion_tag.*", "count(id) as count"])
+					->innerJoin("legacy_tag", "motion_tag_id = motion_tag.id")
+					->groupBy("motion_tag_id")
+					->orderBy(["count" => SORT_DESC])
+					->having("count > 0")
+			)
+			->limit(30);
 
-		$heighest = $cloud[0]["count"];
-		$lowest = $cloud[count($cloud) - 1]["count"];
+		$cloud = $cloud->all();
+
+		$heighest = $cloud[0]->count;
+		$lowest = $cloud[count($cloud) - 1]->count;
 
 		$span = $heighest - $lowest;
 
 		for ($i = 0; $i < count($cloud); $i++) {
+			/** @var Motion $cloud [$i] */
+			$cloud[$i] = $cloud[$i]->toArray();
 			$count = $cloud[$i]["count"];
 			$percent = floor((($count - $lowest) / $span) * 100);
 
