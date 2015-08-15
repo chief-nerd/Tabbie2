@@ -255,7 +255,6 @@ class SiteController extends Controller
 
 	public function beforeAction($action)
 	{
-
 		Yii::$app->view->on(View::EVENT_BEGIN_PAGE, function () {
 			$view = Yii::$app->controller->view;
 
