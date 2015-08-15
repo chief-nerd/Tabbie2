@@ -7,6 +7,7 @@ use common\models\Adjudicator;
 use common\models\AdjudicatorStrike;
 use common\models\Team;
 use common\models\TeamStrike;
+use common\models\User;
 use common\models\UserClash;
 use Yii;
 use yii\base\Exception;
@@ -33,9 +34,16 @@ class StrikeController extends BaseTournamentController
 				'rules' => [
 					[
 						'allow'   => true,
-						'actions' => ['import', 'team_index', 'team_create', 'team_update', 'team_delete', 'adjudicator_index', 'adjudicator_create', 'adjudicator_update', 'adjudicator_delete'],
+						'actions' => ['team_index', 'team_create', 'team_update', 'team_delete', 'adjudicator_index', 'adjudicator_create', 'adjudicator_update', 'adjudicator_delete'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id) || $this->_tournament->isCA(Yii::$app->user->id));
+						}
+					],
+					[
+						'allow'         => true,
+						'actions'       => ['import'],
+						'matchCallback' => function ($rule, $action) {
+							return ($this->_tournament->isTabMaster(Yii::$app->user->id) && Yii::$app->user->model->role >= User::ROLE_TABMASTER);
 						}
 					],
 				],
@@ -280,6 +288,25 @@ class StrikeController extends BaseTournamentController
 	}
 
 	/**
+	 * Finds the Strikes model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 *
+	 * @param integer $team_id
+	 * @param integer $adjudicator_id
+	 *
+	 * @return Strikes the loaded model
+	 * @throws NotFoundHttpException if the model cannot be found
+	 */
+	protected function findTeamModel($team_id, $adjudicator_id)
+	{
+		if (($model = TeamStrike::findOne(['team_id' => $team_id, 'adjudicator_id' => $adjudicator_id])) !== null) {
+			return $model;
+		} else {
+			throw new NotFoundHttpException('The requested page does not exist.');
+		}
+	}
+
+	/**
 	 * Updates an existing Strikes model.
 	 * If update is successful, the browser will be redirected to the 'view' page.
 	 *
@@ -298,6 +325,25 @@ class StrikeController extends BaseTournamentController
 			return $this->render('adjudicator_update', [
 				'model' => $model,
 			]);
+		}
+	}
+
+	/**
+	 * Finds the Strikes model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 *
+	 * @param integer $adjudicator_from_id
+	 * @param integer $adjudicator_to_id
+	 *
+	 * @return Strikes the loaded model
+	 * @throws NotFoundHttpException if the model cannot be found
+	 */
+	protected function findAdjudicatorModel($adjudicator_from_id, $adjudicator_to_id)
+	{
+		if (($model = AdjudicatorStrike::findOne(['adjudicator_from_id' => $adjudicator_from_id, 'adjudicator_to_id' => $adjudicator_to_id])) !== null) {
+			return $model;
+		} else {
+			throw new NotFoundHttpException('The requested page does not exist.');
 		}
 	}
 
@@ -331,43 +377,5 @@ class StrikeController extends BaseTournamentController
 		$this->findAdjudicatorModel($adjudicator_from_id, $adjudicator_to_id)->delete();
 
 		return $this->redirect(['adjudicator_index', "tournament_id" => $this->_tournament->id]);
-	}
-
-	/**
-	 * Finds the Strikes model based on its primary key value.
-	 * If the model is not found, a 404 HTTP exception will be thrown.
-	 *
-	 * @param integer $team_id
-	 * @param integer $adjudicator_id
-	 *
-	 * @return Strikes the loaded model
-	 * @throws NotFoundHttpException if the model cannot be found
-	 */
-	protected function findTeamModel($team_id, $adjudicator_id)
-	{
-		if (($model = TeamStrike::findOne(['team_id' => $team_id, 'adjudicator_id' => $adjudicator_id])) !== null) {
-			return $model;
-		} else {
-			throw new NotFoundHttpException('The requested page does not exist.');
-		}
-	}
-
-	/**
-	 * Finds the Strikes model based on its primary key value.
-	 * If the model is not found, a 404 HTTP exception will be thrown.
-	 *
-	 * @param integer $adjudicator_from_id
-	 * @param integer $adjudicator_to_id
-	 *
-	 * @return Strikes the loaded model
-	 * @throws NotFoundHttpException if the model cannot be found
-	 */
-	protected function findAdjudicatorModel($adjudicator_from_id, $adjudicator_to_id)
-	{
-		if (($model = AdjudicatorStrike::findOne(['adjudicator_from_id' => $adjudicator_from_id, 'adjudicator_to_id' => $adjudicator_to_id])) !== null) {
-			return $model;
-		} else {
-			throw new NotFoundHttpException('The requested page does not exist.');
-		}
 	}
 }
