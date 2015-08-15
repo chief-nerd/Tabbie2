@@ -261,6 +261,7 @@ class SiteController extends Controller
 			$fb_Banner = "https://s3.eu-central-1.amazonaws.com/tabbie-assets/FB_banner.jpg";
 			$fb_Logo = "https://s3.eu-central-1.amazonaws.com/tabbie-assets/FB_logo.jpg";
 
+			$view->registerMetaTag(["property" => "og:type", "content" => "website"], "og:type");
 			$view->registerMetaTag(["property" => "og:title", "content" => Yii::$app->params["appName"] . " - " . Yii::$app->params["slogan"]], "og:title");
 			$view->registerMetaTag(["property" => "og:image", "content" => $fb_Logo], "og:image1");
 			$view->registerMetaTag(["property" => "og:image", "content" => $fb_Banner], "og:image2");
