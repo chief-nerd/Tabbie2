@@ -80,7 +80,7 @@ class MotiontagController extends Controller
 			/** @var Motion $cloud [$i] */
 			$cloud[$i] = $cloud[$i]->toArray();
 			$count = $cloud[$i]["count"];
-			$percent = floor((($count - $lowest) / $span) * 100);
+			$percent = floor((($count - $lowest) / $span)) * 100;
 
 			$cloud[$i]["size"] = "s" . intval($percent / 20);
 
