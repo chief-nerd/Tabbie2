@@ -29,6 +29,7 @@ use yii\helpers\ArrayHelper;
  * @property Tournament    $tournament
  * @property User          $speakerA
  * @property User          $speakerB
+ * @property-read integer  $speaks
  */
 class Team extends \yii\db\ActiveRecord
 {
@@ -40,18 +41,11 @@ class Team extends \yii\db\ActiveRecord
 
 	const POS_A = "A";
 	const POS_B = "B";
-
-	/**
-	 * Position Prefix
-	 *
-	 * @return array
-	 */
-	public static function getPos($id = null)
-	{
-		$pos = ["og", "oo", "cg", "co"];
-
-		return (isset($pos[$id])) ? $pos[$id] : $pos;
-	}
+	const IRREGULAR_NORMAL = 0;
+	const IRREGULAR_SWING = 1;
+	const IRREGULAR_A_NOSHOW = 2;
+	const IRREGULAR_B_NOSHOW = 3;
+	public $positionMatrix;
 
 	public static function getSpeaker()
 	{
@@ -77,19 +71,201 @@ class Team extends \yii\db\ActiveRecord
 		return (isset($labels[$id])) ? $labels[$id] : $labels;
 	}
 
-	const IRREGULAR_NORMAL = 0;
-	const IRREGULAR_SWING = 1;
-	const IRREGULAR_A_NOSHOW = 2;
-	const IRREGULAR_B_NOSHOW = 3;
-
-	public $positionMatrix;
-
 	/**
 	 * @inheritdoc
 	 */
 	public static function tableName()
 	{
 		return 'team';
+	}
+
+	/**
+	 * @inheritdoc
+	 * @return VTAQuery
+	 */
+	public static function find()
+	{
+		return new VTAQuery(get_called_class());
+	}
+
+	/**
+	 * Sort comparison function based on team points
+	 *
+	 * @param Team $a
+	 * @param Team $b
+	 */
+	public static function compare_points($a, $b)
+	{
+		$ap = $a["points"];
+		$bp = $b["points"];
+
+		return ($ap < $bp) ? 1 : (($ap > $bp) ? -1 : 0);
+	}
+
+	/**
+	 * Helper function to determine whether teams COULD replace each other in the same bracket (are they in the same
+	 * bracket, or is one a pull up / down from their bracket?) Debate level = hightest points of teams
+	 *
+	 * @param array   $team       Team A to check
+	 * @param array   $other_team Team to check against
+	 * @param integer $line_a_level
+	 * @param integer $line_b_level
+	 *
+	 * @uses Team::getPoints
+	 * @uses Team::getLevel
+	 * @return bool
+	 */
+	public static function is_swappable_with($team, $other_team, $line_a_level, $line_b_level)
+	{
+		$result = ($team["id"] != $other_team["id"]) &&
+			(($team["points"] == $other_team["points"]) ||
+				($line_a_level == $line_b_level));
+
+		return $result;
+	}
+
+	/**
+	 * Gets an integer value representing how BAD the current position is for the Team
+	 *
+	 * @param integer $pos
+	 * @param Array   $team
+	 *
+	 * @return integer
+	 */
+	public static function getPositionBadness($pos, $team)
+	{
+
+		$positions = $team["positionMatrix"];
+		$badness_lookup = Team::PositionBadnessTable();
+
+		$positions[$pos] += 1;
+		sort($positions);
+
+		while (($positions[0] + $positions[1] + $positions[2] + $positions[3]) >= 10) {
+			for ($i = 0; $i < 4; $i++)
+				$positions[$i] = max(0, $positions[$i] - 1);
+		}
+
+		return $badness_lookup["{$positions[0]}, {$positions[1]}, {$positions[2]}, {$positions[3]}"];
+	}
+
+	/**
+	 * The Position Badness Lookup table
+	 *
+	 * @todo make that dynamic, bitch!
+	 * @return array
+	 */
+	public static function PositionBadnessTable()
+	{
+		return [
+			"0, 0, 0, 0" => 0,
+			"0, 0, 0, 1" => 0,
+			"0, 0, 0, 2" => 4,
+			"0, 0, 0, 3" => 36,
+			"0, 0, 0, 4" => 144,
+			"0, 0, 0, 5" => 324,
+			"0, 0, 0, 6" => 676,
+			"0, 0, 0, 7" => 1296,
+			"0, 0, 0, 8" => 2304,
+			"0, 0, 0, 9" => 3600,
+			"0, 0, 1, 1" => 0,
+			"0, 0, 1, 2" => 4,
+			"0, 0, 1, 3" => 36,
+			"0, 0, 1, 4" => 100,
+			"0, 0, 1, 5" => 256,
+			"0, 0, 1, 6" => 576,
+			"0, 0, 1, 7" => 1156,
+			"0, 0, 1, 8" => 1936,
+			"0, 0, 2, 2" => 16,
+			"0, 0, 2, 3" => 36,
+			"0, 0, 2, 4" => 100,
+			"0, 0, 2, 5" => 256,
+			"0, 0, 2, 6" => 576,
+			"0, 0, 2, 7" => 1024,
+			"0, 0, 3, 3" => 64,
+			"0, 0, 3, 4" => 144,
+			"0, 0, 3, 5" => 324,
+			"0, 0, 3, 6" => 576,
+			"0, 0, 4, 4" => 256,
+			"0, 0, 4, 5" => 400,
+			"0, 1, 1, 1" => 0,
+			"0, 1, 1, 2" => 4,
+			"0, 1, 1, 3" => 16,
+			"0, 1, 1, 4" => 64,
+			"0, 1, 1, 5" => 196,
+			"0, 1, 1, 6" => 484,
+			"0, 1, 1, 7" => 900,
+			"0, 1, 2, 2" => 4,
+			"0, 1, 2, 3" => 16,
+			"0, 1, 2, 4" => 64,
+			"0, 1, 2, 5" => 196,
+			"0, 1, 2, 6" => 400,
+			"0, 1, 3, 3" => 36,
+			"0, 1, 3, 4" => 100,
+			"0, 1, 3, 5" => 196,
+			"0, 1, 4, 4" => 144,
+			"0, 2, 2, 2" => 4,
+			"0, 2, 2, 3" => 16,
+			"0, 2, 2, 4" => 64,
+			"0, 2, 2, 5" => 144,
+			"0, 2, 3, 3" => 36,
+			"0, 2, 3, 4" => 64,
+			"0, 3, 3, 3" => 36,
+			"1, 1, 1, 1" => 0,
+			"1, 1, 1, 2" => 0,
+			"1, 1, 1, 3" => 4,
+			"1, 1, 1, 4" => 36,
+			"1, 1, 1, 5" => 144,
+			"1, 1, 1, 6" => 324,
+			"1, 1, 2, 2" => 0,
+			"1, 1, 2, 3" => 4,
+			"1, 1, 2, 4" => 36,
+			"1, 1, 2, 5" => 100,
+			"1, 1, 3, 3" => 16,
+			"1, 1, 3, 4" => 36,
+			"1, 2, 2, 2" => 0,
+			"1, 2, 2, 3" => 4,
+			"1, 2, 2, 4" => 16,
+			"1, 2, 3, 3" => 4,
+			"2, 2, 2, 2" => 0,
+			"2, 2, 2, 3" => 0
+		];
+	}
+
+	/**
+	 * Return the previous PositionMatrix the Team has been in to
+	 * 0 => OG,
+	 * 1 => OO,
+	 * 2 => CG,
+	 * 3 => CO,
+	 *
+	 * @return array[4]
+	 */
+	public static function getPastPositionMatrix($id, $tournament_id)
+	{
+
+		$pos = Yii::$app->db->createCommand("
+		SELECT count(*) FROM debate WHERE tournament_id = $tournament_id && og_team_id = $id
+		UNION ALL
+		SELECT count(*) FROM debate WHERE tournament_id = $tournament_id && oo_team_id = $id
+		UNION ALL
+		SELECT count(*) FROM debate WHERE tournament_id = $tournament_id && cg_team_id = $id
+		UNION ALL
+		SELECT count(*) FROM debate WHERE tournament_id = $tournament_id && co_team_id = $id")->queryAll();
+
+		return ArrayHelper::getColumn($pos, "count(*)");
+	}
+
+	public static function getIrregularOptions($id = null)
+	{
+		$options = [
+			self::IRREGULAR_NORMAL   => Yii::t("app", "Everything normal"),
+			self::IRREGULAR_SWING    => Yii::t("app", "Was replaced by swing team"),
+			self::IRREGULAR_A_NOSHOW => Yii::t("app", "Speaker A didn't show up"),
+			self::IRREGULAR_B_NOSHOW => Yii::t("app", "Speaker B didn't show up"),
+		];
+
+		return (isset($options[$id])) ? $options[$id] : $options;
 	}
 
 	/**
@@ -137,15 +313,6 @@ class Team extends \yii\db\ActiveRecord
 
 	/**
 	 * @inheritdoc
-	 * @return VTAQuery
-	 */
-	public static function find()
-	{
-		return new VTAQuery(get_called_class());
-	}
-
-	/**
-	 * @inheritdoc
 	 */
 	public function attributeLabels()
 	{
@@ -169,12 +336,9 @@ class Team extends \yii\db\ActiveRecord
 		return $this->society->fullname;
 	}
 
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getTabPositions()
+	public function getSpeaks()
 	{
-		return $this->hasMany(TabPosition::className(), ['team_id' => 'id']);
+		return $this->speakerA_speaks + $this->speakerB_speaks;
 	}
 
 	/**
@@ -276,6 +440,30 @@ class Team extends \yii\db\ActiveRecord
 	}
 
 	/**
+	 * Position Prefix
+	 *
+	 * @return array
+	 */
+	public static function getPos($id = null)
+	{
+		$pos = ["og", "oo", "cg", "co"];
+
+		return (isset($pos[$id])) ? $pos[$id] : $pos;
+	}
+
+	/**
+	 * Gets the Debate Object in a specific round
+	 *
+	 * @param integer $roundid
+	 *
+	 * @return Debate
+	 */
+	public function getDebate($roundid)
+	{
+		return $this->getDebates()->andWhere(["round_id" => $roundid]);
+	}
+
+	/**
 	 * Gets all Debates for a Team in the current tournament
 	 *
 	 * @return \yii\db\ActiveQuery
@@ -294,15 +482,19 @@ class Team extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * Gets the Debate Object in a specific round
+	 * Update the Team Cache Data
 	 *
-	 * @param integer $roundid
-	 *
-	 * @return Debate
+	 * @return bool
 	 */
-	public function getDebate($roundid)
+	public function updateCache()
 	{
-		return $this->getDebates()->andWhere(["round_id" => $roundid]);
+		/** @var Team $team */
+		$data = $this->getNewCacheData();
+		$this->points = $data["Points"];
+		$this->speakerA_speaks = $data[Team::POS_A];
+		$this->speakerB_speaks = $data[Team::POS_B];
+
+		return $this->save();
 	}
 
 	/**
@@ -336,202 +528,6 @@ class Team extends \yii\db\ActiveRecord
 		}
 
 		return ["Points" => $calculated_points, Team::POS_A => $calculated_A_speaks, Team::POS_B => $calculated_B_speaks];
-	}
-
-	/**
-	 * Update the Team Cache Data
-	 *
-	 * @return bool
-	 */
-	public function updateCache()
-	{
-		/** @var Team $team */
-		$data = $this->getNewCacheData();
-		$this->points = $data["Points"];
-		$this->speakerA_speaks = $data[Team::POS_A];
-		$this->speakerB_speaks = $data[Team::POS_B];
-
-		return $this->save();
-	}
-
-	/**
-	 * Sort comparison function based on team points
-	 *
-	 * @param Team $a
-	 * @param Team $b
-	 */
-	public static function compare_points($a, $b)
-	{
-		$ap = $a["points"];
-		$bp = $b["points"];
-
-		return ($ap < $bp) ? 1 : (($ap > $bp) ? -1 : 0);
-	}
-
-	/**
-	 * Helper function to determine whether teams COULD replace each other in the same bracket (are they in the same
-	 * bracket, or is one a pull up / down from their bracket?) Debate level = hightest points of teams
-	 *
-	 * @param array   $team       Team A to check
-	 * @param array   $other_team Team to check against
-	 * @param integer $line_a_level
-	 * @param integer $line_b_level
-	 *
-	 * @uses Team::getPoints
-	 * @uses Team::getLevel
-	 * @return bool
-	 */
-	public static function is_swappable_with($team, $other_team, $line_a_level, $line_b_level)
-	{
-		$result = ($team["id"] != $other_team["id"]) &&
-			(($team["points"] == $other_team["points"]) ||
-				($line_a_level == $line_b_level));
-
-		return $result;
-	}
-
-	/**
-	 * The Position Badness Lookup table
-	 *
-	 * @todo make that dynamic, bitch!
-	 * @return array
-	 */
-	public static function PositionBadnessTable()
-	{
-		return [
-			"0, 0, 0, 0" => 0,
-			"0, 0, 0, 1" => 0,
-			"0, 0, 0, 2" => 4,
-			"0, 0, 0, 3" => 36,
-			"0, 0, 0, 4" => 144,
-			"0, 0, 0, 5" => 324,
-			"0, 0, 0, 6" => 676,
-			"0, 0, 0, 7" => 1296,
-			"0, 0, 0, 8" => 2304,
-			"0, 0, 0, 9" => 3600,
-			"0, 0, 1, 1" => 0,
-			"0, 0, 1, 2" => 4,
-			"0, 0, 1, 3" => 36,
-			"0, 0, 1, 4" => 100,
-			"0, 0, 1, 5" => 256,
-			"0, 0, 1, 6" => 576,
-			"0, 0, 1, 7" => 1156,
-			"0, 0, 1, 8" => 1936,
-			"0, 0, 2, 2" => 16,
-			"0, 0, 2, 3" => 36,
-			"0, 0, 2, 4" => 100,
-			"0, 0, 2, 5" => 256,
-			"0, 0, 2, 6" => 576,
-			"0, 0, 2, 7" => 1024,
-			"0, 0, 3, 3" => 64,
-			"0, 0, 3, 4" => 144,
-			"0, 0, 3, 5" => 324,
-			"0, 0, 3, 6" => 576,
-			"0, 0, 4, 4" => 256,
-			"0, 0, 4, 5" => 400,
-			"0, 1, 1, 1" => 0,
-			"0, 1, 1, 2" => 4,
-			"0, 1, 1, 3" => 16,
-			"0, 1, 1, 4" => 64,
-			"0, 1, 1, 5" => 196,
-			"0, 1, 1, 6" => 484,
-			"0, 1, 1, 7" => 900,
-			"0, 1, 2, 2" => 4,
-			"0, 1, 2, 3" => 16,
-			"0, 1, 2, 4" => 64,
-			"0, 1, 2, 5" => 196,
-			"0, 1, 2, 6" => 400,
-			"0, 1, 3, 3" => 36,
-			"0, 1, 3, 4" => 100,
-			"0, 1, 3, 5" => 196,
-			"0, 1, 4, 4" => 144,
-			"0, 2, 2, 2" => 4,
-			"0, 2, 2, 3" => 16,
-			"0, 2, 2, 4" => 64,
-			"0, 2, 2, 5" => 144,
-			"0, 2, 3, 3" => 36,
-			"0, 2, 3, 4" => 64,
-			"0, 3, 3, 3" => 36,
-			"1, 1, 1, 1" => 0,
-			"1, 1, 1, 2" => 0,
-			"1, 1, 1, 3" => 4,
-			"1, 1, 1, 4" => 36,
-			"1, 1, 1, 5" => 144,
-			"1, 1, 1, 6" => 324,
-			"1, 1, 2, 2" => 0,
-			"1, 1, 2, 3" => 4,
-			"1, 1, 2, 4" => 36,
-			"1, 1, 2, 5" => 100,
-			"1, 1, 3, 3" => 16,
-			"1, 1, 3, 4" => 36,
-			"1, 2, 2, 2" => 0,
-			"1, 2, 2, 3" => 4,
-			"1, 2, 2, 4" => 16,
-			"1, 2, 3, 3" => 4,
-			"2, 2, 2, 2" => 0,
-			"2, 2, 2, 3" => 0
-		];
-	}
-
-	/**
-	 * Gets an integer value representing how BAD the current position is for the Team
-	 *
-	 * @param integer $pos
-	 * @param Array   $team
-	 *
-	 * @return integer
-	 */
-	public static function getPositionBadness($pos, $team)
-	{
-
-		$positions = $team["positionMatrix"];
-		$badness_lookup = Team::PositionBadnessTable();
-
-		$positions[$pos] += 1;
-		sort($positions);
-
-		while (($positions[0] + $positions[1] + $positions[2] + $positions[3]) >= 10) {
-			for ($i = 0; $i < 4; $i++)
-				$positions[$i] = max(0, $positions[$i] - 1);
-		}
-
-		return $badness_lookup["{$positions[0]}, {$positions[1]}, {$positions[2]}, {$positions[3]}"];
-	}
-
-	/**
-	 * Return the previous PositionMatrix the Team has been in to
-	 * 0 => OG,
-	 * 1 => OO,
-	 * 2 => CG,
-	 * 3 => CO,
-	 *
-	 * @return array[4]
-	 */
-	public static function getPastPositionMatrix($id, $tournament_id)
-	{
-
-		$pos = Yii::$app->db->createCommand("
-		SELECT count(*) FROM debate WHERE tournament_id = $tournament_id && og_team_id = $id
-		UNION ALL
-		SELECT count(*) FROM debate WHERE tournament_id = $tournament_id && oo_team_id = $id
-		UNION ALL
-		SELECT count(*) FROM debate WHERE tournament_id = $tournament_id && cg_team_id = $id
-		UNION ALL
-		SELECT count(*) FROM debate WHERE tournament_id = $tournament_id && co_team_id = $id")->queryAll();
-
-		return ArrayHelper::getColumn($pos, "count(*)");
-	}
-
-	public static function getIrregularOptions($id = null)
-	{
-		$options = [
-			self::IRREGULAR_NORMAL   => Yii::t("app", "Everything normal"),
-			self::IRREGULAR_SWING    => Yii::t("app", "Was replaced by swing team"),
-			self::IRREGULAR_A_NOSHOW => Yii::t("app", "Speaker A didn't show up"),
-			self::IRREGULAR_B_NOSHOW => Yii::t("app", "Speaker B didn't show up"),
-		];
-
-		return (isset($options[$id])) ? $options[$id] : $options;
 	}
 
 }

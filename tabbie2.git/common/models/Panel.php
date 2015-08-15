@@ -39,19 +39,39 @@ class Panel extends \yii\db\ActiveRecord
 
 	/**
 	 * @inheritdoc
-	 */
-	public static function tableName()
-	{
-		return 'panel';
-	}
-
-	/**
-	 * @inheritdoc
 	 * @return TournamentQuery
 	 */
 	public static function find()
 	{
 		return new TournamentQuery(get_called_class());
+	}
+
+	/**
+	 * @param Array $a
+	 * @param Array $b
+	 *
+	 * @return int
+	 */
+	static public function compare_length_strength($a, $b)
+	{
+		$l_a = count($a["adju"]);
+		$l_b = count($b["adju"]);
+
+		if ($l_a < $l_b)
+			return -1;
+		elseif ($l_a > $l_b)
+			return 1;
+		else {
+
+			$s_a = $a["strength"];
+			$s_b = $b["strength"];
+			if ($s_a < $s_b)
+				return 1;
+			elseif ($s_a > $s_b)
+				return -1;
+			else
+				return 0;
+		}
 	}
 
 	/**
@@ -81,12 +101,22 @@ class Panel extends \yii\db\ActiveRecord
 		];
 	}
 
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getAdjudicatorInPanels()
+	public function getAdjudicatorsString()
 	{
-		return $this->hasMany(AdjudicatorInPanel::className(), ['panel_id' => 'id']);
+		$list = [];
+		$chair = AdjudicatorInPanel::findOne([
+			"panel_id" => $this->id,
+			"function" => "1",
+		]);
+
+		foreach ($this->getAdjudicators()->orderBy(["strength" => SORT_DESC])->all() as $adj) {
+			if ($adj->id == $chair->adjudicator_id) {
+				array_unshift($list, "<b>" . $adj->name . "</b>");
+			} else
+				$list[] = $adj->name;
+		}
+
+		return implode(", ", $list);
 	}
 
 	/**
@@ -98,6 +128,14 @@ class Panel extends \yii\db\ActiveRecord
 			->viaTable('adjudicator_in_panel', ['panel_id' => 'id']);
 	}
 
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getAdjudicatorInPanels()
+	{
+		return $this->hasMany(AdjudicatorInPanel::className(), ['panel_id' => 'id']);
+	}
+
 	public function getAdjudicatorsObjects()
 	{
 		return Adjudicator::find()
@@ -105,16 +143,6 @@ class Panel extends \yii\db\ActiveRecord
 			->where(["panel_id" => $this->id])
 			->orderBy(['function' => SORT_DESC])
 			->all();
-	}
-
-	/**
-	 * @param integer $id
-	 *
-	 * @return AdjudicatorInPanel
-	 */
-	public function getSpecificAdjudicatorInPanel($id)
-	{
-		return AdjudicatorInPanel::findByCondition(["panel_id" => $this->id, "adjudicator_id" => $id])->one();
 	}
 
 	/**
@@ -156,6 +184,15 @@ class Panel extends \yii\db\ActiveRecord
 		return false;
 	}
 
+	public function is_chair($id)
+	{
+		if ($this->getChairInPanel()->adjudicator_id == $id) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	/**
 	 * Gets the Chair in the Panel
 	 *
@@ -169,13 +206,62 @@ class Panel extends \yii\db\ActiveRecord
 			->one();
 	}
 
-	public function is_chair($id)
+	/**
+	 * @inheritdoc
+	 */
+	public static function tableName()
 	{
-		if ($this->getChairInPanel()->adjudicator_id == $id) {
-			return true;
-		} else {
-			return false;
+		return 'panel';
+	}
+
+	/**
+	 * Changes the Panel of the ID
+	 *
+	 * @param Panel   $newPanel
+	 * @param integer $id
+	 */
+	public function changeTo($newPanel, $id)
+	{
+		$adj = $this->getSpecificAdjudicatorInPanel($id);
+		if ($adj instanceof AdjudicatorInPanel) {
+			$adj->panel_id = $newPanel->id;
+			if ($adj->save())
+				return true;
+			else
+				throw new \yii\base\Exception(print_r($adj->getErrors(), true));
+		} else
+			throw new Exception("getSpecificAdjudicatorInPanel with ID " . $id . " NOT found");
+	}
+
+	/**
+	 * @param integer $id
+	 *
+	 * @return AdjudicatorInPanel
+	 */
+	public function getSpecificAdjudicatorInPanel($id)
+	{
+		return AdjudicatorInPanel::findByCondition(["panel_id" => $this->id, "adjudicator_id" => $id])->one();
+	}
+
+	public function setWing($id)
+	{
+		$adj = $this->getSpecificAdjudicatorInPanel($id);
+
+		if ($adj->function == Panel::FUNCTION_CHAIR) {
+			$nextHighestAdjNotID = AdjudicatorInPanel::find()
+				->where("panel_id = " . $this->id . " AND adjudicator_id != " . $id)
+				->joinWith("adjudicator")->orderBy("strength")->one();
+			$id = $nextHighestAdjNotID->adjudicator_id;
+			$this->setChair($id);
+
+			$adj->function = Panel::FUNCTION_WING;
+			if ($adj->save())
+				return true;
+			else
+				throw new \yii\base\Exception(print_r($adj->getErrors(), true));
 		}
+
+		return true;
 	}
 
 	/**
@@ -208,46 +294,6 @@ class Panel extends \yii\db\ActiveRecord
 			throw new \yii\base\Exception(print_r($chair->getErrors(), true));
 	}
 
-	/**
-	 * Changes the Panel of the ID
-	 *
-	 * @param Panel   $newPanel
-	 * @param integer $id
-	 */
-	public function changeTo($newPanel, $id)
-	{
-		$adj = $this->getSpecificAdjudicatorInPanel($id);
-		if ($adj instanceof AdjudicatorInPanel) {
-			$adj->panel_id = $newPanel->id;
-			if ($adj->save())
-				return true;
-			else
-				throw new \yii\base\Exception(print_r($adj->getErrors(), true));
-		} else
-			throw new Exception("getSpecificAdjudicatorInPanel with ID " . $id . " NOT found");
-	}
-
-	public function setWing($id)
-	{
-		$adj = $this->getSpecificAdjudicatorInPanel($id);
-
-		if ($adj->function == Panel::FUNCTION_CHAIR) {
-			$nextHighestAdjNotID = AdjudicatorInPanel::find()
-				->where("panel_id = " . $this->id . " AND adjudicator_id != " . $id)
-				->joinWith("adjudicator")->orderBy("strength")->one();
-			$id = $nextHighestAdjNotID->adjudicator_id;
-			$this->setChair($id);
-
-			$adj->function = Panel::FUNCTION_WING;
-			if ($adj->save())
-				return true;
-			else
-				throw new \yii\base\Exception(print_r($adj->getErrors(), true));
-		}
-
-		return true;
-	}
-
 	public function setAllWings()
 	{
 		foreach ($this->adjudicatorInPanels as $adj) {
@@ -258,23 +304,6 @@ class Panel extends \yii\db\ActiveRecord
 
 		return true;
 	}
-
-
-	public function generateStrength()
-	{
-		$strength = 0;
-		foreach ($this->adjudicators as $adj) {
-			$strength += $adj->strength;
-		}
-
-		if ($strength > 0)
-			$this->strength = intval($strength / count($this->adjudicators));
-		else
-			$this->strength = $strength;
-
-		return $this->strength;
-	}
-
 
 	public function createAIP()
 	{
@@ -302,32 +331,19 @@ class Panel extends \yii\db\ActiveRecord
 		return $this->save();
 	}
 
-	/**
-	 * @param Array $a
-	 * @param Array $b
-	 *
-	 * @return int
-	 */
-	static public function compare_length_strength($a, $b)
+	public function generateStrength()
 	{
-		$l_a = count($a["adju"]);
-		$l_b = count($b["adju"]);
-
-		if ($l_a < $l_b)
-			return -1;
-		elseif ($l_a > $l_b)
-			return 1;
-		else {
-
-			$s_a = $a["strength"];
-			$s_b = $b["strength"];
-			if ($s_a < $s_b)
-				return 1;
-			elseif ($s_a > $s_b)
-				return -1;
-			else
-				return 0;
+		$strength = 0;
+		foreach ($this->adjudicators as $adj) {
+			$strength += $adj->strength;
 		}
+
+		if ($strength > 0)
+			$this->strength = intval($strength / count($this->adjudicators));
+		else
+			$this->strength = $strength;
+
+		return $this->strength;
 	}
 
 }

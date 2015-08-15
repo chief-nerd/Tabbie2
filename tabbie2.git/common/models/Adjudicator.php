@@ -99,6 +99,17 @@ class Adjudicator extends \yii\db\ActiveRecord
 		];
 	}
 
+	public function fields()
+	{
+		$fields = parent::fields();
+
+		$fields["name"] = function () {
+			return $this->getName();
+		};
+
+		return $fields;
+	}
+
 	public function getName()
 	{
 		$key = "AdjudicatorName#" . $this->id;

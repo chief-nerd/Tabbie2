@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use common\components\filter\TournamentContextFilter;
 use common\components\ObjectError;
+use common\models\Adjudicator;
 use common\models\PublishTabSpeaker;
 use common\models\PublishTabTeam;
 use common\models\Tournament;
@@ -31,7 +32,7 @@ class StatsController extends BaseTournamentController
 				'rules' => [
 					[
 						'allow'         => true,
-						'actions'       => ['motion', 'speaks', 'team-tab', 'speaker-tab'],
+						'actions' => ['motion', 'speaks', 'team-tab', 'speaker-tab', 'breaking-adjudicators'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->status >= Tournament::STATUS_CLOSED);
 						}
@@ -69,6 +70,20 @@ class StatsController extends BaseTournamentController
 	{
 		$model = $this->_tournament;
 		$html = $this->renderPartial("tab_speaker", compact("model"));
+
+		return Json::encode($html);
+	}
+
+	public function actionBreakingAdjudicators()
+	{
+		$model = $this->_tournament;
+
+		$adjudicators = Adjudicator::find()
+			->tournament($this->_tournament->id)
+			->joinWith("user")
+			->andWhere(["breaking" => 1])->orderBy(["surename" => SORT_ASC])
+			->all();
+		$html = $this->renderPartial("breaking_adjudicators", compact("adjudicators"));
 
 		return Json::encode($html);
 	}

@@ -59,19 +59,7 @@ $this->title = "Round " . $round->number . " Draw";
 					$list = [];
 					$panel = common\models\Panel::findOne($model->panel_id);
 					if ($panel) {
-						$chair = common\models\AdjudicatorInPanel::findOne([
-							"panel_id" => $panel->id,
-							"function" => "1",
-						]);
-
-						foreach ($panel->adjudicators as $adj) {
-							if ($adj->id == $chair->adjudicator_id) {
-								array_unshift($list, "<b>" . $adj->user->name . "</b>");
-							} else
-								$list[] = $adj->user->name;
-						}
-
-						return implode(", ", $list);
+						return $panel->getAdjudicatorsString();
 					}
 
 					return "";

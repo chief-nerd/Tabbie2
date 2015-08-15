@@ -5,10 +5,17 @@
 		</div>
 		<div class="col-xs-12 col-sm-8 col-md-9 col-lg-10">
 			<div class="row">
-				<div class="col-md-12">
+				<div class="col-xs-12 col-sm-8">
 					<a href="<?= \yii\helpers\Url::to(["tournament/view", "id" => $model->tournament->id]) ?>">
 						<h2><?= $model->tournament->fullname ?></h2>
 					</a>
+				</div>
+				<div class="col-xs-12 col-sm-4 text-right">
+					<?= \yii\helpers\Html::a(Yii::t("app", "Team Review"), [
+						"team/view",
+						"id"            => $model->id,
+						"tournament_id" => $model->tournament_id,
+					], ["class" => "btn btn-default"]) ?>
 				</div>
 			</div>
 			<div class="row">
@@ -39,7 +46,12 @@
 							</thead>
 							<tbody>
 							<tr>
-								<td><?= $model->name ?></td>
+								<td><?= \kartik\helpers\Html::a($model->name, [
+										"team/view",
+										"id"            => $model->id,
+										"tournament_id" => $model->tournament_id,
+									]);
+									?></td>
 								<td><?= $tab->enl_place ?></td>
 								<? if ($model->tournament->has_esl && $tab->esl_place): ?>
 									<td><?= $tab->esl_place ?></td>

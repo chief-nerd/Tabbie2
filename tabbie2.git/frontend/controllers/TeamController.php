@@ -4,11 +4,15 @@ namespace frontend\controllers;
 
 use common\components\filter\TournamentContextFilter;
 use common\components\ObjectError;
+use common\models\Debate;
+use common\models\Round;
 use common\models\search\TeamSearch;
 use common\models\Team;
+use common\models\Tournament;
 use common\models\User;
 use Yii;
 use yii\base\Exception;
+use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
@@ -30,6 +34,13 @@ class TeamController extends BaseTournamentController
 				'rules' => [
 					[
 						'allow'         => true,
+						'actions'       => ['view'],
+						'matchCallback' => function ($rule, $action) {
+							return ($this->_tournament->status >= Tournament::STATUS_CLOSED && !Yii::$app->user->isGuest);
+						}
+					],
+					[
+						'allow' => true,
 						'actions'       => ['index', 'view'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id) ||
@@ -51,27 +62,6 @@ class TeamController extends BaseTournamentController
 	}
 
 	/**
-	 * Lists all Team models.
-	 *
-	 * @return mixed
-	 */
-	public function actionIndex()
-	{
-		$searchModel = new TeamSearch(["tournament_id" => $this->_tournament->id]);
-		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-		$stat["active"] = Team::find()->active()->tournament($this->_tournament->id)->count();
-		$stat["inactive"] = Team::find()->active(false)->tournament($this->_tournament->id)->count();
-		$stat["swing"] = Team::find()->tournament($this->_tournament->id)->andWhere(["isSwing" => true])->count();
-
-		return $this->render('index', [
-			'searchModel'  => $searchModel,
-			'dataProvider' => $dataProvider,
-			'stat'         => $stat,
-		]);
-	}
-
-	/**
 	 * Displays a single Team model.
 	 *
 	 * @param integer $id
@@ -80,9 +70,38 @@ class TeamController extends BaseTournamentController
 	 */
 	public function actionView($id)
 	{
-		return $this->render('view', [
-			'model' => $this->findModel($id),
+		$model = $this->findModel($id);
+		$query = Debate::find()->joinWith("round")->andWhere(["debate.tournament_id" => $model->tournament_id])
+			->andWhere("og_team_id = :id OR oo_team_id = :id OR cg_team_id = :id OR co_team_id = :id", [":id" => $id])
+			->andWhere(["round.displayed" => 1])
+			->orderBy(["id" => SORT_DESC]);
+
+		$dataRoundsProvider = new ActiveDataProvider([
+			'query' => $query,
 		]);
+
+		return $this->render('view', [
+			'model'              => $model,
+			'dataRoundsProvider' => $dataRoundsProvider,
+		]);
+	}
+
+	/**
+	 * Finds the Team model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 *
+	 * @param integer $id
+	 *
+	 * @return Team the loaded model
+	 * @throws NotFoundHttpException if the model cannot be found
+	 */
+	protected function findModel($id)
+	{
+		if (($model = Team::findOne($id)) !== null) {
+			return $model;
+		} else {
+			throw new NotFoundHttpException('The requested page does not exist.');
+		}
 	}
 
 	/**
@@ -111,6 +130,27 @@ class TeamController extends BaseTournamentController
 			return $this->actionIndex();
 		else
 			return $this->redirect(['team/index', 'tournament_id' => $this->_tournament->id]);
+	}
+
+	/**
+	 * Lists all Team models.
+	 *
+	 * @return mixed
+	 */
+	public function actionIndex()
+	{
+		$searchModel = new TeamSearch(["tournament_id" => $this->_tournament->id]);
+		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+		$stat["active"] = Team::find()->active()->tournament($this->_tournament->id)->count();
+		$stat["inactive"] = Team::find()->active(false)->tournament($this->_tournament->id)->count();
+		$stat["swing"] = Team::find()->tournament($this->_tournament->id)->andWhere(["isSwing" => true])->count();
+
+		return $this->render('index', [
+			'searchModel'  => $searchModel,
+			'dataProvider' => $dataProvider,
+			'stat'         => $stat,
+		]);
 	}
 
 	/**
@@ -382,24 +422,6 @@ class TeamController extends BaseTournamentController
 			"model"      => $model,
 			"tournament" => $tournament
 		]);
-	}
-
-	/**
-	 * Finds the Team model based on its primary key value.
-	 * If the model is not found, a 404 HTTP exception will be thrown.
-	 *
-	 * @param integer $id
-	 *
-	 * @return Team the loaded model
-	 * @throws NotFoundHttpException if the model cannot be found
-	 */
-	protected function findModel($id)
-	{
-		if (($model = Team::findOne($id)) !== null) {
-			return $model;
-		} else {
-			throw new NotFoundHttpException('The requested page does not exist.');
-		}
 	}
 
 	/**
