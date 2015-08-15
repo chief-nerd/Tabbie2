@@ -260,7 +260,7 @@ class MotiontagController extends Controller
 			$fb_Banner = "https://s3.eu-central-1.amazonaws.com/tabbie-assets/FB_banner.jpg";
 			$fb_Logo = "https://s3.eu-central-1.amazonaws.com/tabbie-assets/FB_logo.jpg";
 
-			$view->registerMetaTag(["property" => "og:title", "content" => Yii::$app->params["appName"] . " - " . Yii::$app->params["slogan"]], "og:title");
+			//$view->registerMetaTag(["property" => "og:title", "content" => Yii::$app->params["appName"] . " - " . Yii::$app->params["slogan"]], "og:title");
 			$view->registerMetaTag(["property" => "og:image", "content" => $fb_Logo], "og:image1");
 			$view->registerMetaTag(["property" => "og:image", "content" => $fb_Banner], "og:image2");
 			$view->registerLinkTag(["rel" => "apple-touch-icon", "href" => $fb_Logo], "apple-touch-icon");
