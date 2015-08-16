@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use kartik\helpers\Html;
 use Yii;
 use yii\caching\DbDependency;
 
@@ -70,14 +71,14 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord
 				/** @var \common\models\Team $team */
 				if ($team->speakerA_id) {
 					$lines[$team->speakerA_id] = new TabLine([
-						"object" => $team->speakerA->toArray(),
+						"object" => ["team" => $team->toArray(), "speaker" => $team->speakerA->toArray()],
 						"points" => 0,
 						"speaks" => 0,
 					]);
 				}
 				if ($team->speakerB_id) {
 					$lines[$team->speakerB_id] = new TabLine([
-						"object" => $team->speakerB->toArray(),
+						"object" => ["team" => $team->toArray(), "speaker" => $team->speakerB->toArray()],
 						"points" => 0,
 						"speaks" => 0,
 					]);
@@ -125,8 +126,8 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord
 				$i = 0;
 				$jumpover = 0;
 				foreach ($lines as $index => $line) {
-					if ($line->object["language_status"] >= User::LANGUAGE_ESL) {
-						if ($line->object["id"]) {
+					if ($line->object["speaker"]["language_status"] >= User::LANGUAGE_ESL) {
+						if ($line->object["speaker"]["id"]) {
 							if (isset($lines[$index - 1])) {
 								if (!($lines[$index - 1]->points == $lines[$index]->points && $lines[$index - 1]->speaks == $lines[$index]->speaks)) {
 									$i++;

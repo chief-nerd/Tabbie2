@@ -34,11 +34,25 @@ $this->params['breadcrumbs'][] = $this->title;
 		],
 		[
 			'class'     => '\kartik\grid\DataColumn',
-			'attribute' => 'object.name',
+			'attribute' => 'object.speaker.name',
 			'label'     => Yii::t("app", 'Speaker'),
 			'format'    => 'raw',
 			'value'     => function ($model, $key, $index, $widget) {
-				return ($model->object) ? Html::a($model->object["name"], ["user/view", "id" => $model->object["id"]]) : "(not set)";
+				return ($model->object) ? Html::a($model->object["speaker"]["name"], ["user/view", "id" => $model->object["speaker"]["id"]]) : "(not set)";
+			},
+		],
+		[
+			'class'     => '\kartik\grid\DataColumn',
+			'attribute' => 'object.team.name',
+			'label'     => Yii::t("app", 'Team'),
+			'format'    => 'raw',
+			'value'     => function ($model, $key, $index, $widget) {
+				return ($model->object) ? Html::a(
+					$model->object["team"]["name"], [
+					"team/view",
+					"id"            => $model->object["team"]["id"],
+					"tournament_id" => $model->object["team"]["tournament_id"]
+				]) : "(not set)";
 			},
 		],
 		[
@@ -60,7 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'class'     => '\kartik\grid\DataColumn',
 			'attribute' => 'results_array.' . $r->number,
 			'label'     => Yii::t("app", "#{number}", ["number" => $r->number]),
-			'width'     => "80px",
+			'width' => "40px",
 		];
 	}
 	?>

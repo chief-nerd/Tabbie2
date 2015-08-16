@@ -28,13 +28,13 @@ $dataProvider = new ArrayDataProvider([
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'enl_place',
 			'label' => ($model->has_esl) ? Yii::t("app", 'ENL Place') : Yii::t("app", 'Place'),
-			'width' => '80px',
+			'width' => '60px',
 		],
 		[
 			'class'   => '\kartik\grid\DataColumn',
 			'attribute' => 'esl_place',
 			'label'   => Yii::t("app", 'ESL Place'),
-			'width'   => '80px',
+			'width' => '60px',
 			'visible' => $model->has_esl,
 			'value'   => function ($model, $key, $index, $widget) {
 				return ($model->esl_place) ? $model->esl_place : "";
@@ -68,7 +68,7 @@ $dataProvider = new ArrayDataProvider([
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'results_array.' . $r->number,
 			'label' => Yii::t("app", "#{number}", ["number" => $r->number]),
-			'width' => "80px",
+			'width' => "40px",
 		];
 	}
 

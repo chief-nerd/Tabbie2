@@ -60,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'results_array.' . $r->number,
 			'label' => Yii::t("app", "#{number}", ["number" => $r->number]),
-			'width' => "80px",
+			'width' => "40px",
 		];
 	}
 	?>
