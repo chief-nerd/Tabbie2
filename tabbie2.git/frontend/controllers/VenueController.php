@@ -163,9 +163,10 @@ class VenueController extends BaseTournamentController
 			Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
 		}
 
-		if (Yii::$app->request->isAjax)
-			return $this->actionIndex();
-		else
+		if (Yii::$app->request->isAjax) {
+			unset($_GET["id"]);
+			$this->runAction("index");
+		} else
 			return $this->redirect(['venue/index', 'tournament_id' => $this->_tournament->id]);
 	}
 

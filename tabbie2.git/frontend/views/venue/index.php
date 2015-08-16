@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				"active" => function ($url, $model) {
 					return Html::a(\kartik\helpers\Html::icon("pause"), $url, [
 						'title'              => Yii::t('app', 'Toogle Active'),
-						'data-pjax'          => '1',
+						'data-pjax' => '0',
 						'data-toggle-active' => $model->id
 					]);
 				}

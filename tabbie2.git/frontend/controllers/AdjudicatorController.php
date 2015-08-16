@@ -208,9 +208,10 @@ class AdjudicatorController extends BaseTournamentController
 		}
 		$model->refresh();
 
-		if (Yii::$app->request->isAjax)
-			return $this->actionIndex();
-		else
+		if (Yii::$app->request->isAjax) {
+			unset($_GET["id"]);
+			$this->runAction("index");
+		} else
 			return $this->redirect(['adjudicator/index', 'tournament_id' => $this->_tournament->id]);
 	}
 
@@ -482,9 +483,10 @@ class AdjudicatorController extends BaseTournamentController
 		}
 
 		$model->refresh();
-		if (Yii::$app->request->isAjax)
-			return $this->actionIndex();
-		else
+		if (Yii::$app->request->isAjax) {
+			unset($_GET["id"]);
+			$this->runAction("index");
+		} else
 			return $this->redirect(['adjudicator/index', 'tournament_id' => $this->_tournament->id]);
 	}
 
@@ -503,9 +505,10 @@ class AdjudicatorController extends BaseTournamentController
 		}
 
 		$model->refresh();
-		if (Yii::$app->request->isAjax)
-			return $this->actionIndex();
-		else
+		if (Yii::$app->request->isAjax) {
+			unset($_GET["id"]);
+			$this->runAction("index");
+		} else
 			return $this->redirect(['adjudicator/index', 'tournament_id' => $this->_tournament->id]);
 	}
 
@@ -514,9 +517,10 @@ class AdjudicatorController extends BaseTournamentController
 		$adju = Adjudicator::updateAll(["are_watched" => 0], ["tournament_id" => $this->_tournament->id]);
 		//Yii::$app->session->addFlash("info", $adju . " Adjudicators reseted");
 
-		if (Yii::$app->request->isAjax)
-			return $this->actionIndex();
-		else
+		if (Yii::$app->request->isAjax) {
+			unset($_GET["id"]);
+			$this->runAction("index");
+		} else
 			return $this->redirect(['adjudicator/index', 'tournament_id' => $this->_tournament->id]);
 	}
 

@@ -98,7 +98,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 					return Html::a(\kartik\helpers\Html::icon($icon), $url, [
 						'title'              => Yii::t('app', 'Toogle Watch'),
-						'data-pjax'          => '1',
+						'data-pjax' => '0',
 						'data-toggle-active' => $model->id
 					]);
 				},
@@ -108,7 +108,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 					return Html::a(\kartik\helpers\Html::icon($icon), $url, [
 						'title'              => Yii::t('app', 'Toogle Active'),
-						'data-pjax'          => '1',
+						'data-pjax' => '0',
 						'data-toggle-active' => $model->id
 					]);
 				},
@@ -117,8 +117,8 @@ $this->params['breadcrumbs'][] = $this->title;
 					else $icon = "star";
 
 					return Html::a(\kartik\helpers\Html::icon($icon), $url, [
-						'title' => Yii::t('app', 'Toogle Breaking'),
-						'data-pjax'          => '1',
+						'title'     => Yii::t('app', 'Toogle Breaking'),
+						'data-pjax' => '0',
 						'data-toggle-active' => $model->id
 					]);
 				}

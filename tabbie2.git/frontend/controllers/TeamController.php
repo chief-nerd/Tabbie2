@@ -126,9 +126,10 @@ class TeamController extends BaseTournamentController
 		}
 
 		$model->refresh();
-		if (Yii::$app->request->isAjax)
-			return $this->actionIndex();
-		else
+		if (Yii::$app->request->isAjax) {
+			unset($_GET["id"]);
+			$this->runAction("index");
+		} else
 			return $this->redirect(['team/index', 'tournament_id' => $this->_tournament->id]);
 	}
 
