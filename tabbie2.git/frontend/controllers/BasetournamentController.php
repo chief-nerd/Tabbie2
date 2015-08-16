@@ -52,6 +52,7 @@ class BaseTournamentController extends Controller
 			Yii::$app->view->on(View::EVENT_BEGIN_PAGE, function () {
 				$view = Yii::$app->controller->view;
 				$model = $this->_tournament;
+
 				$view->registerMetaTag(["property" => "og:type", "content" => "website"], "og:type");
 				$view->registerMetaTag(["property" => "og:title", "content" => Yii::t("app", "{tournament} on Tabbie2", ["tournament" => $model->fullname])], "og:title");
 				$view->registerMetaTag(["property" => "og:image", "content" => $model->getLogo(true)], "og:image");
