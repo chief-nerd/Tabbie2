@@ -7,7 +7,7 @@ use Faker\Generator;
  * @var $index integer
  */
 return [
-    'number' => ($index + 1),
+	'label' => ($index + 1),
     'tournament_id' => 1,
     'motion' => "This house would " . $faker->sentence($faker->numberBetween(6, 20)),
     'infoslide' => $faker->optional()->sentence($faker->numberBetween(20, 50)),

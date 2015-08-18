@@ -1,7 +1,6 @@
 <?php
 namespace tests\codeception\common\algorithm;
 
-use algorithms\algorithms\StrictWUDCRules;
 use common\models\DrawLine;
 use common\models\EnergyConfig;
 use common\models\Panel;
