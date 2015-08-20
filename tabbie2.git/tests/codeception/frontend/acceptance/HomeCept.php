@@ -3,7 +3,7 @@ use tests\codeception\frontend\AcceptanceTester;
 
 $I = new AcceptanceTester($scenario);
 $I->wantTo('ensure that home page works');
-$I->amOnPage(Yii::$app->homeUrl);
+$I->amOnPage(Yii::$app->appUrl);
 $I->see('My Company');
 $I->seeLink('About');
 $I->click('About');
