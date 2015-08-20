@@ -98,7 +98,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 					return Html::a(\kartik\helpers\Html::icon($icon), $url, [
 						'title'              => Yii::t('app', 'Toogle Watch'),
-						'data-pjax' => '0',
+						'data-pjax' => '1',
 						'data-toggle-active' => $model->id
 					]);
 				},
@@ -108,7 +108,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 					return Html::a(\kartik\helpers\Html::icon($icon), $url, [
 						'title'              => Yii::t('app', 'Toogle Active'),
-						'data-pjax' => '0',
+						'data-pjax' => '1',
 						'data-toggle-active' => $model->id
 					]);
 				},
@@ -118,7 +118,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 					return Html::a(\kartik\helpers\Html::icon($icon), $url, [
 						'title'     => Yii::t('app', 'Toogle Breaking'),
-						'data-pjax' => '0',
+						'data-pjax' => '1',
 						'data-toggle-active' => $model->id
 					]);
 				}
@@ -187,6 +187,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	echo GridView::widget([
 		'dataProvider'       => $dataProvider,
 		'filterModel'        => $searchModel,
+		'filterUrl' => \yii\helpers\Url::to(["adjudicator/index", "tournament_id" => $tournament->id]),
 		'columns'            => $gridColumns,
 		'emptyText'          => Yii::t("app", "<b>This tournament has no {object}s yet.</b><br>{add} a {object} or {import} them via csv File.", [
 			"object" => "adjudicator",

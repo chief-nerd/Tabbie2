@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				"active" => function ($url, $model) {
 					return Html::a(\kartik\helpers\Html::icon("pause"), $url, [
 						'title'              => Yii::t('app', 'Toogle Active'),
-						'data-pjax' => '0',
+						'data-pjax' => '1',
 						'data-toggle-active' => $model->id
 					]);
 				}
@@ -89,6 +89,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	echo GridView::widget([
 		'dataProvider'       => $dataProvider,
 		'columns'            => $gridColumns,
+		'filterUrl' => \yii\helpers\Url::to(["venue/index", "tournament_id" => $tournament->id]),
 		'emptyText'          => Yii::t("app", "This tournament has no {object}s yet.<br>{add} a {object} or {import} them via csv File.", [
 			"object" => "venue",
 			"add"    => Html::a(\kartik\helpers\Html::icon("plus") . "&nbsp" . Yii::t('app', 'Add'), ['create', "tournament_id" => $tournament->id], ['data-pjax' => 0, 'class' => 'btn btn-success']),

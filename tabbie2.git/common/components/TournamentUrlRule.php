@@ -42,12 +42,14 @@ class TournamentUrlRule extends UrlRule
 
 			$paramsString = "";
 			foreach ($params as $key => $value) {
-				if (is_array($value)) {
-					foreach ($value as $k => $v) {
-						$paramsString .= "/" . $key . "[" . $k . "]/" . $v;
-					}
-				} else
-					$paramsString .= "/" . $key . "/" . $value;
+				if ($key != "_pjax") {
+					if (is_array($value)) {
+						foreach ($value as $k => $v) {
+							$paramsString .= "/" . $key . "[" . $k . "]/" . $v;
+						}
+					} else
+						$paramsString .= "/" . $key . "/" . $value;
+				}
 			}
 
 			return $url . (($paramsString) ? $paramsString : "");
@@ -76,12 +78,14 @@ class TournamentUrlRule extends UrlRule
 			unset($params['tournament_id']);
 			$paramsString = "";
 			foreach ($params as $key => $value) {
-				if (is_array($value)) {
-					foreach ($value as $k => $v) {
-						$paramsString .= "/" . $key . "[" . $k . "]/" . $v;
-					}
-				} else
-					$paramsString .= "/" . $key . "/" . $value;
+				if ($key != "_pjax") {
+					if (is_array($value)) {
+						foreach ($value as $k => $v) {
+							$paramsString .= "/" . $key . "[" . $k . "]/" . $v;
+						}
+					} else
+						$paramsString .= "/" . $key . "/" . $value;
+				}
 			}
 			$ret = $tournament->url_slug . "/" . implode("/", $parts) . $paramsString;
 
