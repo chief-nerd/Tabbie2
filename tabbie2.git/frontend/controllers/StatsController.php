@@ -18,7 +18,7 @@ use yii\helpers\Json;
 /**
  * TabController implements the CRUD actions for DrawAfterRound model.
  */
-class StatsController extends BaseTournamentController
+class StatsController extends BasetournamentController
 {
 
 	public function behaviors()

@@ -16,7 +16,7 @@ use yii\filters\AccessControl;
 /**
  * TabController implements the CRUD actions for DrawAfterRound model.
  */
-class TabController extends BaseTournamentController
+class TabController extends BasetournamentController
 {
 
 	public function behaviors()

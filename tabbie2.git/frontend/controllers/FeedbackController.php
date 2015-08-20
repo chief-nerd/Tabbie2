@@ -19,7 +19,7 @@ use yii\filters\AccessControl;
 /**
  * FeedbackController implements the CRUD actions for feedback model.
  */
-class FeedbackController extends BaseTournamentController
+class FeedbackController extends BasetournamentController
 {
 
 	public function behaviors()

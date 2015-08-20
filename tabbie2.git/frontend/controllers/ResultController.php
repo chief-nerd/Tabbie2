@@ -18,7 +18,7 @@ use yii\filters\AccessControl;
 /**
  * ResultController implements the CRUD actions for Result model.
  */
-class ResultController extends BaseTournamentController
+class ResultController extends BasetournamentController
 {
 
 	public function behaviors()

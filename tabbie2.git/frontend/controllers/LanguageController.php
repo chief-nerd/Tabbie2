@@ -15,7 +15,7 @@ use yii\filters\VerbFilter;
 /**
  * Site controller
  */
-class LanguageController extends BaseTournamentController
+class LanguageController extends BasetournamentController
 {
 
 	/**

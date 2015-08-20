@@ -13,7 +13,7 @@ use yii\web\NotFoundHttpException;
 /**
  * QuestionController implements the CRUD actions for question model.
  */
-class QuestionController extends BaseTournamentController
+class QuestionController extends BasetournamentController
 {
 
 	public function behaviors()

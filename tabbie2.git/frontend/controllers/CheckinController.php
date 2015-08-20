@@ -22,7 +22,7 @@ use yii\helpers\Json;
 use yii\web\UploadedFile;
 
 
-class CheckinController extends BaseTournamentController
+class CheckinController extends BasetournamentController
 {
 
 	public function behaviors()
@@ -327,11 +327,6 @@ class CheckinController extends BaseTournamentController
 		return $this->render("badge_select");
 	}
 
-	public function sortPerson($a, $b)
-	{
-		return strcmp($a["name"], $b["name"]);
-	}
-
 	public function cPerson($name, $extra, $code, $society)
 	{
 		return [
@@ -340,5 +335,10 @@ class CheckinController extends BaseTournamentController
 			"code"    => $code,
 			"society" => $society,
 		];
+	}
+
+	public function sortPerson($a, $b)
+	{
+		return strcmp($a["name"], $b["name"]);
 	}
 }

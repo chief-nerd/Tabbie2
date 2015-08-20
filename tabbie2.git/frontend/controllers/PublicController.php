@@ -16,7 +16,7 @@ use yii\data\ActiveDataProvider;
 /**
  * TournamentController implements the CRUD actions for Tournament model.
  */
-class PublicController extends BaseTournamentController
+class PublicController extends BasetournamentController
 {
 
 	//Override Layout

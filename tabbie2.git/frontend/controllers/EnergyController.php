@@ -13,7 +13,7 @@ use yii\filters\AccessControl;
 /**
  * EnergyController implements the CRUD actions for EnergyConfig model.
  */
-class EnergyController extends BaseTournamentController
+class EnergyController extends BasetournamentController
 {
 
 	public function behaviors()
@@ -65,6 +65,24 @@ class EnergyController extends BaseTournamentController
 		return $this->render('view', [
 			'model' => $this->findModel($id),
 		]);
+	}
+
+	/**
+	 * Finds the EnergyConfig model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 *
+	 * @param integer $id
+	 *
+	 * @return EnergyConfig the loaded model
+	 * @throws NotFoundHttpException if the model cannot be found
+	 */
+	protected function findModel($id)
+	{
+		if (($model = EnergyConfig::findOne($id)) !== null) {
+			return $model;
+		} else {
+			throw new NotFoundHttpException('The requested page does not exist.');
+		}
 	}
 
 	/**
@@ -121,24 +139,6 @@ class EnergyController extends BaseTournamentController
 		$this->findModel($id)->delete();
 
 		return $this->redirect(['index']);
-	}
-
-	/**
-	 * Finds the EnergyConfig model based on its primary key value.
-	 * If the model is not found, a 404 HTTP exception will be thrown.
-	 *
-	 * @param integer $id
-	 *
-	 * @return EnergyConfig the loaded model
-	 * @throws NotFoundHttpException if the model cannot be found
-	 */
-	protected function findModel($id)
-	{
-		if (($model = EnergyConfig::findOne($id)) !== null) {
-			return $model;
-		} else {
-			throw new NotFoundHttpException('The requested page does not exist.');
-		}
 	}
 
 }

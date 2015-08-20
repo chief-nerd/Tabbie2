@@ -21,7 +21,7 @@ use yii\filters\AccessControl;
 /**
  * StrikesController implements the CRUD actions for Strikes model.
  */
-class StrikeController extends BaseTournamentController
+class StrikeController extends BasetournamentController
 {
 	public function behaviors()
 	{

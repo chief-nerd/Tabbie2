@@ -8,7 +8,7 @@ use yii\web\Controller;
 use yii\web\View;
 use kartik\helpers\Html;
 
-class BaseTournamentController extends Controller
+class BasetournamentController extends Controller
 {
 
 	/**

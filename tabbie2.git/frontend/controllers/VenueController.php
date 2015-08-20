@@ -18,7 +18,7 @@ use yii\web\NotFoundHttpException;
  *
  * @property Tournament $_tournament
  */
-class VenueController extends BaseTournamentController
+class VenueController extends BasetournamentController
 {
 
 	public function behaviors()

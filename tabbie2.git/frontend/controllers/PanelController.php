@@ -17,7 +17,7 @@ use yii\filters\AccessControl;
 /**
  * PanelController implements the CRUD actions for Panel model.
  */
-class PanelController extends BaseTournamentController
+class PanelController extends BasetournamentController
 {
 	public function behaviors()
 	{

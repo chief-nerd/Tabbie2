@@ -22,7 +22,7 @@ use yii\web\UploadedFile;
 /**
  * TournamentController implements the CRUD actions for Tournament model.
  */
-class TournamentController extends BaseTournamentController
+class TournamentController extends BasetournamentController
 {
 
 	public function behaviors()
