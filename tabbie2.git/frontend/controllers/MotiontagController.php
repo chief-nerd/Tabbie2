@@ -72,10 +72,15 @@ class MotiontagController extends Controller
 
 		$cloud = $cloud->all();
 
-		$heighest = $cloud[0]->count;
-		$lowest = $cloud[count($cloud) - 1]->count;
+		$heighest = 0;
+		$lowest = 0;
 
-		$span = $heighest - $lowest;
+		if (isset($cloud[0])) {
+			$heighest = $cloud[0]->count;
+			$lowest = $cloud[count($cloud) - 1]->count;
+		}
+
+		$span = max($heighest - $lowest, 1);
 
 		for ($i = 0; $i < count($cloud); $i++) {
 			/** @var Motion $cloud [$i] */

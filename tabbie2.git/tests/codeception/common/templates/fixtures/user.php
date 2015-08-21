@@ -9,6 +9,7 @@ $user = new \common\models\User([
 	"givenname" => $faker->firstName,
 	"surename"  => $faker->lastName,
 ]);
+$x = $faker->numberBetween(0, 10);
 return [
 	'id'        => $index,
 	'url_slug'  => $user->generateUrlSlug(),
@@ -22,6 +23,6 @@ return [
 	'givenname' => $user->givenname,
 	'surename'  => $user->surename,
 	'picture'   => $faker->optional()->imageUrl(150, 150),
-    'last_change' => time(),
-    'time' => time(),
+	'last_change' => date("Y-m-d H:i:s", strtotime(time() . " + $x days")),
+	'time'        => date("Y-m-d H:i:s", time()),
 ];

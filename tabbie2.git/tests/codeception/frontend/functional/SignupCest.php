@@ -23,8 +23,7 @@ class SignupCest
     public function _after($event)
     {
         User::deleteAll([
-            'email' => 'tester.email@example.com',
-            'username' => 'tester',
+			'email' => 'tester.email@example.local',
         ]);
     }
 
@@ -55,36 +54,35 @@ class SignupCest
         $signupPage->submit([]);
 
         $I->expectTo('see validation errors');
-        $I->see('Username cannot be blank.', '.help-block');
         $I->see('Email cannot be blank.', '.help-block');
         $I->see('Password cannot be blank.', '.help-block');
+		$I->see('Password Repeat cannot be blank.', '.help-block');
+		$I->see('Givenname cannot be blank.', '.help-block');
+		$I->see('Surename cannot be blank.', '.help-block');
+		$I->see('Current Society cannot be blank.', '.help-block');
 
         $I->amGoingTo('submit signup form with not correct email');
         $signupPage->submit([
-            'username' => 'tester',
             'email' => 'tester.email',
             'password' => 'tester_password',
         ]);
 
         $I->expectTo('see that email address is wrong');
-        $I->dontSee('Username cannot be blank.', '.help-block');
         $I->dontSee('Password cannot be blank.', '.help-block');
         $I->see('Email is not a valid email address.', '.help-block');
 
         $I->amGoingTo('submit signup form with correct email');
         $signupPage->submit([
-            'username' => 'tester',
-            'email' => 'tester.email@example.com',
+			'email' => 'tester.email@example.local',
             'password' => 'tester_password',
         ]);
 
         $I->expectTo('see that user is created');
         $I->seeRecord('common\models\User', [
-            'username' => 'tester',
-            'email' => 'tester.email@example.com',
+			'email' => 'tester.email@example.local',
         ]);
 
         $I->expectTo('see that user logged in');
-        $I->seeLink('Logout (tester)');
+		$I->seeLink(' Logout');
     }
 }
