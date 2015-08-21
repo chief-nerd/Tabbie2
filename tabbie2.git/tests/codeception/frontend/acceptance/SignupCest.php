@@ -2,8 +2,11 @@
 
 namespace tests\codeception\frontend\acceptance;
 
+use common\models\InSociety;
+use common\models\Society;
 use tests\codeception\frontend\_pages\SignupPage;
 use common\models\User;
+use yii\helpers\ArrayHelper;
 
 class SignupCest
 {
@@ -22,10 +25,12 @@ class SignupCest
      */
     public function _after($event)
     {
-        User::deleteAll([
-            'email' => 'tester.email@example.com',
-            'username' => 'tester',
-        ]);
+		/** @var User $user */
+		$user = User::findOne(['email' => 'tester.email@example.local']);
+		foreach ($user->inSocieties as $in) {
+			$in->delete();
+		}
+		$user->delete();
     }
 
     /**
@@ -53,30 +58,38 @@ class SignupCest
         $signupPage->submit([]);
 
         $I->expectTo('see validation errors');
-        $I->see('Username cannot be blank.', '.help-block');
-        $I->see('Email cannot be blank.', '.help-block');
-        $I->see('Password cannot be blank.', '.help-block');
+		$I->see('Email cannot be blank.', '.help-block');
+		$I->see('Password cannot be blank.', '.help-block');
+		$I->see('Password Repeat cannot be blank.', '.help-block');
+		$I->see('Givenname cannot be blank.', '.help-block');
+		$I->see('Surename cannot be blank.', '.help-block');
+		$I->see('Current Society cannot be blank.', '.help-block');
 
         $I->amGoingTo('submit signup form with not correct email');
         $signupPage->submit([
-            'username' => 'tester',
             'email' => 'tester.email',
             'password' => 'tester_password',
         ]);
 
         $I->expectTo('see that email address is wrong');
-        $I->dontSee('Username cannot be blank.', '.help-block');
+		$I->dontSee('Email cannot be blank.', '.help-block');
         $I->dontSee('Password cannot be blank.', '.help-block');
         $I->see('Email is not a valid email address.', '.help-block');
 
         $I->amGoingTo('submit signup form with correct email');
-        $signupPage->submit([
-            'username' => 'tester',
-            'email' => 'tester.email@example.com',
-            'password' => 'tester_password',
-        ]);
+		$I->submitForm("#form-signup", [
+			'SignupForm[societies_id]'    => Society::find()->all()[0]->id,
+			'SignupForm[email]'           => 'tester.email@example.local',
+			'SignupForm[password]'        => 'tester_password',
+			'SignupForm[password_repeat]' => 'tester_password',
+			'SignupForm[givenname]'       => 'Paul',
+			'SignupForm[surename]'        => 'Tester',
+		],
+			"signup-button");
 
         $I->expectTo('see that user logged in');
-        $I->seeLink('Logout (tester)');
+		$I->seeLink(' Logout');
+		$I->dontSeeLink('Login');
+		$I->dontSeeLink('Signup');
     }
 }
