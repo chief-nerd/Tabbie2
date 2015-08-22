@@ -155,12 +155,17 @@ class SiteController extends Controller
 		$model = new Society();
 
 		if ($model->load(Yii::$app->request->post())) {
-			$form = unserialize(Yii::$app->session["signup"]);
-			if ($form instanceof SignupForm && $model->save()) {
-				$form->societies_id = $model->id;
-				$this->finishSignup($form);
-			} else
-				Yii::$app->session->addFlash("error", Yii::t("app", "Error in wakeup"));
+			if ($model->save()) {
+				Yii::$app->session->addFlash("success", Yii::t("app", "A new society has been saved"));
+				$form = unserialize(Yii::$app->session["signup"]);
+				if ($form instanceof SignupForm) {
+					$form->societies_id = $model->id;
+					$this->finishSignup($form);
+				} else {
+					Yii::$app->session->addFlash("notice", Yii::t("app", "There has been an error receiving your previous input. Please enter them again."));
+					$this->redirect(["site/signup"]);
+				}
+			}
 		}
 
 		if (!isset($model->fullname)) {

@@ -66,7 +66,7 @@ class Society extends \yii\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['country_id', 'fullname'], 'required'],
+			[['country_id', 'fullname', 'abr'], 'required'],
 			[['country_id'], 'integer'],
 			[['fullname', 'city'], 'string', 'max' => 255],
 			[['abr'], 'string', 'max' => 45],
