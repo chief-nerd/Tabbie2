@@ -58,10 +58,7 @@ SCRIPT;
 				'data'    => new JsExpression('function(term,page) { return {search:term}; }'),
 				'results' => new JsExpression('function(data,page) { return {results:data.results}; }'),
 			],
-			//'initSelection' => new JsExpression($initSocietyScript),
-			'tags'            => true,
-			'createTag'       => new JsExpression($newDataScript),
-			'tokenSeparators' => ['#'],
+			'initSelection' => new JsExpression($initSocietyScript),
 		],
 	]);
 	?>
@@ -90,7 +87,7 @@ SCRIPT;
 	?>
 
 	<div class="form-group">
-		<?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+		<?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary btn-block']) ?>
 	</div>
 
 	<?php ActiveForm::end(); ?>
