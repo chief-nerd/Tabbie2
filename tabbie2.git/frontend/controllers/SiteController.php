@@ -165,6 +165,8 @@ class SiteController extends Controller
 					Yii::$app->session->addFlash("notice", Yii::t("app", "There has been an error receiving your previous input. Please enter them again."));
 					$this->redirect(["site/signup"]);
 				}
+			} else {
+				Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
 			}
 		}
 
