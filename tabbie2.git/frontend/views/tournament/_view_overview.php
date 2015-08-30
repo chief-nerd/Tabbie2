@@ -41,10 +41,33 @@ use common\models\Team;
 				$role = $model->user_role();
 				if ($role != false) {
 					if ($role instanceof Team) {
-						$text_output_buffer .= Yii::t("app", "You are registered as team <br> '{team}' together with {teammate} for {society}", [
-							"team"     => $role->name,
-							"teammate" => ($role->speakerA_id == Yii::$app->user->id) ? $role->speakerB->name : $role->speakerA->name,
-							"society"  => $role->society->fullname,
+
+						$with = "";
+						if ($role->speakerA_id == Yii::$app->user->id) {
+							if (isset($role->speakerB->name)) {
+								//I am speaker A
+								$with = Yii::t("app", "together with {teammate}", [
+									"teammate" => $role->speakerB->name,
+								]);
+							} else {
+								$with = Yii::t("app", "as ironman");
+							}
+						} else {
+							if (isset($role->speakerA->name)) {
+								//I am speaker B
+								$with = Yii::t("app", "together with {teammate}", [
+									"teammate" => $role->speakerA->name,
+								]);
+							} else {
+								$with = Yii::t("app", "as ironman");
+							}
+						}
+
+
+						$text_output_buffer .= Yii::t("app", "You are registered as team <br> '{team}' {with} for {society}", [
+							"team" => $role->name,
+							"with" => $with,
+							"society" => $role->society->fullname,
 						]);
 					} elseif ($role instanceof \common\models\Adjudicator) {
 						$text_output_buffer .= Yii::t("app", "You are registered as adjudicator for {society}", [
@@ -100,7 +123,7 @@ use common\models\Team;
 						<div class="row">
 							<div class="col-xs-12 col-sm-6">
 								<?php echo Yii::t("app", "You are <b>{pos}</b> in room <b>{room}</b>.", [
-									"pos"  => strtolower($pos),
+									"pos" => strtolower($pos),
 									"room" => $info["debate"]->venue->name,
 								]) ?></div>
 							<div class="col-xs-12 col-sm-6">
@@ -164,37 +187,37 @@ use common\models\Team;
 	<div class="col-xs-12 col-md-4 col-lg-4">
 		<?=
 		DetailView::widget([
-			'model'      => $model,
+			'model' => $model,
 			'attributes' => [
 				'id',
 				'hostedby.fullname:text:Hosted By',
 				[
 					"attribute" => 'convenor',
-					'label'     => "Convenor",
-					'format'    => 'raw',
-					'value'     => implode(", ", \yii\helpers\ArrayHelper::getColumn($model->convenors, "name")),
+					'label' => "Convenor",
+					'format' => 'raw',
+					'value' => implode(", ", \yii\helpers\ArrayHelper::getColumn($model->convenors, "name")),
 				],
 				[
 					"attribute" => 'CATeam',
-					'label'     => "CA Team",
-					'format'    => 'raw',
+					'label' => "CA Team",
+					'format' => 'raw',
 					'value' => implode(", ", \yii\helpers\ArrayHelper::getColumn($model->cAs, "name")),
 				],
 				[
 					"attribute" => 'tabmaster',
-					'label'     => "Tab Master",
-					'format'    => 'raw',
-					'value'     => implode(", ", \yii\helpers\ArrayHelper::getColumn($model->tabmasters, "name")),
+					'label' => "Tab Master",
+					'format' => 'raw',
+					'value' => implode(", ", \yii\helpers\ArrayHelper::getColumn($model->tabmasters, "name")),
 				],
 				[
 					"attribute" => 'start_date',
-					'format'    => 'raw',
-					'value'     => Yii::$app->formatter->asDateTime($model->start_date, "short"),
+					'format' => 'raw',
+					'value' => Yii::$app->formatter->asDateTime($model->start_date, "short"),
 				],
 				[
 					"attribute" => 'end_date',
-					'format'    => 'raw',
-					'value'     => Yii::$app->formatter->asDateTime($model->end_date, "short"),
+					'format' => 'raw',
+					'value' => Yii::$app->formatter->asDateTime($model->end_date, "short"),
 				],
 			],
 		])
