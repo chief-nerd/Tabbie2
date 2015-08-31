@@ -242,7 +242,7 @@ class Adjudicator extends \yii\db\ActiveRecord
 	public static function getStrengthLabel($strength = null)
 	{
 		if ($strength !== null) {
-			if ($strength === 0) return Yii::t("adjudicator", 'Not rated');
+			if ($strength === 0) return Yii::t("app", 'Not rated');
 			$strength = intval($strength / 10);
 		}
 

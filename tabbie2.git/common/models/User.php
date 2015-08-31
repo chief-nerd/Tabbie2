@@ -412,7 +412,7 @@ class User extends ActiveRecord implements IdentityInterface
 			'tournament' => $tournament
 		])->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->params["appName"] . ' support'])
 			->setTo([$user->email => $user->name])
-			->setSubject(Yii::t("email", '{tournament} User Account for {user_name}', [
+			->setSubject(Yii::t("app", '{tournament} User Account for {user_name}', [
 				"tournament" => $tournament->name,
 				"user_name"  => $user->name]))
 			->send();
