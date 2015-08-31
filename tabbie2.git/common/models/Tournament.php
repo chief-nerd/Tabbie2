@@ -3,46 +3,50 @@
 namespace common\models;
 
 use JmesPath\Tests\_TestJsonStringClass;
+use kartik\widgets\TimePicker;
 use Yii;
 use yii\base\Exception;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\web\UrlManager;
+use DateTimeZone;
 
 /**
  * This is the model class for table "tournament".
  *
- * @property integer                  $id
- * @property string                   $url_slug
- * @property integer                  $status
- * @property integer                  $hosted_by_id
- * @property string                   $name
- * @property string                   $fullname
- * @property string                   $start_date
- * @property string                   $end_date
- * @property string                   $logo
- * @property string                   $time
- * @property string                   $tabAlgorithmClass
- * @property integer                  $expected_rounds
- * @property integer                  $has_esl
- * @property integer                  $has_final
- * @property integer                  $has_semifinal
- * @property integer                  $has_quarterfinal
- * @property integer                  $has_octofinal
- * @property string                   $accessToken
- * @property string                   $badge
- * @property Adjudicator[]            $adjudicators
- * @property Panel[]                  $panels
- * @property Round[]                  $rounds
- * @property Round[]                  $Inrounds
- * @property Round[]                  $Outrounds
- * @property Team[]                   $teams
- * @property User[]                   $convenors
- * @property User[]                   $tabmasters
- * @property User[]                   $cas
- * @property TournamentHasQuestion[]  $tournamentHasQuestions
- * @property Question[]               $questions
- * @property Venue[]                  $venues
+ * @property integer $id
+ * @property string $url_slug
+ * @property integer $status
+ * @property integer $hosted_by_id
+ * @property string $name
+ * @property string $fullname
+ * @property string $start_date
+ * @property string $end_date
+ * @property string $timezone
+ * @property string $logo
+ * @property string $time
+ * @property string $tabAlgorithmClass
+ * @property integer $expected_rounds
+ * @property integer $has_esl
+ * @property integer $has_final
+ * @property integer $has_semifinal
+ * @property integer $has_quarterfinal
+ * @property integer $has_octofinal
+ * @property string $accessToken
+ * @property string $badge
+ * @property Adjudicator[] $adjudicators
+ * @property Panel[] $panels
+ * @property Round[] $rounds
+ * @property Round[] $Inrounds
+ * @property Round[] $Outrounds
+ * @property Team[] $teams
+ * @property User[] $convenors
+ * @property User[] $tabmasters
+ * @property User[] $cas
+ * @property TournamentHasQuestion[] $tournamentHasQuestions
+ * @property Question[] $questions
+ * @property Venue[] $venues
  */
 class Tournament extends \yii\db\ActiveRecord
 {
@@ -51,6 +55,17 @@ class Tournament extends \yii\db\ActiveRecord
 	const STATUS_RUNNING = 1;
 	const STATUS_CLOSED = 2;
 	const STATUS_HIDDEN = 3;
+
+	public static function getStatusLabel($id)
+	{
+		$status = [
+			self::STATUS_CREATED => Yii::t("app", "Created"),
+			self::STATUS_RUNNING => Yii::t("app", "Running"),
+			self::STATUS_CLOSED => Yii::t("app", "Closed"),
+			self::STATUS_HIDDEN => Yii::t("app", "Hidden")
+		];
+		return $status[$id];
+	}
 
 	/**
 	 * @inheritdoc
@@ -101,13 +116,28 @@ class Tournament extends \yii\db\ActiveRecord
 		return new $algoName();
 	}
 
+	public static function getTimeZones()
+	{
+		$now = new \DateTime();
+		$timezones = [];
+
+		foreach (DateTimeZone::listIdentifiers() as $timezone) {
+			$now->setTimezone(new DateTimeZone($timezone));
+			$offsets[] = $offset = $now->getOffset();
+			$timezones[$timezone] = '(' . self::format_GMT_offset($offset) . ') ' . self::format_timezone_name($timezone);
+		}
+
+		array_multisort($offsets, $timezones);
+		return $timezones;
+	}
+
 	/**
 	 * @inheritdoc
 	 */
 	public function rules()
 	{
 		return [
-			[['url_slug', 'hosted_by_id', 'name', 'start_date', 'end_date'], 'required'],
+			[['url_slug', 'hosted_by_id', 'name', 'start_date', 'end_date', 'timezone'], 'required'],
 			[['hosted_by_id', 'expected_rounds', 'status'], 'integer'],
 			[['start_date', 'end_date', 'time', 'has_esl', 'has_final', 'has_semifinal', 'has_octofinal', 'has_quarterfinal'], 'safe'],
 			[['url_slug', 'name', 'tabAlgorithmClass', 'accessToken'], 'string', 'max' => 100],
@@ -122,23 +152,24 @@ class Tournament extends \yii\db\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'id'                => Yii::t('app', 'Tournament ID'),
-			'hosted_by_id'      => Yii::t('app', 'Hosted by'),
-			'name'              => Yii::t('app', 'Tournament Name'),
-			'start_date'        => Yii::t('app', 'Start Date'),
-			'end_date'          => Yii::t('app', 'End Date'),
-			'logo'              => Yii::t('app', 'Logo'),
-			'time'              => Yii::t('app', 'Time'),
-			'url_slug'          => Yii::t('app', 'URL Slug'),
+			'id' => Yii::t('app', 'Tournament ID'),
+			'hosted_by_id' => Yii::t('app', 'Hosted by'),
+			'name' => Yii::t('app', 'Tournament Name'),
+			'start_date' => Yii::t('app', 'Start Date'),
+			'end_date' => Yii::t('app', 'End Date'),
+			'timezone' => Yii::t("app", 'Timezone'),
+			'logo' => Yii::t('app', 'Logo'),
+			'time' => Yii::t('app', 'Time'),
+			'url_slug' => Yii::t('app', 'URL Slug'),
 			'tabAlgorithmClass' => Yii::t('app', 'Tab Algorithm'),
-			'expected_rounds'   => Yii::t("app", "Expected number of rounds"),
-			'has_esl'           => Yii::t("app", "Show ESL Ranking"),
-			'has_final'         => Yii::t("app", 'Is there a grand final'),
-			'has_semifinal'     => Yii::t("app", 'Is there a semifinal'),
-			'has_quarterfinal'  => Yii::t("app", 'Is there a quarterfinal'),
-			'has_octofinal'     => Yii::t("app", 'Is there a octofinal'),
-			'accessToken'       => Yii::t("app", 'Access Token'),
-			'badge'             => Yii::t("app", 'Participant Badge'),
+			'expected_rounds' => Yii::t("app", "Expected number of rounds"),
+			'has_esl' => Yii::t("app", "Show ESL Ranking"),
+			'has_final' => Yii::t("app", 'Is there a grand final'),
+			'has_semifinal' => Yii::t("app", 'Is there a semifinal'),
+			'has_quarterfinal' => Yii::t("app", 'Is there a quarterfinal'),
+			'has_octofinal' => Yii::t("app", 'Is there a octofinal'),
+			'accessToken' => Yii::t("app", 'Access Token'),
+			'badge' => Yii::t("app", 'Participant Badge'),
 		];
 	}
 
@@ -314,7 +345,7 @@ class Tournament extends \yii\db\ActiveRecord
 		$options = [
 			self::STATUS_CREATED => Yii::t("app", "Created"),
 			self::STATUS_RUNNING => Yii::t("app", "Running"),
-			self::STATUS_CLOSED  => Yii::t("app", "Closed"),
+			self::STATUS_CLOSED => Yii::t("app", "Closed"),
 		];
 
 		return ($id) ? $options[$id] : $options;
@@ -401,19 +432,19 @@ class Tournament extends \yii\db\ActiveRecord
 		$objEndDateTime = new \DateTime($this->end_date);
 
 		$schema = [
-			"@type"     => "Festival",
-			"name"      => $this->fullname,
-			"image"     => $this->getLogo(true),
+			"@type" => "Festival",
+			"name" => $this->fullname,
+			"image" => $this->getLogo(true),
 			"organizer" => [
-				"name"      => $this->hostedby->fullname,
+				"name" => $this->hostedby->fullname,
 			],
 			"startDate" => $objStartDateTime->format(\DateTime::ISO8601),
-			"endDate"   => $objEndDateTime->format(\DateTime::ISO8601),
-			"url"       => \yii\helpers\Url::to(["tournament/view", "id" => $this->id], true),
-			"sameAs"    => \yii\helpers\Url::to(["tournament/view", "id" => $this->id], true),
-			"location"  => [
-				"@type"   => "Place",
-				"name"    => $this->hostedby->fullname,
+			"endDate" => $objEndDateTime->format(\DateTime::ISO8601),
+			"url" => \yii\helpers\Url::to(["tournament/view", "id" => $this->id], true),
+			"sameAs" => \yii\helpers\Url::to(["tournament/view", "id" => $this->id], true),
+			"location" => [
+				"@type" => "Place",
+				"name" => $this->hostedby->fullname,
 				"address" => $this->hostedby->city . ", " . $this->hostedby->country->name
 			]
 		];
@@ -422,11 +453,14 @@ class Tournament extends \yii\db\ActiveRecord
 		return ($json) ? json_encode($schema, JSON_UNESCAPED_SLASHES) : $schema;
 	}
 
-	public function getLogo($absolute = false)
+	public function getLogo($absolute = false, $urlManager = null)
 	{
+		if (!$urlManager instanceof UrlManager)
+			$urlManager = Yii::$app->urlManager;
+
 		if ($this->logo !== null) {
 			if ($absolute && substr($this->logo, 0, 4) != "http")
-				return Url::to($this->logo, true);
+				return $urlManager->createAbsoluteUrl($this->logo);
 			else
 				return $this->logo;
 		} else {
@@ -573,10 +607,10 @@ class Tournament extends \yii\db\ActiveRecord
 	{
 
 		$alt = ($this->name) ? $this->getFullname() : "";
-		$img_options = array_merge($options, ["alt"    => $alt,
-											  "style"  => "max-width: " . $width_max . "px; max-height: " . $height_max . "px;",
-											  "width"  => $width_max,
-											  "height" => $height_max,
+		$img_options = array_merge($options, ["alt" => $alt,
+			"style" => "max-width: " . $width_max . "px; max-height: " . $height_max . "px;",
+			"width" => $width_max,
+			"height" => $height_max,
 		]);
 		$img_options["class"] = "img-responsive img-rounded center-block" . (isset($img_options["class"]) ? " " . $img_options["class"] : "");
 
@@ -739,6 +773,43 @@ class Tournament extends \yii\db\ActiveRecord
 			return $adju;
 
 		return false;
+	}
+
+	/**
+	 * Return the time now for that tournament (correct timezone etc)
+	 * @return bool|string
+	 */
+	public function getNowUTC()
+	{
+		return date_format(new \DateTime('now', new DateTimeZone("UTC")), \DateTime::W3C);
+	}
+
+	/**
+	 * Returns the formatted Timezone to display
+	 * @return string
+	 */
+	public function getFormatedTimeZone()
+	{
+		$now = new \DateTime('now', new DateTimeZone($this->timezone));
+		$offset = $now->getOffset();
+
+		return self::format_timezone_name($this->timezone) . " (" . self::format_GMT_offset($offset) . ")";
+		//return $this->getNowUTC();
+	}
+
+	private static function format_timezone_name($name)
+	{
+		$name = str_replace('/', ', ', $name);
+		$name = str_replace('_', ' ', $name);
+		$name = str_replace('St ', 'St. ', $name);
+		return $name;
+	}
+
+	private static function format_GMT_offset($offset)
+	{
+		$hours = intval($offset / 3600);
+		$minutes = abs(intval($offset % 3600 / 60));
+		return 'GMT' . ($offset ? sprintf('%+03d:%02d', $hours, $minutes) : '');
 	}
 
 }

@@ -288,7 +288,7 @@ class Round extends \yii\db\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['number', 'tournament_id', 'motion', 'tags'], 'required'],
+			[['number', 'tournament_id', 'motion'], 'required'],
 			[['id', 'number', 'tournament_id', 'published', 'type', 'level'], 'integer'],
 			[['motion', 'infoslide'], 'string'],
 			[['time', 'tags'], 'safe']

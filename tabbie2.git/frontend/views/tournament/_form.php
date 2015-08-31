@@ -112,6 +112,12 @@ SCRIPT;
 	?>
 
 	<?
+	echo $form->field($model, 'timezone', [
+		'addon' => ['prepend' => ['content' => "<i class=\"glyphicon glyphicon-calendar\"></i>"]]
+	])->dropDownList(\common\models\Tournament::getTimeZones());
+	?>
+
+	<?
 	$urlUserList = Url::to(['user/list']);
 
 	echo $form->field($model, 'cAs')->label(Yii::t("app", "Chief Adjudicators"))->widget(Select2::className(), [

@@ -7,14 +7,18 @@ use yii\base\Exception;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
+use yii\web\NotFoundHttpException;
 
 /**
  * Login form
  */
 class Motion extends Model
 {
+	const LEGACY_PREFIX = "m";
+
 	public $object;
 
+	public $id = null;
 	public $motion = null;
 	public $infoslide = null;
 	public $tournament = null;
@@ -23,6 +27,91 @@ class Motion extends Model
 	public $date = null;
 	public $language = 'en';
 	public $tags = [];
+
+	/**
+	 * Find one Element by ID
+	 *
+	 * @param integer|string $id
+	 *
+	 * @return \common\models\Motion
+	 * @throws \yii\base\Exception
+	 * @throws \yii\web\NotFoundHttpException
+	 */
+	public static function findOne($id)
+	{
+		if (strpos("id", self::LEGACY_PREFIX) === 0) {
+			//Legacy lookup
+			$id = substr($id, 1);
+			$legacy = LegacyMotion::findOne($id);
+			return self::convertFrom($legacy);
+		} else if (is_numeric($id)) {
+			$round = Round::findOne($id);
+			if ($round instanceof Round)
+				return self::convertFrom($round);
+		}
+
+		throw new NotFoundHttpException("Not a valid id");
+	}
+
+	/**
+	 * @param $o Object to be converted from
+	 *
+	 * @return \api\models\Motion
+	 * @throws \yii\base\Exception
+	 */
+	public static function convertFrom($o)
+	{
+		$motion = new \api\models\Motion();
+		if ($o instanceof Round) {
+			$motion->id = $o->id;
+			$motion->motion = $o->motion;
+			$motion->infoslide = $o->infoslide;
+			$motion->tournament = $o->tournament->name;
+			$motion->round = $o->getName();
+			$motion->link = Yii::$app->urlManager->createUrl(["tournament/view", "id" => $o->tournament_id]);
+			$motion->date = strtotime($o->time);
+			$motion->tags = ArrayHelper::map($o->motionTags, "id", "name");
+
+		} else if ($o instanceof LegacyMotion) {
+			$motion->id = self::LEGACY_PREFIX . $o->id;
+			$motion->motion = $o->motion;
+			$motion->infoslide = $o->infoslide;
+			$motion->tournament = $o->tournament;
+			$motion->round = $o->round;
+			$motion->link = $o->link;
+			$motion->date = strtotime($o->time);
+			$motion->tags = ArrayHelper::map($o->motionTags, "id", "name");
+		} else {
+			throw new Exception("Object not defined");
+		}
+		return $motion;
+	}
+
+	/**
+	 * @return Motion[]
+	 */
+	public static function findAll()
+	{
+		$m = [];
+		$rounds = Round::find()
+			->where(["displayed" => 1])
+			->orderBy(["time" => SORT_DESC])
+			->all();
+
+		foreach ($rounds as $r) {
+			$m[] = Motion::convertFrom($r);
+		}
+
+		$legacy = LegacyMotion::find()->orderBy(["time" => SORT_DESC])->all();
+
+		foreach ($legacy as $l) {
+			$m[] = Motion::convertFrom($l);
+		}
+
+		usort($m, [self::className(), "date_sort"]);
+
+		return $m;
+	}
 
 	public static function findAllByTags($tags, $limit = false)
 	{
@@ -38,7 +127,7 @@ class Motion extends Model
 		$rounds = $rounds->limit($limit)->all();
 
 		foreach ($rounds as $r) {
-			$m[] = new Motion(["object" => $r]);
+			$m[] = Motion::convertFrom($r);
 		}
 
 		$legacy = LegacyMotion::find()->orderBy(["time" => SORT_DESC]);
@@ -53,7 +142,7 @@ class Motion extends Model
 		$legacy = $legacy->all();
 
 		foreach ($legacy as $l) {
-			$m[] = new Motion(["object" => $l]);
+			$m[] = Motion::convertFrom($l);
 		}
 
 		usort($m, [self::className(), "date_sort"]);
@@ -73,31 +162,6 @@ class Motion extends Model
 		$bd = ($b->date);
 
 		return ($ad < $bd) ? 1 : (($ad > $bd) ? -1 : 0);
-	}
-
-	public function init()
-	{
-		$o = $this->object;
-		if ($o instanceof Round) {
-			$this->motion = $o->motion;
-			$this->infoslide = $o->infoslide;
-			$this->tournament = $o->tournament->name;
-			$this->round = $o->getName();
-			$this->link = Yii::$app->urlManager->createUrl(["tournament/view", "id" => $o->tournament_id]);
-			$this->date = strtotime($o->time);
-			$this->tags = ArrayHelper::map($o->motionTags, "id", "name");
-
-		} else if ($o instanceof LegacyMotion) {
-			$this->motion = $o->motion;
-			$this->infoslide = $o->infoslide;
-			$this->tournament = $o->tournament;
-			$this->round = $o->round;
-			$this->link = $o->link;
-			$this->date = strtotime($o->time);
-			$this->tags = ArrayHelper::map($o->motionTags, "id", "name");
-		} else {
-			throw new Exception("Object not defined");
-		}
 	}
 
 	public function getTagsField()

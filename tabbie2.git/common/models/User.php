@@ -86,14 +86,6 @@ class User extends ActiveRecord implements IdentityInterface
 	}
 
 	/**
-	 * @inheritdoc
-	 */
-	public static function findIdentityByAccessToken($token, $type = null)
-	{
-		throw new NotSupportedException(Yii::t("app", '"findIdentityByAccessToken" is not implemented.'));
-	}
-
-	/**
 	 * Finds user by email
 	 *
 	 * @param string $email
@@ -103,6 +95,18 @@ class User extends ActiveRecord implements IdentityInterface
 	public static function findByEmail($email)
 	{
 		return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
+	}
+
+	/**
+	 * Find user by AccessToken for API request
+	 * @param mixed $token
+	 * @param null $type
+	 *
+	 * @return null|static
+	 */
+	public static function findIdentityByAccessToken($token, $type = null)
+	{
+		return static::findOne(['access_token' => $token]);
 	}
 
 	/**

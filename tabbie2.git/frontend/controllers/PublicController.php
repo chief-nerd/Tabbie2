@@ -132,7 +132,7 @@ class PublicController extends BasetournamentController
 		$round = \common\models\Round::findOne($id);
 		if ($round instanceof \common\models\Round) {
 			$round->displayed = 1;
-			$round->prep_started = date("Y-m-d H:i:s");
+			$round->prep_started = $round->tournament->getNowUTC();
 			if ($round->save())
 				return "1";
 		}

@@ -185,9 +185,8 @@ class RoundController extends BasetournamentController
 
 			if (!$model->save() || !$model->generateWorkingDraw()) {
 				Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
-			}
-
-			return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
+			} else
+				return $this->redirect(['round/view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
 		}
 
 		return $this->render('create', [
@@ -275,6 +274,7 @@ class RoundController extends BasetournamentController
 			if (!$model->generateWorkingDraw()) {
 				Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
 			} else {
+				$model->time = $this->_tournament->getNowUTC();
 				$model->save();
 				Yii::$app->session->addFlash("success", Yii::t("app", "Successfully redrawn in {secs}s", ["secs" => intval(microtime(true) - $time)]));
 			}

@@ -69,9 +69,16 @@ Options -Indexes
 <IfModule mod_rewrite.c>
   RewriteEngine on
   RewriteBase /
+
+#rewrite for api
+  RewriteCond %{HTTP_HOST} ^api.
+  RewriteRule ^(.*)$ api/web/$1 [L]
+
+#rewrite for backend
   RewriteCond %{REQUEST_URI} ^/master
   RewriteRule ^master(.*)$ backend/web/$1 [L]
 
+#rewrite for everything else aka frontend
   RewriteCond %{REQUEST_URI} !^/master
   RewriteRule ^(.*)$ frontend/web/$1 [L]
 </IfModule>

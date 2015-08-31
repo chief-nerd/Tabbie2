@@ -219,6 +219,11 @@ use common\models\Team;
 					'format' => 'raw',
 					'value' => Yii::$app->formatter->asDateTime($model->end_date, "short"),
 				],
+				[
+					"attribute" => 'timezone',
+					'format' => 'raw',
+					'value' => $model->getFormatedTimeZone(),
+				],
 			],
 		])
 		?>

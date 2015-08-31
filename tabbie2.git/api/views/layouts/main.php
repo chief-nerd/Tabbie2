@@ -1,6 +1,6 @@
 <?php
 
-use backend\assets\AppAsset;
+use api\assets\AppAsset;
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
@@ -19,7 +19,7 @@ AppAsset::register($this);
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<?= Html::csrfMetaTags() ?>
 	<title><?= Html::encode($this->title) ?>
-		:: <?= Html::encode(Yii::$app->params["appName"] . " " . Yii::t("app", "Master")) ?></title>
+		:: <?= Html::encode(Yii::$app->params["appName"] . " " . Yii::t("app", "API")) ?></title>
 	<?php $this->head() ?>
 </head>
 <body>
@@ -27,7 +27,7 @@ AppAsset::register($this);
 <div class="wrap">
 	<?php
 	NavBar::begin([
-		'brandLabel' => Yii::$app->params["appName"] . " " . Yii::t("app", "Master"),
+		'brandLabel' => Yii::$app->params["appName"] . " " . Yii::t("app", "API"),
 		'brandUrl'   => Yii::$app->homeUrl,
 		'options'    => [
 			'class' => 'navbar-inverse navbar-fixed-top',
@@ -35,9 +35,7 @@ AppAsset::register($this);
 	]);
 	$menuItems = [
 		['label' => 'Home', 'url' => ['/site/index']],
-		['label' => 'Motion Tags', 'url' => ['motiontag/index']],
-		['label' => 'Societies', 'url' => ['society/index']],
-		['label' => 'Special Needs', 'url' => ['specialneeds/index']],
+		['label' => 'Documentation', 'url' => ['documentation/index']],
 	];
 	if (Yii::$app->user->isGuest) {
 		$menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
@@ -56,11 +54,6 @@ AppAsset::register($this);
 	?>
 
 	<div class="container">
-		<?=
-		Breadcrumbs::widget([
-			'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-		])
-		?>
 		<?= $content ?>
 	</div>
 </div>

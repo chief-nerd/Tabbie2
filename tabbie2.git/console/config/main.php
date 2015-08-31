@@ -12,6 +12,10 @@ return [
 	'modules'             => [
 		'gii' => 'yii\gii\Module',
 	],
+	'controllerMap' => [
+		'api' => 'yii\apidoc\commands\ApiController',
+		'guide' => 'yii\apidoc\commands\GuideController',
+	],
 	'components'          => [
 		'log' => [
 			'targets' => [

@@ -139,17 +139,32 @@ $this->params['breadcrumbs'][] = $model->name;
 				'value' => common\models\Round::statusLabel($model->status),
 			];
 			$attributes[] = 'motion:ntext';
+
 			if ($model->infoslide)
 				$attributes[] = 'infoslide:ntext';
+
 			$attributes[] = [
 				"attribute" => 'energy',
 				'label'  => Yii::t("app", "Average Energy"),
 				'format' => 'raw',
 				'value'  => (($debateDataProvider->getCount()) ? intval($model->energy / $debateDataProvider->getCount()) : 0),
 			];
-			if ($model->displayed)
-				$attributes[] = 'prep_started';
-			$attributes[] = 'time:text:' . Yii::t("app", "Creation Time");
+
+			if ($model->displayed) {
+				$attributes[] = [
+					"attribute" => 'prep_started',
+					'format' => 'raw',
+					'value' => Yii::$app->formatter->asDatetime($model->prep_started, 'short'),
+				];
+			}
+
+			$attributes[] = [
+				"attribute" => 'time',
+				'format' => 'raw',
+				'label' => Yii::t("app", "Creation Time"),
+				'value' => Yii::$app->formatter->asDatetime($model->time, 'short'),
+			];
+
 			$attributes[] = [
 				"attribute" => 'lastrun_temp',
 				'format' => 'raw',
