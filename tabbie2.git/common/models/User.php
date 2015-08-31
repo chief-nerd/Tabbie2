@@ -33,6 +33,7 @@ use yii\web\IdentityInterface;
  * @property integer        $language_status_update
  * @property string         $picture
  * @property string         $time
+ * @property string $language
  * @property Adjudicator[]  $adjudicators
  * @property InSociety[]    $inSocieties
  * @property Society[]      $societies

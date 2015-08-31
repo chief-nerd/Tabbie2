@@ -116,7 +116,8 @@ class UserIdentity extends \yii\web\User
 
 	public function getLanguage()
 	{
-		return $this->getModel()->language;
+		$user = $this->getModel();
+		return ($user) ? $user->language : "en-UK";
 	}
 
 }
