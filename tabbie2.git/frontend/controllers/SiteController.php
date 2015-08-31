@@ -23,7 +23,7 @@ use yii\web\View;
 /**
  * Site controller
  */
-class SiteController extends Controller
+class SiteController extends BaseController
 {
 
 	/**

@@ -31,7 +31,10 @@ $this->params['breadcrumbs'][] = $this->title;
 						'label' => Yii::t("app", "Language Status"),
 						'value' => \common\models\User::getLanguageStatusLabel($model->language_status)
 					],
-					'last_change',
+					[
+						'label' => Yii::t("app", "Last Change"),
+						'value' => Yii::$app->formatter->asDatetime($model->last_change)
+					],
 				],
 			])
 			?>

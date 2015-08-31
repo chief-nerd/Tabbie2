@@ -6,7 +6,8 @@ use common\models\User;
 use Yii;
 use yii\web\Controller;
 
-class BaseUserController extends Controller {
+class BaseUserController extends BaseController
+{
 
 	/**
 	 * Current User Scope

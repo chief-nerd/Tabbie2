@@ -418,6 +418,11 @@ class User extends ActiveRecord implements IdentityInterface
 			->send();
 	}
 
+	public static function languageOptions()
+	{
+		return Yii::$app->params['activeLanguages'];
+	}
+
 	public function fields()
 	{
 		$fields = parent::fields();
@@ -491,7 +496,7 @@ class User extends ActiveRecord implements IdentityInterface
 			['language_status', 'default', 'value' => self::LANGUAGE_NONE],
 			['language_status', 'in', 'range' => [self::LANGUAGE_NONE, self::LANGUAGE_ENL, self::LANGUAGE_ESL, self::LANGUAGE_EFL, self::LANGUAGE_INTERVIEW]],
 
-			[['password', 'password_repeat', 'url_slug', 'auth_key', 'time', 'last_change', 'societies_id', 'language_status_update'], 'safe'],
+			[['password', 'password_repeat', 'url_slug', 'language', 'time', 'last_change', 'societies_id', 'language_status_update'], 'safe'],
 		];
 	}
 
@@ -501,7 +506,7 @@ class User extends ActiveRecord implements IdentityInterface
 	public function beforeSave($insert)
 	{
 		if ($insert) {
-			$this->last_change = $this->time = date("Y-m-d H:i:s");
+			$this->last_change = $this->time = Yii::$app->time->UTC();
 		}
 
 		return true;

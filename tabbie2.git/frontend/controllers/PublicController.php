@@ -132,7 +132,7 @@ class PublicController extends BasetournamentController
 		$round = \common\models\Round::findOne($id);
 		if ($round instanceof \common\models\Round) {
 			$round->displayed = 1;
-			$round->prep_started = $round->tournament->getNowUTC();
+			$round->prep_started = Yii::$app->time->UTC();
 			if ($round->save())
 				return "1";
 		}

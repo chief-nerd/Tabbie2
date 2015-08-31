@@ -15,7 +15,6 @@ use Yii;
 
 class UserIdentity extends \yii\web\User
 {
-
 	public static function className()
 	{
 		return "common\components\UserIdentity";
@@ -34,6 +33,16 @@ class UserIdentity extends \yii\web\User
 		}
 
 		return false;
+	}
+
+	/**
+	 * Get the full User Model
+	 *
+	 * @return \common\models\User
+	 */
+	public function getModel()
+	{
+		return $user = User::findOne($this->id);
 	}
 
 	/**
@@ -86,16 +95,6 @@ class UserIdentity extends \yii\web\User
 		return false;
 	}
 
-	/**
-	 * Get the full User Model
-	 *
-	 * @return \common\models\User
-	 */
-	public function getModel()
-	{
-		return $user = User::findOne($this->id);
-	}
-
 	public function getRoleModel($tid)
 	{
 		$adj = \common\models\Adjudicator::find()->where(["tournament_id" => $tid, "user_id" => $this->id])->one();
@@ -113,6 +112,11 @@ class UserIdentity extends \yii\web\User
 		}
 
 		return null;
+	}
+
+	public function getLanguage()
+	{
+		return $this->getModel()->language;
 	}
 
 }

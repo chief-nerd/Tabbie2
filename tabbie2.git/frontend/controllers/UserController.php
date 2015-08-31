@@ -122,6 +122,24 @@ class UserController extends BaseUserController
 	}
 
 	/**
+	 * Finds the User model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 *
+	 * @param integer $id
+	 *
+	 * @return User the loaded model
+	 * @throws NotFoundHttpException if the model cannot be found
+	 */
+	protected function findModel($id)
+	{
+		if (($model = User::findOne($id)) !== null) {
+			return $model;
+		} else {
+			throw new NotFoundHttpException('The requested page does not exist.');
+		}
+	}
+
+	/**
 	 * Forces a Password Change
 	 *
 	 * @param integer $id
@@ -220,6 +238,7 @@ class UserController extends BaseUserController
 				if (is_string($model->password) && $model->password !== "")
 					$model->setPassword($model->password);
 
+				$model->last_change = Yii::$app->time->UTC();
 				if ($model->save()) {
 					if ($model->societies_id > 0) {
 						$found = false;
@@ -327,24 +346,6 @@ class UserController extends BaseUserController
 			$out['results'] = ['id' => 0, 'text' => Yii::t("app", 'No matching records found')];
 		}
 		echo \yii\helpers\Json::encode($out);
-	}
-
-	/**
-	 * Finds the User model based on its primary key value.
-	 * If the model is not found, a 404 HTTP exception will be thrown.
-	 *
-	 * @param integer $id
-	 *
-	 * @return User the loaded model
-	 * @throws NotFoundHttpException if the model cannot be found
-	 */
-	protected function findModel($id)
-	{
-		if (($model = User::findOne($id)) !== null) {
-			return $model;
-		} else {
-			throw new NotFoundHttpException('The requested page does not exist.');
-		}
 	}
 
 }

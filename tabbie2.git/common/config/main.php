@@ -46,6 +46,9 @@ return [
 			'bucket' => 'tabbie',
 			'region' => 'eu-central-1'
 		],
+		'time' => [
+			'class' => 'common\components\Time',
+		],
 	],
 	'modules'        => [
 		'gridview' => [

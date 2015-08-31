@@ -131,6 +131,21 @@ class Tournament extends \yii\db\ActiveRecord
 		return $timezones;
 	}
 
+	private static function format_GMT_offset($offset)
+	{
+		$hours = intval($offset / 3600);
+		$minutes = abs(intval($offset % 3600 / 60));
+		return 'GMT' . ($offset ? sprintf('%+03d:%02d', $hours, $minutes) : '');
+	}
+
+	private static function format_timezone_name($name)
+	{
+		$name = str_replace('/', ', ', $name);
+		$name = str_replace('_', ' ', $name);
+		$name = str_replace('St ', 'St. ', $name);
+		return $name;
+	}
+
 	/**
 	 * @inheritdoc
 	 */
@@ -776,15 +791,6 @@ class Tournament extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * Return the time now for that tournament (correct timezone etc)
-	 * @return bool|string
-	 */
-	public function getNowUTC()
-	{
-		return date_format(new \DateTime('now', new DateTimeZone("UTC")), \DateTime::W3C);
-	}
-
-	/**
 	 * Returns the formatted Timezone to display
 	 * @return string
 	 */
@@ -795,21 +801,6 @@ class Tournament extends \yii\db\ActiveRecord
 
 		return self::format_timezone_name($this->timezone) . " (" . self::format_GMT_offset($offset) . ")";
 		//return $this->getNowUTC();
-	}
-
-	private static function format_timezone_name($name)
-	{
-		$name = str_replace('/', ', ', $name);
-		$name = str_replace('_', ' ', $name);
-		$name = str_replace('St ', 'St. ', $name);
-		return $name;
-	}
-
-	private static function format_GMT_offset($offset)
-	{
-		$hours = intval($offset / 3600);
-		$minutes = abs(intval($offset % 3600 / 60));
-		return 'GMT' . ($offset ? sprintf('%+03d:%02d', $hours, $minutes) : '');
 	}
 
 }

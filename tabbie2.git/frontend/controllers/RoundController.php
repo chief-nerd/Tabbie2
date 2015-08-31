@@ -274,7 +274,7 @@ class RoundController extends BasetournamentController
 			if (!$model->generateWorkingDraw()) {
 				Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
 			} else {
-				$model->time = $this->_tournament->getNowUTC();
+				$model->time = Yii::$app->time->UTC();
 				$model->save();
 				Yii::$app->session->addFlash("success", Yii::t("app", "Successfully redrawn in {secs}s", ["secs" => intval(microtime(true) - $time)]));
 			}

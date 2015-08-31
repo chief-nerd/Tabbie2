@@ -57,6 +57,9 @@ use yii\web\JsExpression;
 		<div class="col-sm-6">
 			<?= $form->field($model, 'gender')->dropDownList(\common\models\User::genderOptions()) ?>
 		</div>
+		<div class="col-sm-6 col-sm-push-4">
+			<?= $form->field($model, 'language')->dropDownList(\common\models\User::languageOptions()) ?>
+		</div>
 	</div>
 
 	<div class="form-group">
