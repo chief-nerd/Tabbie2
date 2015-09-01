@@ -15,7 +15,7 @@ use yii\filters\VerbFilter;
 /**
  * SocietyController implements the CRUD actions for Society model.
  */
-class SocietyController extends BaseUserController
+class SocietyController extends BaseuserController
 {
 	public function behaviors()
 	{

@@ -10,7 +10,7 @@ use Yii;
 use common\models\User;
 use yii\data\Pagination;
 
-class HistoryController extends BaseUserController
+class HistoryController extends BaseuserController
 {
 
 	public function behaviors()

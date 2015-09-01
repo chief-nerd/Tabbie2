@@ -21,7 +21,7 @@ use yii\data\Pagination;
 /**
  * UserController implements the CRUD actions for User model.
  */
-class UserController extends BaseUserController
+class UserController extends BaseuserController
 {
 
 	public function behaviors()
