@@ -10,8 +10,8 @@ use yii\web\JsExpression;
 /* @var $model common\models\LanguageOfficer */
 /* @var $form yii\widgets\ActiveForm */
 
-$this->title = Yii::t('app', 'Add {modelClass}', [
-	'modelClass' => 'Language Officer',
+$this->title = Yii::t('app', 'Add {object}', [
+	'object' => Yii::t("app", 'Language Officer'),
 ]);
 
 $this->params['breadcrumbs'][] = ['label' => $model->tournament->fullname, 'url' => ['tournament/view', "id" => $model->tournament->id]];

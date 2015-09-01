@@ -60,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		$toolbar = [
 			['content' =>
 				 Html::a(\kartik\helpers\Html::icon("plus"), ['create', "tournament_id" => $tournament->id], [
-					 'title'     => Yii::t('app', 'Add new element'),
+					 'title' => Yii::t('app', 'Add {object}', ['object' => Yii::t("app", 'Venue')]),
 					 'data-pjax' => 0,
 					 'class'     => 'btn btn-default'
 				 ]) .

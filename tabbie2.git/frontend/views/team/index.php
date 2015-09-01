@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
-			'filterInputOptions'  => ['placeholder' => Yii::t("app", 'Any Team ...')],
+			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any {object} ...', ['object' => Yii::t("app", 'Team')])],
 			'width'               => "25%",
 		],
 		[
@@ -49,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
-			'filterInputOptions'  => ['placeholder' => Yii::t("app", 'Any Society ...')],
+			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any {object} ...', ['object' => Yii::t("app", 'Society')])],
 			'width'               => "25%",
 		],
 		[
@@ -68,7 +68,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
-			'filterInputOptions'  => ['placeholder' => Yii::t("app", 'Any Speaker ...')],
+			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any {object} ...', ['object' => Yii::t("app", 'Speaker')])],
 			'width'               => "25%",
 		],
 		[
@@ -84,7 +84,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
-			'filterInputOptions'  => ['placeholder' => Yii::t("app", 'Any Language ...')],
+			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any {object} ...', ['object' => Yii::t("app", 'Language')])],
 		],
 		[
 			'class'         => 'kartik\grid\ActionColumn',
@@ -132,7 +132,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		$toolbar = [
 			['content' =>
 				 Html::a(\kartik\helpers\Html::icon("plus"), ['create', "tournament_id" => $tournament->id], [
-					 'title'     => Yii::t('app', 'Add new element'),
+					 'title' => Yii::t('app', 'Add {object}', ['object' => Yii::t("app", 'Team')]),
 					 'data-pjax' => 0,
 					 'class'     => 'btn btn-default'
 				 ]) .

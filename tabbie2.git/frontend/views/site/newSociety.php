@@ -63,7 +63,7 @@ SCRIPT;
 	]) ?>
 
 	<div class="form-group">
-		<?= Html::submitButton(Yii::t('app', 'Add new Society'), ['class' => 'btn btn-success']) ?>
+		<?= Html::submitButton(Yii::t('app', 'Add {object}', ['object' => Yii::t("app", 'Society')]), ['class' => 'btn btn-success']) ?>
 	</div>
 
 	<?php ActiveForm::end(); ?>

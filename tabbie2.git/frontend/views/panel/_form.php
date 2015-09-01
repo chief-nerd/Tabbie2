@@ -43,7 +43,7 @@ SCRIPT;
 				'model'         => $model,
 				'attribute'     => 'set_adjudicators[' . $adj_k . ']',
 				'options'       => [
-					'placeholder' => ($first) ? Yii::t("app", 'Add Chair ...') : Yii::t("app", 'Add Wing ...'),
+					'placeholder' => Yii::t("app", 'Add {object} ...', ["object" => ($first) ? Yii::t("app", "Chair") : Yii::t("app", "Wing")]),
 				],
 				'pluginOptions' => [
 					'allowClear'    => true,

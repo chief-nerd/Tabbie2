@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
-			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any Round ...')],
+			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any {object} ...', ['object' => Yii::t("app", 'Round')])],
 		],
 		[
 			'class'              => '\kartik\grid\DataColumn',
@@ -49,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
-			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any Venue ...')],
+			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any {object} ...', ['object' => Yii::t("app", 'Venue')])],
 		],
 		[
 			'class'     => '\kartik\grid\DataColumn',

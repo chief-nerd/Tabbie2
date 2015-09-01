@@ -36,7 +36,7 @@ SCRIPT;
 			echo $form->field($model, 'venues')->widget(Select2::className(), [
 				'initValueText' => \yii\helpers\ArrayHelper::map($model->venues, "id", "name"),
 				'options'       => [
-					'placeholder' => Yii::t("app", 'Add venues ...')
+					'placeholder' => Yii::t("app", 'Add {object} ...', ['object' => Yii::t("app", 'Venue')])
 				],
 				'pluginOptions' => [
 					'multiple'           => true,
@@ -62,7 +62,7 @@ SCRIPT;
 			echo $form->field($model, 'adjudicators')->widget(Select2::className(), [
 				'initValueText' => \yii\helpers\ArrayHelper::map($model->adjudicators, "id", "name"),
 				'options'       => [
-					'placeholder' => Yii::t("app", 'Add Adjudicators ...')
+					'placeholder' => Yii::t("app", 'Add {object} ...', ["object" => Yii::t("app", "Adjudicator")])
 				],
 				'pluginOptions' => [
 					'multiple'           => true,
@@ -103,7 +103,7 @@ SCRIPT;
 							<?
 							echo $form->field($model, 'outDebate[' . $i . '][' . $p . '_team]')->label(\common\models\Team::getPosLabel($index))->widget(Select2::className(), [
 								'options'       => [
-									'placeholder' => Yii::t("app", 'Add team ...')
+									'placeholder' => Yii::t("app", 'Add {object} ...', ['object' => Yii::t("app", 'Team')]),
 								],
 								'pluginOptions' => [
 									'multiple'           => false,

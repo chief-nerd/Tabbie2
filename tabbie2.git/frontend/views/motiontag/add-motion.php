@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model common\models\LegacyMotion */
 
-$this->title = Yii::t('app', 'Add Motion');
+$this->title = Yii::t('app', 'Add {object}', ["object" => Yii::t("app", "Motion")]);
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Motion Tags'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -83,7 +83,8 @@ SCRIPT;
 		]) ?>
 
 		<div class="form-group">
-			<?= Html::submitButton(Yii::t('app', 'Add this motion'), ['class' => 'btn btn-success btn-block']) ?>
+			<?= Html::submitButton(Yii::t('app', 'Add {object}', ['object' => Yii::t("app", 'Motion')]), ['class' => 'btn btn-success
+btn-block']) ?>
 		</div>
 
 		<?php \kartik\widgets\ActiveForm::end(); ?>

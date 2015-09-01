@@ -17,7 +17,8 @@ $this->params['breadcrumbs'][] = $this->title;
 			<h1><?= Html::encode($this->title) ?></h1>
 		</div>
 		<div class="col-xs-12 col-sm-6 text-right">
-			<?= Html::a(\kartik\helpers\Html::icon("plus") . "&nbsp;" . Yii::t("app", "Add third-party Motion"), ["add-motion"], [
+			<?= Html::a(\kartik\helpers\Html::icon("plus") . "&nbsp;" . Yii::t("app", "Add {object}", ['object' => Yii::t("app", 'Third-Party
+			Motion')]), ["add-motion"], [
 				"class" => "btn btn-success"
 			]) ?>
 		</div>

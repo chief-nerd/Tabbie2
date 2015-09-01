@@ -39,8 +39,8 @@ class MotionsCest
 	{
 		$I->wantTo('add a legacy motion - not logged in');
 		$I->seeInCurrentUrl('motions');
-		$I->seeLink(' Add third-party Motion');
-		$I->click(' Add third-party Motion');
+		$I->seeLink(' Add Third-Party Motion');
+		$I->click(' Add Third-Party Motion');
 		$I->seeInCurrentUrl("login");
 
 		$I->fillField('LoginForm[email]', 'Claudine.Abbott@example.local');

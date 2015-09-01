@@ -74,7 +74,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Table View");
 				'filterWidgetOptions' => [
 					'pluginOptions' => ['allowClear' => true],
 				],
-				'filterInputOptions' => ['placeholder' => 'Any Venue'],
+				'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any {object} ...', ['object' => Yii::t("app", 'Venue')])]
 			],
 			[
 				'class'              => 'kartik\grid\DataColumn',

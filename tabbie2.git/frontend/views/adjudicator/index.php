@@ -54,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
-			'filterInputOptions'  => ['placeholder' => Yii::t("app", 'Any Adjudicator ...')],
+			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any {object} ...', ['object' => Yii::t("app", 'Adjudicator')])],
 		],
 		[
 			'class'               => '\kartik\grid\DataColumn',
@@ -64,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
-			'filterInputOptions'  => ['placeholder' => Yii::t("app", 'Any Society ...')],
+			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any {object} ...', ['object' => Yii::t("app", 'Society')])],
 			'width'               => '20%',
 		],
 		[
@@ -151,7 +151,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		$toolbar = [
 			['content' =>
 				 Html::a(\kartik\helpers\Html::icon("plus"), ['create', "tournament_id" => $tournament->id], [
-					 'title'     => Yii::t('app', 'Add new element'),
+					 'title' => Yii::t('app', 'Add {object}', ['object' => Yii::t("app", 'Adjudicator')]),
 					 'data-pjax' => 0,
 					 'class'     => 'btn btn-default'
 				 ]) .

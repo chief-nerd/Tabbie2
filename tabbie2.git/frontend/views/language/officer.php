@@ -20,7 +20,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<p>
 		<?=
-		Html::a(Yii::t('app', 'Add Officer'), ['officer-add', "tournament_id" => $tournament->id], ['class' => 'btn btn-success'])
+		Html::a(Yii::t('app', 'Add {object}', ["object" => Yii::t("app", "Officer")]), ['officer-add', "tournament_id" => $tournament->id],
+			['class' => 'btn
+		btn-success'])
 		?>
 	</p>
 
@@ -37,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
-			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any User ...')],
+			'filterInputOptions' => ['placeholder' => Yii::t("app", 'Any {object} ...', ['object' => Yii::t("app", 'User')])],
 		],
 		[
 			'class'    => 'kartik\grid\ActionColumn',

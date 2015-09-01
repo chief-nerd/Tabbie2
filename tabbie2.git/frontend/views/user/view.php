@@ -48,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<p>
 		<? if (Yii::$app->user->id == Yii::$app->request->get("id") || Yii::$app->user->isAdmin()): ?>
-			<?= Html::a(\kartik\helpers\Html::icon("plus") . "&nbsp" . Yii::t('app', 'Add new individual clash'), ['clash/create', 'user_id' => $model->id], ['class' => 'btn btn-primary']) ?>
+			<?= Html::a(\kartik\helpers\Html::icon("plus") . "&nbsp" . Yii::t('app', 'Add {object}', ['object' => Yii::t("app", 'Individual Clash')]), ['clash/create', 'user_id' => $model->id], ['class' => 'btn btn-primary']) ?>
 		<? endif; ?>
 	</p>
 
