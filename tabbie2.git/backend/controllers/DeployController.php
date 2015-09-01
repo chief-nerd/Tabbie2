@@ -97,6 +97,12 @@ class DeployController extends Controller
 		exec("php $git_root/tabbie2.git/yii cache/flush-schema --interactive=0", $out);
 		exec("php $git_root/tabbie2.git/yii cache/flush-all --interactive=0", $out);
 
+		//KILL files
+		exec("rm -rf $git_root/tabbie2.git/frontend/runtime/cache/*", $out);
+		exec("rm -rf $git_root/tabbie2.git/backend/runtime/cache/*", $out);
+		exec("rm -rf $git_root/tabbie2.git/api/runtime/cache/*", $out);
+		exec("rm -rf $git_root/tabbie2.git/console/runtime/cache/*", $out);
+
 		//output
 		print_r($out);
 
