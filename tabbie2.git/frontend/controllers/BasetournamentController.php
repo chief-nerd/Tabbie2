@@ -33,7 +33,7 @@ class BasetournamentController extends BaseController
 		//\Yii::trace("Set Context for " . $this->_tournament->fullname . " (" . $this->_tournament->id . ")", __METHOD__);
 		if ($this->_tournament instanceof Tournament) {
 			//Set Timezone
-			Yii::$app->setTimeZone($this->_tournament->timezone);
+			//Yii::$app->setTimeZone($this->_tournament->timezone);
 			return true;
 		} else
 			return false;
