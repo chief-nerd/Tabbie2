@@ -1,7 +1,7 @@
 window.DoScroll = false;
 window.ScrollSpeed = 7;
 window.current_top = 0;
-window.lastPos = 0;
+window.lastScrollPos = null;
 window.ScrollUntil = $("#team-table-container")[0].offsetHeight;
 $('#team-table-container .table').css("position", "relative");
 
@@ -12,8 +12,8 @@ function pageScroll() {
     //$('#team-table-container .table').css("top", window.current_top);
 
     console.log(window.pageYOffset, window.ScrollUntil);
-    if (window.pageYOffset < window.ScrollUntil && window.lastPos != window.pageYOffset) {
-        window.lastPos = window.pageYOffset;
+    if (window.pageYOffset < window.ScrollUntil && window.lastScrollPos != window.pageYOffset) {
+        window.lastScrollPos = window.pageYOffset;
         notEnd = true;
     }
     else {
