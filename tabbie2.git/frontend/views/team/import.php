@@ -18,7 +18,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<h1><?= Html::encode($this->title) ?></h1>
 
-<?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+<?php $form = ActiveForm::begin(['options' => [
+	'enctype' => 'multipart/form-data',
+	'class' => 'loading'
+]]); ?>
 
 <? if (isset($model->tempImport)): ?>
 	<table class="table">
@@ -122,7 +125,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	<div class="form-group">
 		<?= Html::hiddenInput("csvFile", serialize($model->tempImport)); ?>
 		<?= Html::hiddenInput("makeItSo", "true"); ?>
-		<?= Html::submitButton(Yii::t('app', 'Make it so'), ['class' => 'btn btn-block btn-success loading'])
+		<?= Html::submitButton(Yii::t('app', 'Make it so'), ['class' => 'btn btn-block btn-success'])
 		?>
 	</div>
 

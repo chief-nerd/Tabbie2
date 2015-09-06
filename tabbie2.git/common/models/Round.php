@@ -111,20 +111,22 @@ class Round extends \yii\db\ActiveRecord
 	public function setTags($value)
 	{
 		Tag::deleteAll(["round_id" => $this->id]);
-		foreach ($value as $t) {
-			if (!is_numeric($t)) {
-				$new_Tag = new MotionTag([
-					"name" => ucwords(htmlentities(trim($t))),
-				]);
-				$new_Tag->save();
-				$t = $new_Tag->id;
-			}
+		if (is_array($value)) {
+			foreach ($value as $t) {
+				if (!is_numeric($t)) {
+					$new_Tag = new MotionTag([
+						"name" => ucwords(htmlentities(trim($t))),
+					]);
+					$new_Tag->save();
+					$t = $new_Tag->id;
+				}
 
-			$tag = new Tag([
-				"motion_tag_id" => $t,
-				"round_id"      => $this->id,
-			]);
-			$tag->save();
+				$tag = new Tag([
+					"motion_tag_id" => $t,
+					"round_id" => $this->id,
+				]);
+				$tag->save();
+			}
 		}
 
 		return true;

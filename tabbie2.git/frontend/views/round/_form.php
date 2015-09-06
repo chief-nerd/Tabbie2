@@ -10,7 +10,11 @@ use yii\widgets\ActiveForm;
 
 <div class="round-form">
 
-	<?php $form = ActiveForm::begin(); ?>
+	<?php $form = ActiveForm::begin([
+			'options' => [
+				"class" => "loading"
+			]]
+	); ?>
 
 	<?= Html::activeHiddenInput($model, 'label') ?>
 
@@ -57,7 +61,7 @@ SCRIPT;
 	<div class="form-group">
 		<?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'),
 			[
-				'class' => $model->isNewRecord ? 'btn btn-success btn-block loading' : 'btn btn-primary',
+				'class' => $model->isNewRecord ? 'btn btn-success btn-block' : 'btn btn-primary',
 			]) ?>
 	</div>
 

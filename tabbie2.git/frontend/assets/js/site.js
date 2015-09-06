@@ -30,7 +30,14 @@ $(document).on("click", "div.flashes .alert.success", function () {
 /**
  * Loading Animation fadein and start
  */
-$(document).on("click", ".loading", function () {
+$(document).on("click", "a.loading, button.loading", loadLoadingScreen);
+$(document).on("afterValidate", "form.loading", function (event, messages, errorAttributes) {
+    if (errorAttributes.length == 0) {
+        loadLoadingScreen()
+    }
+});
+
+function loadLoadingScreen() {
     var loader = $("#loader");
     var img = document.createElement("img");
     var cont = document.createElement("div");
@@ -42,4 +49,4 @@ $(document).on("click", ".loading", function () {
     cont.appendChild(img);
     loader[0].appendChild(cont);
     loader.fadeIn();
-});
+}
