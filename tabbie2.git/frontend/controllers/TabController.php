@@ -111,7 +111,7 @@ class TabController extends BasetournamentController
 		foreach ($lines_team as $line) {
 			$ptt = new PublishTabTeam([
 				"tournament_id" => $this->_tournament->id,
-				"team_id"   => $line->object->id,
+				"team_id" => $line->object["id"],
 				"enl_place" => $line->enl_place,
 				"esl_place" => $line->esl_place,
 				"cache_results" => json_encode($line->results_array),
@@ -127,7 +127,7 @@ class TabController extends BasetournamentController
 			if ($line->object) {
 				$ptt = new PublishTabSpeaker([
 					"tournament_id" => $this->_tournament->id,
-					"user_id"   => $line->object->id,
+					"user_id" => $line->object["speaker"]["id"],
 					"enl_place" => $line->enl_place,
 					"esl_place" => $line->esl_place,
 					"cache_results" => json_encode($line->results_array),
@@ -142,6 +142,7 @@ class TabController extends BasetournamentController
 
 		$this->_tournament->status = Tournament::STATUS_CLOSED;
 		$this->_tournament->save();
+		Yii::$app->cache->delete("tournament_" . $this->_tournament->id);
 
 		Yii::$app->session->addFlash("success", Yii::t("app", "Tab published and tournament closed. Go have a drink!"));
 

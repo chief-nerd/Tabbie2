@@ -79,16 +79,17 @@ class Tournament extends \yii\db\ActiveRecord
 	 * Find a Tournament by Primary Key
 	 *
 	 * @param integer $id
+	 * @param boolean $live
 	 *
 	 * @uses Tournamnet::findOne
 	 * @return null|Tournamnet
 	 */
-	public static function findByPk($id)
+	public static function findByPk($id, $live = false)
 	{
-		$tournament = Yii::$app->cache->get("tournament" . $id);
-		if (!$tournament instanceof Tournament) {
+		$tournament = Yii::$app->cache->get("tournament_" . $id);
+		if (!$tournament instanceof Tournament || !$live) {
 			$tournament = Tournament::findOne(["id" => $id]);
-			Yii::$app->cache->set("tournament" . $id, $tournament, 120);
+			Yii::$app->cache->set("tournament_" . $id, $tournament, 120);
 		}
 
 		return $tournament;
@@ -188,9 +189,9 @@ class Tournament extends \yii\db\ActiveRecord
 		];
 	}
 
-	public function cacheKey($key)
+	public function cacheKey($key = null)
 	{
-		return $this->url_slug . "_" . $key;
+		return $this->url_slug . ($key != null) ? "_" . $key : "";
 	}
 
 	/**
