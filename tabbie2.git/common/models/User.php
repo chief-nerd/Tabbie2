@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\components\ObjectError;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -229,13 +230,23 @@ class User extends ActiveRecord implements IdentityInterface
 		];
 	}
 
-	public static function generatePlaceholder($letter)
+	public static function generatePlaceholder($tournament_slug)
 	{
+		$swing_User = User::find()->where(["LIKE", "url_slug", $tournament_slug])->orderBy(["id" => SORT_DESC])->one();
+
+		if (count($swing_User) == 0)
+			$letter = "A";
+		else {
+			$highestExistingLetter = explode("_", $swing_User->url_slug)[1];
+			$letter = ++$highestExistingLetter; //works in PHP :)
+		}
+
 		$letter = strtoupper($letter);
 		$user = new User([
 			"givenname"   => "Speaker",
 			"surename"    => $letter,
-			"email"       => "speaker." . $letter . "@tabbie.com",
+			"url_slug" => "swing_" . $letter . "_" . $tournament_slug,
+			"email" => "speaker." . $letter . "@" . $tournament_slug . ".tabbie.com",
 			"role"        => User::ROLE_PLACEHOLDER,
 			"status"      => User::STATUS_ACTIVE,
 			"last_change" => date("Y-m-d H:i:s"),
@@ -244,7 +255,7 @@ class User extends ActiveRecord implements IdentityInterface
 		$user->setPassword($letter . $letter . $letter);
 		$user->generateAuthKey();
 		if (!$user->save())
-			\Yii::error("Placeholder create failed: " . print_r($user->getErrors(), true));
+			\Yii::error("Placeholder create failed: " . ObjectError::getMsg($user));
 		else
 			return $user;
 	}

@@ -169,9 +169,9 @@ class TeamController extends BasetournamentController
 
 			if ($model->isSwing == 1) {
 				if (empty($model->speakerA_id))
-					$model->speakerA_id = \common\models\User::generatePlaceholder("A")->id;
+					$model->speakerA_id = \common\models\User::generatePlaceholder($this->_tournament->url_slug)->id;
 				if (empty($model->speakerB_id))
-					$model->speakerB_id = \common\models\User::generatePlaceholder("B")->id;
+					$model->speakerB_id = \common\models\User::generatePlaceholder($this->_tournament->url_slug)->id;
 			}
 
 			if ($model->save())
@@ -204,9 +204,9 @@ class TeamController extends BasetournamentController
 
 			if ($model->isSwing == 1) {
 				if (empty($model->speakerA_id))
-					$model->speakerA_id = \common\models\User::generatePlaceholder("A")->id;
+					$model->speakerA_id = \common\models\User::generatePlaceholder($this->_tournament->url_slug)->id;
 				if (empty($model->speakerB_id))
-					$model->speakerB_id = \common\models\User::generatePlaceholder("B")->id;
+					$model->speakerB_id = \common\models\User::generatePlaceholder($this->_tournament->url_slug)->id;
 			}
 			if ($model->save())
 				return $this->redirect(['index', 'tournament_id' => $model->tournament_id]);
