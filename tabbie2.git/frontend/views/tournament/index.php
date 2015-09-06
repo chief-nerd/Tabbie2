@@ -27,7 +27,6 @@ $this->params['breadcrumbs'][] = $this->title;
 			<?php echo Html::a(\kartik\helpers\Html::icon("calendar") . "&nbsp;&nbsp;" . Yii::t("app", "Show old tournaments"), ["tournament/archive"], ["class" => "btn btn-default btn-block"]) ?>
 		</div>
 	</div>
-
 	<div class="tournaments">
 		<?= ListView::widget([
 			'dataProvider' => $dataProvider,

@@ -11,7 +11,7 @@ use yii\widgets\ActiveForm;
 <div class="tournament-search">
 	<?php
 	$form = ActiveForm::begin([
-		'action' => [Yii::$app->controller->action->id],
+		'action' => ["tournament/archive"],
 		'method' => 'get',
 	]);
 	?>

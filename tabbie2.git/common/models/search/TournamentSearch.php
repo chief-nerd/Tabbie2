@@ -13,13 +13,25 @@ use common\models\Tournament;
  */
 class TournamentSearch extends Tournament
 {
+	static public function getRoundOptions($tournament)
+	{
+		$t = Round::find()->where(["tournament_id" => $tournament])->asArray()->all();
+
+		$filter = [];
+		foreach ($t as $v) {
+			$filter[$v["number"]] = $v["number"];
+		}
+
+		return $filter;
+	}
+
 	/**
 	 * @inheritdoc
 	 */
 	public function rules()
 	{
 		return [
-			[['id', 'convenor_user_id', 'tabmaster_user_id'], 'integer'],
+			[['id'], 'integer'],
 			[['name', 'start_date', 'end_date', 'logo', 'time'], 'safe'],
 		];
 	}
@@ -44,7 +56,7 @@ class TournamentSearch extends Tournament
 	{
 		$query = Tournament::find()
 			->joinWith('hostedby')
-			->where("end_date >= DATE_ADD(NOW(), INTERVAL -3 DAY)")
+			->where("end_date >= DATE_ADD(NOW(), INTERVAL -2 DAY)")
 			->andWhere("status < " . Tournament::STATUS_HIDDEN);
 
 		$dataProvider = new ActiveDataProvider([
@@ -64,8 +76,6 @@ class TournamentSearch extends Tournament
 
 		$query->andFilterWhere([
 			'id'                => $this->id,
-			'convenor_user_id'  => $this->convenor_user_id,
-			'tabmaster_user_id' => $this->tabmaster_user_id,
 			'start_date'        => $this->start_date,
 			'end_date'          => $this->end_date,
 			'time'              => $this->time,
@@ -86,7 +96,9 @@ class TournamentSearch extends Tournament
 	 */
 	public function searchArchive($params)
 	{
-		$query = Tournament::find()->joinWith('hostedby')->where("end_date < now()")->andWhere("status < " . Tournament::STATUS_HIDDEN);
+		$query = Tournament::find()->joinWith('hostedby')
+			//->where("end_date < now()")
+			->andWhere("status < " . Tournament::STATUS_HIDDEN);
 
 		$dataProvider = new ActiveDataProvider([
 			'query'      => $query,
@@ -105,8 +117,6 @@ class TournamentSearch extends Tournament
 
 		$query->andFilterWhere([
 			'id'                => $this->id,
-			'convenor_user_id'  => $this->convenor_user_id,
-			'tabmaster_user_id' => $this->tabmaster_user_id,
 			'start_date'        => $this->start_date,
 			'end_date'          => $this->end_date,
 			'time'              => $this->time,
@@ -116,17 +126,5 @@ class TournamentSearch extends Tournament
 			->andFilterWhere(['like', 'logo', $this->logo]);
 
 		return $dataProvider;
-	}
-
-	static public function getRoundOptions($tournament)
-	{
-		$t = Round::find()->where(["tournament_id" => $tournament])->asArray()->all();
-
-		$filter = [];
-		foreach ($t as $v) {
-			$filter[$v["number"]] = $v["number"];
-		}
-
-		return $filter;
 	}
 }

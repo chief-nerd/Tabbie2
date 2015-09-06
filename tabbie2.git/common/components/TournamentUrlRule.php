@@ -180,7 +180,7 @@ class TournamentUrlRule extends UrlRule
 		// if they match a manufacturer and a model in the database
 		// If so, set $params['manufacturer'] and/or $params['model']
 		// and return ['car/index', $params]
-		Yii::trace("Tournament returning: FALSE", __METHOD__);
+		//Yii::trace("Tournament returning: FALSE", __METHOD__);
 
 		return false;  // this rule does not apply
 	}
