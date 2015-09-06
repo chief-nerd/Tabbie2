@@ -30,7 +30,7 @@ return [
 				'*'   => [
 					'class'          => 'yii\i18n\PhpMessageSource',
 					'basePath'       => '@common/messages',
-					'sourceLanguage' => 'en_UK',
+					'sourceLanguage' => 'en-UK',
 				],
 			],
 		],
