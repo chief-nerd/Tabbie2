@@ -44,7 +44,7 @@ $td_class = "col-xs-12 col-sm-10 col-md-11 col-lg-11";
 			<tr>
 				<?
 				foreach (\common\models\Team::getPos() as $p): ?>
-					<td class="<?= ($model->{$p . "_team"}->id == $teamId) ? 'us' : "" ?>">
+					<td width="25%" class="<?= ($model->{$p . "_team"}->id == $teamId) ? 'us' : "" ?>">
 						<b><?= Yii::$app->formatter->asOrdinal($model->result->{$p . "_place"}) ?></b>
 						(<?= $model->result->{$p . "_A_speaks"} ?> / <?= $model->result->{$p . "_B_speaks"} ?>)
 					</td>
