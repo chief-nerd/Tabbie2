@@ -137,7 +137,7 @@ class TournamentController extends BasetournamentController
 		if (Yii::$app->request->isPost) {
 			$file = UploadedFile::getInstance($model, 'logo');
 			$model->load(Yii::$app->request->post());
-			$model->name = preg_replace('/[^a-zA-Z\s]/', '', $model->name);
+			$model->name = trim(preg_replace('/[^a-zA-Z\s]/', '', $model->name));
 			$model->generateUrlSlug();
 			if ($file instanceof UploadedFile) {
 				$model->saveLogo($file);

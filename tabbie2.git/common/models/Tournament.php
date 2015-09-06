@@ -155,6 +155,7 @@ class Tournament extends \yii\db\ActiveRecord
 		return [
 			[['url_slug', 'hosted_by_id', 'name', 'start_date', 'end_date', 'timezone'], 'required'],
 			[['hosted_by_id', 'expected_rounds', 'status'], 'integer'],
+			[['name', 'url_slug'], 'trim'],
 			[['start_date', 'end_date', 'time', 'has_esl', 'has_final', 'has_semifinal', 'has_octofinal', 'has_quarterfinal'], 'safe'],
 			[['url_slug', 'name', 'tabAlgorithmClass', 'accessToken'], 'string', 'max' => 100],
 			[['logo', 'badge'], 'string', 'max' => 255],
