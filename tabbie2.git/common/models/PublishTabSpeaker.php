@@ -147,7 +147,7 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord
 				}
 			}
 
-			$cache->set($key, $lines, 0, $dependency);
+			$cache->set($key, $lines, 3600, $dependency);
 		}
 
 		return $lines;

@@ -192,7 +192,7 @@ class Tournament extends \yii\db\ActiveRecord
 
 	public function cacheKey($key = null)
 	{
-		return $this->url_slug . ($key != null) ? "_" . $key : "";
+		return $this->url_slug . (($key != null) ? ("_" . $key) : "");
 	}
 
 	/**
