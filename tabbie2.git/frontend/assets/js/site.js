@@ -32,7 +32,7 @@ $(document).on("click", "div.flashes .alert.success", function () {
  */
 $(document).on("click", "a.loading, button.loading", loadLoadingScreen);
 $(document).on("afterValidate", "form.loading", function (event, messages, errorAttributes) {
-    if (errorAttributes && errorAttributes.length == 0) {
+    if (typeof(errorAttributes) == "undefined" || errorAttributes.length == 0) {
         loadLoadingScreen()
     }
 });
