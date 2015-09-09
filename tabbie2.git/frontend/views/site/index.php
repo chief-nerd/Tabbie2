@@ -88,8 +88,9 @@ $this->title = Yii::$app->params["slogan"];
 			<div class="col-lg-4">
 				<h2>Community Project</h2>
 
-				<p>The Tabbie2 source code will be made open source after Vienna EUDC to help programmers from the
-					community to actively engage in the project.</p>
+                <p>The <a href="https://github.com/JakobReiter/tabbie2-algorithms">Tabbie2 algorithm source code</a> is
+                    open source to foster a transparent approach to tabbing. If you want to contribute to the project
+                    then drop us a line at support@tabbie.org.</p>
 			</div>
 			<div class="col-lg-4">
 				<h2>Fair and Fast</h2>
