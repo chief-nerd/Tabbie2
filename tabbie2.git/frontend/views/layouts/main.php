@@ -70,7 +70,9 @@ if ($this->context->hasMethod("_getContext")) {
 	<footer class="footer">
 		<div class="container">
             <p class="pull-left"><?= Yii::$app->params["appName"] ?> &copy; <?= date('Y') ?>
-                - <?= Yii::t("app", "made with secret alien technology") ?></p>
+                -
+                <small><?= Yii::t("app", "made with secret alien technology") ?></small>
+            </p>
 
 			<p class="pull-right">
 				<?= HTML::a(Yii::t("app", "Report a Bug"), 'mailto:' . Yii::$app->params["supportEmail"], ["target" => "_blank"]) ?>
