@@ -65,7 +65,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     'position'     => TabsX::POS_ABOVE,
                     'align'        => TabsX::ALIGN_CENTER,
                     'pluginEvents' => [
-                            "tabsX.success" => "function() { console.log('tabsX.success'); init(); }",
+                            "tabsX.success" => "function() {
+                                if (typeof init == 'function') {
+                                   init();
+                                }
+                            }",
                     ],
             ]);
 
@@ -79,6 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <!-- Google Structured Data -->
 <script type="application/ld+json">
 <?= $model->getSchema() ?>
+
 
 
 </script>
