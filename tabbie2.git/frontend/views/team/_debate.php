@@ -11,6 +11,8 @@
 $round = $model->round;
 $th_class = "col-xs-12 col-sm-2 col-md-1 col-lg-1";
 $td_class = "col-xs-12 col-sm-10 col-md-11 col-lg-11";
+
+$teamId = (isset($teamId)) ? $teamId : 0;
 ?>
 <div class="panel panel-default">
 	<div class="panel-heading"><b><?= $round->name ?></b></div>

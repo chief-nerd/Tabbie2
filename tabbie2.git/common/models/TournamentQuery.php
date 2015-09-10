@@ -9,9 +9,10 @@ use yii\db\ActiveQuery;
 class TournamentQuery extends ActiveQuery
 {
 
-	public function tournament($id)
+	public function tournament($id, $table = null)
 	{
-		return $this->andWhere(["tournament_id" => $id]);
+		$column = (($table != null) ? $table . "." : "") . "tournament_id";
+		return $this->andWhere([$column => $id]);
 	}
 
 }

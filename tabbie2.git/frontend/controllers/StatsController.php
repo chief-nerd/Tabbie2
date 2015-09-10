@@ -32,9 +32,9 @@ class StatsController extends BasetournamentController
 				'rules' => [
 					[
 						'allow'         => true,
-						'actions' => ['motion', 'speaks', 'team-tab', 'speaker-tab', 'breaking-adjudicators'],
+						'actions'       => ['motion', 'speaks', 'team-tab', 'speaker-tab', 'breaking-adjudicators', 'outrounds'],
 						'matchCallback' => function ($rule, $action) {
-							return ($this->_tournament->status >= Tournament::STATUS_CLOSED);
+							return ($this->_tournament->status == Tournament::STATUS_CLOSED);
 						}
 					],
 				],
@@ -70,6 +70,13 @@ class StatsController extends BasetournamentController
 	{
 		$model = $this->_tournament;
 		$html = $this->renderPartial("tab_speaker", compact("model"));
+
+		return Json::encode($html);
+	}
+
+	public function actionOutrounds() {
+		$model = $this->_tournament;
+		$html = $this->renderPartial("outrounds", compact("model"));
 
 		return Json::encode($html);
 	}

@@ -62,10 +62,9 @@ class OutroundController extends RoundController
 		$model->tournament_id = $this->_tournament->id;
 		$model->type = Round::TYP_OUT;
 		$model->scenario = "1Step";
-		//$model->setNextRound();
+		$model->setNextRound();
 
 		if ($model->load(Yii::$app->request->post())) {
-
 			if (!$model->save()) {
 				Yii::$app->session->setFlash("error", ObjectError::getMsg($model));
 			}
@@ -74,6 +73,30 @@ class OutroundController extends RoundController
 		}
 
 		return $this->render('create', [
+			'model'        => $model,
+			'amount_rooms' => $model->level
+		]);
+	}
+
+	/**
+	 * Creates a new Round model.
+	 * If creation is successful, the browser will be redirected to the 'view' page.
+	 *
+	 * @return mixed
+	 */
+	public function actionUpdate($id) {
+		$model = $this->findModel($id);
+
+		if ($model->load(Yii::$app->request->post())) {
+
+			if (!$model->save()) {
+				Yii::$app->session->setFlash("error", ObjectError::getMsg($model));
+			}
+
+			return $this->redirect(['outround/view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
+		}
+
+		return $this->render('update', [
 			'model'        => $model,
 			'amount_rooms' => $model->level
 		]);
@@ -126,31 +149,6 @@ class OutroundController extends RoundController
 		}
 
 		return $this->render('set', [
-			'model'        => $model,
-			'amount_rooms' => $model->level
-		]);
-	}
-
-	/**
-	 * Creates a new Round model.
-	 * If creation is successful, the browser will be redirected to the 'view' page.
-	 *
-	 * @return mixed
-	 */
-	public function actionUpdate($id)
-	{
-		$model = $this->findModel($id);
-
-		if ($model->load(Yii::$app->request->post())) {
-
-			if (!$model->save()) {
-				Yii::$app->session->setFlash("error", ObjectError::getMsg($model));
-			}
-
-			return $this->redirect(['outround/view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
-		}
-
-		return $this->render('update', [
 			'model'        => $model,
 			'amount_rooms' => $model->level
 		]);
