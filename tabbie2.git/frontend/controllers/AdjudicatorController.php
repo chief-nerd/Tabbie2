@@ -372,6 +372,7 @@ class AdjudicatorController extends BasetournamentController
 				$model->load(Yii::$app->request->post());
 
 				$row = 0;
+				ini_set("auto_detect_line_endings", true);
 				if ($file && ($handle = fopen($file->tempName, "r")) !== false) {
 					while (($data = fgetcsv($handle, null, $model->delimiter)) !== false) {
 
