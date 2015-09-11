@@ -223,7 +223,7 @@ class VenueController extends BasetournamentController
 
 				$row = 0;
 				if ($file && ($handle = fopen($file->tempName, "r")) !== false) {
-					while (($data = fgetcsv($handle, 1000, ";")) !== false) {
+					while (($data = fgetcsv($handle, null, $model->delimiter)) !== false) {
 
 						if ($row == 0) { //Don't use first row
 							$row++;
@@ -231,7 +231,8 @@ class VenueController extends BasetournamentController
 						}
 
 						if (($num = count($data)) != 3) {
-							throw new \yii\base\Exception("500", Yii::t("app", "File Syntax Wrong"));
+							Yii::$app->session->addFlash("error", Yii::t("app", "File Syntax Wrong"));
+							return $this->redirect(['import', "tournament_id" => $this->_tournament->id]);
 						}
 
 						for ($c = 0; $c < $num; $c++) {
@@ -242,7 +243,6 @@ class VenueController extends BasetournamentController
 					fclose($handle);
 				} else {
 					Yii::$app->session->addFlash("error", Yii::t("app", "No File available"));
-					print_r($file);
 				}
 			}
 		} else

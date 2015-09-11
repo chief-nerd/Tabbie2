@@ -140,6 +140,11 @@ $this->params['breadcrumbs'][] = $this->title;
 				?>
 			</div>
 		</div>
+        <div class="row">
+            <div class="col-xs-12">
+                <?= $form->field($model, 'delimiter')->dropDownList(\frontend\models\ImportForm::getDelimiterOptions()); ?>
+            </div>
+        </div>
 		<div class="row">
 			<div class="col-xs-12">
 				<?= $form->field($model, 'is_test')->checkbox(); ?>

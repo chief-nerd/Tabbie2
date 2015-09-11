@@ -373,7 +373,7 @@ class AdjudicatorController extends BasetournamentController
 
 				$row = 0;
 				if ($file && ($handle = fopen($file->tempName, "r")) !== false) {
-					while (($data = fgetcsv($handle, 1000, ";")) !== false) {
+					while (($data = fgetcsv($handle, null, $model->delimiter)) !== false) {
 
 						if ($row == 0) { //Don't use first column
 							$row++;
@@ -381,7 +381,8 @@ class AdjudicatorController extends BasetournamentController
 						}
 
 						if (($num = count($data)) != 5) {
-							throw new \yii\base\Exception("500", Yii::t("app", "File Syntax Wrong"));
+							Yii::$app->session->addFlash("error", Yii::t("app", "File Syntax Wrong"));
+							return $this->redirect(['import', "tournament_id" => $this->_tournament->id]);
 						}
 						$coldata = [];
 
@@ -445,7 +446,6 @@ class AdjudicatorController extends BasetournamentController
 					}
 				} else {
 					Yii::$app->session->addFlash("error", Yii::t("app", "No File available"));
-					print_r($file);
 				}
 			}
 		} else
