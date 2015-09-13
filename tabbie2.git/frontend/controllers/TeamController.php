@@ -337,7 +337,7 @@ class TeamController extends BasetournamentController
 				$row = 0;
 				//ini_set("auto_detect_line_endings", true);
 				if ($file && ($handle = fopen($file->tempName, "r")) !== false) {
-					while (($data = fgetcsv($handle, null, $model->delimiter)) !== false) {
+					while (($data = fgetcsv($handle, null, ';')) !== false) {
 
 						if ($row == 0) { //Don't use first column
 							$row++;
