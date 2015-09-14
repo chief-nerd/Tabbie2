@@ -297,7 +297,7 @@ class AdjudicatorController extends BasetournamentController
 		$model = new \frontend\models\ImportForm();
 
 		if (Yii::$app->request->isPost) {
-			$model->scenario = "screen";
+			//$model->scenario = "screen";
 			if (Yii::$app->request->post("makeItSo", false)) { //Everything corrected
 				set_time_limit(0);
 				$choices = Yii::$app->request->post("field", false);
@@ -368,13 +368,13 @@ class AdjudicatorController extends BasetournamentController
 
 				return $this->redirect(['index', "tournament_id" => $this->_tournament->id]);
 			} else { //FORM UPLOAD
-				$file = \yii\web\UploadedFile::getInstance($model, 'csvFile');
 				$model->load(Yii::$app->request->post());
+				$file = \yii\web\UploadedFile::getInstance($model, 'csvFile');
 
 				$row = 0;
-				//ini_set("auto_detect_line_endings", true);
+				ini_set("auto_detect_line_endings", true);
 				if ($file && ($handle = fopen($file->tempName, "r")) !== false) {
-					while (($data = fgetcsv($handle, null, ';')) !== false) {
+					while (($data = fgetcsv($handle, null, $model->getDelimiterChar())) !== false) {
 
 						if ($row == 0) { //Don't use first column
 							$row++;

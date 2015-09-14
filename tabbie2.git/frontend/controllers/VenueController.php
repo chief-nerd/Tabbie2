@@ -192,7 +192,7 @@ class VenueController extends BasetournamentController
 		$model = new \frontend\models\ImportForm();
 
 		if (Yii::$app->request->isPost) {
-			$model->scenario = "screen";
+			//$model->scenario = "screen";
 
 			if (Yii::$app->request->post("makeItSo", false)) { //Everything corrected
 				$model->tempImport = unserialize(Yii::$app->request->post("csvFile", false));
@@ -222,9 +222,9 @@ class VenueController extends BasetournamentController
 				$model->load(Yii::$app->request->post());
 
 				$row = 0;
-				//ini_set("auto_detect_line_endings", true);
+				ini_set("auto_detect_line_endings", true);
 				if ($file && ($handle = fopen($file->tempName, "r")) !== false) {
-					while (($data = fgetcsv($handle, null, ';')) !== false) {
+					while (($data = fgetcsv($handle, null, $model->getDelimiterChar())) !== false) {
 
 						if ($row == 0) { //Don't use first row
 							$row++;
