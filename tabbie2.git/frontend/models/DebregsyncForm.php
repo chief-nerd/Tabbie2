@@ -17,8 +17,7 @@ use yii\helpers\ArrayHelper;
 /**
  * ContactForm is the model behind the contact form.
  */
-class DebregsyncForm extends Model
-{
+class DebregsyncForm extends Model {
 
 	const ADJU = "Adjudicator";
 	const TEAM = "Team";
@@ -27,7 +26,6 @@ class DebregsyncForm extends Model
 	const TYPE_USER = 2;
 	const TYPE_TEAM = 3;
 	const TYPE_ADJU = 4;
-
 
 	const DEBREG_URL = "https://debreg.azurewebsites.net";
 	/**
@@ -44,8 +42,7 @@ class DebregsyncForm extends Model
 	/**
 	 * @inheritdoc
 	 */
-	public function rules()
-	{
+	public function rules() {
 		return [
 			// name, email, subject and body are required
 			[['debregId', 'username', 'password'], 'required'],
@@ -56,15 +53,13 @@ class DebregsyncForm extends Model
 	/**
 	 * @inheritdoc
 	 */
-	public function attributeLabels()
-	{
+	public function attributeLabels() {
 		return [
-			'debregId' => Yii::t("app", 'DebReg ID'),
+			'debregId' => Yii::t("app", 'DebReg') . ' ' . Yii::t("app", 'ID'),
 		];
 	}
 
-	public function doSync($a_fix, $t_fix, $s_fix)
-	{
+	public function doSync($a_fix, $t_fix, $s_fix) {
 
 		$this->FIX = [
 			"a" => $a_fix,
@@ -75,19 +70,18 @@ class DebregsyncForm extends Model
 		$this->syncAdjudicator();
 		$this->syncTeams();
 
-		if (count($this->FIX['a']) > 0 || count($this->FIX['t']) > 0 || count($this->FIX['s']) > 0)
+		if (count($this->FIX['a']) > 0 || count($this->FIX['t']) > 0 || count($this->FIX['s']) > 0) {
 			return [
 				"a_fix" => $this->FIX['a'],
 				"t_fix" => $this->FIX['t'],
 				"s_fix" => $this->FIX['s']
 			];
-
+		}
 
 		return [];
 	}
 
-	private function syncAdjudicator()
-	{
+	private function syncAdjudicator() {
 		try {
 
 			$json = $this->readData(self::ADJU, $this->key);
@@ -114,11 +108,11 @@ class DebregsyncForm extends Model
 				$u_name = $u_first . " " . $u_last;
 				$u_email = $u->eMail;
 
-
 				$society = $this->handleSociety($item);
 
-				if (!$society instanceof Society)
+				if (!$society instanceof Society) {
 					Yii::trace("Not a Society: \n" . print_r($item, true), __METHOD__);
+				}
 
 				$user = User::find()
 					->andWhere(["CONCAT(user.givenname,' ',user.surename)" => $u_name])
@@ -128,10 +122,11 @@ class DebregsyncForm extends Model
 				if (count($user) > 1) {
 					if (isset($this->FIX['a'][$u_name])) {
 						$user = User::findOne($this->FIX['a'][$u_name]);
-						if ($user instanceof User)
+						if ($user instanceof User) {
 							unset($this->FIX['a'][$u_name]);
-						else
+						} else {
 							throw new Exception("User no resolved");
+						}
 					} else {
 						$matches = [];
 						foreach ($user as $match) {
@@ -193,10 +188,13 @@ class DebregsyncForm extends Model
 		return false;
 	}
 
-	private function readData($object, $key = null)
-	{
-		if (strlen($object) == 0) throw new Exception("No Object");
-		if (strlen($key) == 0) throw new Exception("No Key");
+	private function readData($object, $key = null) {
+		if (strlen($object) == 0) {
+			throw new Exception("No Object");
+		}
+		if (strlen($key) == 0) {
+			throw new Exception("No Key");
+		}
 
 		$context = stream_context_create([
 			'http' => [
@@ -209,28 +207,39 @@ class DebregsyncForm extends Model
 			]
 		]);
 
-		if (strlen($this->debregId) == 0) throw new Exception("No Tournament");
+		if (strlen($this->debregId) == 0) {
+			throw new Exception("No Tournament");
+		}
 
 		$url = self::DEBREG_URL . "/api/" . $object . "?tournamentId=" . $this->debregId . "&v=" . time();
 		Yii::trace("DebReg Call: " . $url, __METHOD__);
 		$json_string = @file_get_contents($url, false, $context);
 
-		if (strlen($json_string) == 0) throw new Exception("No content received for " . $object, 404);
+		if (strlen($json_string) == 0) {
+			throw new Exception("No content received for " . $object, 404);
+		}
 
 		$json = json_decode($json_string);
 
-		if (isset($json->message)) throw new Exception($json->message);
-		if (isset($json->Message)) throw new Exception($json->Message . "<br>\n" . $json->MessageDetail); //ROMAN!!! HATE HATE
+		if (isset($json->message)) {
+			throw new Exception($json->message);
+		}
+		if (isset($json->Message)) {
+			throw new Exception($json->Message . "<br>\n" . $json->MessageDetail);
+		} //ROMAN!!! HATE HATE
 
-		if (count($json) == 0) throw new Exception("No json data received");
+		if (count($json) == 0) {
+			throw new Exception("No json data received");
+		}
 
-		if (!is_array($json)) throw new Exception("Return Object not a JSON: " . $json_string);
+		if (!is_array($json)) {
+			throw new Exception("Return Object not a JSON: " . $json_string);
+		}
 
 		return $json;
 	}
 
-	private function handleSociety($item)
-	{
+	private function handleSociety($item) {
 		$org = $item->organization;
 		$org_name = $org->name;
 		$org_abr = $org->abbreviation;
@@ -241,10 +250,11 @@ class DebregsyncForm extends Model
 
 		if (count($societies) == 0) {
 
-			if (strlen($org_country) > 0)
+			if (strlen($org_country) > 0) {
 				$country = Country::find()->where(["like", "name", $org_country])->one();
-			else
+			} else {
 				$country = Country::COUNTRY_UNKNOWN_ID;
+			}
 
 			$society = new Society([
 				"fullname"   => $org_name,
@@ -252,8 +262,9 @@ class DebregsyncForm extends Model
 				"city"       => (strlen($org_city) > 0) ? $org_city : null,
 				"country_id" => ($country instanceof Country) ? $country->id : Country::COUNTRY_UNKNOWN_ID,
 			]);
-			if (!$society->save())
+			if (!$society->save()) {
 				throw new Exception("Cant save new Society error: " . print_r($society->getErrors(), true));
+			}
 
 			return $society;
 
@@ -280,22 +291,21 @@ class DebregsyncForm extends Model
 			}
 		}
 
-
 		return false;
 	}
 
-	private function helperGetAdju($array, $id)
-	{
+	private function helperGetAdju($array, $id) {
 		$c = count($array);
 		for ($i = 0; $i < $c; $i++) {
-			if ($array[$i]["user_id"] == $id) return $array[$i];
+			if ($array[$i]["user_id"] == $id) {
+				return $array[$i];
+			}
 		}
 
 		return false;
 	}
 
-	private function syncTeams()
-	{
+	private function syncTeams() {
 		try {
 			$json = $this->readData(self::TEAM, $this->key);
 
@@ -319,8 +329,9 @@ class DebregsyncForm extends Model
 
 				$society = $this->handleSociety($item);
 
-				if (!$society instanceof Society)
+				if (!$society instanceof Society) {
 					Yii::trace("Not a Society: \n" . print_r($item, true), __METHOD__);
+				}
 
 				$user = [];
 				/*** A & B ***/
@@ -348,10 +359,11 @@ class DebregsyncForm extends Model
 					if (count($user[$id]) > 1) {
 						if (isset($this->FIX['t'][$u_name])) {
 							$user[$id] = User::findOne($this->FIX['t'][$u_name]);
-							if ($user[$id] instanceof User)
+							if ($user[$id] instanceof User) {
 								unset($this->FIX['t'][$u_name]);
-							else
+							} else {
 								throw new Exception("User " . $key . " no resolved");
+							}
 						} else {
 
 							$matches = [];
@@ -385,21 +397,24 @@ class DebregsyncForm extends Model
 						$team = new Team($old);
 						$old_teams++;
 
-					} else if ($society instanceof Society) {
-						$team = new Team([
-							"tournament_id" => $this->tournament->id,
-							"name"          => $item->name,
-							"speakerA_id"   => $uAID,
-							"speakerB_id"   => $uBID,
-							"society_id"    => $society->id,
-						]);
-						$new_teams++;
+					} else {
+						if ($society instanceof Society) {
+							$team = new Team([
+								"tournament_id" => $this->tournament->id,
+								"name"          => $item->name,
+								"speakerA_id"   => $uAID,
+								"speakerB_id"   => $uBID,
+								"society_id"    => $society->id,
+							]);
+							$new_teams++;
+						}
 					}
 
 					if ($team instanceof Team && !$team->save()) {
 						throw new Exception("Can't save Team. " . print_r($team->attributes, true));
-					} else
+					} else {
 						$saved_teams++;
+					}
 				} else {
 					$not_created_teams++;
 				}
@@ -419,11 +434,12 @@ class DebregsyncForm extends Model
 		return false;
 	}
 
-	private function helperGetTeam($array, $Aid, $Bid)
-	{
+	private function helperGetTeam($array, $Aid, $Bid) {
 		$c = count($array);
 		for ($i = 0; $i < $c; $i++) {
-			if ($array[$i]["speakerA_id"] == $Aid && $array[$i]["speakerB_id"] == $Bid) return $array[$i];
+			if ($array[$i]["speakerA_id"] == $Aid && $array[$i]["speakerB_id"] == $Bid) {
+				return $array[$i];
+			}
 		}
 
 		return false;
@@ -433,9 +449,10 @@ class DebregsyncForm extends Model
 	 * @return bool
 	 * @throws \yii\base\Exception
 	 */
-	public function getAccessKey()
-	{
-		if (strlen($this->key) > 0) return true;
+	public function getAccessKey() {
+		if (strlen($this->key) > 0) {
+			return true;
+		}
 
 		//grant_type=password&username=alice%40example.com&password=Password1!
 		$data = [
@@ -459,7 +476,9 @@ class DebregsyncForm extends Model
 
 		$json_string = @file_get_contents(self::DEBREG_URL . "/token", false, $context);
 
-		if (strlen($json_string) == 0) throw new Exception("No content received at: " . self::DEBREG_URL . "/token", 404);
+		if (strlen($json_string) == 0) {
+			throw new Exception("No content received at: " . self::DEBREG_URL . "/token", 404);
+		}
 		$json = json_decode($json_string);
 
 		if (isset($json->access_token) && isset($json->token_type)) {
@@ -468,9 +487,9 @@ class DebregsyncForm extends Model
 			return true;
 		}
 
-		if (isset($json->error))
+		if (isset($json->error)) {
 			return $json->error;
-		else {
+		} else {
 			echo "<h1>DebReg Error Message:</h1>";
 			echo $json_string;
 			exit();

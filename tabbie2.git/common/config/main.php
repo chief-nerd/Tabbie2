@@ -3,8 +3,8 @@
 use common\components\UserIdentity;
 
 return [
-	'language'       => 'en-UK',
-	'sourceLanguage' => 'en-UK',
+	'language'       => 'en',
+	'sourceLanguage' => 'en',
 	'vendorPath'     => dirname(dirname(__DIR__)) . '/vendor',
 	'components'     => [
 		'db'     => [
@@ -27,10 +27,20 @@ return [
 					'basePath'       => "@vendor/yiisoft/yii2/messages",
 					'sourceLanguage' => 'en',
 				],
-				'*'   => [
+				'app*'     => [
 					'class'          => 'yii\i18n\PhpMessageSource',
-					'basePath'       => '@common/messages',
-					'sourceLanguage' => 'en-UK',
+					'basePath'       => "@common/messages",
+					'sourceLanguage' => 'en',
+				],
+				'language' => [
+					'class'          => 'yii\i18n\PhpMessageSource',
+					'basePath'       => "@common/messages",
+					'sourceLanguage' => 'en',
+				],
+				'country'  => [
+					'class'          => 'yii\i18n\PhpMessageSource',
+					'basePath'       => "@common/messages",
+					'sourceLanguage' => 'en',
 				],
 			],
 		],

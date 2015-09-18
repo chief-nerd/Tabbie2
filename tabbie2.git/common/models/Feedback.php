@@ -53,10 +53,10 @@ class Feedback extends \yii\db\ActiveRecord
 	{
 		return [
 			'id'        => Yii::t('app', 'ID'),
-			'debate_id' => Yii::t('app', 'Debate ID'),
+			'debate_id' => Yii::t('app', 'Debate') . ' ' . Yii::t('app', 'ID'),
 			'time'      => Yii::t('app', 'Time'),
 			'to_type' => Yii::t('app', 'Type'),
-			'to_id'   => Yii::t('app', 'To ID'),
+			'to_id'     => Yii::t('app', 'Feedback To ID'),
 		];
 	}
 

@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\components\filter\TournamentContextFilter;
+use common\components\ObjectError;
 use common\models\LanguageOfficer;
 use common\models\search\UserSearch;
 use common\models\Team;
@@ -15,14 +16,12 @@ use yii\filters\VerbFilter;
 /**
  * Site controller
  */
-class LanguageController extends BasetournamentController
-{
+class LanguageController extends BasetournamentController {
 
 	/**
 	 * @inheritdoc
 	 */
-	public function behaviors()
-	{
+	public function behaviors() {
 		return [
 			'tournamentFilter' => [
 				'class' => TournamentContextFilter::className(),
@@ -42,8 +41,7 @@ class LanguageController extends BasetournamentController
 		];
 	}
 
-	public function actionIndex()
-	{
+	public function actionIndex() {
 		$searchModel = new UserSearch();
 		$dataProvider = $searchModel->searchTeam(Yii::$app->request->queryParams, $this->_tournament->id);
 
@@ -62,8 +60,7 @@ class LanguageController extends BasetournamentController
 	 *
 	 * @return \yii\web\Response
 	 */
-	public function actionSet($userid, $status)
-	{
+	public function actionSet($userid, $status) {
 
 		$user = User::findOne($userid);
 		if ($user instanceof User) {
@@ -81,7 +78,8 @@ class LanguageController extends BasetournamentController
 					$user->language_status = User::LANGUAGE_INTERVIEW;
 					break;
 				default:
-					Yii::$app->session->addFlash("error", Yii::t("app", "Not a valid Language Options in params"));
+					Yii::$app->session->addFlash("error", Yii::t("app", "Not a valid language options in params"));
+					Yii::error("Not a valid language options in params: " . $status, __METHOD__);
 			}
 			$user->language_status_by_id = Yii::$app->user->id;
 			$user->language_status_update = date("Y-m-d H:i:s");
@@ -95,7 +93,7 @@ class LanguageController extends BasetournamentController
 						if (isset($team->speakerA) && isset($team->speakerB)) {
 							if ($team->speakerA->language_status == $team->speakerB->language_status) {
 								$team->language_status = $team->speakerA->language_status;
-								$addon = Yii::t("app", " + Team upgraded to {status}", ["status" => User::getLanguageStatusLabel($team->language_status, true)]);
+								$addon = ' + ' . Yii::t("app", "Team upgraded to {status}", ["status" => User::getLanguageStatusLabel($team->language_status, true)]);
 								$team->save();
 							} else {
 								$team->language_status = User::LANGUAGE_NONE;
@@ -106,17 +104,19 @@ class LanguageController extends BasetournamentController
 				}
 
 				Yii::$app->session->addFlash("success", Yii::t("app", "Language Settings saved") . $addon);
-			} else
+			} else {
 				Yii::$app->session->addFlash("error", Yii::t("app", "Error saving Language Settings"));
-		} else
+				Yii::error("Error saving Language Settings: " . ObjectError::getMsg($user), __METHOD__);
+			}
+		} else {
 			Yii::$app->session->addFlash("error", Yii::t("app", "User not found!"));
+			Yii::error("Language set: User not found", __METHOD__);
+		}
 
 		return $this->redirect(['language/index', "tournament_id" => $this->_tournament->id]);
 	}
 
-
-	public function actionOfficer()
-	{
+	public function actionOfficer() {
 
 		$query = LanguageOfficer::find()->tournament($this->_tournament->id);
 
@@ -129,13 +129,13 @@ class LanguageController extends BasetournamentController
 		]);
 	}
 
-	public function actionOfficerAdd()
-	{
+	public function actionOfficerAdd() {
 		$model = new LanguageOfficer();
 		$model->tournament_id = $this->_tournament->id;
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
-			Yii::$app->session->addFlash("success", Yii::t("app", "Successfully added"));
+			Yii::$app->session->addFlash("success", Yii::t("app", "{object} successfully added",
+				["object" => Yii::t("app", "Language Officer")]));
 
 			return $this->redirect(['language/officer', "tournament_id" => $model->tournament_id]);
 		} else {
@@ -146,15 +146,15 @@ class LanguageController extends BasetournamentController
 
 	}
 
-	public function actionOfficerDelete($id)
-	{
+	public function actionOfficerDelete($id) {
 		$model = LanguageOfficer::find()->where([
 			"tournament_id" => $this->_tournament->id,
 			"user_id" => $id,
 		])->one();
 
-		if ($model && $model->delete())
+		if ($model && $model->delete()) {
 			Yii::$app->session->addFlash("success", Yii::t("app", "Successfully deleted"));
+		}
 
 		return $this->redirect(['language/officer', "tournament_id" => $model->tournament_id]);
 	}

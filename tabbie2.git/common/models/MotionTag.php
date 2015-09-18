@@ -48,7 +48,7 @@ class MotionTag extends \yii\db\ActiveRecord
 		return [
 			'id'    => Yii::t('app', 'ID'),
 			'name'  => Yii::t('app', 'Name'),
-			'abr'   => Yii::t('app', 'Abr'),
+			'abr' => Yii::t('app', 'Abbreviation'),
 			'count' => Yii::t('app', 'Amount'),
 		];
 	}

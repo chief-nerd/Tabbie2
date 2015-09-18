@@ -56,7 +56,7 @@ class Venue extends \yii\db\ActiveRecord
 	{
 		return [
 			'id'            => Yii::t('app', 'ID'),
-			'tournament_id' => Yii::t('app', 'Tournament ID'),
+			'tournament_id' => Yii::t('app', 'Tournament') . ' ' . Yii::t('app', 'ID'),
 			'name'          => Yii::t('app', 'Name'),
 			'group'         => Yii::t('app', 'Group'),
 			'active'        => Yii::t('app', 'Active Room'),

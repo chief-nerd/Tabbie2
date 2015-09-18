@@ -36,7 +36,7 @@ class SocietyController extends Controller
 					[
 						'allow'         => true,
 						'matchCallback' => function ($rule, $action) {
-							return (Yii::$app->user->isAdmin());
+							return (Yii::$app->user->isMaintainer());
 						}
 					],
 				],

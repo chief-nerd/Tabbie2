@@ -213,7 +213,7 @@ class VenueController extends BasetournamentController
 						if (!$venue->save())
 							Yii::$app->session->addFlash("error", ObjectError::getMsg($venue));
 					} else
-						Yii::trace("Venue " . $row[0] . " already existed");
+						Yii::trace("Venue $row[0] already existed!", __METHOD__);
 				}
 
 				return $this->redirect(['index', "tournament_id" => $this->_tournament->id]);
@@ -232,7 +232,7 @@ class VenueController extends BasetournamentController
 						}
 
 						if (($num = count($data)) != 3) {
-							Yii::$app->session->addFlash("error", Yii::t("app", "File Syntax Wrong"));
+							Yii::$app->session->addFlash("error", Yii::t("app", "File Syntax Wrong! Expecting 3 columns"));
 							return $this->redirect(['import', "tournament_id" => $this->_tournament->id]);
 						}
 

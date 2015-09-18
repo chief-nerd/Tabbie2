@@ -34,8 +34,7 @@ use yii\helpers\ArrayHelper;
  * @property Tag[]           $tags
  * @property MotionTag[]     $motionTags
  */
-class Round extends \yii\db\ActiveRecord
-{
+class Round extends \yii\db\ActiveRecord {
 
 	const STATUS_CREATED = 0;
 	const STATUS_PUBLISHED = 1;
@@ -50,8 +49,7 @@ class Round extends \yii\db\ActiveRecord
 	const TYP_EFL = 3;
 	const TYP_NOVICE = 4;
 
-	static function statusLabel($code = null)
-	{
+	static function statusLabel($code = null) {
 
 		$labels = [
 			0 => Yii::t("app", "Created"),
@@ -68,18 +66,17 @@ class Round extends \yii\db\ActiveRecord
 	/**
 	 * @inheritdoc
 	 */
-	public static function tableName()
-	{
+	public static function tableName() {
 		return 'round';
 	}
 
-	public function getTypeOptions()
-	{
+	public function getTypeOptions() {
 		$t = $this->tournament;
 
 		$options[self::TYP_OUT] = Yii::t("app", "Main");
-		if ($t->has_esl)
+		if ($t->has_esl) {
 			$options[self::TYP_ESL] = Yii::t("app", "ESL");
+		}
 		//if($t->has_efl)
 		//$options[self::TYP_EFL] = Yii::t("app", "EFL");
 		$options[self::TYP_NOVICE] = Yii::t("app", "Novice");
@@ -87,29 +84,30 @@ class Round extends \yii\db\ActiveRecord
 		return $options;
 	}
 
-	public function getLevelOptions()
-	{
+	public function getLevelOptions() {
 		$options = [];
 		$t = $this->tournament;
-		if ($t->has_final)
+		if ($t->has_final) {
 			$options[1] = Yii::t("app", "Final");
-		if ($t->has_semifinal)
+		}
+		if ($t->has_semifinal) {
 			$options[2] = Yii::t("app", "Semifinal");
-		if ($t->has_quarterfinal)
+		}
+		if ($t->has_quarterfinal) {
 			$options[4] = Yii::t("app", "Quarterfinal");
-		if ($t->has_octofinal)
+		}
+		if ($t->has_octofinal) {
 			$options[8] = Yii::t("app", "Octofinal");
+		}
 
 		return $options;
 	}
 
-	public function getTags()
-	{
+	public function getTags() {
 		return ArrayHelper::getColumn($this->motionTags, "id");
 	}
 
-	public function setTags($value)
-	{
+	public function setTags($value) {
 		Tag::deleteAll(["round_id" => $this->id]);
 		if (is_array($value)) {
 			foreach ($value as $t) {
@@ -132,27 +130,23 @@ class Round extends \yii\db\ActiveRecord
 		return true;
 	}
 
-	public function getName()
-	{
-		if ($this->type == self::TYP_IN && $this->label <= $this->tournament->expected_rounds)
+	public function getName() {
+		if ($this->type == self::TYP_IN && $this->label <= $this->tournament->expected_rounds) {
 			return Yii::t("app", "Round #{num}", ["num" => $this->getNumber()]);
-		else {
+		} else {
 			return $this->getOutRoundName();
 		}
 	}
 
-	public function getNumber()
-	{
+	public function getNumber() {
 		return intval($this->label);
 	}
 
-	public function getOutRoundName()
-	{
+	public function getOutRoundName() {
 		return (($this->type != self::TYP_OUT) ? $this->getTypeLabel() . " " : "") . $this->getLevelLabel();
 	}
 
-	public function getTypeLabel()
-	{
+	public function getTypeLabel() {
 		$options = [
 			self::TYP_IN     => Yii::t("app", "Inround"),
 			self::TYP_OUT    => Yii::t("app", "Outround"),
@@ -164,8 +158,7 @@ class Round extends \yii\db\ActiveRecord
 		return $options[$this->type];
 	}
 
-	public function getLevelLabel()
-	{
+	public function getLevelLabel() {
 		switch ($this->level) {
 			case 1:
 				return Yii::t("app", "Final");
@@ -178,13 +171,11 @@ class Round extends \yii\db\ActiveRecord
 		}
 	}
 
-	public function setNumber($value)
-	{
+	public function setNumber($value) {
 		$this->label = $value;
 	}
 
-	public function setNextRound()
-	{
+	public function setNextRound() {
 		$t = $this->tournament;
 		$rounds = Round::find()
 			->where(["tournament_id" => $t->id])
@@ -202,17 +193,23 @@ class Round extends \yii\db\ActiveRecord
 				if ($t->has_final && in_array(2, ArrayHelper::getColumn($rounds, "level")) || !$t->has_semifinal) {
 					$this->label = "final";
 					$this->level = 1;
-				} else if ($t->has_semifinal && in_array(4, ArrayHelper::getColumn($rounds, "level")) || !$t->has_quarterfinal) {
-					$this->label = "semi";
-					$this->level = 2;
-				} else if (
-					$t->has_quarterfinal && in_array(8, ArrayHelper::getColumn($rounds, "level")) || !$t->has_octofinal
-				) {
-					$this->label = "quarter";
-					$this->level = 4;
-				} else if ($t->has_octofinal) {
-					$this->label = "octo";
-					$this->level = 8;
+				} else {
+					if ($t->has_semifinal && in_array(4, ArrayHelper::getColumn($rounds, "level")) || !$t->has_quarterfinal) {
+						$this->label = "semi";
+						$this->level = 2;
+					} else {
+						if (
+							$t->has_quarterfinal && in_array(8, ArrayHelper::getColumn($rounds, "level")) || !$t->has_octofinal
+						) {
+							$this->label = "quarter";
+							$this->level = 4;
+						} else {
+							if ($t->has_octofinal) {
+								$this->label = "octo";
+								$this->level = 8;
+							}
+						}
+					}
 				}
 				$this->type = self::TYP_OUT;
 			} else {
@@ -228,67 +225,14 @@ class Round extends \yii\db\ActiveRecord
 	 * @inheritdoc
 	 * @return TournamentQuery
 	 */
-	public static function find()
-	{
+	public static function find() {
 		return new TournamentQuery(get_called_class());
-	}
-
-	public function getStatus()
-	{
-
-		if ($this->hasAllResultsEntered())
-			return Round::STATUS_CLOSED;
-		else if ($this->isJudgingTime())
-			return Round::STATUS_JUDGING;
-		else if ($this->isStartingTime())
-			return Round::STATUS_STARTED;
-		else if ($this->displayed == 1)
-			return Round::STATUS_DISPLAYED;
-		else if ($this->published == 1)
-			return Round::STATUS_PUBLISHED;
-		else if ($this->time)
-			return Round::STATUS_CREATED;
-		else
-			throw new Exception("Unknow Round status for Round" . $this->number . " No create time");
-	}
-
-	public function hasAllResultsEntered()
-	{
-		return false;
-	}
-
-	public function isJudgingTime()
-	{
-		$debatetime = (8 * 7) + 8;
-		$preptime = 15;
-		if ($this->prep_started) {
-			$judgeTime = strtotime($this->prep_started) + $preptime + $debatetime;
-
-			if (time() > $judgeTime)
-				return true;
-		}
-
-		return false;
-	}
-
-	public function isStartingTime()
-	{
-		$preptime = 15;
-		if ($this->prep_started) {
-			$prepende = strtotime($this->prep_started) + $preptime;
-
-			if (time() > $prepende)
-				return true;
-		}
-
-		return false;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function rules()
-	{
+	public function rules() {
 		return [
 			[['number', 'tournament_id', 'motion'], 'required'],
 			[['id', 'number', 'tournament_id', 'published', 'type', 'level'], 'integer'],
@@ -300,12 +244,11 @@ class Round extends \yii\db\ActiveRecord
 	/**
 	 * @inheritdoc
 	 */
-	public function attributeLabels()
-	{
+	public function attributeLabels() {
 		return [
-			'id'            => Yii::t('app', 'Round ID'),
-			'label' => Yii::t('app', 'Round'),
-			'tournament_id' => Yii::t('app', 'Tournament ID'),
+			'id'            => Yii::t('app', 'Round') . ' ' . Yii::t('app', 'ID'),
+			'label'         => Yii::t('app', 'Round'),
+			'tournament_id' => Yii::t('app', 'Tournament') . ' ' . Yii::t('app', 'ID'),
 			'energy'        => Yii::t('app', 'Energy'),
 			'motion'        => Yii::t('app', 'Motion'),
 			'infoslide'     => Yii::t('app', 'Info Slide'),
@@ -315,47 +258,102 @@ class Round extends \yii\db\ActiveRecord
 			'prep_started'  => Yii::t('app', 'PrepTime started'),
 			'lastrun_temp'  => Yii::t('app', 'Last Temperature'),
 			'lastrun_time'  => Yii::t('app', 'ms to calculate'),
-			'tags'  => Yii::t("app", "Motion Tags"),
+			'tags'          => Yii::t("app", "Motion Tags"),
 		];
+	}
+
+	public function getStatus() {
+
+		if ($this->hasAllResultsEntered()) {
+			return Round::STATUS_CLOSED;
+		} else {
+			if ($this->isJudgingTime()) {
+				return Round::STATUS_JUDGING;
+			} else {
+				if ($this->isStartingTime()) {
+					return Round::STATUS_STARTED;
+				} else {
+					if ($this->displayed == 1) {
+						return Round::STATUS_DISPLAYED;
+					} else {
+						if ($this->published == 1) {
+							return Round::STATUS_PUBLISHED;
+						} else {
+							if ($this->time) {
+								return Round::STATUS_CREATED;
+							} else {
+								throw new Exception("Unknow Round status for Round" . $this->number . " No create time");
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public function hasAllResultsEntered() {
+		return false;
+	}
+
+	public function isJudgingTime() {
+		$debatetime = (8 * 7) + 8;
+		$preptime = 15;
+		if ($this->prep_started) {
+			$judgeTime = strtotime($this->prep_started) + $preptime + $debatetime;
+
+			if (time() > $judgeTime) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public function isStartingTime() {
+		$preptime = 15;
+		if ($this->prep_started) {
+			$prepende = strtotime($this->prep_started) + $preptime;
+
+			if (time() > $prepende) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getDrawAfterRounds()
-	{
+	public function getDrawAfterRounds() {
 		return $this->hasMany(TabAfterRound::className(), ['round_id' => 'id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getTournament()
-	{
+	public function getTournament() {
 		return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getDebates()
-	{
+	public function getDebates() {
 		return $this->hasMany(Debate::className(), ['round_id' => 'id', 'tournament_id' => 'tournament_id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getMotionTags()
-	{
+	public function getMotionTags() {
 		return $this->hasMany(MotionTag::className(), ['id' => 'motion_tag_id'])->viaTable('tag', ['round_id' => 'id']);
 	}
 
 	/**
 	 * Generate a draw for the model
 	 */
-	public function generateWorkingDraw()
-	{
+	public function generateWorkingDraw() {
 		try {
 			set_time_limit(0); //Prevent timeout ... this can take time
 
@@ -437,28 +435,34 @@ class Round extends \yii\db\ActiveRecord
 			);
 
 			/* Check variables */
-			if (count($teams) < 4)
+			if (count($teams) < 4) {
 				throw new Exception(Yii::t("app", "Not enough Teams to fill a single room - (active: {teams_count})", ["teams_count" => count($teams)]), "500");
-			if (count($adjudicatorsObjects) < 2)
+			}
+			if (count($adjudicatorsObjects) < 2) {
 				throw new Exception(Yii::t("app", "At least two Adjudicators are necessary - (active: {count_adju})", ["count_adju" => count($adjudicatorsObjects)]), "500");
-			if (count($teams) % 4 != 0)
+			}
+			if (count($teams) % 4 != 0) {
 				throw new Exception(Yii::t("app", "Amount of active Teams must be divided by 4 ;) - (active: {count_teams})", ["count_teams" => count($teams)]), "500");
-			if ($active_rooms > count($venues))
+			}
+			if ($active_rooms > count($venues)) {
 				throw new Exception(Yii::t("app", "Not enough active Rooms (active: {active_rooms} required: {required})", [
 					"active_rooms" => count($venues),
 					"required"     => $active_rooms,
 				]), "500");
-			if ($active_rooms > count($adjudicatorsObjects))
+			}
+			if ($active_rooms > count($adjudicatorsObjects)) {
 				throw new Exception(Yii::t("app", "Not enough adjudicators (active: {active}  min-required: {required})", [
 					"active"   => count($adjudicatorsObjects),
 					"required" => $active_rooms,
 				]), "500");
-			if ($active_rooms > (count($adjudicators) + count($panel)))
+			}
+			if ($active_rooms > (count($adjudicators) + count($panel))) {
 				throw new Exception(Yii::t("app",
 					"Not enough free adjudicators with this preset panel configuration. (fillable rooms: {active}  min-required: {required})", [
 						"active"   => (count($adjudicatorsObjects) + count($panelsObjects)),
 						"required" => $active_rooms,
 					]), "500");
+			}
 
 			/* Setup */
 			/** @var StrictWUDCRules $algo */
@@ -499,8 +503,7 @@ class Round extends \yii\db\ActiveRecord
 		return false;
 	}
 
-	public static function stats_standard_deviation(array $a)
-	{
+	public static function stats_standard_deviation(array $a) {
 		$n = count($a);
 		if ($n === 0) {
 			trigger_error("The array has zero elements", E_USER_WARNING);
@@ -529,8 +532,7 @@ class Round extends \yii\db\ActiveRecord
 	 *
 	 * @throws \yii\base\Exception
 	 */
-	protected function saveDraw($draw)
-	{
+	protected function saveDraw($draw) {
 		Yii::trace("Save Draw with " . count($draw) . "lines", __METHOD__);
 		$set_pp = 0;
 		$lineAdju_total = 0;
@@ -543,8 +545,9 @@ class Round extends \yii\db\ActiveRecord
 				$panel->strength = $line->strength;
 
 				//Save Panel
-				if (!$panel->save())
-					throw new Exception(Yii::t("app", "Can't save Panel {message}", ["message" => ObjectError::getMsg($panel)]));
+				if (!$panel->save()) {
+					throw new Exception(Yii::t("app", "Can't save Panel! Error: {message}", ["message" => ObjectError::getMsg($panel)]));
+				}
 
 				$line->panelID = $panel->id;
 
@@ -558,11 +561,13 @@ class Round extends \yii\db\ActiveRecord
 						if (!$chairSet) {
 							$alloc->function = Panel::FUNCTION_CHAIR;
 							$chairSet = true; //only on first run
-						} else
+						} else {
 							$alloc->function = Panel::FUNCTION_WING;
+						}
 
-						if (!$alloc->save())
+						if (!$alloc->save()) {
 							throw new Exception($judge["name"] . " could not be saved: " . ObjectError::getMsg($alloc));
+						}
 
 					} catch (Exception $ex) {
 						Yii::error($judge["id"] . "-" . $judge["name"] . ": " . $ex->getMessage(), __METHOD__);
@@ -575,10 +580,11 @@ class Round extends \yii\db\ActiveRecord
 				$alreadyIn = ArrayHelper::getColumn($presetP->getAdjudicatorsObjects(), "id");
 				$presetP->used = 1;
 
-				if (!$presetP->save())
+				if (!$presetP->save()) {
 					Yii::error("Cant save preset panel" . ObjectError::getMsg($presetP), __METHOD__);
-				else
+				} else {
 					$set_pp++;
+				}
 
 				foreach ($line->adjudicators as $judge) {
 					try {
@@ -589,8 +595,9 @@ class Round extends \yii\db\ActiveRecord
 							$alloc->panel_id = $line->panelID;
 							$alloc->function = Panel::FUNCTION_WING;
 
-							if (!$alloc->save())
+							if (!$alloc->save()) {
 								throw new Exception($judge["name"] . " could not be saved: " . ObjectError::getMsg($alloc));
+							}
 						}
 
 					} catch (Exception $ex) {
@@ -612,9 +619,9 @@ class Round extends \yii\db\ActiveRecord
 			$debate->energy = $line->energyLevel;
 			$debate->setMessages($line->messages);
 
-			if (!$debate->save())
-				throw new Exception(Yii::t("app", "Can't save Debate {message}", ["message" => print_r($debate->getErrors(), true)]));
-			else {
+			if (!$debate->save()) {
+				throw new Exception(Yii::t("app", "Can't save Debate! Error: {message}", ["message" => print_r($debate->getErrors(), true)]));
+			} else {
 				$lineAdju = $debate->panel->getAdjudicators()->count();
 				$lineAdju_total += $lineAdju;
 				Yii::trace("Debate #" . $debate->id . " saved with " . $lineAdju . " Adjudicators", __METHOD__);
@@ -624,8 +631,7 @@ class Round extends \yii\db\ActiveRecord
 		Yii::trace($lineAdju_total . " Adjudicators saved", __METHOD__);
 	}
 
-	public function improveAdjudicator($runs)
-	{
+	public function improveAdjudicator($runs) {
 		set_time_limit(0); //Prevent timeout ... this can take time
 
 		/** @var DrawLine[] $DRAW */
@@ -633,8 +639,9 @@ class Round extends \yii\db\ActiveRecord
 
 		if (is_int(intval($runs)) && $runs <= 100000) {
 			$runs = intval($runs);
-		} else
+		} else {
 			$runs = null;
+		}
 
 		/* Reconstruct DrawArray */
 		Yii::beginProfile("Reconstruct DrawArray");
@@ -650,8 +657,9 @@ class Round extends \yii\db\ActiveRecord
 		/** Delete Debates */
 		foreach ($models as $debate) {
 			/** @var Debate $debate * */
-			foreach ($debate->panel->adjudicatorInPanels as $aj)
+			foreach ($debate->panel->adjudicatorInPanels as $aj) {
 				$aj->delete();
+			}
 
 			$panelid = $debate->panel_id;
 			$debate->delete();
@@ -688,8 +696,7 @@ class Round extends \yii\db\ActiveRecord
 		return true;
 	}
 
-	private function reconstructDebate($model)
-	{
+	private function reconstructDebate($model) {
 		/** @var Debate $model */
 		$line = new DrawLine([
 			"id"           => $model->id,
@@ -708,8 +715,7 @@ class Round extends \yii\db\ActiveRecord
 		return $line;
 	}
 
-	private function reconstructPanel($adjudicatorInPanels, $drawline)
-	{
+	private function reconstructPanel($adjudicatorInPanels, $drawline) {
 		/** @var Panel $panel */
 		foreach ($adjudicatorInPanels as $inPanel) {
 
@@ -727,10 +733,11 @@ class Round extends \yii\db\ActiveRecord
 			$adjudicator["pastAdjudicatorIDs"] = $adju->getPastAdjudicatorIDs($this->id);
 			$adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs(true);
 
-			if ($inPanel->function == Panel::FUNCTION_CHAIR)
+			if ($inPanel->function == Panel::FUNCTION_CHAIR) {
 				$drawline->addChair($adjudicator);
-			else
+			} else {
 				$drawline->addAdjudicator($adjudicator);
+			}
 		}
 
 		return $drawline;
@@ -744,8 +751,7 @@ class Round extends \yii\db\ActiveRecord
 	 * @return array
 	 * @throws \yii\base\Exception
 	 */
-	public function updateEnergy($updateLines = [])
-	{
+	public function updateEnergy($updateLines = []) {
 		/** @var DrawLine[] $DRAW */
 		$miniDraw = [];
 
@@ -787,8 +793,8 @@ class Round extends \yii\db\ActiveRecord
 				$debate->setMessages($newLine->messages);
 				if (!$debate->save()) {
 					throw new Exception(
-						Yii::t("app", "Can't save debate: <br> {attr}", [
-							"attr" => ObjectError::getMsg($debate),
+						Yii::t("app", "Can't save debate! Errors:<br>{errors}", [
+							"errors" => ObjectError::getMsg($debate),
 						])
 					);
 				}
@@ -802,8 +808,7 @@ class Round extends \yii\db\ActiveRecord
 		return $returnLine;
 	}
 
-	public function getAmountSwingTeams()
-	{
+	public function getAmountSwingTeams() {
 		return Team::find()->active()->tournament($this->tournament_id)->andWhere(["isSwing" => 1])->count();
 	}
 

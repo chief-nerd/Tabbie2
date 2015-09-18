@@ -23,14 +23,12 @@ use yii\web\View;
 /**
  * Site controller
  */
-class SiteController extends BaseController
-{
+class SiteController extends BaseController {
 
 	/**
 	 * @inheritdoc
 	 */
-	public function behaviors()
-	{
+	public function behaviors() {
 		return [
 			'access' => [
 				'class' => AccessControl::className(),
@@ -54,8 +52,7 @@ class SiteController extends BaseController
 	/**
 	 * @inheritdoc
 	 */
-	public function actions()
-	{
+	public function actions() {
 		return [
 			'error'   => [
 				'class' => 'yii\web\ErrorAction',
@@ -67,9 +64,24 @@ class SiteController extends BaseController
 		];
 	}
 
+	public function beforeAction($action) {
+		Yii::$app->view->on(View::EVENT_BEGIN_PAGE, function () {
+			$view = Yii::$app->controller->view;
 
-	public function actionIndex()
-	{
+			$fb_Banner = "https://s3.eu-central-1.amazonaws.com/tabbie-assets/FB_banner.jpg";
+			$fb_Logo = "https://s3.eu-central-1.amazonaws.com/tabbie-assets/FB_logo.jpg";
+
+			$view->registerMetaTag(["property" => "og:type", "content" => "website"], "og:type");
+			$view->registerMetaTag(["property" => "og:title", "content" => Yii::$app->params["appName"] . " - " . Yii::$app->params["slogan"]], "og:title");
+			$view->registerMetaTag(["property" => "og:image", "content" => $fb_Logo], "og:image1");
+			$view->registerMetaTag(["property" => "og:image", "content" => $fb_Banner], "og:image2");
+			$view->registerLinkTag(["rel" => "apple-touch-icon", "href" => $fb_Logo], "apple-touch-icon");
+		});
+
+		return parent::beforeAction($action);
+	}
+
+	public function actionIndex() {
 		$tournaments = \common\models\Tournament::find()->where("start_date <= NOW() AND end_date >= NOW()")->all();
 		$upcoming = \common\models\Tournament::find()->where("start_date <= DATE_ADD(NOW(), INTERVAL 30 day) AND end_date >= NOW()")->all();
 
@@ -79,8 +91,7 @@ class SiteController extends BaseController
 		]);
 	}
 
-	public function actionLogin()
-	{
+	public function actionLogin() {
 		if (!\Yii::$app->user->isGuest) {
 			return $this->goHome();
 		}
@@ -106,33 +117,13 @@ class SiteController extends BaseController
 		]);
 	}
 
-	public function actionLogout()
-	{
+	public function actionLogout() {
 		Yii::$app->user->logout();
 
 		return $this->goHome();
 	}
 
-	public function actionContact()
-	{
-		$model = new ContactForm();
-		if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-			if ($model->sendEmail(Yii::$app->params['adminEmail'])) {
-				Yii::$app->session->setFlash('success', Yii::t("app", 'Thank you for contacting us. We will respond to you as soon as possible.'));
-			} else {
-				Yii::$app->session->setFlash('error', Yii::t("app", 'There was an error sending email.'));
-			}
-
-			return $this->refresh();
-		} else {
-			return $this->render('contact', [
-				'model' => $model,
-			]);
-		}
-	}
-
-	public function actionAbout()
-	{
+	public function actionAbout() {
 
 		$societies = Society::find()->where("country_id != " . Country::COUNTRY_UNKNOWN_ID)->asArray()->all();
 		for ($i = 0; $i < count($societies); $i++) {
@@ -145,13 +136,11 @@ class SiteController extends BaseController
 		]);
 	}
 
-	public function actionHowTo()
-	{
+	public function actionHowTo() {
 		return $this->render('how-to');
 	}
 
-	public function actionAddNewSociety($name = "")
-	{
+	public function actionAddNewSociety($name = "") {
 		$model = new Society();
 
 		if ($model->load(Yii::$app->request->post())) {
@@ -184,8 +173,7 @@ class SiteController extends BaseController
 	 *
 	 * @return static
 	 */
-	private function finishSignup($model)
-	{
+	private function finishSignup($model) {
 		if ($model) {
 			$user = $model->signup();
 			if ($user !== null) {
@@ -193,15 +181,16 @@ class SiteController extends BaseController
 					Yii::$app->session->addFlash("success", Yii::t("app", "User registered! Welcome {user}", ["user" => $user->name]));
 
 					return Yii::$app->getResponse()->redirect(["user/" . $user->url_slug]);
-				} else
+				} else {
 					Yii::$app->session->addFlash("error", Yii::t("app", "Login failed"));
-			} else
+				}
+			} else {
 				Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
+			}
 		}
 	}
 
-	public function actionSignup()
-	{
+	public function actionSignup() {
 		$model = new SignupForm();
 
 		$socid = Yii::$app->request->post("SignupForm")["societies_id"];
@@ -221,8 +210,7 @@ class SiteController extends BaseController
 		]);
 	}
 
-	public function actionRequestPasswordReset()
-	{
+	public function actionRequestPasswordReset() {
 		$model = new PasswordResetRequestForm();
 		if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 			if ($model->sendEmail()) {
@@ -233,6 +221,7 @@ class SiteController extends BaseController
 			} else {
 				Yii::$app->getSession()
 					->setFlash('error', Yii::t("app", 'Sorry, we are unable to reset password for email provided.<br>{message}', ["message" => ObjectError::getMsg($model)]));
+				Yii::error("Error reset password: " . ObjectError::getMsg($model), __METHOD__);
 			}
 		}
 
@@ -241,8 +230,7 @@ class SiteController extends BaseController
 		]);
 	}
 
-	public function actionResetPassword($token)
-	{
+	public function actionResetPassword($token) {
 		try {
 			$model = new ResetPasswordForm($token);
 		} catch (InvalidParamException $e) {
@@ -258,24 +246,6 @@ class SiteController extends BaseController
 		return $this->render('resetPassword', [
 			'model' => $model,
 		]);
-	}
-
-	public function beforeAction($action)
-	{
-		Yii::$app->view->on(View::EVENT_BEGIN_PAGE, function () {
-			$view = Yii::$app->controller->view;
-
-			$fb_Banner = "https://s3.eu-central-1.amazonaws.com/tabbie-assets/FB_banner.jpg";
-			$fb_Logo = "https://s3.eu-central-1.amazonaws.com/tabbie-assets/FB_logo.jpg";
-
-			$view->registerMetaTag(["property" => "og:type", "content" => "website"], "og:type");
-			$view->registerMetaTag(["property" => "og:title", "content" => Yii::$app->params["appName"] . " - " . Yii::$app->params["slogan"]], "og:title");
-			$view->registerMetaTag(["property" => "og:image", "content" => $fb_Logo], "og:image1");
-			$view->registerMetaTag(["property" => "og:image", "content" => $fb_Banner], "og:image2");
-			$view->registerLinkTag(["rel" => "apple-touch-icon", "href" => $fb_Logo], "apple-touch-icon");
-		});
-
-		return parent::beforeAction($action);
 	}
 
 }

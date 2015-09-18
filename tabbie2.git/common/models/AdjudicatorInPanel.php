@@ -41,8 +41,8 @@ class AdjudicatorInPanel extends \yii\db\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'adjudicator_id' => Yii::t('app', 'Adjudicator ID'),
-			'panel_id'       => Yii::t('app', 'Panel ID'),
+			'adjudicator_id' => Yii::t('app', 'Adjudicator') . ' ' . Yii::t('app', 'ID'),
+			'panel_id'       => Yii::t('app', 'Panel') . ' ' . Yii::t('app', 'ID'),
 			'function'       => Yii::t('app', 'Function'),
 		];
 	}

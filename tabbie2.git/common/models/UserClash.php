@@ -51,7 +51,7 @@ class UserClash extends \yii\db\ActiveRecord
 	{
 		return [
 			'id'         => Yii::t('app', 'ID'),
-			'user_id'    => Yii::t('app', 'User ID'),
+			'user_id' => Yii::t('app', 'User') . ' ' . Yii::t('app', 'ID'),
 			'clash_with' => Yii::t('app', 'Clash With'),
 			'reason'     => Yii::t('app', 'Reason'),
 			'date'       => Yii::t('app', 'Date'),

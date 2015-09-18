@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'vAlign'     => 'middle',
 			'trueIcon'   => \kartik\helpers\Html::icon("star", ['class' => 'text-warning']),
 			'trueLabel'  => Yii::t("app", "Breaking"),
-			'falseLabel' => Yii::t("app", "not breaking"),
+            'falseLabel' => Yii::t("app", "Not breaking"),
 			'falseIcon'  => "&nbsp;",
 			'width'      => '50px',
 		],

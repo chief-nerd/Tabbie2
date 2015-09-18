@@ -47,9 +47,9 @@ class Answer extends \yii\db\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'id'          => Yii::t('app', 'ID'),
-			'feedback_id' => Yii::t('app', 'Feedback ID'),
-			'question_id' => Yii::t('app', 'Question ID'),
+			'id'          => Yii::t('app', 'Answer') . ' ' . Yii::t('app', 'ID'),
+			'feedback_id' => Yii::t('app', 'Feedback') . ' ' . Yii::t('app', 'ID'),
+			'question_id' => Yii::t('app', 'Question') . ' ' . Yii::t('app', 'ID'),
 			'value'       => Yii::t('app', 'Value'),
 		];
 	}

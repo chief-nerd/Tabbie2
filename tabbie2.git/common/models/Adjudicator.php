@@ -48,27 +48,6 @@ class Adjudicator extends \yii\db\ActiveRecord
 		return new VTAQuery(get_called_class());
 	}
 
-	public static function getCSSStrength($id = null)
-	{
-		return "st" . intval($id / 10);
-	}
-
-	/**
-	 * Sort comparison function based on strength
-	 *
-	 * @param Adjudicator $a
-	 * @param Adjudicator $b
-	 *
-	 * @return boolean
-	 */
-	public static function compare_strength($a, $b)
-	{
-		$as = $a["strength"];
-		$bs = $b["strength"];
-
-		return ($as < $bs) ? 1 : (($as > $bs) ? -1 : 0);
-	}
-
 	/**
 	 * @inheritdoc
 	 */
@@ -87,12 +66,12 @@ class Adjudicator extends \yii\db\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'id'            => Yii::t('app', 'ID'),
-			'tournament_id' => Yii::t('app', 'Tournament ID'),
+			'id'            => Yii::t('app', 'Adjudicator') . ' ' . Yii::t('app', 'ID'),
+			'tournament_id' => Yii::t('app', 'Tournament') . ' ' . Yii::t('app', 'ID'),
 			'active'        => Yii::t('app', 'Active'),
-			'user_id'       => Yii::t('app', 'User ID'),
+			'user_id'       => Yii::t('app', 'User') . ' ' . Yii::t('app', 'ID'),
 			'strength'      => Yii::t('app', 'Strength'),
-			'societyName'   => Yii::t('app', 'Society Name'),
+			'societyName'   => Yii::t('app', 'Society') . ' ' . Yii::t('app', 'Name'),
 			'can_chair'     => Yii::t('app', 'can Chair'),
 			'are_watched'   => Yii::t('app', 'are Watched'),
 			'society_id'    => Yii::t('app', 'Society'),
@@ -122,6 +101,25 @@ class Adjudicator extends \yii\db\ActiveRecord
 		Yii::$app->cache->set($key, $name, 1 * 60 * 60);
 
 		return $name;
+	}
+
+	public static function getCSSStrength($id = null) {
+		return "st" . intval($id / 10);
+	}
+
+	/**
+	 * Sort comparison function based on strength
+	 *
+	 * @param Adjudicator $a
+	 * @param Adjudicator $b
+	 *
+	 * @return boolean
+	 */
+	public static function compare_strength($a, $b) {
+		$as = $a["strength"];
+		$bs = $b["strength"];
+
+		return ($as < $bs) ? 1 : (($as > $bs) ? -1 : 0);
 	}
 
 	public function getSocietyName()
@@ -242,20 +240,22 @@ class Adjudicator extends \yii\db\ActiveRecord
 	public static function getStrengthLabel($strength = null)
 	{
 		if ($strength !== null) {
-			if ($strength === 0) return Yii::t("app", 'Not rated');
+			if ($strength === 0) {
+				return Yii::t("app", 'Not Rated');
+			}
 			$strength = intval($strength / 10);
 		}
 
 		$table = [
-			0 => Yii::t("app", 'Punished Judge'),
-			1 => Yii::t("app", 'Bad Judge'),
+			0 => Yii::t('app', 'Punished') . ' ' . Yii::t('app', 'Adjudicator'),
+			1 => Yii::t("app", 'Bad') . ' ' . Yii::t('app', 'Adjudicator'),
 			2 => Yii::t("app", 'Can Judge'),
-			3 => Yii::t("app", 'Decent Judge'),
-			4 => Yii::t("app", 'Average Judge'),
+			3 => Yii::t("app", 'Decent') . ' ' . Yii::t('app', 'Adjudicator'),
+			4 => Yii::t("app", 'Average') . ' ' . Yii::t('app', 'Adjudicator'),
 			5 => Yii::t("app", 'High Potential'),
-			6 => Yii::t("app", 'Average Chair'),
-			7 => Yii::t("app", 'Good Chair'),
-			8 => Yii::t("app", 'Breaking Chair'),
+			6 => Yii::t("app", 'Average') . ' ' . Yii::t('app', 'Chair'),
+			7 => Yii::t("app", 'Good') . ' ' . Yii::t('app', 'Chair'),
+			8 => Yii::t("app", 'Breaking') . ' ' . Yii::t('app', 'Chair'),
 			9 => Yii::t("app", 'Chief Adjudicator'),
 		];
 

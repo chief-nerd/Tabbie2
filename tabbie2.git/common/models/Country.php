@@ -65,33 +65,58 @@ class Country extends \yii\db\ActiveRecord
 		return 'country';
 	}
 
+	/**
+	 * @inheritdoc
+	 */
+	public function rules() {
+		return [
+			[['region_id'], 'integer'],
+			[['name'], 'string', 'max' => 50],
+			[['alpha_2'], 'string', 'max' => 2],
+			[['alpha_3'], 'string', 'max' => 3]
+		];
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function attributeLabels() {
+		return [
+			'id'        => Yii::t('app', 'ID'),
+			'name'      => Yii::t('app', 'Name'),
+			'alpha_2'   => Yii::t('app', 'Alpha 2'),
+			'alpha_3'   => Yii::t('app', 'Alpha 3'),
+			'region_id' => Yii::t('app', 'Region') . ' ' . Yii::t('app', 'ID'),
+		];
+	}
+
 	public static function getRegionLabel($region_id = null)
 	{
 		$regions = [
-			0                                  => Yii::t("country", "Undefined"),
-			self::REGION_NORTHERN_EUROPE       => Yii::t("country", "Northern Europe"),
-			self::REGION_WESTERN_EUROPE        => Yii::t("country", "Western Europe"),
-			self::REGION_SOUTHERN_EUROPE       => Yii::t("country", "Southern Europe"),
-			self::REGION_EASTERN_EUROPE        => Yii::t("country", "Eastern Europe"),
-			self::REGION_CENTRAL_ASIA          => Yii::t("country", "Central Asia"),
-			self::REGION_EASTERN_ASIA          => Yii::t("country", "Eastern Asia"),
-			self::REGION_WESTERN_ASIA          => Yii::t("country", "Western Asia"),
-			self::REGION_SOUTHERN_ASIA         => Yii::t("country", "Southern Asia"),
-			self::REGION_SOUTH_EASTERN_ASIA    => Yii::t("country", "South-Eastern Asia"),
-			self::REGION_AUSTRALIA_NEW_ZEALAND => Yii::t("country", "Australia & New Zealand"),
-			self::REGION_MICRONESIA            => Yii::t("country", "Micronesia"),
-			self::REGION_MELANESIA             => Yii::t("country", "Melanesia"),
-			self::REGION_POLYNESIA             => Yii::t("country", "Polynesia"),
-			self::REGION_NORTHERN_AFRICA       => Yii::t("country", "Northern Africa"),
-			self::REGION_WESTERN_AFRICA        => Yii::t("country", "Western Africa"),
-			self::REGION_CENTRAL_AFRICA        => Yii::t("country", "Central Africa"),
-			self::REGION_EASTERN_AFTRICA       => Yii::t("country", "Eastern Africa"),
-			self::REGION_SOUTHERN_AFRICA       => Yii::t("country", "Southern Africa"),
-			self::REGION_NORTHERN_AMERICA      => Yii::t("country", "Northern America"),
-			self::REGION_CENTRAL_AMERICA       => Yii::t("country", "Central America"),
-			self::REGION_CARIBBEAN             => Yii::t("country", "Caribbean"),
-			self::REGION_SOUTH_AMERICA         => Yii::t("country", "South America"),
-			self::REGION_ANTARCTIC             => Yii::t("country", "Antarctic"),
+			0                                  => Yii::t("app.country", "Undefined"),
+			self::REGION_NORTHERN_EUROPE       => Yii::t("app.country", "Northern Europe"),
+			self::REGION_WESTERN_EUROPE        => Yii::t("app.country", "Western Europe"),
+			self::REGION_SOUTHERN_EUROPE       => Yii::t("app.country", "Southern Europe"),
+			self::REGION_EASTERN_EUROPE        => Yii::t("app.country", "Eastern Europe"),
+			self::REGION_CENTRAL_ASIA          => Yii::t("app.country", "Central Asia"),
+			self::REGION_EASTERN_ASIA          => Yii::t("app.country", "Eastern Asia"),
+			self::REGION_WESTERN_ASIA          => Yii::t("app.country", "Western Asia"),
+			self::REGION_SOUTHERN_ASIA         => Yii::t("app.country", "Southern Asia"),
+			self::REGION_SOUTH_EASTERN_ASIA    => Yii::t("app.country", "South-Eastern Asia"),
+			self::REGION_AUSTRALIA_NEW_ZEALAND => Yii::t("app.country", "Australia & New Zealand"),
+			self::REGION_MICRONESIA            => Yii::t("app.country", "Micronesia"),
+			self::REGION_MELANESIA             => Yii::t("app.country", "Melanesia"),
+			self::REGION_POLYNESIA             => Yii::t("app.country", "Polynesia"),
+			self::REGION_NORTHERN_AFRICA       => Yii::t("app.country", "Northern Africa"),
+			self::REGION_WESTERN_AFRICA        => Yii::t("app.country", "Western Africa"),
+			self::REGION_CENTRAL_AFRICA        => Yii::t("app.country", "Central Africa"),
+			self::REGION_EASTERN_AFTRICA       => Yii::t("app.country", "Eastern Africa"),
+			self::REGION_SOUTHERN_AFRICA       => Yii::t("app.country", "Southern Africa"),
+			self::REGION_NORTHERN_AMERICA      => Yii::t("app.country", "Northern America"),
+			self::REGION_CENTRAL_AMERICA       => Yii::t("app.country", "Central America"),
+			self::REGION_CARIBBEAN             => Yii::t("app.country", "Caribbean"),
+			self::REGION_SOUTH_AMERICA         => Yii::t("app.country", "South America"),
+			self::REGION_ANTARCTIC             => Yii::t("app.country", "Antarctic"),
 		];
 
 		return (isset($regions[$region_id])) ? $regions[$region_id] : $regions;
@@ -127,33 +152,6 @@ class Country extends \yii\db\ActiveRecord
 		];
 
 		return (isset($regions[$region_id])) ? $regions[$region_id] : $regions;
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function rules()
-	{
-		return [
-			[['region_id'], 'integer'],
-			[['name'], 'string', 'max' => 50],
-			[['alpha_2'], 'string', 'max' => 2],
-			[['alpha_3'], 'string', 'max' => 3]
-		];
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function attributeLabels()
-	{
-		return [
-			'id'        => Yii::t('app', 'ID'),
-			'name'      => Yii::t('app', 'Name'),
-			'alpha_2'   => Yii::t('app', 'Alpha 2'),
-			'alpha_3'   => Yii::t('app', 'Alpha 3'),
-			'region_id' => Yii::t('app', 'Region ID'),
-		];
 	}
 
 	/**

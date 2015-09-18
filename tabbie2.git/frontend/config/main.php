@@ -26,7 +26,10 @@ $config = [
 			'identityClass' => 'common\models\User',
 			'enableAutoLogin' => true,
 		],
-		'urlManager'   => [
+		'urlManager' => [
+			'class' => 'frontend\components\LanguageUrlManager',
+
+			//STD settings
 			'enablePrettyUrl' => true,
 			'showScriptName' => false,
 			'rules'          => [

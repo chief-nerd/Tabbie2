@@ -42,8 +42,8 @@ class Tag extends \yii\db\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'motion_tag_id' => Yii::t('app', 'Motion Tag ID'),
-			'round_id'      => Yii::t('app', 'Round ID'),
+			'motion_tag_id' => Yii::t('app', 'Motion Tag') . ' ' . Yii::t('app', 'ID'),
+			'round_id'      => Yii::t('app', 'Round') . ' ' . Yii::t('app', 'ID'),
 		];
 	}
 

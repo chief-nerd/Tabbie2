@@ -39,6 +39,32 @@ class PublishTabTeam extends \yii\db\ActiveRecord
 	}
 
 	/**
+	 * @inheritdoc
+	 */
+	public function rules() {
+		return [
+			[['tournament_id', 'team_id'], 'required'],
+			[['tournament_id', 'team_id', 'enl_place', 'esl_place', 'speaks'], 'integer'],
+			[['cache_results'], 'string']
+		];
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function attributeLabels() {
+		return [
+			'id'            => Yii::t('app', 'ID'),
+			'tournament_id' => Yii::t('app', 'Tournament') . ' ' . Yii::t('app', 'ID'),
+			'team_id'       => Yii::t('app', 'Team') . ' ' . Yii::t('app', 'ID'),
+			'enl_place'     => Yii::t('app', 'ENL Place'),
+			'esl_place'     => Yii::t('app', 'ESL Place'),
+			'cache_results' => Yii::t('app', 'Cache Results'),
+			'speaks'        => Yii::t('app', 'Speaker Points'),
+		];
+	}
+
+	/**
 	 * @param Tournament $_tournament
 	 *
 	 * @return \common\models\TabLine[]
@@ -133,34 +159,6 @@ class PublishTabTeam extends \yii\db\ActiveRecord
 		}
 
 		return $lines;
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function rules()
-	{
-		return [
-			[['tournament_id', 'team_id'], 'required'],
-			[['tournament_id', 'team_id', 'enl_place', 'esl_place', 'speaks'], 'integer'],
-			[['cache_results'], 'string']
-		];
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function attributeLabels()
-	{
-		return [
-			'id'            => Yii::t('app', 'ID'),
-			'tournament_id' => Yii::t('app', 'Tournament ID'),
-			'team_id'       => Yii::t('app', 'Team ID'),
-			'enl_place'     => Yii::t('app', 'ENL Place'),
-			'esl_place'     => Yii::t('app', 'ESL Place'),
-			'cache_results' => Yii::t('app', 'Cache Results'),
-			'speaks'        => Yii::t('app', 'Speaker Points'),
-		];
 	}
 
 	/**

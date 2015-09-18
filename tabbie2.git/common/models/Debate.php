@@ -72,6 +72,13 @@ class Debate extends \yii\db\ActiveRecord
 	/**
 	 * @inheritdoc
 	 */
+	public static function tableName() {
+		return 'debate';
+	}
+
+	/**
+	 * @inheritdoc
+	 */
 	public function rules()
 	{
 		return [
@@ -89,18 +96,18 @@ class Debate extends \yii\db\ActiveRecord
 	{
 		return [
 			'id'            => Yii::t('app', 'ID'),
-			'round_id'      => Yii::t('app', 'Round ID'),
-			'tournament_id' => Yii::t('app', 'Tournament ID'),
-			'og_team_id'    => Yii::t('app', 'Og Team ID'),
-			'oo_team_id'    => Yii::t('app', 'Oo Team ID'),
-			'cg_team_id'    => Yii::t('app', 'Cg Team ID'),
-			'co_team_id'    => Yii::t('app', 'Co Team ID'),
-			'panel_id'      => Yii::t('app', 'Panel ID'),
-			'venue_id'      => Yii::t('app', 'Venue ID'),
-			'og_feedback'   => Yii::t('app', 'Og Feedback'),
-			'oo_feedback'   => Yii::t('app', 'Oo Feedback'),
-			'cg_feedback'   => Yii::t('app', 'Cg Feedback'),
-			'co_feedback'   => Yii::t('app', 'Co Feedback'),
+			'round_id'      => Yii::t('app', 'Round') . ' ' . Yii::t('app', 'ID'),
+			'tournament_id' => Yii::t('app', 'Tournament') . ' ' . Yii::t('app', 'ID'),
+			'og_team_id'    => Yii::t('app', 'OG Team') . ' ' . Yii::t('app', 'ID'),
+			'oo_team_id'    => Yii::t('app', 'OO Team') . ' ' . Yii::t('app', 'ID'),
+			'cg_team_id'    => Yii::t('app', 'CG Team') . ' ' . Yii::t('app', 'ID'),
+			'co_team_id'    => Yii::t('app', 'CO Team') . ' ' . Yii::t('app', 'ID'),
+			'panel_id'      => Yii::t('app', 'Panel') . ' ' . Yii::t('app', 'ID'),
+			'venue_id'      => Yii::t('app', 'Venue') . ' ' . Yii::t('app', 'ID'),
+			'og_feedback'   => Yii::t('app', 'OG Feedback'),
+			'oo_feedback'   => Yii::t('app', 'OO Feedback'),
+			'cg_feedback'   => Yii::t('app', 'CG Feedback'),
+			'co_feedback'   => Yii::t('app', 'CO Feedback'),
 			'time'          => Yii::t('app', 'Time'),
 			'messages'      => Yii::t('app', 'Messages')
 		];
@@ -240,11 +247,16 @@ class Debate extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * @inheritdoc
+	 * @deprecated
+	 * @return \yii\db\ActiveQuery
 	 */
-	public static function tableName()
+	public function getAdjudicatorObjects()
 	{
-		return 'debate';
+		return Adjudicator::findBySql("SELECT adjudicator.* FROM " . Adjudicator::tableName() . " "
+			. "LEFT OUTER JOIN " . AdjudicatorInPanel::tableName() . " ON " . Adjudicator::tableName() . ".id = " . AdjudicatorInPanel::tableName() . ".adjudicator_id "
+			. "LEFT OUTER JOIN " . Panel::tableName() . " ON panel_id = " . Panel::tableName() . ".id "
+			. "LEFT OUTER JOIN " . Debate::tableName() . " ON " . Debate::tableName() . ".panel_id = " . Panel::tableName() . ".id "
+			. "WHERE " . Debate::tableName() . ".id = " . $this->id);
 	}
 
 	/**

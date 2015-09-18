@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\components\filter\UserContextFilter;
+use common\components\ObjectError;
 use common\models\Country;
 use common\models\InSociety;
 use Yii;
@@ -15,10 +16,9 @@ use yii\filters\VerbFilter;
 /**
  * SocietyController implements the CRUD actions for Society model.
  */
-class SocietyController extends BaseuserController
-{
-	public function behaviors()
-	{
+class SocietyController extends BaseuserController {
+
+	public function behaviors() {
 		return [
 			'userFilter' => [
 				'class' => UserContextFilter::className(),
@@ -43,15 +43,13 @@ class SocietyController extends BaseuserController
 		];
 	}
 
-
 	/**
 	 * Creates a new Society model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 *
 	 * @return mixed
 	 */
-	public function actionCreate()
-	{
+	public function actionCreate() {
 		$model = new InSociety();
 		$model->user_id = $this->_user->id;
 
@@ -77,8 +75,7 @@ class SocietyController extends BaseuserController
 	 *
 	 * @return static
 	 */
-	private function finishCreate($model)
-	{
+	private function finishCreate($model) {
 		if ($model) {
 			if ($model->save()) {
 				Yii::$app->session->addFlash("success", Yii::t("app", "Society connection successfully created"));
@@ -86,12 +83,12 @@ class SocietyController extends BaseuserController
 				return $this->redirect(['user/view', 'id' => $this->_user->id]);
 			} else {
 				Yii::$app->session->addFlash("error", Yii::t("app", "Society could not be saved"));
+				Yii::error("Error saving society: " . ObjectError::getMsg($model), __METHOD__);
 			}
 		}
 	}
 
-	public function actionAddNewSociety()
-	{
+	public function actionAddNewSociety() {
 		$model = new Society();
 
 		if ($model->load(Yii::$app->request->post())) {
@@ -101,8 +98,10 @@ class SocietyController extends BaseuserController
 					$form->society_id = $model->id;
 					$this->finishCreate($form);
 				}
-			} else
+			} else {
 				Yii::$app->session->addFlash("error", Yii::t("app", "Error in wakeup"));
+				Yii::error("New society Wakeup Error. Session holds: " . print_r(Yii::$app->session["InSociety"], true), __METHOD__);
+			}
 		}
 
 		$model->fullname = (isset($model->fullname)) ? $model->fullname : unserialize(Yii::$app->session["InSociety"])->society_id;
@@ -120,8 +119,7 @@ class SocietyController extends BaseuserController
 	 *
 	 * @return mixed
 	 */
-	public function actionUpdate($id)
-	{
+	public function actionUpdate($id) {
 		$model = $this->findModel($id);
 
 		if ($model->load(Yii::$app->request->post())) {
@@ -131,7 +129,8 @@ class SocietyController extends BaseuserController
 
 				return $this->redirect(['user/view', 'id' => $this->_user->id]);
 			} else {
-				Yii::$app->session->addFlash("error", Yii::t("app", "Society coud not be saved"));
+				Yii::$app->session->addFlash("error", Yii::t("app", "Society could not be saved"));
+				Yii::error("Society update error: " . ObjectError::getMsg($model), __METHOD__);
 			}
 
 		}
@@ -142,6 +141,23 @@ class SocietyController extends BaseuserController
 	}
 
 	/**
+	 * Finds the Society model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 *
+	 * @param integer $id
+	 *
+	 * @return Society the loaded model
+	 * @throws NotFoundHttpException if the model cannot be found
+	 */
+	protected function findModel($id) {
+		if (($model = InSociety::find()->where(["society_id" => $id, "user_id" => $this->_user->id])->one()) !== null) {
+			return $model;
+		} else {
+			throw new NotFoundHttpException('The requested page does not exist.');
+		}
+	}
+
+	/**
 	 * Deletes an existing Society model.
 	 * If deletion is successful, the browser will be redirected to the 'index' page.
 	 *
@@ -149,8 +165,7 @@ class SocietyController extends BaseuserController
 	 *
 	 * @return mixed
 	 */
-	public function actionDelete($id)
-	{
+	public function actionDelete($id) {
 		$this->findModel($id)->delete();
 
 		return $this->redirect(['index']);
@@ -162,8 +177,7 @@ class SocietyController extends BaseuserController
 	 * @param type $search
 	 * @param type $sid
 	 */
-	public function actionList(array $search = null, $sid = null)
-	{
+	public function actionList(array $search = null, $sid = null) {
 		$search["term"] = HtmlPurifier::process($search["term"]);
 		$sid = intval($sid);
 
@@ -194,8 +208,7 @@ class SocietyController extends BaseuserController
 	 * @param type $search
 	 * @param type $id
 	 */
-	public function actionListCountry(array $search = null, $cid = null)
-	{
+	public function actionListCountry(array $search = null, $cid = null) {
 		$search["term"] = HtmlPurifier::process($search["term"]);
 		$cid = intval($cid);
 
@@ -215,23 +228,5 @@ class SocietyController extends BaseuserController
 			$out['results'] = ['id' => 0, 'text' => Yii::t("app", 'No matching records found')];
 		}
 		echo \yii\helpers\Json::encode($out);
-	}
-
-	/**
-	 * Finds the Society model based on its primary key value.
-	 * If the model is not found, a 404 HTTP exception will be thrown.
-	 *
-	 * @param integer $id
-	 *
-	 * @return Society the loaded model
-	 * @throws NotFoundHttpException if the model cannot be found
-	 */
-	protected function findModel($id)
-	{
-		if (($model = InSociety::find()->where(["society_id" => $id, "user_id" => $this->_user->id])->one()) !== null) {
-			return $model;
-		} else {
-			throw new NotFoundHttpException('The requested page does not exist.');
-		}
 	}
 }

@@ -26,7 +26,7 @@ class BaseuserController extends BaseController
 	 */
 	public function _setContext($id) {
 		$this->_user = User::findOne($id);
-		\Yii::trace("Set Context for " . $this->_user->name . " (" . $this->_user->id . ")", __METHOD__);
+		//Yii::trace("Set Context for " . $this->_user->name . " (" . $this->_user->id . ")", __METHOD__);
 		if ($this->_user instanceof User)
 			return true;
 		else

@@ -39,8 +39,8 @@ class TournamentHasQuestion extends \yii\db\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'tournament_id' => Yii::t('app', 'Tournament ID'),
-			'questions_id'  => Yii::t('app', 'Questions ID'),
+			'tournament_id' => Yii::t('app', 'Tournament') . ' ' . Yii::t('app', 'ID'),
+			'questions_id'  => Yii::t('app', 'Questions') . ' ' . Yii::t('app', 'ID'),
 		];
 	}
 

@@ -43,6 +43,23 @@ class SignupForm extends Model
 	}
 
 	/**
+	 * @inheritdoc
+	 */
+	public function attributeLabels()
+	{
+		return [
+			'url_slug'     => Yii::t('app', 'Username'),
+			'email'        => Yii::t('app', 'Email'),
+			'givenname'    => Yii::t('app', 'First Name'),
+			'surename'     => Yii::t('app', 'Last Name'),
+			'picture'      => Yii::t('app', 'Profile Picture'),
+			'time'         => Yii::t('app', 'Time'),
+			'societies_id' => Yii::t('app', 'Current Society'),
+			'gender'       => Yii::t('app', 'With which gender do you identify yourself the most'),
+		];
+	}
+
+	/**
 	 * Check if the URL is allowed or if there are any conflicts with Actions
 	 *
 	 * @param type $attribute
@@ -59,23 +76,6 @@ class SignupForm extends Model
 		if (in_array($this->$attribute, $actions)) {
 			$this->addError($attribute, Yii::t("app", 'This URL is not allowed.'));
 		}
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function attributeLabels()
-	{
-		return [
-			'url_slug'  => Yii::t('app', 'Username'),
-			'email'     => Yii::t('app', 'Email'),
-			'givenname' => Yii::t('app', 'Givenname'),
-			'surename'  => Yii::t('app', 'Surename'),
-			'picture'   => Yii::t('app', 'Profile Picture'),
-			'time'      => Yii::t('app', 'Time'),
-			'societies_id' => Yii::t('app', 'Current Society'),
-			'gender'    => Yii::t('app', 'With which gender do you identify yourself the most'),
-		];
 	}
 
 	/**

@@ -12,21 +12,19 @@ use Yii;
  * @property SpecialNeeds $specialNeeds
  * @property Venue        $venue
  */
-class VenueProvidesSpecialNeeds extends \yii\db\ActiveRecord
-{
+class VenueProvidesSpecialNeeds extends \yii\db\ActiveRecord {
+
 	/**
 	 * @inheritdoc
 	 */
-	public static function tableName()
-	{
+	public static function tableName() {
 		return 'venue_provides_special_needs';
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function rules()
-	{
+	public function rules() {
 		return [
 			[['venue_id', 'special_needs_id'], 'required'],
 			[['venue_id', 'special_needs_id'], 'integer']
@@ -36,27 +34,24 @@ class VenueProvidesSpecialNeeds extends \yii\db\ActiveRecord
 	/**
 	 * @inheritdoc
 	 */
-	public function attributeLabels()
-	{
+	public function attributeLabels() {
 		return [
-			'venue_id'         => Yii::t('app', 'Venue ID'),
-			'special_needs_id' => Yii::t('app', 'Special Needs ID'),
+			'venue_id'         => Yii::t('app', 'Venue') . ' ' . Yii::t('app', 'ID'),
+			'special_needs_id' => Yii::t('app', 'Special Needs') . ' ' . Yii::t('app', 'ID'),
 		];
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getSpecialNeeds()
-	{
+	public function getSpecialNeeds() {
 		return $this->hasOne(SpecialNeeds::className(), ['id' => 'special_needs_id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getVenue()
-	{
+	public function getVenue() {
 		return $this->hasOne(Venue::className(), ['id' => 'venue_id']);
 	}
 }

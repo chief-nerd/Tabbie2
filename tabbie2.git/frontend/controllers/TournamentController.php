@@ -22,11 +22,9 @@ use yii\web\UploadedFile;
 /**
  * TournamentController implements the CRUD actions for Tournament model.
  */
-class TournamentController extends BasetournamentController
-{
+class TournamentController extends BasetournamentController {
 
-	public function behaviors()
-	{
+	public function behaviors() {
 		return [
 			'tournamentFilter' => [
 				'class' => TournamentContextFilter::className(),
@@ -68,8 +66,7 @@ class TournamentController extends BasetournamentController
 	 *
 	 * @return mixed
 	 */
-	public function actionIndex()
-	{
+	public function actionIndex() {
 		$searchModel = new TournamentSearch();
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -84,8 +81,7 @@ class TournamentController extends BasetournamentController
 	 *
 	 * @return mixed
 	 */
-	public function actionArchive()
-	{
+	public function actionArchive() {
 		$searchModel = new TournamentSearch();
 		$dataProvider = $searchModel->searchArchive(Yii::$app->request->queryParams);
 
@@ -100,8 +96,7 @@ class TournamentController extends BasetournamentController
 	 *
 	 * @return mixed
 	 */
-	public function actionView($id)
-	{
+	public function actionView($id) {
 		return $this->render('view', ['model' => $this->findModel($id),]);
 	}
 
@@ -114,8 +109,7 @@ class TournamentController extends BasetournamentController
 	 * @return Tournament the loaded model
 	 * @throws NotFoundHttpException if the model cannot be found
 	 */
-	protected function findModel($id)
-	{
+	protected function findModel($id) {
 		if (($model = Tournament::findByPk($id)) !== null) {
 			return $model;
 		} else {
@@ -129,8 +123,7 @@ class TournamentController extends BasetournamentController
 	 *
 	 * @return mixed
 	 */
-	public function actionCreate()
-	{
+	public function actionCreate() {
 		$model = new Tournament();
 		$model->status = Tournament::STATUS_RUNNING;
 
@@ -141,14 +134,16 @@ class TournamentController extends BasetournamentController
 			$model->generateUrlSlug();
 			if ($file instanceof UploadedFile) {
 				$model->saveLogo($file);
-			} else
+			} else {
 				$model->logo = null;
+			}
 
 			if ($model->save()) {
 
 				$convenors = Yii::$app->request->post("Tournament")['convenors'];
-				if ($convenors == "")
+				if ($convenors == "") {
 					$convenors = [0 => Yii::$app->user->id];
+				}
 				models\Convenor::deleteAll(["tournament_id" => $model->id]);
 				foreach ($convenors as $user_id) {
 					$con = new models\Convenor([
@@ -159,8 +154,9 @@ class TournamentController extends BasetournamentController
 				}
 
 				$cas = Yii::$app->request->post("Tournament")['cAs'];
-				if ($cas == "")
+				if ($cas == "") {
 					$cas = [Yii::$app->user->id];
+				}
 				models\Ca::deleteAll(["tournament_id" => $model->id]);
 				foreach ($cas as $user_id) {
 					$ca = new models\Ca([
@@ -171,8 +167,9 @@ class TournamentController extends BasetournamentController
 				}
 
 				$tabmasters = Yii::$app->request->post("Tournament")['tabmasters'];
-				if ($tabmasters == "")
+				if ($tabmasters == "") {
 					$tabmasters = [Yii::$app->user->id];
+				}
 				models\Tabmaster::deleteAll(["tournament_id" => $model->id]);
 				foreach ($tabmasters as $user_id) {
 					$tab = new models\Tabmaster([
@@ -183,14 +180,16 @@ class TournamentController extends BasetournamentController
 				}
 
 				$energyConf = new models\EnergyConfig();
-				if ($energyConf->setup($model))
+				if ($energyConf->setup($model)) {
 					Yii::$app->session->addFlash("success", Yii::t("app", "Tournament successfully created"));
-				else
-					Yii::$app->session->addFlash("warning", Yii::t("app", "Tournament created but Energy config failed!") . ObjectError::getMsg($energyConf));
-
+				} else {
+					Yii::error("Error in Energy Config Setup: " . ObjectError::getMsg($energyConf), __METHOD__);
+					Yii::$app->session->addFlash("error", Yii::t("app", "Tournament created but Energy config failed!") . ObjectError::getMsg($energyConf));
+				}
 				return $this->redirect(['view', 'id' => $model->id]);
 			} else {
 				Yii::$app->session->setFlash("error", Yii::t("app", "Can't save Tournament!") . ObjectError::getMsg($model));
+				Yii::error("Error saving Tournament: " . ObjectError::getMsg($model), __METHOD__);
 			}
 		}
 		//Preset variables
@@ -211,8 +210,7 @@ class TournamentController extends BasetournamentController
 	 *
 	 * @return mixed
 	 */
-	public function actionUpdate($id)
-	{
+	public function actionUpdate($id) {
 		$model = $this->findModel($id);
 
 		if (Yii::$app->request->isPost) {
@@ -230,14 +228,16 @@ class TournamentController extends BasetournamentController
 			if ($file instanceof UploadedFile) {
 				//Save new File
 				$model->saveLogo($file);
-			} else
+			} else {
 				$model->logo = $oldFile;
+			}
 
 			if ($model->save()) {
 
 				$convenors = Yii::$app->request->post("Tournament")['convenors'];
-				if ($convenors == "")
+				if ($convenors == "") {
 					$convenors = [Yii::$app->user->id];
+				}
 				models\Convenor::deleteAll(["tournament_id" => $model->id]);
 				foreach ($convenors as $user_id) {
 					$con = new models\Convenor([
@@ -248,8 +248,9 @@ class TournamentController extends BasetournamentController
 				}
 
 				$cas = Yii::$app->request->post("Tournament")['cAs'];
-				if ($cas == "")
+				if ($cas == "") {
 					$cas = [Yii::$app->user->id];
+				}
 				models\Ca::deleteAll(["tournament_id" => $model->id]);
 				foreach ($cas as $user_id) {
 					$ca = new models\Ca([
@@ -260,8 +261,9 @@ class TournamentController extends BasetournamentController
 				}
 
 				$tabmasters = Yii::$app->request->post("Tournament")['tabmasters'];
-				if ($tabmasters == "")
+				if ($tabmasters == "") {
 					$tabmasters = [Yii::$app->user->id];
+				}
 				models\Tabmaster::deleteAll(["tournament_id" => $model->id]);
 				foreach ($tabmasters as $user_id) {
 					$tab = new models\Tabmaster([
@@ -288,8 +290,7 @@ class TournamentController extends BasetournamentController
 	 *
 	 * @return mixed
 	 */
-	public function actionDelete($id)
-	{
+	public function actionDelete($id) {
 		$this->findModel($id)->delete();
 
 		return $this->redirect(['index']);
@@ -300,20 +301,20 @@ class TournamentController extends BasetournamentController
 	 *
 	 * @return int|false
 	 */
-	public function activeInputAvailable($tournament)
-	{
+	public function activeInputAvailable($tournament) {
 		$user_id = Yii::$app->user->id;
 
 		$activeRound = models\Round::findOne(["tournament_id" => $tournament->id, "displayed" => 1, "published" => 1, "closed" => 0,]);
 
 		if ($activeRound) {
 			$debate = models\Debate::findOneByChair($user_id, $tournament->id, $activeRound->id);
-			if ($debate instanceof models\Debate) return $debate->id;
+			if ($debate instanceof models\Debate) {
+				return $debate->id;
+			}
 		}
 
 		return false;
 	}
-
 
 	/**
 	 * Sync with DebReg System
@@ -323,8 +324,7 @@ class TournamentController extends BasetournamentController
 	 * @return string|\yii\web\Response
 	 * @throws \yii\web\NotFoundHttpException
 	 */
-	public function actionDebregSync($id)
-	{
+	public function actionDebregSync($id) {
 		set_time_limit(0); //Prevent timeout ... this can take time
 
 		$tournament = $this->findModel($id);
@@ -355,12 +355,13 @@ class TournamentController extends BasetournamentController
 					Yii::$app->session->addFlash("success", Yii::t("app", "DebReg Syncing successful"));
 
 					return $this->redirect(['view', 'id' => $tournament->id]);
-				} else
+				} else {
 					return $this->render('sync_resolve', [
 						'unresolved' => $unresolved,
 						'tournament' => $tournament,
 						'model'      => $model
 					]);
+				}
 			} else {
 				$model->addError("password", $error);
 			}
@@ -377,8 +378,7 @@ class TournamentController extends BasetournamentController
 	 *
 	 * @param    integer $id
 	 */
-	public function actionMigrateTabbie($id)
-	{
+	public function actionMigrateTabbie($id) {
 		/** Make output UTF-8 */
 		mb_internal_encoding('UTF-8');
 		mb_http_output('UTF-8');
@@ -397,8 +397,7 @@ class TournamentController extends BasetournamentController
 	 *
 	 * @param    integer $id
 	 */
-	public function actionDownloadSql($id)
-	{
+	public function actionDownloadSql($id) {
 		/** Make output UTF-8 */
 		mb_internal_encoding('UTF-8');
 		mb_http_output('UTF-8');
@@ -407,7 +406,7 @@ class TournamentController extends BasetournamentController
 		mb_regex_encoding('UTF-8');
 		ob_start('mb_output_handler');
 		header('Content-Type: application/octet-stream');
-    	header('Content-Disposition: attachment; filename='.basename($this->_tournament->name).' - '.date("Y-m-d H:i:s").'.sql');
+		header('Content-Disposition: attachment; filename=' . basename($this->_tournament->name) . ' - ' . date("Y-m-d H:i:s") . '.sql');
 
 		$export = new TabbieExport();
 		echo implode("\n", $export->generateSQL($this->_tournament));
@@ -420,8 +419,7 @@ class TournamentController extends BasetournamentController
 	 * @param type $search
 	 * @param type $sid
 	 */
-	public function actionList(array $search = null, $tid = null)
-	{
+	public function actionList(array $search = null, $tid = null) {
 		$search["term"] = HtmlPurifier::process($search["term"]);
 		$tid = intval($tid);
 

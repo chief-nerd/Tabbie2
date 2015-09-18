@@ -17,10 +17,9 @@ use yii\filters\AccessControl;
 /**
  * PanelController implements the CRUD actions for Panel model.
  */
-class PanelController extends BasetournamentController
-{
-	public function behaviors()
-	{
+class PanelController extends BasetournamentController {
+
+	public function behaviors() {
 		return [
 			'tournamentFilter' => [
 				'class' => TournamentContextFilter::className(),
@@ -55,8 +54,7 @@ class PanelController extends BasetournamentController
 	 *
 	 * @return mixed
 	 */
-	public function actionIndex()
-	{
+	public function actionIndex() {
 		$searchModel = new PanelSearch();
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->_tournament->id);
 
@@ -73,8 +71,7 @@ class PanelController extends BasetournamentController
 	 *
 	 * @return mixed
 	 */
-	public function actionView($id)
-	{
+	public function actionView($id) {
 		return $this->render('view', [
 			'model' => $this->findModel($id),
 		]);
@@ -89,8 +86,7 @@ class PanelController extends BasetournamentController
 	 * @return Panel the loaded model
 	 * @throws NotFoundHttpException if the model cannot be found
 	 */
-	protected function findModel($id)
-	{
+	protected function findModel($id) {
 		if (($model = Panel::findOne($id)) !== null) {
 			return $model;
 		} else {
@@ -104,8 +100,7 @@ class PanelController extends BasetournamentController
 	 *
 	 * @return mixed
 	 */
-	public function actionCreate()
-	{
+	public function actionCreate() {
 		$model = new Panel();
 		$model->tournament_id = $this->_tournament->id;
 		$model->used = 0;
@@ -116,13 +111,17 @@ class PanelController extends BasetournamentController
 			if ($model->createAIP()) {
 				return $this->redirect(['panel/index', "tournament_id" => $this->_tournament->id]);
 			} else {
-				Yii::$app->session->addFlash("error", Yii::t("app", "Error saving:") . ObjectError::getMsg($model));
-				for ($i = 0; $i < 4; $i++)
+				Yii::$app->session->addFlash("error", Yii::t("app", "Error saving Panel:") . ObjectError::getMsg($model));
+				Yii::error("Error saving Panel" . ObjectError::getMsg($model), __METHOD__);
+
+				for ($i = 0; $i < 4; $i++) {
 					$model->set_adjudicators[] = Yii::$app->request->post("Panel")["set_adjudicators"][$i];
+				}
 			}
 		} else {
-			for ($i = 0; $i < 4; $i++)
+			for ($i = 0; $i < 4; $i++) {
 				$model->set_adjudicators[] = new Adjudicator();
+			}
 		}
 
 		return $this->render('create', [
@@ -138,22 +137,23 @@ class PanelController extends BasetournamentController
 	 *
 	 * @return mixed
 	 */
-	public function actionUpdate($id)
-	{
+	public function actionUpdate($id) {
 		$model = $this->findModel($id);
 		$model->tournament_id = $this->_tournament->id;
 
 		if ($model->load(Yii::$app->request->post()) && $model->save()) {
 
-			if ($model->createAIP())
+			if ($model->createAIP()) {
 				return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $this->_tournament->id]);
+			}
 		}
 
 		foreach ($model->getAdjudicatorInPanels()->orderBy(['function' => SORT_DESC])->all() as $aip) {
 			$model->set_adjudicators[] = $aip->adjudicator;
 		}
-		for ($i = 0; $i < 2; $i++)
+		for ($i = 0; $i < 2; $i++) {
 			$model->set_adjudicators[] = new Adjudicator();
+		}
 
 		return $this->render('update', [
 			'model' => $model,
@@ -168,18 +168,20 @@ class PanelController extends BasetournamentController
 	 *
 	 * @return mixed
 	 */
-	public function actionDelete($id)
-	{
+	public function actionDelete($id) {
 		$model = $this->findModel($id);
 		$go = true;
 		foreach ($model->adjudicatorInPanels as $aip) {
-			if (!$aip->delete())
+			if (!$aip->delete()) {
 				Yii::$app->session->addFlash("error", "Cant delete AIP: " . ObjectError::getMsg($aip));
+			}
 		}
-		if (!$model->delete())
+		if (!$model->delete()) {
 			Yii::$app->session->addFlash("error", "Cant delete Panel: " . ObjectError::getMsg($model));
-		else
+			Yii::error("Error delete panel: " . ObjectError::getMsg($model), __METHOD__);
+		} else {
 			Yii::$app->session->addFlash("success", Yii::t("app", "Panel deleted"));
+		}
 
 		return $this->redirect(['index', "tournament_id" => $this->_tournament->id]);
 	}

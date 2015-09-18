@@ -51,8 +51,8 @@ class AdjudicatorStrike extends \yii\db\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'adjudicator_from_id' => Yii::t('app', 'Adjudicator From ID'),
-			'adjudicator_to_id'   => Yii::t('app', 'Adjudicator To ID'),
+			'adjudicator_from_id' => Yii::t('app', 'Adjudicator Strike From ID'),
+			'adjudicator_to_id'   => Yii::t('app', 'Adjudicator Strike To ID'),
 		];
 	}
 

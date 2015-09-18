@@ -152,7 +152,7 @@ class RoundController extends BasetournamentController
 				if ($selected_debate->save()) {
 					Yii::$app->session->setFlash('success', Yii::t("app", 'New Venues set'));
 				} else {
-					Yii::$app->session->setFlash('error', Yii::t("app", 'Error while setting new Venue'));
+					Yii::$app->session->setFlash('error', Yii::t("app", 'Error while setting new venue'));
 				}
 			}
 		}
@@ -363,14 +363,16 @@ class RoundController extends BasetournamentController
 
 			if ($a_in_panel->validate() && $b_in_panel->validate()) {
 				if ($a_in_panel->save() && $b_in_panel->save())
-					Yii::$app->session->addFlash("success", Yii::t("app", "Judges {n1} and {n2} switched", [
+					Yii::$app->session->addFlash("success", Yii::t("app", "Adjudicator {n1} and {n2} switched", [
 						"n1" => $a->getName(),
 						"n2" => $b->getName(),
 					]));
 			} else {
-				Yii::$app->session->addFlash("error", Yii::t("app", "Could not switch because: " .
-					ObjectError::getMsg($a_in_panel) . "<br>and<br>" .
-					ObjectError::getMsg($b_in_panel)));
+				Yii::$app->session->addFlash("error", Yii::t("app", "Could not switch because: {a_panel}<br>and<br>{b_panel}", [
+					"a_panel" => ObjectError::getMsg($a_in_panel),
+					"b_panel" => ObjectError::getMsg($b_in_panel),
+				]));
+				Yii::error("Adjudicator switching error: " . ObjectError::getMsg($a_in_panel) . "\n" . ObjectError::getMsg($b_in_panel), __METHOD__);
 			}
 		}
 

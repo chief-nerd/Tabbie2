@@ -4,6 +4,7 @@ namespace common\components;
 
 use common\models\Adjudicator;
 use common\models\Feedback;
+use common\models\LanguageMaintainer;
 use common\models\LanguageOfficer;
 use common\models\Panel;
 use common\models\Team;
@@ -43,6 +44,31 @@ class UserIdentity extends \yii\web\User
 	public function getModel()
 	{
 		return $user = User::findOne($this->id);
+	}
+
+	public function isMaintainer() {
+		$user = $this->getModel();
+		if ($user instanceof User && ($user->role == User::ROLE_BACKEND || $user->role == User::ROLE_ADMIN)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function isLanguageMaintainer($lang = false) {
+		$conditions = ["user_id" => $this->id];
+
+		if ($lang != false) {
+			$conditions["language_language"] = $lang;
+		}
+
+		$maintainer = LanguageMaintainer::findAll($conditions);
+
+		if (count($maintainer) >= 1) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

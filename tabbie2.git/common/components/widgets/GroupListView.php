@@ -50,7 +50,7 @@ class GroupListView extends ListView
 			$output .= Html::tag("div",
 				(($heading) ? Html::tag(
 					"div",
-					Yii::t("app", "Group:") . " " . $heading,
+					Yii::t("app", "Group") . ": " . $heading,
 					["class" => "panel-heading"]
 				) : "") .
 				Html::tag(

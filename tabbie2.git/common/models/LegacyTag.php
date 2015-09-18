@@ -42,8 +42,8 @@ class LegacyTag extends \yii\db\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'motion_tag_id'    => Yii::t('app', 'Motion Tag ID'),
-			'legacy_motion_id' => Yii::t('app', 'Legacy Motion ID'),
+			'motion_tag_id'    => Yii::t('app', 'Motion Tag') . ' ' . Yii::t('app', 'ID'),
+			'legacy_motion_id' => Yii::t('app', 'Legacy Motion') . ' ' . Yii::t('app', 'ID'),
 		];
 	}
 

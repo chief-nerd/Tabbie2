@@ -159,6 +159,7 @@ class UserController extends BaseuserController
 				return $this->redirect(['index']);
 			} else {
 				Yii::$app->session->addFlash("success", Yii::t("app", "Error saving new password"));
+				Yii::error("Error saving new password." . ObjectError::getMsg($model), __METHOD__);
 			}
 		}
 
@@ -196,7 +197,7 @@ class UserController extends BaseuserController
 
 				return $this->redirect(['view', 'id' => $model->id]);
 			} else {
-				Yii::warning("User Model not saved! Errors: " . ObjectError::getMsg($model), __METHOD__);
+				Yii::error("User Model not saved! Errors: " . ObjectError::getMsg($model), __METHOD__);
 				Yii::$app->session->addFlash("error", Yii::t("app", "User not saved!"));
 			}
 		}

@@ -13,21 +13,19 @@ use Yii;
  * @property User       $tabmaster
  * @property Tournament $tournament
  */
-class Tabmaster extends \yii\db\ActiveRecord
-{
+class Tabmaster extends \yii\db\ActiveRecord {
+
 	/**
 	 * @inheritdoc
 	 */
-	public static function tableName()
-	{
+	public static function tableName() {
 		return 'tabmaster';
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function rules()
-	{
+	public function rules() {
 		return [
 			[['user_id', 'tournament_id'], 'required'],
 			[['user_id', 'tournament_id'], 'integer'],
@@ -39,11 +37,10 @@ class Tabmaster extends \yii\db\ActiveRecord
 	/**
 	 * @inheritdoc
 	 */
-	public function attributeLabels()
-	{
+	public function attributeLabels() {
 		return [
-			'user_id'       => Yii::t('app', 'Tabmaster User ID'),
-			'tournament_id' => Yii::t('app', 'Tournament ID'),
+			'user_id'       => Yii::t('app', 'Tabmaster User') . ' ' . Yii::t('app', 'ID'),
+			'tournament_id' => Yii::t('app', 'Tournament') . ' ' . Yii::t('app', 'ID'),
 		];
 	}
 
@@ -51,24 +48,21 @@ class Tabmaster extends \yii\db\ActiveRecord
 	 * @inheritdoc
 	 * @return TournamentQuery
 	 */
-	public static function find()
-	{
+	public static function find() {
 		return new TournamentQuery(get_called_class());
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getUser()
-	{
+	public function getUser() {
 		return $this->hasOne(User::className(), ['id' => 'user_id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getTournament()
-	{
+	public function getTournament() {
 		return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
 	}
 }

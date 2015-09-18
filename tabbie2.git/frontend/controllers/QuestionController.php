@@ -106,7 +106,7 @@ class QuestionController extends BasetournamentController
 				if ($ThasQ->save())
 					return $this->redirect(['view', 'id' => $model->id, "tournament_id" => $this->_tournament->id]);
 				else
-					$model->addError("id", Yii::t("app", "Can't save Tournament Connection"));
+					$model->addError("id", Yii::t("app", "Can't save Tournament connection"));
 			}
 		}
 		$model->param = implode("\r\n", json_decode($model->param));

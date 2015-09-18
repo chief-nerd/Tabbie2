@@ -42,8 +42,8 @@ class Ca extends \yii\db\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'user_id'       => Yii::t('app', 'CA User ID'),
-			'tournament_id' => Yii::t('app', 'Tournament ID'),
+			'user_id'       => Yii::t('app', 'CA') . ' ' . Yii::t('app', 'User') . ' ' . Yii::t('app', 'ID'),
+			'tournament_id' => Yii::t('app', 'Tournament') . ' ' . Yii::t('app', 'ID'),
 		];
 	}
 

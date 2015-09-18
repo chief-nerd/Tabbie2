@@ -345,7 +345,7 @@ class TeamController extends BasetournamentController
 						}
 
 						if (($num = count($data)) != 8) {
-							Yii::$app->session->addFlash("error", Yii::t("app", "File Syntax Wrong"));
+							Yii::$app->session->addFlash("error", Yii::t("app", "File Syntax Wrong! 8 columns expected"));
 							return $this->redirect(['import', "tournament_id" => $this->_tournament->id]);
 						}
 						for ($c = 0; $c < $num; $c++) {

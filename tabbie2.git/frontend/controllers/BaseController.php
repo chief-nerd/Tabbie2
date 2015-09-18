@@ -17,8 +17,6 @@ class BaseController extends Controller
 	public function init()
 	{
 		parent::init();
-		if (!Yii::$app->user->isGuest)
-			Yii::$app->language = Yii::$app->user->language;
 	}
 
 	public function beforeAction($action)

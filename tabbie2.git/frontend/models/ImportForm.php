@@ -28,7 +28,7 @@ class ImportForm extends Model
 		return [
 			self::DEL_O_COMMA   => Yii::t("app", "Comma ( , ) separated file"),
 			self::DEL_O_SEMICOL => Yii::t("app", "Semicolon ( ; ) separated file"),
-			self::DEL_O_TAB     => Yii::t("app", "Tab ( \\t ) separated file")
+			self::DEL_O_TAB => Yii::t("app", "Tab ( ->| ) separated file")
 		];
 	}
 
@@ -49,7 +49,7 @@ class ImportForm extends Model
 	public function attributeLabels()
 	{
 		return [
-			'csvFile'   => Yii::t("app", '*.csv File'),
+			'csvFile' => Yii::t("app", 'CSV File'),
 			'delimiter' => Yii::t("app", 'Delimiter'),
 			'is_test'   => Yii::t("app", 'Mark as Test Data Import (prohibits Email sending)'),
 		];

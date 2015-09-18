@@ -199,6 +199,7 @@ class PublicController extends BasetournamentController
 
 		if ($dataProvider->getCount() == 0) {
 			Yii::$app->session->addFlash("info", Yii::t("app", "No debates found in that round"));
+			Yii::warning("No debates found in round: " . $id, __METHOD__);
 			$this->redirect(["result/index", "tournament_id" => $this->_tournament->id]);
 		}
 

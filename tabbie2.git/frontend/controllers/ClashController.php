@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\components\filter\UserContextFilter;
+use common\components\ObjectError;
 use common\models\Country;
 use common\models\InSociety;
 use common\models\UserClash;
@@ -53,11 +54,14 @@ class ClashController extends BaseuserController
 
 		if ($model->load(Yii::$app->request->post())) {
 			if ($model->save()) {
-				Yii::$app->session->addFlash("success", Yii::t("app", "Individual clash created"));
+				Yii::$app->session->addFlash("success", Yii::t("app", "{object} created", [
+					'object' => Yii::t("app", 'Individual clash')
+				]));
 
 				return $this->redirect(["user/view", "id" => $this->_user->id]);
 			} else {
 				Yii::$app->session->addFlash("error", Yii::t("app", "Individual clash could not be saved"));
+				Yii::error("Individual Clash Save:\n" . ObjectError::getMsg($model), __METHOD__);
 			}
 		}
 
@@ -81,34 +85,21 @@ class ClashController extends BaseuserController
 		if ($model->load(Yii::$app->request->post())) {
 
 			if ($model->save()) {
-				Yii::$app->session->addFlash("success", Yii::t("app", "Individual clash updated"));
+				Yii::$app->session->addFlash("success", Yii::t("app", "{object} updated", [
+					'object' => Yii::t("app", "Individual clash"),
+				]));
 
 				return $this->redirect(['user/view', 'id' => $this->_user->id]);
 			} else {
-				Yii::$app->session->addFlash("error", Yii::t("app", "Individual clash could not be saved"));
+				Yii::$app->session->addFlash("error", Yii::t("app", "{object} could not be saved", [
+					'object' => Yii::t("app", "Individual clash"),
+				]));
 			}
 		}
 
 		return $this->render('update', [
 			'model' => $model,
 		]);
-	}
-
-	/**
-	 * Deletes an existing Society model.
-	 * If deletion is successful, the browser will be redirected to the 'index' page.
-	 *
-	 * @param integer $id
-	 *
-	 * @return mixed
-	 */
-	public function actionDelete($id)
-	{
-		$this->findModel($id)->delete();
-
-		Yii::$app->session->addFlash("success", Yii::t("app", "Individual clash deleted"));
-
-		return $this->redirect(['user/view', 'id' => $this->_user->id]);
 	}
 
 	/**
@@ -127,5 +118,23 @@ class ClashController extends BaseuserController
 		} else {
 			throw new NotFoundHttpException('The requested page does not exist.');
 		}
+	}
+
+	/**
+	 * Deletes an existing Society model.
+	 * If deletion is successful, the browser will be redirected to the 'index' page.
+	 *
+	 * @param integer $id
+	 *
+	 * @return mixed
+	 */
+	public function actionDelete($id) {
+		$this->findModel($id)->delete();
+
+		Yii::$app->session->addFlash("success", Yii::t("app", "{object} deleted", [
+			'object' => Yii::t("app", "Individual clash")
+		]));
+
+		return $this->redirect(['user/view', 'id' => $this->_user->id]);
 	}
 }

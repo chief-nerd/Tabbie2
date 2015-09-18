@@ -58,13 +58,13 @@ class LegacyMotion extends \yii\db\ActiveRecord
 		return [
 			'id'         => Yii::t('app', 'ID'),
 			'motion'     => Yii::t('app', 'Motion'),
-			'language'   => Yii::t("app", 'Language'),
+			'language'   => Yii::t('app', 'Language'),
 			'time'       => Yii::t('app', 'Date'),
 			'infoslide'  => Yii::t('app', 'Infoslide'),
 			'tournament' => Yii::t('app', 'Tournament'),
 			'link'       => Yii::t('app', 'Link'),
-			'by_user_id' => Yii::t('app', 'By User ID'),
-			'tags'       => Yii::t("app", 'Motion Tags'),
+			'by_user_id' => Yii::t('app', 'By User') . ' ' . Yii::t('app', 'ID'),
+			'tags'       => Yii::t('app', 'Motion Tags'),
 		];
 	}
 

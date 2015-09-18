@@ -43,7 +43,7 @@ function (element, callback) {
 SCRIPT;
 
 	echo $form->field($model, 'clash_with')->hint(Yii::t("app", "Not every debater is yet in the system. :)"))->widget(Select2::classname(), [
-		'options'       => ['placeholder' => Yii::t("app", 'Search for a user ...')],
+            'options' => ['placeholder' => Yii::t("app", 'Search for a User ...')],
 		'addon'         => [
 			"prepend" => [
 				"content" => \kartik\helpers\Html::icon("user")

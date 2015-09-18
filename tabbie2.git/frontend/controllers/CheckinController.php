@@ -116,9 +116,9 @@ class CheckinController extends BasetournamentController
 		$rows += models\Adjudicator::updateAll(["checkedin" => 0], ["tournament_id" => $this->_tournament->id]);
 
 		if ($rows > 0)
-			Yii::$app->session->addFlash("success", Yii::t("app", "Checking Data reseted"));
+			Yii::$app->session->addFlash("success", Yii::t("app", "Checking Flags reset"));
 		else
-			Yii::$app->session->addFlash("info", Yii::t("app", "Already clean"));
+			Yii::$app->session->addFlash("info", Yii::t("app", "There was no need for a reset"));
 
 		return $this->redirect(["tournament/view", "id" => $this->_tournament->id]);
 	}

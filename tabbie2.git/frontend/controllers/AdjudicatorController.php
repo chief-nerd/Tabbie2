@@ -130,11 +130,14 @@ class AdjudicatorController extends BasetournamentController
 					$newPanel->refresh();
 					if ($oldPanel->check() && $newPanel->check())
 						return json_encode($newLines);
-					else
-						throw new Exception(Yii::t("app", "Did not pass panel check old: {old} / new: {new}", [
+					else {
+						$error_message = Yii::t("app", "Did not pass panel check old: {old} / new: {new}", [
 							"old" => (($oldPanel->check()) ? 'true' : 'false'),
 							"new" => (($newPanel->check()) ? 'true' : 'false'),
-						]));
+						]);
+						Yii::error($error_message, __METHOD__);
+						throw new Exception($error_message);
+					}
 				} else
 					throw new Exception("No Panel");
 			}
@@ -360,8 +363,12 @@ class AdjudicatorController extends BasetournamentController
 						$adj->tournament_id = $this->_tournament->id;
 						$adj->strength = intval($row[4][0]);
 						$adj->society_id = $societyID;
-						if (!$adj->save())
-							Yii::$app->session->addFlash("error", Yii::t("app", "Save error: {message}", ["message" => ObjectError::getMsg($adj)]));
+						if (!$adj->save()) {
+							Yii::$app->session->addFlash("error", Yii::t("app", "Can't save {object}! Error: {message}", [
+								"object"  => Yii::t("app", "Adjudicator"),
+								"message" => ObjectError::getMsg($adj)
+							]));
+						}
 					}
 				}
 				set_time_limit(30);
@@ -382,7 +389,7 @@ class AdjudicatorController extends BasetournamentController
 						}
 
 						if (($num = count($data)) != 5) {
-							Yii::$app->session->addFlash("error", Yii::t("app", "File Syntax Wrong"));
+							Yii::$app->session->addFlash("error", Yii::t("app", "File Syntax not matching. 5 columns required."));
 							return $this->redirect(['import', "tournament_id" => $this->_tournament->id]);
 						}
 						$coldata = [];

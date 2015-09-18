@@ -47,6 +47,31 @@ class Panel extends \yii\db\ActiveRecord
 	}
 
 	/**
+	 * @inheritdoc
+	 */
+	public function rules() {
+		return [
+			[['strength', 'tournament_id', 'used', 'is_preset'], 'integer'],
+			[['time', 'set_adjudicators'], 'safe'],
+			[['tournament_id'], 'required']
+		];
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function attributeLabels() {
+		return [
+			'id'            => Yii::t('app', 'ID'),
+			'strength'      => Yii::t('app', 'Strength'),
+			'time'          => Yii::t('app', 'Time'),
+			'tournament_id' => Yii::t('app', 'Tournament') . ' ' . Yii::t('app', 'ID'),
+			'used'          => Yii::t('app', 'Used'),
+			'is_preset'     => Yii::t('app', 'Is Preset Panel'),
+		];
+	}
+
+	/**
 	 * @param Array $a
 	 * @param Array $b
 	 *
@@ -72,33 +97,6 @@ class Panel extends \yii\db\ActiveRecord
 			else
 				return 0;
 		}
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function rules()
-	{
-		return [
-			[['strength', 'tournament_id', 'used', 'is_preset'], 'integer'],
-			[['time', 'set_adjudicators'], 'safe'],
-			[['tournament_id'], 'required']
-		];
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function attributeLabels()
-	{
-		return [
-			'id'            => Yii::t('app', 'ID'),
-			'strength'      => Yii::t('app', 'Strength'),
-			'time'          => Yii::t('app', 'Time'),
-			'tournament_id' => Yii::t('app', 'Tournament ID'),
-			'used'          => Yii::t('app', 'Used'),
-			'is_preset'     => Yii::t('app', 'Is Preset Panel'),
-		];
 	}
 
 	public function getAdjudicatorsString()
@@ -176,9 +174,9 @@ class Panel extends \yii\db\ActiveRecord
 		if ($amount > 0 && $amount_chairs == 1)
 			return true;
 		else
-			throw new Exception(Yii::t("app", "Panel #{id} has {chairs} chairs", [
+			throw new Exception(Yii::t("app", "Panel #{id} has {amount} chairs", [
 				"id"     => $this->id,
-				"chairs" => $amount_chairs,
+				"amount" => $amount_chairs,
 			]));
 
 		return false;

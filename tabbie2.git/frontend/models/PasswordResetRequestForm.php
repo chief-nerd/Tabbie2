@@ -2,6 +2,7 @@
 
 namespace frontend\models;
 
+use common\components\ObjectError;
 use common\models\User;
 use yii\base\Model;
 use Yii;
@@ -9,16 +10,14 @@ use Yii;
 /**
  * Password reset request form
  */
-class PasswordResetRequestForm extends Model
-{
+class PasswordResetRequestForm extends Model {
 
 	public $email;
 
 	/**
 	 * @inheritdoc
 	 */
-	public function rules()
-	{
+	public function rules() {
 		return [
 			['email', 'filter', 'filter' => 'trim'],
 			['email', 'required'],
@@ -36,8 +35,7 @@ class PasswordResetRequestForm extends Model
 	 *
 	 * @return boolean whether the email was send
 	 */
-	public function sendEmail()
-	{
+	public function sendEmail() {
 		/* @var $user User */
 		$user = User::findOne([
 			'status' => User::STATUS_ACTIVE,
@@ -55,10 +53,14 @@ class PasswordResetRequestForm extends Model
 					->setTo($this->email)
 					->setSubject(Yii::t("app", 'Password reset for {user}', ["user" => $user->getName()]))
 					->send();
-			} else
+			} else {
 				$this->addError("user", $user->getErrors());
-		} else
+				Yii::error("Password reset error: " . ObjectError::getMsg($user), __METHOD__);
+			}
+		} else {
 			$this->addError("email", Yii::t("app", "User not found with this Email"));
+			Yii::warning("User not found: " . $this->email, __METHOD__);
+		}
 
 		return false;
 	}

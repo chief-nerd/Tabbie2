@@ -36,7 +36,9 @@
     "jakobreiter/yii2-quagga-js": "dev-master",
     "kartik-v/yii2-tabs-x": "dev-master",
     "kartik-v/yii2-slider": "dev-master",
-    "kartik-v/yii2-export": "*"
+    "kartik-v/yii2-export": "*",
+    "codemix/yii2-localeurls": "^1.2",
+    "kartik-v/yii2-editable": "^1.7"
   },
   "require-dev": {
     "yiisoft/yii2-codeception": "*",

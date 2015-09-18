@@ -26,6 +26,25 @@ class EnergyConfig extends \yii\db\ActiveRecord
 		return 'energy_config';
 	}
 
+	public static function get($key, $tournament_id) {
+		$conf = EnergyConfig::findByCondition([
+			"key"           => $key,
+			"tournament_id" => $tournament_id,
+		])->one();
+		if ($conf) {
+			return $conf->value;
+		} else {
+			return null;
+		}
+	}
+
+	public static function loadArray($tournament_id) {
+		$config = [];
+		$en = EnergyConfig::find()->tournament($tournament_id)->asArray()->all();
+
+		return ArrayHelper::map($en, "key", "value");
+	}
+
 	/**
 	 * @inheritdoc
 	 * @return TournamentQuery
@@ -56,7 +75,7 @@ class EnergyConfig extends \yii\db\ActiveRecord
 		return [
 			'id'            => Yii::t('app', 'ID'),
 			'key'           => Yii::t('app', 'Key'),
-			'tournament_id' => Yii::t('app', 'Tournament ID'),
+			'tournament_id' => Yii::t('app', 'Tournament') . ' ' . Yii::t('app', 'ID'),
 			'label'         => Yii::t('app', 'Label'),
 			'value'         => Yii::t('app', 'Value'),
 		];
@@ -82,26 +101,6 @@ class EnergyConfig extends \yii\db\ActiveRecord
 			return true;
 		else
 			return false;
-	}
-
-	public static function get($key, $tournament_id)
-	{
-		$conf = EnergyConfig::findByCondition([
-			"key"           => $key,
-			"tournament_id" => $tournament_id,
-		])->one();
-		if ($conf)
-			return $conf->value;
-		else
-			return null;
-	}
-
-	public static function loadArray($tournament_id)
-	{
-		$config = [];
-		$en = EnergyConfig::find()->tournament($tournament_id)->asArray()->all();
-
-		return ArrayHelper::map($en, "key", "value");
 	}
 
 }

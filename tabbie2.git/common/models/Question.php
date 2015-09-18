@@ -66,6 +66,19 @@ class Question extends \yii\db\ActiveRecord
 		];
 	}
 
+	public static function starLabels($id = null) {
+		$table = [
+			0 => Yii::t("app", "Not Rated"),
+			1 => Yii::t("app", "Not Good"),
+			2 => Yii::t("app", "Decent"),
+			3 => Yii::t("app", "Good"),
+			4 => Yii::t("app", "Very Good"),
+			5 => Yii::t("app", "Excellent"),
+		];
+
+		return ($id !== null) ? $table[$id] : $table;
+	}
+
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
@@ -102,20 +115,6 @@ class Question extends \yii\db\ActiveRecord
 		];
 
 		return ($id === null) ? $types : $types[$id];
-	}
-
-	public static function starLabels($id = null)
-	{
-		$table = [
-			0 => Yii::t("app", "not rated"),
-			1 => Yii::t("app", "not good"),
-			2 => Yii::t("app", "decent"),
-			3 => Yii::t("app", "good"),
-			4 => Yii::t("app", "vergy good"),
-			5 => Yii::t("app", "excellent"),
-		];
-
-		return ($id !== null) ? $table[$id] : $table;
 	}
 
 	public function getParam()

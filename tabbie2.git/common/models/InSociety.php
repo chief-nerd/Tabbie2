@@ -43,8 +43,8 @@ class InSociety extends \yii\db\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'user_id'    => Yii::t('app', 'User ID'),
-			'society_id' => Yii::t('app', 'Society ID'),
+			'user_id'    => Yii::t('app', 'User') . ' ' . Yii::t('app', 'ID'),
+			'society_id' => Yii::t('app', 'Society') . ' ' . Yii::t('app', 'ID'),
 			'starting'   => Yii::t('app', 'Starting'),
 			'ending'     => Yii::t('app', 'Ending'),
 		];

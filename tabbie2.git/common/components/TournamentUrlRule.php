@@ -69,7 +69,7 @@ class TournamentUrlRule extends UrlRule
 						unset($params['id']);
 				}
 			} else {
-				if ($parts[1] == "index") {
+				if (!isset($parts[1]) || $parts[1] == "index") {
 					//index Case
 					//don't unset, end / needed
 					$parts[1] = null;

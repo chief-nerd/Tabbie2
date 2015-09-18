@@ -48,7 +48,9 @@ function (element, callback) {
 SCRIPT;
 
 	echo $form->field($model, 'user_id')->widget(Select2::classname(), [
-		'options'       => ['placeholder' => Yii::t("app", 'Search for a user ...')],
+            'options' => ['placeholder' => Yii::t("app", 'Search for a {object} ...', [
+                    'object' => Yii::t("app", "User")
+            ])],
 		'addon'         => [
 			"prepend" => [
 				"content" => \kartik\helpers\Html::icon("user")
@@ -70,7 +72,9 @@ SCRIPT;
 	<?
 	echo $form->field($model, 'society_id')->widget(Select2::classname(), [
 		'options'       => [
-			'placeholder' => Yii::t("app", 'Search for a societies ...'),
+                'placeholder' => Yii::t("app", 'Search for a {object} ...', [
+                        'object' => Yii::t("app", "Society")
+                ]),
 			'multiple' => false,
 		],
 		'addon'         => [

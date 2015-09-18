@@ -19,8 +19,8 @@ class VenueValidator extends Validator
 	public function init()
 	{
 		parent::init();
-		$this->low_message = Yii::t("app", "Not enough venues ...");
-		$this->high_message = Yii::t("app", "Too many venues ...");
+		$this->low_message = Yii::t("app", "Not enough venues") . ' ...';
+		$this->high_message = Yii::t("app", "Too many venues") . ' ...';
 	}
 
 	public function validateAttribute($model, $attribute)

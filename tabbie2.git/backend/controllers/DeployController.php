@@ -92,6 +92,14 @@ class DeployController extends Controller
 		$out[] = "<h3>=== Migrate ===</h3>";
 		exec("php $git_root/tabbie2.git/yii migrate/up --interactive=0", $out);
 
+		//update translation
+		$out[] = "<h3>=== Translations ===</h3>";
+		exec("php $git_root/tabbie2.git/yii message/extract common/messages/config.php", $translate);
+		//Only last 2 lines
+		$last = count($translate) - 1;
+		$out[] = $translate[$last - 1];
+		$out[] = $translate[$last];
+
 		//Flush Caches
 		$out[] = "<h3>=== Flush Cache ===</h3>";
 		exec("php $git_root/tabbie2.git/yii cache/flush-schema --interactive=0", $out);

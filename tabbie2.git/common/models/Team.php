@@ -31,8 +31,7 @@ use yii\helpers\ArrayHelper;
  * @property User          $speakerB
  * @property-read integer  $speaks
  */
-class Team extends \yii\db\ActiveRecord
-{
+class Team extends \yii\db\ActiveRecord {
 
 	const OG = 0;
 	const OO = 1;
@@ -47,8 +46,7 @@ class Team extends \yii\db\ActiveRecord
 	const IRREGULAR_B_NOSHOW = 3;
 	public $positionMatrix;
 
-	public static function getSpeaker()
-	{
+	public static function getSpeaker() {
 		return ["A", "B"];
 	}
 
@@ -59,8 +57,7 @@ class Team extends \yii\db\ActiveRecord
 	 *
 	 * @return array
 	 */
-	public static function getPosLabel($id)
-	{
+	public static function getPosLabel($id) {
 		$labels = [
 			self::OG => Yii::t("app", 'Opening Government'),
 			self::OO => Yii::t("app", 'Opening Opposition'),
@@ -74,8 +71,7 @@ class Team extends \yii\db\ActiveRecord
 	/**
 	 * @inheritdoc
 	 */
-	public static function tableName()
-	{
+	public static function tableName() {
 		return 'team';
 	}
 
@@ -83,9 +79,75 @@ class Team extends \yii\db\ActiveRecord
 	 * @inheritdoc
 	 * @return VTAQuery
 	 */
-	public static function find()
-	{
+	public static function find() {
 		return new VTAQuery(get_called_class());
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function rules() {
+		return [
+			[['tournament_id', 'name', 'society_id'], 'required'],
+			[['speakerA_id', 'speakerB_id'], 'default'],
+			[['tournament_id', 'active', 'society_id', 'isSwing', 'language_status', 'points', 'speakerA_speaks', 'speakerB_speaks'], 'integer'],
+			[['name'], 'string', 'max' => 255]
+		];
+	}
+
+	/**
+	 * Call before model save
+	 *
+	 * @param type $insert
+	 *
+	 * @return boolean
+	 */
+	public function beforeSave($insert) {
+		if (parent::beforeSave($insert)) {
+			if ($insert === true) //Do only on new Record
+			{
+				if ($this->speakerA && $this->speakerB) {
+					if ($this->speakerA->language_status == User::LANGUAGE_ENL && $this->speakerB->language_status == User::LANGUAGE_ENL) {
+						$this->language_status = User::LANGUAGE_ENL;
+					} else {
+						if ($this->speakerA->language_status == User::LANGUAGE_ESL && $this->speakerB->language_status == User::LANGUAGE_ESL) {
+							$this->language_status = User::LANGUAGE_ESL;
+						} else {
+							if ($this->speakerA->language_status == User::LANGUAGE_EFL && $this->speakerB->language_status == User::LANGUAGE_EFL) {
+								$this->language_status = User::LANGUAGE_EFL;
+							} else {
+								$this->language_status = User::LANGUAGE_NONE;
+							}
+						}
+					}
+				} else {
+					$this->language_status = User::LANGUAGE_NONE;
+				}
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function attributeLabels() {
+		return [
+			'id'              => Yii::t('app', 'ID'),
+			'name'            => Yii::t('app', 'Team') . ' ' . Yii::t('app', 'Name'),
+			'active'          => Yii::t('app', 'Active'),
+			'tournament_id'   => Yii::t('app', 'Tournament') . ' ' . Yii::t('app', 'ID'),
+			'speakerName'     => Yii::t('app', 'Speaker') . ' ' . Yii::t('app', 'Name'),
+			'speakerA_id'     => Yii::t('app', 'Speaker') . ' ' . self::POS_A,
+			'speakerB_id'     => Yii::t('app', 'Speaker') . ' ' . self::POS_B,
+			'societyName'     => Yii::t('app', 'Society') . ' ' . Yii::t('app', 'Name'),
+			'society_id'      => Yii::t('app', 'Society'),
+			'isSwing'         => Yii::t('app', 'Swing Team'),
+			'language_status' => Yii::t('app', 'Language Status'),
+		];
 	}
 
 	/**
@@ -94,8 +156,7 @@ class Team extends \yii\db\ActiveRecord
 	 * @param Team $a
 	 * @param Team $b
 	 */
-	public static function compare_points($a, $b)
-	{
+	public static function compare_points($a, $b) {
 		$ap = $a["points"];
 		$bp = $b["points"];
 
@@ -115,8 +176,7 @@ class Team extends \yii\db\ActiveRecord
 	 * @uses Team::getLevel
 	 * @return bool
 	 */
-	public static function is_swappable_with($team, $other_team, $line_a_level, $line_b_level)
-	{
+	public static function is_swappable_with($team, $other_team, $line_a_level, $line_b_level) {
 		$result = ($team["id"] != $other_team["id"]) &&
 			(($team["points"] == $other_team["points"]) ||
 				($line_a_level == $line_b_level));
@@ -132,8 +192,7 @@ class Team extends \yii\db\ActiveRecord
 	 *
 	 * @return integer
 	 */
-	public static function getPositionBadness($pos, $team)
-	{
+	public static function getPositionBadness($pos, $team) {
 
 		$positions = $team["positionMatrix"];
 		$badness_lookup = Team::PositionBadnessTable();
@@ -142,8 +201,9 @@ class Team extends \yii\db\ActiveRecord
 		sort($positions);
 
 		while (($positions[0] + $positions[1] + $positions[2] + $positions[3]) >= 10) {
-			for ($i = 0; $i < 4; $i++)
+			for ($i = 0; $i < 4; $i++) {
 				$positions[$i] = max(0, $positions[$i] - 1);
+			}
 		}
 
 		return $badness_lookup["{$positions[0]}, {$positions[1]}, {$positions[2]}, {$positions[3]}"];
@@ -155,8 +215,7 @@ class Team extends \yii\db\ActiveRecord
 	 * @todo make that dynamic, bitch!
 	 * @return array
 	 */
-	public static function PositionBadnessTable()
-	{
+	public static function PositionBadnessTable() {
 		return [
 			"0, 0, 0, 0" => 0,
 			"0, 0, 0, 1" => 0,
@@ -241,8 +300,7 @@ class Team extends \yii\db\ActiveRecord
 	 *
 	 * @return array[4]
 	 */
-	public static function getPastPositionMatrix($id, $tournament_id)
-	{
+	public static function getPastPositionMatrix($id, $tournament_id) {
 
 		$pos = Yii::$app->db->createCommand("
 		SELECT count(*) FROM debate WHERE tournament_id = $tournament_id && og_team_id = $id
@@ -256,96 +314,29 @@ class Team extends \yii\db\ActiveRecord
 		return ArrayHelper::getColumn($pos, "count(*)");
 	}
 
-	public static function getIrregularOptions($id = null)
-	{
+	public static function getIrregularOptions($id = null) {
 		$options = [
 			self::IRREGULAR_NORMAL   => Yii::t("app", "Everything normal"),
 			self::IRREGULAR_SWING    => Yii::t("app", "Was replaced by swing team"),
-			self::IRREGULAR_A_NOSHOW => Yii::t("app", "Speaker A didn't show up"),
-			self::IRREGULAR_B_NOSHOW => Yii::t("app", "Speaker B didn't show up"),
+			self::IRREGULAR_A_NOSHOW => Yii::t("app", "Speaker {letter} didn't show up", ["letter" => self::POS_A]),
+			self::IRREGULAR_B_NOSHOW => Yii::t("app", "Speaker {letter} didn't show up", ["letter" => self::POS_B]),
 		];
 
 		return (isset($options[$id])) ? $options[$id] : $options;
 	}
 
-	/**
-	 * @inheritdoc
-	 */
-	public function rules()
-	{
-		return [
-			[['tournament_id', 'name', 'society_id'], 'required'],
-			[['speakerA_id', 'speakerB_id'], 'default'],
-			[['tournament_id', 'active', 'society_id', 'isSwing', 'language_status', 'points', 'speakerA_speaks', 'speakerB_speaks'], 'integer'],
-			[['name'], 'string', 'max' => 255]
-		];
-	}
-
-	/**
-	 * Call before model save
-	 *
-	 * @param type $insert
-	 *
-	 * @return boolean
-	 */
-	public function beforeSave($insert)
-	{
-		if (parent::beforeSave($insert)) {
-			if ($insert === true) //Do only on new Record
-			{
-				if ($this->speakerA && $this->speakerB) {
-					if ($this->speakerA->language_status == User::LANGUAGE_ENL && $this->speakerB->language_status == User::LANGUAGE_ENL)
-						$this->language_status = User::LANGUAGE_ENL;
-					else if ($this->speakerA->language_status == User::LANGUAGE_ESL && $this->speakerB->language_status == User::LANGUAGE_ESL)
-						$this->language_status = User::LANGUAGE_ESL;
-					else if ($this->speakerA->language_status == User::LANGUAGE_EFL && $this->speakerB->language_status == User::LANGUAGE_EFL)
-						$this->language_status = User::LANGUAGE_EFL;
-					else $this->language_status = User::LANGUAGE_NONE;
-				} else
-					$this->language_status = User::LANGUAGE_NONE;
-			}
-
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function attributeLabels()
-	{
-		return [
-			'id'              => Yii::t('app', 'ID'),
-			'name'            => Yii::t('app', 'Team Name'),
-			'active'          => Yii::t('app', 'Active'),
-			'tournament_id'   => Yii::t('app', 'Tournament ID'),
-			'speakerName'     => Yii::t('app', 'Speaker Name'),
-			'speakerA_id'     => Yii::t('app', 'Speaker A'),
-			'speakerB_id'     => Yii::t('app', 'Speaker B'),
-			'societyName'     => Yii::t('app', 'Society Name'),
-			'society_id'      => Yii::t('app', 'Society'),
-			'isSwing'         => Yii::t('app', 'Swing Team'),
-			'language_status' => Yii::t('app', 'Language Status'),
-		];
-	}
-
-	public function getSocietyName()
-	{
+	public function getSocietyName() {
 		return $this->society->fullname;
 	}
 
-	public function getSpeaks()
-	{
+	public function getSpeaks() {
 		return $this->speakerA_speaks + $this->speakerB_speaks;
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getStrikedAdjudicators()
-	{
+	public function getStrikedAdjudicators() {
 		return $this->hasMany(Adjudicator::className(), ['id' => 'adjudicator_id'])
 			->viaTable('team_strike', ['team_id' => 'id']);
 	}
@@ -353,24 +344,21 @@ class Team extends \yii\db\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getTournament()
-	{
+	public function getTournament() {
 		return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getSpeakerA()
-	{
+	public function getSpeakerA() {
 		return $this->hasOne(User::className(), ['id' => 'speakerA_id'])->from('user uA');
 	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getSpeakerB()
-	{
+	public function getSpeakerB() {
 		return $this->hasOne(User::className(), ['id' => 'speakerB_id'])->from('user uB');
 	}
 
@@ -379,8 +367,7 @@ class Team extends \yii\db\ActiveRecord
 	 *
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getInSocieties()
-	{
+	public function getInSocieties() {
 		return InSociety::find()->where("user_id IN (:userA, :userB) AND ending is null", [
 			":userA" => $this->speakerA_id,
 			":userB" => $this->speakerB_id,
@@ -392,8 +379,7 @@ class Team extends \yii\db\ActiveRecord
 	 *
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getSociety()
-	{
+	public function getSociety() {
 		return $this->hasOne(Society::className(), ['id' => 'society_id']);
 	}
 
@@ -406,8 +392,7 @@ class Team extends \yii\db\ActiveRecord
 	 *
 	 * @return int
 	 */
-	public function getPointsAfterRound($number)
-	{
+	public function getPointsAfterRound($number) {
 
 		$points = 0;
 
@@ -424,11 +409,11 @@ class Team extends \yii\db\ActiveRecord
 
 			$debate = $debateQuery->one();
 
-
 			if ($debate instanceof Debate && $debate->result instanceof Result) {
 				foreach (Team::getPos() as $p) {
-					if ($debate->{$p . "_team_id"} == $this->id)
+					if ($debate->{$p . "_team_id"} == $this->id) {
 						$position = $p;
+					}
 				}
 
 				$points += $debate->result->getPoints($position);
@@ -444,8 +429,7 @@ class Team extends \yii\db\ActiveRecord
 	 *
 	 * @return array
 	 */
-	public static function getPos($id = null)
-	{
+	public static function getPos($id = null) {
 		$pos = ["og", "oo", "cg", "co"];
 
 		return (isset($pos[$id])) ? $pos[$id] : $pos;
@@ -458,8 +442,7 @@ class Team extends \yii\db\ActiveRecord
 	 *
 	 * @return Debate
 	 */
-	public function getDebate($roundid)
-	{
+	public function getDebate($roundid) {
 		return $this->getDebates()->andWhere(["round_id" => $roundid]);
 	}
 
@@ -468,8 +451,7 @@ class Team extends \yii\db\ActiveRecord
 	 *
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getDebates()
-	{
+	public function getDebates() {
 		return Debate::findBySql("SELECT * FROM debate WHERE "
 			. "(og_team_id = :teamid "
 			. "OR oo_team_id = :teamid "
@@ -486,8 +468,7 @@ class Team extends \yii\db\ActiveRecord
 	 *
 	 * @return bool
 	 */
-	public function updateCache()
-	{
+	public function updateCache() {
 		/** @var Team $team */
 		$data = $this->getNewCacheData();
 		$this->points = $data["Points"];
@@ -502,8 +483,7 @@ class Team extends \yii\db\ActiveRecord
 	 *
 	 * @return array
 	 */
-	public function getNewCacheData()
-	{
+	public function getNewCacheData() {
 		$calculated_points = 0;
 		$calculated_A_speaks = 0;
 		$calculated_B_speaks = 0;

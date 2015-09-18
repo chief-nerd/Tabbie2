@@ -61,8 +61,8 @@ class BasetournamentController extends BaseController
 				$view->registerMetaTag(["property" => "og:title", "content" => Yii::t("app", "{tournament} on Tabbie2", ["tournament" => $model->fullname])], "og:title");
 				$view->registerMetaTag(["property" => "og:image", "content" => $model->getLogo(true)], "og:image");
 				$view->registerMetaTag(["property" => "og:description", "content" =>
-					Yii::t("app", "{name} is taking place from {start} to {end} hosted by {host} in {country}", [
-						"name" => $model->name,
+					Yii::t("app", "{tournament} is taking place from {start} to {end} hosted by {host} in {country}", [
+						"tournament" => $model->name,
 						"start" => Yii::$app->formatter->asDate($model->start_date, "short"),
 						"end" => Yii::$app->formatter->asDate($model->end_date, "short"),
 						"host" => Html::encode($model->hostedby->fullname),

@@ -35,6 +35,7 @@ AppAsset::register($this);
 		]);
 		$menuItems = [
 			['label' => 'Home', 'url' => ['/site/index']],
+                ['label' => 'Languages', 'url' => ['language/index']],
 			['label' => 'Motion Tags', 'url' => ['motiontag/index']],
 			['label' => 'Societies', 'url' => ['society/index']],
 			['label' => 'Special Needs', 'url' => ['specialneeds/index']],
