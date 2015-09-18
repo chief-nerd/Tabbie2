@@ -47,7 +47,7 @@
     "yiisoft/yii2-debug": "*",
     "yiisoft/yii2-gii": "*",
     "yiisoft/yii2-faker": "*",
-    "yiisoft/yii2-apidoc": "^2.0@dev"
+    "yiisoft/yii2-apidoc": "*"
   },
   "config": {
     "process-timeout": 1800
