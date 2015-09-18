@@ -20,7 +20,7 @@ $config = [
 		],
 		'assetManager' => [
 			'linkAssets' => true,
-			'appendTimestamp' => false,
+			//'appendTimestamp' => false,
 		],
 		'user'         => [
 			'identityClass' => 'common\models\User',
