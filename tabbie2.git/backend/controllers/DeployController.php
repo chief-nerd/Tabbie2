@@ -93,6 +93,7 @@ class DeployController extends Controller
 		exec("php $git_root/tabbie2.git/yii migrate/up --interactive=0", $out);
 
 		//update translation
+		$translate = [];
 		$out[] = "<h3>=== Translations ===</h3>";
 		exec("php $git_root/tabbie2.git/yii message/extract common/messages/config.php", $translate);
 		//Only last 2 lines
@@ -101,7 +102,8 @@ class DeployController extends Controller
 			$out[] = $translate[$last - 1];
 			$out[] = $translate[$last];
 		} else {
-			array_push($out, $translate);
+			$out[] = "Count: " . count($translate);
+			$out[] = implode("<br>", $translate);
 		}
 
 		//Flush Caches
@@ -121,11 +123,13 @@ class DeployController extends Controller
 		$html = "<h2>Git Pull Report $out[1]</h2>\n";
 		$html .= implode("<br>\n", $out);
 
-		Yii::$app->mailer->compose()
+		/*Yii::$app->mailer->compose()
 			->setFrom(['git-report@tabbie.org' => "Git Pull Report"])
 			->setTo(Yii::$app->params["supportEmail"])
 			->setSubject($out[1] . " " . $out[2])
 			->setHtmlBody($html)
-			->send();
+			->send();*/
+
+		echo $html;
 	}
 }
