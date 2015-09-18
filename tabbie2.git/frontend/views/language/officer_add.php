@@ -15,7 +15,7 @@ $this->title = Yii::t('app', 'Add {object}', [
 ]);
 
 $this->params['breadcrumbs'][] = ['label' => $model->tournament->fullname, 'url' => ['tournament/view', "id" => $model->tournament->id]];
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Langauge Officer'), 'url' => ['language/officer', "tournament_id" => $model->tournament->id]];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Language Officer'), 'url' => ['language/officer', "tournament_id" => $model->tournament->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Add');
 ?>
 
