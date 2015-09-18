@@ -9,6 +9,14 @@ use yii\widgets\DetailView;
 $this->title = $model->label;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Languages'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
+$js = <<<JS
+$(document).on('click', '.kv-editable-link', function() {
+    $(this).parent().find("textarea").focus();
+});
+JS;
+
+$this->registerJs($js);
 ?>
 <div class="language-view">
 
@@ -33,6 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                                                    'size'         => 'md',
                                                                    'placement'    => \kartik\popover\PopoverX::ALIGN_TOP,
                                                                    'inputType'    => \kartik\editable\Editable::INPUT_TEXTAREA,
+
                                                                    'pluginEvents' => [
                                                                            "load.complete.popoverX" => "function(event, val) { log('Go'); }",
                                                                    ],
