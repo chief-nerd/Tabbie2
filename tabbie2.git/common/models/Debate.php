@@ -247,19 +247,6 @@ class Debate extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * @deprecated
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getAdjudicatorObjects()
-	{
-		return Adjudicator::findBySql("SELECT adjudicator.* FROM " . Adjudicator::tableName() . " "
-			. "LEFT OUTER JOIN " . AdjudicatorInPanel::tableName() . " ON " . Adjudicator::tableName() . ".id = " . AdjudicatorInPanel::tableName() . ".adjudicator_id "
-			. "LEFT OUTER JOIN " . Panel::tableName() . " ON panel_id = " . Panel::tableName() . ".id "
-			. "LEFT OUTER JOIN " . Debate::tableName() . " ON " . Debate::tableName() . ".panel_id = " . Panel::tableName() . ".id "
-			. "WHERE " . Debate::tableName() . ".id = " . $this->id);
-	}
-
-	/**
 	 * @return mixed
 	 */
 	public function getChair()
