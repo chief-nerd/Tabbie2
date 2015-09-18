@@ -247,15 +247,15 @@ class Adjudicator extends \yii\db\ActiveRecord
 		}
 
 		$table = [
-			0 => Yii::t('app', 'Punished') . ' ' . Yii::t('app', 'Adjudicator'),
-			1 => Yii::t("app", 'Bad') . ' ' . Yii::t('app', 'Adjudicator'),
+			0 => Yii::t('app', 'Punished Adjudicator'),
+			1 => Yii::t("app", 'Bad Adjudicator'),
 			2 => Yii::t("app", 'Can Judge'),
-			3 => Yii::t("app", 'Decent') . ' ' . Yii::t('app', 'Adjudicator'),
-			4 => Yii::t("app", 'Average') . ' ' . Yii::t('app', 'Adjudicator'),
+			3 => Yii::t("app", 'Decent Adjudicator'),
+			4 => Yii::t("app", 'Average Adjudicator'),
 			5 => Yii::t("app", 'High Potential'),
-			6 => Yii::t("app", 'Average') . ' ' . Yii::t('app', 'Chair'),
-			7 => Yii::t("app", 'Good') . ' ' . Yii::t('app', 'Chair'),
-			8 => Yii::t("app", 'Breaking') . ' ' . Yii::t('app', 'Chair'),
+			6 => Yii::t("app", 'Average Chair'),
+			7 => Yii::t("app", 'Good Chair'),
+			8 => Yii::t("app", 'Breaking Chair'),
 			9 => Yii::t("app", 'Chief Adjudicator'),
 		];
 
