@@ -189,10 +189,9 @@ $this->params['breadcrumbs'][] = $this->title;
 		'filterModel'        => $searchModel,
 		'filterUrl' => \yii\helpers\Url::to(["adjudicator/index", "tournament_id" => $tournament->id]),
 		'columns'            => $gridColumns,
-		'emptyText'          => Yii::t("app", "<b>This tournament has no {object}s yet.</b><br>{add} a {object} or {import} them via csv File.", [
-			"object" => "adjudicator",
-			"add"    => Html::a(\kartik\helpers\Html::icon("plus") . "&nbsp" . Yii::t('app', 'Add'), ['create', "tournament_id" => $tournament->id], ['data-pjax' => 0, 'class' => 'btn btn-success']),
-			"import" => Html::a(\kartik\helpers\Html::icon("import") . "&nbsp" . Yii::t('app', 'Import'), ['import', "tournament_id" => $tournament->id], ['data-pjax' => 0, 'class' => 'btn btn-primary'])
+        'emptyText' => Yii::t("app", "<b>This tournament has no adjudicators yet.</b><br>{add_button} or {import_button}.", [
+                "add_button"    => Html::a(\kartik\helpers\Html::icon("plus") . "&nbsp" . Yii::t('app', 'Add'), ['Add an adjudicator', "tournament_id" => $tournament->id], ['data-pjax' => 0, 'class' => 'btn btn-success']),
+                "import_button" => Html::a(\kartik\helpers\Html::icon("import") . "&nbsp" . Yii::t('app', 'Import them via CSV File'), ['import', "tournament_id" => $tournament->id], ['data-pjax' => 0, 'class' => 'btn btn-primary'])
 		]),
 		'id'                 => 'adjudicators',
 		'pjax'               => true,

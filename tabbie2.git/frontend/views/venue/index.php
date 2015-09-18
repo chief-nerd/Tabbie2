@@ -90,10 +90,9 @@ $this->params['breadcrumbs'][] = $this->title;
 		'dataProvider'       => $dataProvider,
 		'columns'            => $gridColumns,
 		'filterUrl' => \yii\helpers\Url::to(["venue/index", "tournament_id" => $tournament->id]),
-		'emptyText'          => Yii::t("app", "This tournament has no {object}s yet.<br>{add} a {object} or {import} them via csv File.", [
-			"object" => "venue",
-			"add"    => Html::a(\kartik\helpers\Html::icon("plus") . "&nbsp" . Yii::t('app', 'Add'), ['create', "tournament_id" => $tournament->id], ['data-pjax' => 0, 'class' => 'btn btn-success']),
-			"import" => Html::a(\kartik\helpers\Html::icon("import") . "&nbsp" . Yii::t('app', 'Import'), ['import', "tournament_id" => $tournament->id], ['data-pjax' => 0, 'class' => 'btn btn-primary'])
+        'emptyText' => Yii::t("app", "This tournament has no venues yet.<br>{add} or {import}", [
+                "add"    => Html::a(\kartik\helpers\Html::icon("plus") . "&nbsp" . Yii::t('app', 'Add a venue'), ['create', "tournament_id" => $tournament->id], ['data-pjax' => 0, 'class' => 'btn btn-success']),
+                "import" => Html::a(\kartik\helpers\Html::icon("import") . "&nbsp" . Yii::t('app', 'Import them via csv File'), ['import', "tournament_id" => $tournament->id], ['data-pjax' => 0, 'class' => 'btn btn-primary'])
 		]),
 		'id'                 => 'venues',
 		'pjax'               => true,
