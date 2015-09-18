@@ -96,9 +96,13 @@ class DeployController extends Controller
 		$out[] = "<h3>=== Translations ===</h3>";
 		exec("php $git_root/tabbie2.git/yii message/extract common/messages/config.php", $translate);
 		//Only last 2 lines
-		$last = count($translate) - 1;
-		$out[] = $translate[$last - 1];
-		$out[] = $translate[$last];
+		if (count($translate) > 2) {
+			$last = count($translate) - 1;
+			$out[] = $translate[$last - 1];
+			$out[] = $translate[$last];
+		} else {
+			array_push($out, $translate);
+		}
 
 		//Flush Caches
 		$out[] = "<h3>=== Flush Cache ===</h3>";
