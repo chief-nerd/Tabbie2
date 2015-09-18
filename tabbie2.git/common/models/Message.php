@@ -31,6 +31,7 @@ class Message extends \yii\db\ActiveRecord {
 			[['id', 'language'], 'required'],
 			[['id'], 'integer'],
 			[['translation'], 'string'],
+			[['translation'], 'trim'],
 			[['language'], 'string', 'max' => 16]
 		];
 	}
