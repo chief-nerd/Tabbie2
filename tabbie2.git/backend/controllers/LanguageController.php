@@ -113,7 +113,7 @@ class LanguageController extends Controller {
 				// EditableColumn in the grid view. We evaluate here a
 				// check to see if buy_amount was posted for the Book model
 				if (isset($posted['translation'])) {
-					$output = $model->translation;
+					$output = trim($model->translation);
 				}
 
 				// similarly you can check if the name attribute was posted as well
