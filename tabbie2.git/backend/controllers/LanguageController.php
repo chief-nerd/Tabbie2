@@ -129,7 +129,10 @@ class LanguageController extends Controller {
 		}
 
 		$dataProvider = new ActiveDataProvider([
-			'query' => Message::find()->where(["language" => $id]),
+			'query'      => Message::find()->where(["language" => $id]),
+			'pagination' => [
+				'pageSize' => 80,
+			],
 		]);
 
 		return $this->render('view', [
