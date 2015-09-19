@@ -85,7 +85,7 @@ class LanguageController extends Controller {
 		// validate if there is a editable input saved via AJAX
 		if (Yii::$app->request->post('hasEditable')) {
 			// instantiate your book model for saving
-			$messageID = unserialize(Yii::$app->request->post('editableKey'))["id"];
+			$messageID = unserialize(Yii::$app->request->post('editableKey'));
 			$model = Message::findOne($messageID);
 
 			// store a default json response as desired by editable
@@ -122,6 +122,7 @@ class LanguageController extends Controller {
 				// }
 				$out = Json::encode(['output' => $output, 'message' => '']);
 			} else {
+				Yii::error("Error saving langauge translation: " . ObjectError::getMsg($model), __METHOD__);
 				$out = Json::encode(['output' => ObjectError::getMsg($model), 'message' => '']);
 			}
 			// return ajax json encoded response and exit
