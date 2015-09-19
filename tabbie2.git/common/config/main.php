@@ -28,18 +28,9 @@ return [
 					'sourceLanguage' => 'en',
 				],
 				'app*'     => [
-					'class'          => 'yii\i18n\PhpMessageSource',
-					'basePath'       => "@common/messages",
-					'sourceLanguage' => 'en',
-				],
-				'language' => [
-					'class'          => 'yii\i18n\PhpMessageSource',
-					'basePath'       => "@common/messages",
-					'sourceLanguage' => 'en',
-				],
-				'country'  => [
-					'class'          => 'yii\i18n\PhpMessageSource',
-					'basePath'       => "@common/messages",
+					'class'           => \yii\i18n\DbMessageSource::className(),
+					'enableCaching'   => true,
+					'cachingDuration' => 3600,
 					'sourceLanguage' => 'en',
 				],
 			],
