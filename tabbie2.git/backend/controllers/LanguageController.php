@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use common\components\ObjectError;
 use common\models\Message;
+use common\models\search\MessageSearch;
 use Yii;
 use common\models\Language;
 use yii\data\ActiveDataProvider;
@@ -129,15 +130,12 @@ class LanguageController extends Controller {
 			return $out;
 		}
 
-		$dataProvider = new ActiveDataProvider([
-			'query'      => Message::find()->where(["language" => $id]),
-			'pagination' => [
-				'pageSize' => 80,
-			],
-		]);
+		$searchModel = new MessageSearch();
+		$dataProvider = $searchModel->search(Yii::$app->request->queryParams, $id);
 
 		return $this->render('view', [
 			'model'        => $lang,
+			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
 		]);
 	}

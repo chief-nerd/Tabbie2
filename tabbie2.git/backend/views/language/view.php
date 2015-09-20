@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use \kartik\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Language */
@@ -22,34 +23,54 @@ $this->registerJs($js);
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?= \kartik\grid\GridView::widget(['dataProvider' => $dataProvider,
-                                       'columns'      => [['class' => 'yii\grid\SerialColumn'],
-                                               'original.category',
-                                               [
-                                                       'class'     => \kartik\grid\DataColumn::className(),
-                                                       'attribute' => 'original.message',
-                                                       'format'    => 'text',
-                                                       'label'     => 'Original',
-                                                       'width'     => '40%',
-                                               ],
-                                               [
-                                                       'class'           => kartik\grid\EditableColumn::className(),
-                                                       'attribute'       => 'translation',
-                                                       'editableOptions' => function ($model, $key, $index, $widget) {
-                                                           return [
-                                                                   'header'       => 'Translation',
-                                                                   'size'         => 'md',
-                                                                   'placement'    => \kartik\popover\PopoverX::ALIGN_TOP,
-                                                                   'inputType'    => \kartik\editable\Editable::INPUT_TEXTAREA,
+    <div class="language-search">
+        <?php
+        $form = ActiveForm::begin([
+                'action' => ["language/view", "id" => $model->language],
+                'method' => 'get',
+        ]);
+        ?>
+        <div class="row">
+            <div class="col-xs-8"><?= $form->field($searchModel, 'translation')->label(Yii::t("app", "Search")) ?></div>
+            <div class="form-group col-xs-4 text-right btn-group buttons">
+                <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>
+                <?= Html::a(Yii::t('app', 'Reset'), ["language/view", "id" => $model->language], ['class' => 'btn btn-default']) ?>
+            </div>
+        </div>
 
-                                                                   'pluginEvents' => [
-                                                                           "load.complete.popoverX" => "function(event, val) { log('Go'); }",
-                                                                   ],
-                                                           ];
-                                                       }
-                                               ],
-                                           //['class' => 'yii\grid\ActionColumn'],
-                                       ],
+        <?php ActiveForm::end(); ?>
+
+    </div>
+
+    <?= \kartik\grid\GridView::widget([
+            'dataProvider' => $dataProvider,
+            'columns'      => [['class' => 'yii\grid\SerialColumn'],
+                    'original.category',
+                    [
+                            'class'     => \kartik\grid\DataColumn::className(),
+                            'attribute' => 'original.message',
+                            'format'    => 'text',
+                            'label'     => 'Original',
+                            'width'     => '40%',
+                    ],
+                    [
+                            'class'           => kartik\grid\EditableColumn::className(),
+                            'attribute'       => 'translation',
+                            'editableOptions' => function ($model, $key, $index, $widget) {
+                                return [
+                                        'header'       => 'Translation',
+                                        'size'         => 'md',
+                                        'placement'    => \kartik\popover\PopoverX::ALIGN_TOP,
+                                        'inputType'    => \kartik\editable\Editable::INPUT_TEXTAREA,
+
+                                        'pluginEvents' => [
+                                                "load.complete.popoverX" => "function(event, val) { log('Go'); }",
+                                        ],
+                                ];
+                            }
+                    ],
+                //['class' => 'yii\grid\ActionColumn'],
+            ],
     ]); ?>
 
 </div>
