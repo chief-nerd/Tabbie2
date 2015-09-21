@@ -128,7 +128,7 @@ use common\models\Team;
 								]) ?></div>
 							<div class="col-xs-12 col-sm-6">
 								<?php echo Yii::t("app", "Round starts at: <b>{time}</b>", [
-									"time" => Yii::$app->formatter->asTime(strtotime($info["debate"]->round->prep_started . " +15min"), "short"),
+                                        "time" => Yii::$app->formatter->asTime($info["debate"]->round->prep_started . "+15min", "short"),
 								]) ?>
 							</div>
 						</div>
