@@ -803,7 +803,7 @@ class Tournament extends \yii\db\ActiveRecord {
 	public function hasOpenFeedback($userid) {
 		$cache_key = $this->cacheKey("feedback_" . $userid);
 
-		$feedbackDebates = false; //Yii::$app->cache->get($cache_key);
+		$feedbackDebates = Yii::$app->cache->get($cache_key);
 
 		if (!is_array($feedbackDebates)) {
 			$team = Team::find()
@@ -865,7 +865,7 @@ class Tournament extends \yii\db\ActiveRecord {
 			$dependency = new DbDependency([
 				"sql" => "SELECT count(*) FROM feedback",
 			]);
-			Yii::$app->cache->set($cache_key, $feedbackDebates, 15, $dependency);
+			Yii::$app->cache->set($cache_key, $feedbackDebates, 60, $dependency);
 		}
 
 		return $feedbackDebates;
