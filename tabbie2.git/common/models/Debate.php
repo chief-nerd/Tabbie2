@@ -234,6 +234,14 @@ class Debate extends \yii\db\ActiveRecord
 	}
 
 	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getAdjudicatorsInPanel() {
+		return $this->hasMany(AdjudicatorInPanel::className(), ["panel_id" => "id"])
+			->viaTable("panel", ["id" => "panel_id"]);
+	}
+
+	/**
 	 * @deprecated
 	 * @return \yii\db\ActiveQuery
 	 */

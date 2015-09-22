@@ -501,3 +501,17 @@ a.desc:after {
 .debate-history .us {
     background-color: #FFF8D9;
 }
+
+.btn-group .btn + .btn {
+	margin-left: 0;
+}
+
+.btn-group-justified > .btn-group .btn {
+	width: inherit;
+}
+
+.btn-group-justified > .btn-group.splitbutton .dropdown-menu {
+	right: 0px !important;
+	min-width: 100%;
+	text-align: justify;
+}

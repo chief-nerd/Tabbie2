@@ -6,6 +6,7 @@ use JmesPath\Tests\_TestJsonStringClass;
 use kartik\widgets\TimePicker;
 use Yii;
 use yii\base\Exception;
+use yii\caching\DbDependency;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -234,10 +235,6 @@ class Tournament extends \yii\db\ActiveRecord {
 		$name = str_replace('_', ' ', $name);
 		$name = str_replace('St ', 'St. ', $name);
 		return $name;
-	}
-
-	public function cacheKey($key = null) {
-		return $this->url_slug . (($key != null) ? ("_" . $key) : "");
 	}
 
 	/**
@@ -796,6 +793,86 @@ class Tournament extends \yii\db\ActiveRecord {
 
 		return self::format_timezone_name($this->timezone) . " (" . self::format_GMT_offset($offset) . ")";
 		//return $this->getNowUTC();
+	}
+
+	/**
+	 * @param Round $lastRound
+	 *
+	 * @return Array
+	 */
+	public function hasOpenFeedback($userid) {
+		$cache_key = $this->cacheKey("feedback_" . $userid);
+
+		$feedbackDebates = false; //Yii::$app->cache->get($cache_key);
+
+		if (!is_array($feedbackDebates)) {
+			$team = Team::find()
+				->tournament($this->id)
+				->andWhere("speakerA_id = :aid OR speakerB_id = :bid", [
+					"aid" => $userid,
+					"bid" => $userid
+				])
+				->one();
+
+			$judge = Adjudicator::find()
+				->tournament($this->id)
+				->andWhere(["user_id" => $userid])
+				->one();
+
+			if ($team instanceof Team) {
+
+				foreach (Team::getPos() as $pos) {
+					$debate = Debate::find()
+						->tournament($this->id)
+						->joinWith("round")
+						->orderBy(["debate.round_id" => SORT_DESC])
+						->where([
+							'AND',
+							$pos . "_team_id"  => $team->id,
+							$pos . "_feedback" => 0,
+							'displayed'        => 1,
+						])
+						->all();
+
+					foreach ($debate as $d) {
+						$feedbackDebates[] = ["type" => Feedback::FROM_TEAM, "debate" => $d, "ref" => $d->{$pos . "_team_id"}];
+					}
+				}
+
+			}
+
+			if ($judge instanceof Adjudicator) {
+				$aips = AdjudicatorInPanel::find()
+					->joinWith("debate")
+					->where([
+						"adjudicator_id" => $judge->id,
+						"got_feedback"   => 0
+					])
+					->orderBy(["debate.round_id" => SORT_DESC])
+					->all();
+
+				foreach ($aips as $aip) {
+					if ($aip->function == Panel::FUNCTION_CHAIR) {
+						$type = Feedback::FROM_CHAIR;
+					} else {
+						$type = Feedback::FROM_WING;
+					}
+
+					$feedbackDebates[] = ["type" => $type, "debate" => $aip->panel->debate, "ref" => $judge->id];
+				}
+			}
+
+			$dependency = new DbDependency([
+				"sql" => "SELECT count(*) FROM feedback",
+			]);
+			Yii::$app->cache->set($cache_key, $feedbackDebates, 15, $dependency);
+		}
+
+		return $feedbackDebates;
+	}
+
+	public function cacheKey($key = null) {
+		return $this->url_slug . (($key != null) ? ("_" . $key) : "");
 	}
 
 }

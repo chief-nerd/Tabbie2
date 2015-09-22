@@ -63,6 +63,14 @@ class AdjudicatorInPanel extends \yii\db\ActiveRecord
 		return $this->hasOne(Panel::className(), ['id' => 'panel_id']);
 	}
 
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getDebate() {
+		return $this->hasMany(Debate::className(), ['panel_id' => 'id'])
+			->via("panel");
+	}
+
 	public function is_chair()
 	{
 		if ($this->function == Panel::FUNCTION_CHAIR)
