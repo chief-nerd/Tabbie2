@@ -9,6 +9,7 @@ use common\models\AdjudicatorInPanel;
 use common\models\Debate;
 use common\models\DrawLine;
 use common\models\Panel;
+use common\models\Result;
 use common\models\Round;
 use common\models\search\DebateSearch;
 use kartik\mpdf\Pdf;
@@ -255,6 +256,19 @@ class RoundController extends BasetournamentController
 
 		if ($model instanceof Round) {
 
+			$canProceed = true;
+			foreach ($model->debates as $debate) {
+				/** @var Debate $debate */
+				if ($debate->result instanceof Result) {
+					$canProceed = false;
+				}
+			}
+
+			if ($canProceed == false) {
+				Yii::$app->session->addFlash("warning", Yii::t("app", "Already Results entered for this round. Can't redraw!"));
+				$this->redirect(["view", "id" => $id, "tournament_id" => $this->_tournament->id]);
+			}
+
 			$time = microtime(true);
 
 			foreach ($model->debates as $debate) {
@@ -289,6 +303,19 @@ class RoundController extends BasetournamentController
 		$model = Round::findOne(["id" => $id]);
 
 		if ($model instanceof Round) {
+
+			$canProceed = true;
+			foreach ($model->debates as $debate) {
+				/** @var Debate $debate */
+				if ($debate->result instanceof Result) {
+					$canProceed = false;
+				}
+			}
+
+			if ($canProceed == false) {
+				Yii::$app->session->addFlash("warning", Yii::t("app", "Already Results entered for this round. Can't improve!"));
+				$this->redirect(["view", "id" => $id, "tournament_id" => $this->_tournament->id]);
+			}
 
 			try {
 				$time = microtime(true);

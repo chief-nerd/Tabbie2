@@ -83,7 +83,7 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Table View");
 				'format'             => 'raw',
 				'vAlign'             => GridView::ALIGN_MIDDLE,
 				'value'              => function ($model, $key, $index, $widget) {
-					return $model->getChair()->name;
+                    return ($model->getChair()) ? $model->getChair()->name : "-";
 				},
 				'filterType'         => GridView::FILTER_SELECT2,
 				'filter'             => \common\models\search\AdjudicatorSearch::getSearchArray($tournament->id),
