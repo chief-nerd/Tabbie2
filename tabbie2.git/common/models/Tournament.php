@@ -865,7 +865,7 @@ class Tournament extends \yii\db\ActiveRecord {
 			$dependency = new DbDependency([
 				"sql" => "SELECT count(*) FROM feedback",
 			]);
-			Yii::$app->cache->set($cache_key, $feedbackDebates, 60, $dependency);
+			Yii::$app->cache->set($cache_key, $feedbackDebates, 120, $dependency);
 		}
 
 		return $feedbackDebates;
