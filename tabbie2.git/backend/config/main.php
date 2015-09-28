@@ -38,7 +38,8 @@ return [
 			],
 		],
 		'urlManagerFrontend' => array_merge($frontendConfig["components"]["urlManager"], [
-			"class" => "yii\web\urlManager"
+			"class" => \yii\web\UrlManager::className(),
+			"baseUrl" => "",
 		]),
 		'log'                => [
 			'traceLevel' => YII_DEBUG ? 3 : 0,

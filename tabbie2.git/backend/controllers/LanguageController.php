@@ -29,7 +29,7 @@ class LanguageController extends Controller {
 						'actions'       => ['index'],
 						'allow'         => true,
 						'matchCallback' => function ($rule, $action) {
-							return (Yii::$app->user->isLanguageMaintainer(false) || Yii::$app->user->isAdmin());
+							return (Yii::$app->user->isLanguageMaintainer(false) || Yii::$app->user->isMaintainer());
 						}
 					],
 					[
@@ -37,7 +37,7 @@ class LanguageController extends Controller {
 						'allow'         => true,
 						'matchCallback' => function ($rule, $action) {
 							$lang = Yii::$app->request->get("id", false);
-							return (Yii::$app->user->isLanguageMaintainer($lang) || Yii::$app->user->isAdmin());
+							return (Yii::$app->user->isLanguageMaintainer($lang) || Yii::$app->user->isMaintainer());
 						}
 					],
 					[

@@ -23,7 +23,8 @@ class MessageController extends Controller {
 					[
 						'allow'         => true,
 						'matchCallback' => function ($rule, $action) {
-							return (Yii::$app->user->isMaintainer());
+							$lang = Yii::$app->request->get("id", false);
+							return (Yii::$app->user->isLanguageMaintainer($lang) || Yii::$app->user->isMaintainer());
 						}
 					],
 				],
