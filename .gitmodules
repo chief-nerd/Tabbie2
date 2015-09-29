@@ -1,9 +1,3 @@
 [submodule "tabbie2.git/algorithms"]
 	path = tabbie2.git/algorithms
 	url = https://github.com/JakobReiter/tabbie2-algorithms.git
-[submodule "tabbie2.git/common/algorithms"]
-	path = tabbie2.git/common/algorithms
-	url = https://github.com/JakobReiter/tabbie2-algorithms.git
-[submodule "tabbie2-algorithms"]
-	path = tabbie2-algorithms
-	url = https://github.com/JakobReiter/tabbie2-algorithms
