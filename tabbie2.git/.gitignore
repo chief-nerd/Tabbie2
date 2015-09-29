@@ -31,3 +31,8 @@ phpunit.phar
 
 #Subdomain directory
 frontend/web/sub/
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
