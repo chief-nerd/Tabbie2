@@ -58,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		],*/
 		[
 			'class'    => 'kartik\grid\ActionColumn',
-			'template' => '{ENL}&nbsp;{ESL}&nbsp;{EFL}&nbsp;{Interview}',
+			'template' => '{ENL}&nbsp;{ESL}&nbsp;{EFL}&nbsp;{Interview}&nbsp;{NOV}',
 			'buttons'  => [
 				"Interview" => function ($url, $model) {
 					return Html::a("Request Interview", $url, [
@@ -87,6 +87,14 @@ $this->params['breadcrumbs'][] = $this->title;
 				"EFL" => function ($url, $model) {
 					return Html::a("Set to EFL", $url, [
 						'title'     => Yii::t('app', 'Set ESL'),
+						'data-pjax' => '0',
+						'data-toggle-active' => $model->id,
+						'class' => 'btn btn-default',
+					]);
+				},
+				"NOV" => function ($url, $model) {
+					return Html::a("Set to Novice", $url, [
+						'title' => Yii::t('app', 'Set Novice'),
 						'data-pjax' => '0',
 						'data-toggle-active' => $model->id,
 						'class'     => 'btn btn-default',

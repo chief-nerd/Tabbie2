@@ -63,6 +63,8 @@ class User extends ActiveRecord implements IdentityInterface {
 	const LANGUAGE_ESL = 2;
 	const LANGUAGE_EFL = 3;
 	const LANGUAGE_INTERVIEW = 4;
+	const LANGUAGE_MIXED = -1;
+	const LANGUAGE_NOVICE = -2;
 
 	const NONE = "(not set)";
 
@@ -145,7 +147,7 @@ class User extends ActiveRecord implements IdentityInterface {
 			['gender', 'in', 'range' => [self::GENDER_MALE, self::GENDER_FEMALE, self::GENDER_OTHER, self::GENDER_NOTREVEALING]],
 
 			['language_status', 'default', 'value' => self::LANGUAGE_NONE],
-			['language_status', 'in', 'range' => [self::LANGUAGE_NONE, self::LANGUAGE_ENL, self::LANGUAGE_ESL, self::LANGUAGE_EFL, self::LANGUAGE_INTERVIEW]],
+			['language_status', 'in', 'range' => [self::LANGUAGE_NONE, self::LANGUAGE_ENL, self::LANGUAGE_ESL, self::LANGUAGE_EFL, self::LANGUAGE_INTERVIEW, self::LANGUAGE_NOVICE]],
 
 			[['password', 'password_repeat', 'url_slug', 'language', 'time', 'last_change', 'societies_id', 'language_status_update'], 'safe'],
 		];
@@ -394,7 +396,7 @@ class User extends ActiveRecord implements IdentityInterface {
 
 	public static function getLanguageStatusLabel($id = null, $short = false) {
 
-		if ($id == -1) {
+		if ($id == self::LANGUAGE_MIXED) {
 			return Yii::t("app", "mixed");
 		}
 
@@ -413,9 +415,10 @@ class User extends ActiveRecord implements IdentityInterface {
 
 	private static function getLangLabels($short) {
 		return [
-			self::LANGUAGE_ENL => Yii::t("app", "EPL") . (($short) ? "" : (" ," . Yii::t("app", "English as a proficient language"))),
-			self::LANGUAGE_ESL => Yii::t("app", "ESL") . (($short) ? "" : (" ," . Yii::t("app", "English as a second language"))),
-			self::LANGUAGE_EFL => Yii::t("app", "EFL") . (($short) ? "" : (" ," . Yii::t("app", "English as a foreign language"))),
+			self::LANGUAGE_ENL => Yii::t("app", "EPL") . (($short) ? "" : (", " . Yii::t("app", "English as proficient language"))),
+			self::LANGUAGE_ESL => Yii::t("app", "ESL") . (($short) ? "" : (", " . Yii::t("app", "English as a second language"))),
+			self::LANGUAGE_EFL => Yii::t("app", "EFL") . (($short) ? "" : (", " . Yii::t("app", "English as a foreign language"))),
+			self::LANGUAGE_NOVICE => ($short) ? Yii::t("app", "NOV") : Yii::t("app", "Novice"),
 		];
 	}
 

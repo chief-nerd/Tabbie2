@@ -77,6 +77,9 @@ class LanguageController extends BasetournamentController {
 				case "Interview":
 					$user->language_status = User::LANGUAGE_INTERVIEW;
 					break;
+				case "NOV":
+					$user->language_status = User::LANGUAGE_NOVICE;
+					break;
 				default:
 					Yii::$app->session->addFlash("error", Yii::t("app", "Not a valid language options in params"));
 					Yii::error("Not a valid language options in params: " . $status, __METHOD__);

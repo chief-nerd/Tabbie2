@@ -47,19 +47,9 @@ class TabController extends BasetournamentController
 	 */
 	public function actionLiveTeam()
 	{
-
-		$lines = PublishTabTeam::generateTeamTab($this->_tournament);
-
-		$dataProvider = new ArrayDataProvider([
-			'allModels' => $lines,
-			'sort'      => [
-				'attributes' => ['enl_place'],
-			],
-			'pagination' => false
-		]);
+		$dataProvider = PublishTabTeam::getDataProvider($this->_tournament, true);
 
 		return $this->render('team', [
-			'lines' => $lines,
 			'dataProvider' => $dataProvider,
 		]);
 	}
@@ -71,21 +61,9 @@ class TabController extends BasetournamentController
 	 */
 	public function actionLiveSpeaker()
 	{
-
-		$lines = PublishTabSpeaker::generateSpeakerTab($this->_tournament);
-
-		$dataProvider = new ArrayDataProvider([
-			'allModels' => $lines,
-			'sort'      => [
-				'attributes' => ['enl_place'],
-			],
-			'pagination' => [
-				'pageSize' => 99999,
-			],
-		]);
+		$dataProvider = PublishTabSpeaker::getDataProvider($this->_tournament, true);
 
 		return $this->render('speaker', [
-			'lines' => $lines,
 			'dataProvider' => $dataProvider,
 		]);
 	}

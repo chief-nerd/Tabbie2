@@ -30,6 +30,8 @@ use DateTimeZone;
  * @property string                  $tabAlgorithmClass
  * @property integer                 $expected_rounds
  * @property integer                 $has_esl
+ * @property integer                 $has_efl
+ * @property integer                 $has_novice
  * @property integer                 $has_final
  * @property integer                 $has_semifinal
  * @property integer                 $has_quarterfinal
@@ -81,7 +83,7 @@ class Tournament extends \yii\db\ActiveRecord {
 			[['url_slug', 'hosted_by_id', 'name', 'start_date', 'end_date', 'timezone'], 'required'],
 			[['hosted_by_id', 'expected_rounds', 'status'], 'integer'],
 			[['name', 'url_slug'], 'trim'],
-			[['start_date', 'end_date', 'time', 'has_esl', 'has_final', 'has_semifinal', 'has_octofinal', 'has_quarterfinal'], 'safe'],
+			[['start_date', 'end_date', 'time', 'has_esl', 'has_efl', 'has_novice', 'has_final', 'has_semifinal', 'has_octofinal', 'has_quarterfinal'], 'safe'],
 			[['url_slug', 'name', 'tabAlgorithmClass', 'accessToken'], 'string', 'max' => 100],
 			[['logo', 'badge'], 'string', 'max' => 255],
 			[['url_slug'], 'unique']
@@ -105,6 +107,8 @@ class Tournament extends \yii\db\ActiveRecord {
 			'tabAlgorithmClass' => Yii::t('app', 'Tab Algorithm'),
 			'expected_rounds'   => Yii::t("app", "Expected number of rounds"),
 			'has_esl'           => Yii::t("app", "Show ESL Ranking"),
+			'has_efl'           => Yii::t("app", "Show EFL Ranking"),
+			'has_novice'        => Yii::t("app", "Show Novice Ranking"),
 			'has_final'         => Yii::t("app", 'Is there a grand final'),
 			'has_semifinal'     => Yii::t("app", 'Is there a semifinal'),
 			'has_quarterfinal'  => Yii::t("app", 'Is there a quarterfinal'),

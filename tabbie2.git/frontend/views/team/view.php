@@ -41,8 +41,12 @@ $this->params['breadcrumbs'][] = $this->title;
 		'attributes' => [
 			'speakerA.name:text:' . Yii::t("app", "Speaker A"),
 			'speakerB.name:text:' . Yii::t("app", "Speaker B"),
+			[
+				'attribute' => 'language_status',
+				'value' => \common\models\User::getLanguageStatusLabel($model->language_status)
+			],
 			'points',
-			'speaks'
+			'speaks',
 		],
 	])
 	?>

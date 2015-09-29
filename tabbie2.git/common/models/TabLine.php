@@ -16,6 +16,8 @@ class TabLine extends Model
 	public $speaks;
 	public $enl_place;
 	public $esl_place;
+	public $efl_place;
+	public $novice_place;
 	public $results_array = [];
 
 }

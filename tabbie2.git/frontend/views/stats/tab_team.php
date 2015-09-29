@@ -4,18 +4,6 @@ use yii\data\ArrayDataProvider;
 use kartik\grid\GridView;
 use yii\helpers\Html;
 
-$lines = PublishTabTeam::generateTeamTab($model);
-
-$dataProvider = new ArrayDataProvider([
-	'allModels' => $lines,
-	'sort'      => [
-		'attributes' => ['enl_place'],
-	],
-	'pagination' => [
-		'pageSize' => 99999,
-	],
-]);
-
 ?>
 <div class="tab-team-container">
 
@@ -27,17 +15,37 @@ $dataProvider = new ArrayDataProvider([
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'enl_place',
-			'label' => ($model->has_esl) ? Yii::t("app", 'ENL Place') : Yii::t("app", 'Place'),
-			'width' => '60px',
+			'label' => ($model->has_esl) ? Yii::t("app", 'ENL') : Yii::t("app", 'Place'),
+			'width' => '50px',
 		],
 		[
 			'class'   => '\kartik\grid\DataColumn',
 			'attribute' => 'esl_place',
-			'label'   => Yii::t("app", 'ESL Place'),
-			'width' => '60px',
+			'label' => Yii::t("app", 'ESL'),
+			'width' => '50px',
 			'visible' => $model->has_esl,
 			'value'   => function ($model, $key, $index, $widget) {
 				return ($model->esl_place) ? $model->esl_place : "";
+			},
+		],
+		[
+			'class' => '\kartik\grid\DataColumn',
+			'attribute' => 'efl_place',
+			'label' => Yii::t("app", 'EFL'),
+			'width' => '50px',
+			'visible' => $model->has_efl,
+			'value' => function ($model, $key, $index, $widget) {
+				return ($model->efl_place) ? $model->efl_place : "";
+			},
+		],
+		[
+			'class' => '\kartik\grid\DataColumn',
+			'attribute' => 'novice_place',
+			'label' => Yii::t("app", 'Novice'),
+			'width' => '50px',
+			'visible' => $model->has_novice,
+			'value' => function ($model, $key, $index, $widget) {
+				return ($model->novice_place) ? $model->novice_place : "";
 			},
 		],
 		[

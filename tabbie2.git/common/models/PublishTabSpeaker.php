@@ -5,6 +5,7 @@ namespace common\models;
 use kartik\helpers\Html;
 use Yii;
 use yii\caching\DbDependency;
+use yii\data\ArrayDataProvider;
 
 /**
  * This is the model class for table "publish_tab_speaker".
@@ -61,6 +62,49 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord
 			'esl_place'     => Yii::t('app', 'ESL Place'),
 			'cache_results' => Yii::t('app', 'Cache Results'),
 		];
+	}
+
+	public static function getDataProvider($_tournament, $live = false) {
+
+		$key = $_tournament->cacheKey("speakerTabADP");
+		$dependency = new DbDependency([
+			"sql" => "SELECT count(*) FROM result LEFT JOIN debate ON result.debate_id = debate.id WHERE tournament_id = " . $_tournament->id
+		]);
+		$cache = Yii::$app->cache;
+
+		$dataProvider = $cache->get($key);
+		if ($dataProvider === false || $live) {
+
+			$lines = PublishTabSpeaker::generateSpeakerTab($_tournament, $live);
+
+			$attributes = [
+				'enl_place',
+				'esl_place',
+				'efl_place',
+				'novice_place',
+				'points',
+				'speaks',
+				'object.speaker.name',
+				'object.team.name',
+			];
+
+			foreach ($_tournament->inrounds as $r) {
+				$attributes[] = 'results_array.' . $r->number;
+			}
+
+			$dataProvider = new ArrayDataProvider([
+				'allModels' => $lines,
+				'sort' => [
+					'attributes' => $attributes,
+				],
+				'pagination' => [
+					'pageSize' => 99999,
+				],
+			]);
+
+			$cache->set($key, $dataProvider, 3600, $dependency);
+		}
+		return $dataProvider;
 	}
 
 	/**
@@ -166,6 +210,55 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord
 							} else $i++;
 
 							$line->esl_place = $i;
+							$lines[$index] = $line;
+						}
+					}
+				}
+			}
+
+			if ($_tournament->has_efl) {
+				$i = 0;
+				$jumpover = 0;
+				foreach ($lines as $index => $line) {
+					if ($line->object["speaker"]["language_status"] >= User::LANGUAGE_EFL) {
+						if ($line->object["speaker"]["id"]) {
+							if (isset($lines[$index - 1])) {
+								if (!($lines[$index - 1]->points == $lines[$index]->points && $lines[$index - 1]->speaks == $lines[$index]->speaks)) {
+									$i++;
+									if ($jumpover > 0) {
+										$i = $i + $jumpover;
+										$jumpover = 0;
+									}
+								} else {
+									$jumpover++;
+								}
+							} else $i++;
+
+							$line->efl_place = $i;
+							$lines[$index] = $line;
+						}
+					}
+				}
+			}
+			if ($_tournament->has_novice) {
+				$i = 0;
+				$jumpover = 0;
+				foreach ($lines as $index => $line) {
+					if ($line->object["speaker"]["language_status"] == User::LANGUAGE_NOVICE) {
+						if ($line->object["speaker"]["id"]) {
+							if (isset($lines[$index - 1])) {
+								if (!($lines[$index - 1]->points == $lines[$index]->points && $lines[$index - 1]->speaks == $lines[$index]->speaks)) {
+									$i++;
+									if ($jumpover > 0) {
+										$i = $i + $jumpover;
+										$jumpover = 0;
+									}
+								} else {
+									$jumpover++;
+								}
+							} else $i++;
+
+							$line->novice_place = $i;
 							$lines[$index] = $line;
 						}
 					}

@@ -61,7 +61,9 @@ class StatsController extends BasetournamentController
 	public function actionTeamTab()
 	{
 		$model = $this->_tournament;
-		$html = $this->renderPartial("tab_team", compact("model"));
+		$dataProvider = PublishTabTeam::getDataProvider($model);
+
+		$html = $this->renderPartial("tab_team", compact("model", "dataProvider"));
 
 		return Json::encode($html);
 	}
@@ -69,7 +71,9 @@ class StatsController extends BasetournamentController
 	public function actionSpeakerTab()
 	{
 		$model = $this->_tournament;
-		$html = $this->renderPartial("tab_speaker", compact("model"));
+		$dataProvider = PublishTabSpeaker::getDataProvider($model);
+
+		$html = $this->renderPartial("tab_speaker", compact("model", "dataProvider"));
 
 		return Json::encode($html);
 	}

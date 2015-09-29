@@ -19,17 +19,37 @@ $this->params['breadcrumbs'][] = $this->title;
 		[
 			'class' => '\kartik\grid\DataColumn',
 			'attribute' => 'enl_place',
-			'label' => ($tournament->has_esl) ? Yii::t("app", 'ENL Place') : Yii::t("app", 'Place'),
-			'width' => '80px',
+			'label' => ($tournament->has_esl) ? Yii::t("app", 'ENL') : Yii::t("app", 'Place'),
+			'width' => '50px',
 		],
 		[
 			'class'   => '\kartik\grid\DataColumn',
 			'attribute' => 'esl_place',
-			'label'   => Yii::t("app", 'ESL Place'),
-			'width'   => '80px',
+			'label'   => Yii::t("app", 'ESL'),
+			'width'   => '50px',
 			'visible' => $tournament->has_esl,
 			'value'   => function ($model, $key, $index, $widget) {
 				return ($model->esl_place) ? $model->esl_place : "";
+			},
+		],
+		[
+			'class'   => '\kartik\grid\DataColumn',
+			'attribute' => 'efl_place',
+			'label'   => Yii::t("app", 'EFL'),
+			'width'   => '50px',
+			'visible' => $tournament->has_efl,
+			'value'   => function ($model, $key, $index, $widget) {
+				return ($model->efl_place) ? $model->efl_place : "";
+			},
+		],
+		[
+			'class'   => '\kartik\grid\DataColumn',
+			'attribute' => 'novice_place',
+			'label'   => Yii::t("app", 'Novice'),
+			'width'   => '50px',
+			'visible' => $tournament->has_novice,
+			'value'   => function ($model, $key, $index, $widget) {
+				return ($model->novice_place) ? $model->novice_place : "";
 			},
 		],
 		[
@@ -101,7 +121,6 @@ $this->params['breadcrumbs'][] = $this->title;
 		'floatHeaderOptions' => ['scrollingTop' => 100],
 		'id'              => 'team-tab',
 		'striped'         => false,
-		'emptyCell'       => "a",
 		'rowOptions'      => function ($model, $key, $index, $grid) {
 			return ["class" => ($model->enl_place <= $this->context->_getContext()
 					->getAmountBreakingTeams()) ? "bg-success" : ""];

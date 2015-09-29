@@ -176,12 +176,22 @@ SCRIPT;
 		'addon' => ['prepend' => ['content' => "<i class=\"glyphicon glyphicon-flash\"></i>"]]
 	])->dropDownList($model->getTabAlgorithmOptions()) ?>
 
-	<?= $form->field($model, 'has_esl')->checkbox() ?>
-	<?= $form->field($model, 'has_final')->checkbox() ?>
-	<?= $form->field($model, 'has_semifinal')->checkbox() ?>
-	<?= $form->field($model, 'has_quarterfinal')->checkbox() ?>
-	<?= $form->field($model, 'has_octofinal')->checkbox() ?>
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<?= $form->field($model, 'has_esl')->checkbox() ?>
+			<?= $form->field($model, 'has_efl')->checkbox() ?>
+			<?= $form->field($model, 'has_novice')->checkbox() ?>
+		</div>
+	</div>
 
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<?= $form->field($model, 'has_final')->checkbox() ?>
+			<?= $form->field($model, 'has_semifinal')->checkbox() ?>
+			<?= $form->field($model, 'has_quarterfinal')->checkbox() ?>
+			<?= $form->field($model, 'has_octofinal')->checkbox() ?>
+		</div>
+	</div>
 
 	<div class="row">
 		<div class="col-sm-2">
@@ -200,7 +210,7 @@ SCRIPT;
 	<br>
 
 	<div class="form-group row">
-		<?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+		<?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success btn-block' : 'btn btn-primary btn-block']) ?>
 	</div>
 
 	<?php ActiveForm::end(); ?>
