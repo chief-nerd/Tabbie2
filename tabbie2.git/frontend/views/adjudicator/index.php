@@ -34,6 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			'trueLabel'  => Yii::t("app", "Can chair"),
 			'falseLabel' => Yii::t("app", "Should not chair"),
 			'width'      => '50px',
+			'vAlign' => 'middle',
 		],
 		[
 			'class'      => 'kartik\grid\BooleanColumn',
