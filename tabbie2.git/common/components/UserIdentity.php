@@ -40,7 +40,7 @@ class UserIdentity extends \yii\web\User {
 	 * @return \common\models\User
 	 */
 	public function getModel() {
-		return $user = User::findOne($this->id);
+		return User::findByPk($this->id);
 	}
 
 	public function isMaintainer() {

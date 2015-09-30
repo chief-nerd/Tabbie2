@@ -183,9 +183,9 @@ class Tournament extends \yii\db\ActiveRecord {
 	 */
 	public static function findByPk($id, $live = false) {
 		$tournament = Yii::$app->cache->get("tournament_" . $id);
-		if (!$tournament instanceof Tournament || !$live) {
+		if (!$tournament instanceof Tournament || $live) {
 			$tournament = Tournament::findOne(["id" => $id]);
-			Yii::$app->cache->set("tournament_" . $id, $tournament, 120);
+			Yii::$app->cache->set("tournament_" . $id, $tournament, 200);
 		}
 
 		return $tournament;

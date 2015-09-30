@@ -83,20 +83,9 @@ class User extends ActiveRecord implements IdentityInterface {
 	public function fields() {
 		$fields = parent::fields();
 
-		$fields["name"] = function () {
-			return $this->getName();
-		};
+		$fields["name"] = "name"; //Magic Getter Setter => getName()
 
 		return $fields;
-	}
-
-	/**
-	 * Returns the full name of the User
-	 *
-	 * @return string
-	 */
-	public function getName() {
-		return $this->givenname . " " . $this->surename;
 	}
 
 	/**
@@ -105,14 +94,11 @@ class User extends ActiveRecord implements IdentityInterface {
 	public function behaviors() {
 		return [
 			'timestamp' => [
-				'class'      => TimestampBehavior::className(),
+				'class' => TimestampBehavior::className(),
 				'attributes' => [
 					ActiveRecord::EVENT_BEFORE_INSERT => 'time',
 					ActiveRecord::EVENT_BEFORE_UPDATE => 'last_change',
 				],
-				'value'      => function () {
-					return date('Y-m-d H:i:s');
-				}, // unix timestamp
 			],
 		];
 	}
@@ -169,20 +155,20 @@ class User extends ActiveRecord implements IdentityInterface {
 	 */
 	public function attributeLabels() {
 		return [
-			'id'                   => Yii::t('app', 'Debater') . ' ' . Yii::t('app', 'ID'),
-			'url_slug'             => Yii::t('app', 'URL Slug'),
-			'auth_key'             => Yii::t('app', 'Auth Key'),
-			'password_hash'        => Yii::t('app', 'Password Hash'),
+			'id' => Yii::t('app', 'Debater') . ' ' . Yii::t('app', 'ID'),
+			'url_slug' => Yii::t('app', 'URL Slug'),
+			'auth_key' => Yii::t('app', 'Auth Key'),
+			'password_hash' => Yii::t('app', 'Password Hash'),
 			'password_reset_token' => Yii::t('app', 'Password Reset Token'),
-			'email'                => Yii::t('app', 'Email'),
-			'role'                 => Yii::t('app', 'Account Role'),
-			'status'               => Yii::t('app', 'Account Status'),
-			'last_change'          => Yii::t('app', 'Last Change'),
-			'givenname'            => Yii::t('app', 'First Name'),
-			'surename'             => Yii::t('app', 'Last Name'),
-			'language_status'      => Yii::t('app', 'Language Status'),
-			'picture'              => Yii::t('app', 'Picture'),
-			'time'                 => Yii::t('app', 'Time'),
+			'email' => Yii::t('app', 'Email'),
+			'role' => Yii::t('app', 'Account Role'),
+			'status' => Yii::t('app', 'Account Status'),
+			'last_change' => Yii::t('app', 'Last Change'),
+			'givenname' => Yii::t('app', 'First Name'),
+			'surename' => Yii::t('app', 'Last Name'),
+			'language_status' => Yii::t('app', 'Language Status'),
+			'picture' => Yii::t('app', 'Picture'),
+			'time' => Yii::t('app', 'Time'),
 		];
 	}
 
@@ -197,7 +183,7 @@ class User extends ActiveRecord implements IdentityInterface {
 	 * Find user by AccessToken for API request
 	 *
 	 * @param mixed $token
-	 * @param null  $type
+	 * @param null $type
 	 *
 	 * @return null|static
 	 */
@@ -235,6 +221,25 @@ class User extends ActiveRecord implements IdentityInterface {
 	 */
 	public static function findByEmail($email) {
 		return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
+	}
+
+	/**
+	 * Find a User by Primary Key
+	 *
+	 * @param integer $id
+	 * @param boolean $live
+	 *
+	 * @uses User::findOne
+	 * @return null|User
+	 */
+	public static function findByPk($id, $live = false) {
+		$user = Yii::$app->cache->get("user_" . $id);
+		if (!$user instanceof User || $live) {
+			$user = User::findOne(["id" => $id]);
+			Yii::$app->cache->set("user_" . $id, $user, 200);
+		}
+
+		return $user;
 	}
 
 	/**
@@ -525,25 +530,34 @@ class User extends ActiveRecord implements IdentityInterface {
 	/**
 	 * Sends mail to the new User
 	 *
-	 * @param User       $user
-	 * @param string     $password
+	 * @param User $user
+	 * @param string $password
 	 * @param Tournament $tournament
 	 */
 	public static function sendNewUserMail($user, $password, $tournament = null) {
 		\Yii::$app->mailer->compose('import_user_created', [
-			'user'       => $user,
-			'password'   => $password,
+			'user' => $user,
+			'password' => $password,
 			'tournament' => $tournament
 		])->setFrom([\Yii::$app->params['supportEmail'] => \Yii::$app->params["appName"] . ' support'])
 			->setTo([$user->email => $user->name])
 			->setSubject(Yii::t("app", '{tournament_name}: User Account for {user_name}', [
 				"tournament_name" => $tournament->name,
-				"user_name"       => $user->name]))
+				"user_name" => $user->name]))
 			->send();
 	}
 
 	public static function languageOptions() {
 		return Yii::$app->params['activeLanguages'];
+	}
+
+	/**
+	 * Returns the full name of the User
+	 *
+	 * @return string
+	 */
+	public function getName() {
+		return $this->givenname . " " . $this->surename;
 	}
 
 	/**
