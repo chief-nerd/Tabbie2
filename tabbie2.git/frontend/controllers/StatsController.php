@@ -34,7 +34,7 @@ class StatsController extends BasetournamentController
 						'allow'         => true,
 						'actions'       => ['motion', 'speaks', 'team-tab', 'speaker-tab', 'breaking-adjudicators', 'outrounds'],
 						'matchCallback' => function ($rule, $action) {
-							return ($this->_tournament->status == Tournament::STATUS_CLOSED);
+							return ($this->_tournament->status >= Tournament::STATUS_CLOSED);
 						}
 					],
 				],
