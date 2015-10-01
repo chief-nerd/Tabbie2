@@ -16,7 +16,7 @@ return [
 	'teams_per_page'                           => 100,
 	'users_per_page'                           => 100,
 	'results_per_page'                         => 100,
-	'societies_per_page'                       => 100,
+	'societies_per_page' => 50,
 	'tournament_per_page'                      => 10,
 	'tournament_per_history'                   => 10,
 	'motions_per_page'                         => 10,
