@@ -28,6 +28,8 @@ $form = ActiveForm::begin([
 ]);
 $societyOptions = \common\models\search\SocietySearch::getSearchArray();
 
+echo \kartik\helpers\Html::hiddenInput("backURL", \Yii::$app->getRequest()->absoluteUrl);
+
 echo Select2::widget([
 	'name'         => 'other',
 	'data'         => $societyOptions,

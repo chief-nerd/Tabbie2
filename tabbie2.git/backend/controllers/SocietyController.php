@@ -111,7 +111,7 @@ class SocietyController extends Controller
 	 *
 	 * @return mixed
 	 */
-	public function actionMerge($id, $other)
+	public function actionMerge($id, $other, $backURL = null)
 	{
 
 		InSociety::updateAll(["society_id" => $other], ["society_id" => $id]);
@@ -120,7 +120,11 @@ class SocietyController extends Controller
 		Adjudicator::updateAll(["society_id" => $other], ["society_id" => $id]);
 		Society::deleteAll(["id" => $id]);
 
-		return $this->redirect("index");
+		if ($backURL === null) {
+			$backURL = "index";
+		}
+
+		return $this->redirect($backURL);
 	}
 
 	/**
