@@ -162,8 +162,9 @@ class StrikeController extends BasetournamentController
 						$clashes[] = $c;
 
 				} else { //No Adjudicator ... id might belong to a Team
-					$c_a = Team::find()->tournament($this->_tournament->id)->where("speakerA_id = :user OR speakerB_id = :user", [
-						"user" => $c->clash_with,
+					$c_a = Team::find()->tournament($this->_tournament->id)->where("speakerA_id = :userA OR speakerB_id = :userB", [
+						"userA" => $c->clash_with,
+						"userB" => $c->clash_with,
 					])->one();
 					if ($c_a instanceof Team) {
 						$already = TeamStrike::find()->where([
