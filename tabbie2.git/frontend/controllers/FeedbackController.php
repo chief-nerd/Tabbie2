@@ -268,7 +268,7 @@ class FeedbackController extends BasetournamentController {
 
 	public function actionAdjudicator() {
 		$searchModel = new AnswerSearch();
-		$dataProvider = $searchModel->searchByAdjudicator(Yii::$app->request->queryParams);
+		$dataProvider = $searchModel->searchByAdjudicator(Yii::$app->request->queryParams, $this->_tournament->id);
 
 		return $this->render('by_adjudicator', [
 			'searchModel' => $searchModel,

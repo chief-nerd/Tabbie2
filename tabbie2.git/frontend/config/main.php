@@ -27,16 +27,16 @@ $config = [
 			'enableAutoLogin' => true,
 		],
 		'urlManager' => [
-			'class' => 'frontend\components\LanguageUrlManager',
+			'class' => \frontend\components\LanguageUrlManager::className(),
 
 			//STD settings
 			'enablePrettyUrl' => true,
 			'showScriptName' => false,
 			'rules'          => [
 				'' => 'site/index',
-				['class' => 'common\components\UserUrlRule'],
-				['class' => 'common\components\TournamentUrlRule'],
-				['class' => 'common\components\MotiontagUrlRule'],
+				['class' => \common\components\UserUrlRule::className()],
+				['class' => \common\components\TournamentUrlRule::className()],
+				['class' => \common\components\MotiontagUrlRule::className()],
 			],
 		],
 		'log'          => [

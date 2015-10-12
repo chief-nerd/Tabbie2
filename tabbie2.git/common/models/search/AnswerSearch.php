@@ -40,9 +40,8 @@ class AnswerSearch extends Feedback
 	 *
 	 * @return ActiveDataProvider
 	 */
-	public function searchByAdjudicator($params)
+	public function searchByAdjudicator($params, $tournament_id)
 	{
-
 		$query = Answer::find()
 			->joinWith(['feedback' => function ($query) {
 				$query->joinWith(['debate' => function ($query) {
@@ -50,6 +49,7 @@ class AnswerSearch extends Feedback
 				}]);
 			}])
 			->orderBy("question_id"); //->where(["adjudicator.id" => $params["AnswerSearch"]["id"]])->orderBy("question_id");
+		$query->andFilterWhere(['debate.tournament_id' => $tournament_id]);
 
 		$dataProvider = new ActiveDataProvider([
 			'query'      => $query,
