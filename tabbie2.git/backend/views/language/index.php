@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 	<h1><?= Html::encode($this->title) ?></h1>
 
 	<p>
-		<?= Html::a(Yii::t('app', 'Create Language'), ['create'], ['class' => 'btn btn-success']) ?>
+		<?= Html::a(Yii::t('app', 'Create new Language'), ['create'], ['class' => 'btn btn-success']) ?>
 		<?= Html::a(Yii::t('app', 'Language Maintainer'), ['language-maintainer/index'], ['class' => 'btn btn-default']) ?>
 	</p>
 
