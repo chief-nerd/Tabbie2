@@ -168,7 +168,14 @@ class LanguageController extends Controller {
 		if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 
 			if ($model->save()) {
-				return $this->redirect(['view', 'id' => $model->language]);
+
+				$cmd = Yii::$app->db->createCommand(
+					"INSERT INTO message (id, language, translation)
+					 SELECT DISTINCT id, '{lang}', null FROM source_message;", [
+					"lang" => $model->language
+				]);
+				if($cmd->execute())
+					return $this->redirect(['view', 'id' => $model->language]);
 			}
 
 		}
