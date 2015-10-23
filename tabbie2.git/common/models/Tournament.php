@@ -143,7 +143,9 @@ class Tournament extends \yii\db\ActiveRecord {
 	 * Generate a unique URL SLUG ... never fails  ;)
 	 */
 	public function generateUrlSlug() {
-		$potential_slug = str_replace(" ", "-", $this->fullname);
+
+		$potential_slug = Yii::$app->string->toAscii($this->fullname);
+		$potential_slug = str_replace(" ", "-", $potential_slug);
 
 		if (Tournament::findByUrlSlug($potential_slug) !== null) {
 			$i = 1;

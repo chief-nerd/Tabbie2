@@ -50,6 +50,9 @@ return [
 		'time' => [
 			'class' => 'common\components\Time',
 		],
+		'string' => [
+			'class' => 'common\components\String',
+		],
 	],
 	'modules'        => [
 		'gridview' => [
