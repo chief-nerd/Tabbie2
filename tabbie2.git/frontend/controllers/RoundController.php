@@ -425,7 +425,7 @@ class RoundController extends BasetournamentController
 	public function actionExport($id, $type = "json")
 	{
 		$team_props = [
-			"id", "speakerA_id", "speakerB_id", "society_id", "isSwing", "points", "speakerA_speaks", "speakerB_speaks",
+			"id", "name", "speakerA_id", "speakerB_id", "society_id", "language_status", "isSwing", "points", "speakerA_speaks", "speakerB_speaks",
 		];
 
 		$panel_props = [
@@ -433,7 +433,11 @@ class RoundController extends BasetournamentController
 		];
 
 		$adju_props = [
-			"id", "breaking", "strength", "society_id", "can_chair", "are_watched",
+			"id", "name", "breaking", "strength", "society_id", "can_chair", "are_watched",
+		];
+
+		$country_props = [
+			"id", "name", "region_id", "region_name"
 		];
 
 		$round = Round::findOne(["id" => $id]);
@@ -462,6 +466,9 @@ class RoundController extends BasetournamentController
 					/** @var Adjudicator $adju */
 					$adju = $inPanel->adjudicator;
 					$adjudicator = $adju->toArray($adju_props);
+					$adjudicator["gender"] = $adju->user->gender;
+					$adjudicator["country"] = $adju->user->societies[0]->country->toArray($country_props);
+					$adjudicator["country"]["region_name"] = $adju->user->societies[0]->country->getRegionName();
 					$adjudicator["societies"] = ArrayHelper::getColumn($adju->getSocieties(true)->asArray()->all(), "id");
 
 					$strikedAdju = $adju->getStrikedAdjudicators()->asArray()->all();

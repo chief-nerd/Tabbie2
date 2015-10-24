@@ -161,4 +161,9 @@ class Country extends \yii\db\ActiveRecord
 	{
 		return $this->hasMany(Society::className(), ['country_id' => 'id']);
 	}
+
+	public function getRegionName()
+	{
+		return self::getRegionLabel($this->region_id);
+	}
 }
