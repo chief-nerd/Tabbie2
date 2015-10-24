@@ -425,7 +425,7 @@ class RoundController extends BasetournamentController
 	public function actionExport($id, $type = "json")
 	{
 		$team_props = [
-			"id", "name", "speakerA_id", "speakerB_id", "society_id", "language_status", "isSwing", "points", "speakerA_speaks", "speakerB_speaks",
+			"id", "name", "society_id", "language_status", "isSwing", "points", "speakerA_speaks", "speakerB_speaks",
 		];
 
 		$panel_props = [
@@ -440,21 +440,31 @@ class RoundController extends BasetournamentController
 			"id", "name", "region_id", "region_name"
 		];
 
+		$user_props = [
+			"id", "name", "language_status", "gender"
+		];
+
 		$round = Round::findOne(["id" => $id]);
 		if ($round instanceof Round) {
 
 			/** @var Debate $model */
 			foreach ($round->debates as $model) {
 
+				$teams = [];
+				foreach($model->getTeams() as $pos => $team)
+				{
+					$pos = strtoupper($pos);
+					$teams[$pos] = $team->toArray($team_props);
+					$teams[$pos]["region_id"] = $team->society->country->region_id;
+					$teams[$pos]["region_name"] = $team->society->country->getRegionName();
+					$teams[$pos]["speaker"]["A"] = $team->speakerA->toArray($user_props);
+					$teams[$pos]["speaker"]["B"] = $team->speakerB->toArray($user_props);
+				}
+
 				$line = [
 					"id"           => $model->id,
 					"venue"        => $model->venue_id,
-					"teams" => [
-						"OG" => $model->og_team->toArray($team_props),
-						"OO" => $model->oo_team->toArray($team_props),
-						"CG" => $model->cg_team->toArray($team_props),
-						"CO" => $model->co_team->toArray($team_props),
-					],
+					"teams" 	 => 	$teams,
 					"panel"      => $model->panel->toArray($panel_props),
 					"messages"	 => [],
 					"energy"	 => 0,
