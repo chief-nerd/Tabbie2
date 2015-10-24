@@ -394,7 +394,7 @@ class Round extends \yii\db\ActiveRecord {
 					$adjudicator["strikedTeams"] = $strikedTeam;
 
 					$adjudicator["pastAdjudicatorIDs"] = $adju->getPastAdjudicatorIDs($this->id);
-					$adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs(true);
+					$adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs($this->id);
 
 					$total += $adju->strength;
 
@@ -715,6 +715,11 @@ class Round extends \yii\db\ActiveRecord {
 		return $line;
 	}
 
+	/**
+	 * @param $adjudicatorInPanels
+	 * @param DrawLine $drawline
+	 * @return mixed
+	 */
 	private function reconstructPanel($adjudicatorInPanels, $drawline) {
 		/** @var Panel $panel */
 		foreach ($adjudicatorInPanels as $inPanel) {

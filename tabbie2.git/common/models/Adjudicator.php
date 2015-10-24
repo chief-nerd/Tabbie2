@@ -292,18 +292,15 @@ class Adjudicator extends \yii\db\ActiveRecord
 		return ArrayHelper::getColumn($past, "bid");
 	}
 
-	public function getPastTeamIDs($exclude_current = false)
+	public function getPastTeamIDs($exlude_round_id = false)
 	{
 
-		if ($exclude_current) {
-
-			$sql = "SELECT og_team_id, oo_team_id, cg_team_id, co_team_id, round_id FROM adjudicator_in_panel AS aip LEFT JOIN panel ON panel.id = aip.panel_id RIGHT JOIN debate ON debate.panel_id = panel.id WHERE adjudicator_id = " . $this->id . " GROUP BY adjudicator_id HAVING round_id < MAX(round_id)";
+		if (is_int($exlude_round_id)) {
+			$sql = "SELECT og_team_id, oo_team_id, cg_team_id, co_team_id, round_id FROM adjudicator_in_panel AS aip LEFT JOIN panel ON panel.id = aip.panel_id RIGHT JOIN debate ON debate.panel_id = panel.id WHERE adjudicator_id = " . $this->id . " AND round_id < ". $exlude_round_id;
 		} else {
-
-			$sql = "SELECT og_team_id, oo_team_id, cg_team_id, co_team_id FROM adjudicator_in_panel AS aip LEFT JOIN panel ON panel.id = aip.panel_id RIGHT JOIN debate ON debate.panel_id = panel.id WHERE adjudicator_id = " . $this->id . " GROUP BY adjudicator_id";
+			$sql = "SELECT og_team_id, oo_team_id, cg_team_id, co_team_id FROM adjudicator_in_panel AS aip LEFT JOIN panel ON panel.id = aip.panel_id RIGHT JOIN debate ON debate.panel_id = panel.id WHERE adjudicator_id = " . $this->id;
 
 		}
-
 
 		$model = \Yii::$app->db->createCommand($sql);
 		$queryresult = $model->queryAll();

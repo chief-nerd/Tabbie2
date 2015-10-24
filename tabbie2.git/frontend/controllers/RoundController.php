@@ -12,6 +12,7 @@ use common\models\Panel;
 use common\models\Result;
 use common\models\Round;
 use common\models\search\DebateSearch;
+use common\models\Team;
 use kartik\mpdf\Pdf;
 use mPDF;
 use Yii;
@@ -20,6 +21,7 @@ use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -50,7 +52,7 @@ class RoundController extends BasetournamentController
 					],
 					[
 						'allow'   => true,
-						'actions' => ['create', 'publish', 'redraw', 'improve'],
+						'actions' => ['create', 'publish', 'redraw', 'improve', 'export', 'import'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
 						}
@@ -420,4 +422,90 @@ class RoundController extends BasetournamentController
 		return "Error";
 	}
 
+	public function actionExport($id, $type = "json")
+	{
+		$team_props = [
+			"id", "speakerA_id", "speakerB_id", "society_id", "isSwing", "points", "speakerA_speaks", "speakerB_speaks",
+		];
+
+		$panel_props = [
+			"id", "strength", "is_preset"
+		];
+
+		$adju_props = [
+			"id", "breaking", "strength", "society_id", "can_chair", "are_watched",
+		];
+
+		$round = Round::findOne(["id" => $id]);
+		if ($round instanceof Round) {
+
+			/** @var Debate $model */
+			foreach ($round->debates as $model) {
+
+				$line = [
+					"id"           => $model->id,
+					"venue"        => $model->venue_id,
+					"teams" => [
+						"OG" => $model->og_team->toArray($team_props),
+						"OO" => $model->oo_team->toArray($team_props),
+						"CG" => $model->cg_team->toArray($team_props),
+						"CO" => $model->co_team->toArray($team_props),
+					],
+					"panel"      => $model->panel->toArray($panel_props),
+					"messages"	 => [],
+					"energy"	 => 0,
+				];
+				$line["panel"]["adjudicators"] = [];
+
+				foreach ($model->panel->adjudicatorInPanels as $inPanel) {
+
+					/** @var Adjudicator $adju */
+					$adju = $inPanel->adjudicator;
+					$adjudicator = $adju->toArray($adju_props);
+					$adjudicator["societies"] = ArrayHelper::getColumn($adju->getSocieties(true)->asArray()->all(), "id");
+
+					$strikedAdju = $adju->getStrikedAdjudicators()->asArray()->all();
+					$adjudicator["strikedAdjudicators"] = $strikedAdju;
+
+					$strikedTeam = $adju->getStrikedTeams()->asArray()->all();
+					$adjudicator["strikedTeams"] = $strikedTeam;
+
+					$adjudicator["pastAdjudicatorIDs"] = $adju->getPastAdjudicatorIDs($model->id);
+					$adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs($round->id);
+
+					if ($inPanel->function == Panel::FUNCTION_CHAIR) {
+						array_unshift($line["panel"]["adjudicators"], $adjudicator);
+					} else {
+						$line["panel"]["adjudicators"][] = $adjudicator;
+					}
+				}
+
+				$DRAW[] = $line;
+			}
+		}
+
+		$output = "";
+		$name = str_replace(" ", "-", ($round->tournament->name." ".$round->getName()));
+
+		switch(strtolower($type))
+		{
+			case "json":
+				header("Content-Type: application/json");
+				header("Content-Disposition: attachment; filename=".$name.".json");
+				header('Pragma: no-cache');
+				$output = json_encode($DRAW);
+				break;
+			case "raw":
+				$apptype= "application/text";
+				$filetype = "txt";
+				$output = print_r($DRAW, true);
+				break;
+		}
+
+		return $output;
+	}
+
+	public function actionImport($id, $type = "json") {
+
+	}
 }

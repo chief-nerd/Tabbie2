@@ -89,7 +89,7 @@ class Outround extends Round
 					$adjudicator["strikedTeams"] = $strikedTeam;
 
 					$adjudicator["pastAdjudicatorIDs"] = $adju->getPastAdjudicatorIDs($this->id);
-					$adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs(true);
+					$adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs($this->id);
 
 					$adjudicators[] = $adjudicator;
 				}
