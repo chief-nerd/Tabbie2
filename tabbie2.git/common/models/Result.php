@@ -116,8 +116,8 @@ class Result extends \yii\db\ActiveRecord {
 		}
 	}
 
-	public function getOg_speaks() {
-		return $this->getSpeaks(Team::getPos(Team::OG));
+	public function getOg_speaks($ignoreIrregular = false) {
+		return $this->getSpeaks(Team::getPos(Team::OG), $ignoreIrregular);
 	}
 
 	/**
@@ -127,18 +127,18 @@ class Result extends \yii\db\ActiveRecord {
 	 *
 	 * @return int|mixed
 	 */
-	public function getSpeaks($p) {
-		return $this->getSpeakerSpeaks($p, Team::POS_A) + $this->getSpeakerSpeaks($p, Team::POS_B);
+	public function getSpeaks($p, $ignoreIrregular = false) {
+		return $this->getSpeakerSpeaks($p, Team::POS_A, $ignoreIrregular) + $this->getSpeakerSpeaks($p, Team::POS_B, $ignoreIrregular);
 	}
 
-	public function getSpeakerSpeaks($p, $s) {
-		if ($this->{$p . "_irregular"} == Team::IRREGULAR_A_NOSHOW && $s == Team::POS_A) {
+	public function getSpeakerSpeaks($p, $s, $ignoreIrregular = false) {
+		if ($this->{$p . "_irregular"} == Team::IRREGULAR_A_NOSHOW && $s == Team::POS_A && !$ignoreIrregular) {
 			return 0;
 		} else {
-			if ($this->{$p . "_irregular"} == Team::IRREGULAR_B_NOSHOW && $s == Team::POS_B) {
+			if ($this->{$p . "_irregular"} == Team::IRREGULAR_B_NOSHOW && $s == Team::POS_B && !$ignoreIrregular) {
 				return 0;
 			} else {
-				if ($this->{$p . "_irregular"} == Team::IRREGULAR_SWING) {
+				if ($this->{$p . "_irregular"} == Team::IRREGULAR_SWING && !$ignoreIrregular) {
 					return 0;
 				}
 			}
@@ -147,16 +147,16 @@ class Result extends \yii\db\ActiveRecord {
 		return $this->{$p . "_" . $s . "_speaks"};
 	}
 
-	public function getOo_speaks() {
-		return $this->getSpeaks(Team::getPos(Team::OO));
+	public function getOo_speaks($ignoreIrregular = false) {
+		return $this->getSpeaks(Team::getPos(Team::OO), $ignoreIrregular);
 	}
 
-	public function getCg_speaks() {
-		return $this->getSpeaks(Team::getPos(Team::CG));
+	public function getCg_speaks($ignoreIrregular = false) {
+		return $this->getSpeaks(Team::getPos(Team::CG), $ignoreIrregular);
 	}
 
-	public function getCo_speaks() {
-		return $this->getSpeaks(Team::getPos(Team::CO));
+	public function getCo_speaks($ignoreIrregular = false) {
+		return $this->getSpeaks(Team::getPos(Team::CO), $ignoreIrregular);
 	}
 
 	public function getSpeakerSpeaksText($p, $s) {
@@ -205,7 +205,7 @@ class Result extends \yii\db\ActiveRecord {
 	 * @return int
 	 */
 	public function getPoints($p) {
-		if ($this->{$p . "_irregular"} == Team::IRREGULAR_SWING) {
+		if ($this->{$p . "_irregular"} > Team::IRREGULAR_NORMAL) {
 			return 0;
 		}
 
@@ -214,10 +214,10 @@ class Result extends \yii\db\ActiveRecord {
 
 	public function rankTeams() {
 		$results = [
-			"og" => $this->og_speaks,
-			"oo" => $this->oo_speaks,
-			"cg" => $this->cg_speaks,
-			"co" => $this->co_speaks,
+			"og" => $this->getOg_speaks(true),
+			"oo" => $this->getOo_speaks(true),
+			"cg" => $this->getCg_speaks(true),
+			"co" => $this->getCo_speaks(true),
 		];
 		asort($results, SORT_NUMERIC);
 		$results = array_reverse($results);
