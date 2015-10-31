@@ -21,17 +21,19 @@ body {
 }
 
 .name {
-    padding-top: 4.5cm;
+    padding-top: 3.5cm;
     left: 0px;
     right: 0px;
     text-align: center;
     font-size: 22pt;
-    font-family: "bebas-neue";
+    font-family: Arial, Helvetica, sans-serif;
     color: #333;
+    height: 1cm;
+    overflow: hidden;
 }
 
 .team, .society {
-    font-family: helvetica;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 90%;
     color: #333;
     text-align: right;
@@ -47,8 +49,8 @@ body {
 }
 
 .code {
-    margin-left: -1cm;
     text-align: center;
+    width: 100%;
 }
 
 .clear {
