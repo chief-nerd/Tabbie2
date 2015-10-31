@@ -339,6 +339,7 @@ class TeamController extends BasetournamentController
 				if ($file && ($handle = fopen($file->tempName, "r")) !== false) {
 					while (($data = fgetcsv($handle, null, $model->getDelimiterChar())) !== false) {
 
+						$data = array_map("utf8_encode", $data);
 						if ($row == 0) { //Don't use first column
 							$row++;
 							continue;
@@ -349,7 +350,7 @@ class TeamController extends BasetournamentController
 							return $this->redirect(['import', "tournament_id" => $this->_tournament->id]);
 						}
 						for ($c = 0; $c < $num; $c++) {
-							$model->tempImport[$row][$c][0] = utf8_encode(trim($data[$c]));
+							$model->tempImport[$row][$c][0] = utf8_decode(trim($data[$c]));
 						}
 						$row++;
 					}

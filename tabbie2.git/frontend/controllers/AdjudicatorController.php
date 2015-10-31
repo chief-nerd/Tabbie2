@@ -396,7 +396,7 @@ class AdjudicatorController extends BasetournamentController
 
 						$allFieldsFilled = true;
 						for ($c = 0; $c < $num; $c++) {
-							$clean_data = utf8_encode(trim($data[$c]));
+							$clean_data = utf8_decode(trim($data[$c]));
 							if (strlen($clean_data) == 0) $allFieldsFilled = false;
 							$coldata[$c][0] = $clean_data;
 						}
