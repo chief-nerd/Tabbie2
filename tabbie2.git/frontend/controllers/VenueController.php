@@ -237,7 +237,7 @@ class VenueController extends BasetournamentController
 						}
 
 						for ($c = 0; $c < $num; $c++) {
-							$model->tempImport[$row][$c] = utf8_decode(trim($data[$c]));
+							$model->tempImport[$row][$c] = utf8_encode(trim($data[$c]));
 						}
 						$row++;
 					}

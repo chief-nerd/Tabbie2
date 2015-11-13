@@ -661,6 +661,7 @@ class Tournament extends \yii\db\ActiveRecord {
 			foreach ($lastRound->getDebates()->all() as $debate) {
 
 				/** check teams* */
+				/** @var $debate Debate */
 				if ($debate->isOGTeamMember($id)) {
 					return ['type' => 'team', 'debate' => $debate, 'pos' => Team::OG];
 				}

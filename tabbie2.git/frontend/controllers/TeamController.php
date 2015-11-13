@@ -7,6 +7,7 @@ use common\components\ObjectError;
 use common\models\Debate;
 use common\models\Round;
 use common\models\search\TeamSearch;
+use common\models\Society;
 use common\models\Team;
 use common\models\Tournament;
 use common\models\User;
@@ -248,7 +249,7 @@ class TeamController extends BasetournamentController
 			if (Yii::$app->request->post("makeItSo", false)) { //Everything corrected
 				set_time_limit(0);
 				$choices = Yii::$app->request->post("field", false);
-				$model->tempImport = unserialize(Yii::$app->request->post("csvFile", false));
+				$model->tempImport = @unserialize(Yii::$app->request->post("csvFile", false));
 
 				//APPLY CHOICES
 				if (is_array($choices)) {
@@ -350,7 +351,7 @@ class TeamController extends BasetournamentController
 							return $this->redirect(['import', "tournament_id" => $this->_tournament->id]);
 						}
 						for ($c = 0; $c < $num; $c++) {
-							$model->tempImport[$row][$c][0] = utf8_decode(trim($data[$c]));
+							$model->tempImport[$row][$c][0] = utf8_encode(trim($data[$c]));
 						}
 						$row++;
 					}
