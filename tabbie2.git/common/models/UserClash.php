@@ -108,8 +108,9 @@ class UserClash extends \yii\db\ActiveRecord
 		if ($a instanceof Adjudicator)
 			return $a;
 		else {
-			$t = Team::find()->tournament($tournament_id)->andWhere("speakerA_id = :user OR speakerB_id = :user", [
-				"user" => $this->clash_with
+			$t = Team::find()->tournament($tournament_id)->andWhere("speakerA_id = :userA OR speakerB_id = :userB", [
+				"userA" => $this->clash_with,
+				"userB" => $this->clash_with
 			])->one();
 			if ($t instanceof Team) {
 				return $t;
