@@ -31,7 +31,8 @@ class TournamentContextFilter extends ActionFilter
 
 			return true;
 		}
-		throw new \yii\web\HttpException(500, 'This filter was wronly applied, id missing');
+		Yii::error("Wrong filter for action: ".$action->id." in controller:".$action->controller->id." with _GET:".print_r($_GET, true), __METHOD__);
+		throw new \yii\web\HttpException(500, 'This filter was wrongly applied, id missing.');
 	}
 
 }
