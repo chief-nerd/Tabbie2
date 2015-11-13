@@ -437,7 +437,14 @@ class AdjudicatorController extends BasetournamentController
 //User A
 
 							$user = \common\models\User::find()
-								->where("(givenname LIKE '%$givenname%' AND surename LIKE '%$surename%') OR email LIKE '%$email%'")
+								->where([
+									"AND",
+									["givenname" => addslashes($givenname)],
+									["surename" => addslashes($surename)],
+								])->orWhere([
+									"email" => $email,
+								])
+								//->where("(givenname LIKE '%$givenname%' AND surename LIKE '%$surename%') OR email LIKE '%$email%'")
 								->all();
 							$a = 1;
 							foreach ($user as $u) {

@@ -385,7 +385,13 @@ class TeamController extends BasetournamentController
 						$email = $model->tempImport[$i][4][0];
 
 						$user = \common\models\User::find()
-							->where("(givenname = '$givenname' AND surename = '$surename') OR email = '$email'")
+							->where([
+								"AND",
+								["givenname" => addslashes($givenname)],
+								["surename" => addslashes($surename)],
+							])->orWhere([
+								"email" => $email,
+							])
 							->all();
 						$a = 1;
 						foreach ($user as $u) {
@@ -403,7 +409,14 @@ class TeamController extends BasetournamentController
 						$email = $model->tempImport[$i][7][0];
 
 						$user = \common\models\User::find()
-							->where("(givenname = '$givenname' AND surename = '$surename') OR email = '$email'")
+							->where([
+								"AND",
+								["givenname" => addslashes($givenname)],
+								["surename" => addslashes($surename)],
+							])->orWhere([
+								"email" => $email,
+							])
+							//->where("(givenname = '$givenname' AND surename = '$surename') OR email = '$email'")
 							->all();
 						$a = 1;
 						foreach ($user as $u) {
