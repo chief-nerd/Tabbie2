@@ -150,31 +150,39 @@ class StrikeController extends BasetournamentController
 		$adjus = Adjudicator::find()->tournament($this->_tournament->id)->all();
 		foreach ($adjus as $j) {
 			foreach ($j->user->clashes as $c) {
-				$c_a = Adjudicator::find()->tournament($this->_tournament->id)->where(["user_id" => $c->clash_with])->one();
+				$c_a = Adjudicator::find()
+					->tournament($this->_tournament->id)
+					->andWhere(["user_id" => $c->clash_with])->one();
+
 				if ($c_a instanceof Adjudicator) {
 					$already = AdjudicatorStrike::find()->where([
 						"tournament_id"       => $this->_tournament->id,
 						"adjudicator_from_id" => $j->id,
 						"adjudicator_to_id"   => $c_a->id,
-					])->count();
+					])->exists();
 
-					if ($already === 0)
+					if (!$already) {
 						$clashes[] = $c;
+					}
 
 				} else { //No Adjudicator ... id might belong to a Team
-					$c_a = Team::find()->tournament($this->_tournament->id)->where("speakerA_id = :userA OR speakerB_id = :userB", [
+					$c_a = Team::find()
+						->tournament($this->_tournament->id)
+						->andWhere("speakerA_id = :userA OR speakerB_id = :userB", [
 						"userA" => $c->clash_with,
 						"userB" => $c->clash_with,
 					])->one();
+
 					if ($c_a instanceof Team) {
 						$already = TeamStrike::find()->where([
 							"tournament_id"  => $this->_tournament->id,
 							"team_id"        => $c_a->id,
 							"adjudicator_id" => $j->id,
-						])->count();
+						])->exists();
 
-						if ($already === 0)
+						if (!$already) {
 							$clashes[] = $c;
+						}
 					}
 				}
 
@@ -185,31 +193,41 @@ class StrikeController extends BasetournamentController
 		foreach ($team as $t) {
 			if ($t->speakerA) {
 				foreach ($t->speakerA->clashes as $c) {
-					$c_a = Adjudicator::find()->tournament($this->_tournament->id)->where(["user_id" => $c->clash_with])->one();
+					$c_a = Adjudicator::find()
+						->tournament($this->_tournament->id)
+						->andWhere(["user_id" => $c->clash_with])
+						->one();
+
 					if ($c_a instanceof Adjudicator) {
 						$already = TeamStrike::find()->where([
 							"tournament_id"  => $this->_tournament->id,
 							"team_id"        => $t->id,
 							"adjudicator_id" => $c_a->id,
-						])->count();
+						])->exists();
 
-						if ($already === 0)
+						if (!$already) {
 							$clashes[] = $c;
+						}
 					} // No Team2Team Clash :D
 				}
 			}
 			if ($t->speakerB) {
 				foreach ($t->speakerB->clashes as $c) {
-					$c_a = Adjudicator::find()->tournament($this->_tournament->id)->where(["user_id" => $c->clash_with])->one();
+					$c_a = Adjudicator::find()
+						->tournament($this->_tournament->id)
+						->andWhere(["user_id" => $c->clash_with])
+						->one();
+
 					if ($c_a instanceof Adjudicator) {
 						$already = TeamStrike::find()->where([
 							"tournament_id"  => $this->_tournament->id,
 							"team_id"        => $t->id,
 							"adjudicator_id" => $c_a->id,
-						])->count();
+						])->exists();
 
-						if ($already === 0)
+						if (!$already) {
 							$clashes[] = $c;
+						}
 					} // No Team2Team Clash :D
 				}
 			}

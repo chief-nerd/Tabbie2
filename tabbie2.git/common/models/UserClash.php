@@ -104,11 +104,11 @@ class UserClash extends \yii\db\ActiveRecord
 
 	public function getClashedObject($tournament_id)
 	{
-		$a = Adjudicator::find()->tournament($tournament_id)->where(["user_id" => $this->clash_with])->one();
+		$a = Adjudicator::find()->tournament($tournament_id)->andWhere(["user_id" => $this->clash_with])->one();
 		if ($a instanceof Adjudicator)
 			return $a;
 		else {
-			$t = Team::find()->tournament($tournament_id)->where("speakerA_id = :user OR speakerB_id = :user", [
+			$t = Team::find()->tournament($tournament_id)->andWhere("speakerA_id = :user OR speakerB_id = :user", [
 				"user" => $this->clash_with
 			])->one();
 			if ($t instanceof Team) {
@@ -121,11 +121,11 @@ class UserClash extends \yii\db\ActiveRecord
 
 	public function getOwnObject($tournament_id)
 	{
-		$a = Adjudicator::find()->tournament($tournament_id)->where(["user_id" => $this->user_id])->one();
+		$a = Adjudicator::find()->tournament($tournament_id)->andWhere(["user_id" => $this->user_id])->one();
 		if ($a instanceof Adjudicator)
 			return $a;
 		else {
-			$t = Team::find()->tournament($tournament_id)->where("speakerA_id = :user OR speakerB_id = :user", [
+			$t = Team::find()->tournament($tournament_id)->andWhere("speakerA_id = :user OR speakerB_id = :user", [
 				"user" => $this->user_id
 			])->one();
 			if ($t instanceof Team) {
