@@ -115,17 +115,12 @@ class StrikeController extends BasetournamentController
 
 				$clashObj = $userClash->getClashedObject($this->_tournament->id);
 				$ownObj = $userClash->getOwnObject($this->_tournament->id);
-				switch (get_class($clashObj)) {
-					case Team::className():
-						$strike = new TeamStrike([
-							"team_id"        => $clashObj->id,
-							"adjudicator_id" => $ownObj->id,
-							"tournament_id"  => $this->_tournament->id,
-							"user_clash_id"  => $userClash->id,
-							"accepted"       => $decision,
-						]);
-						break;
-					case Adjudicator::className():
+				$strike = false;
+				if($ownObj instanceof Adjudicator)
+				{
+					if($clashObj instanceof Adjudicator)
+					{
+						//A->A
 						$strike = new AdjudicatorStrike([
 							"adjudicator_from_id" => $ownObj->id,
 							"adjudicator_to_id"   => $clashObj->id,
@@ -133,9 +128,30 @@ class StrikeController extends BasetournamentController
 							"user_clash_id"       => $userClash->id,
 							"accepted"            => $decision,
 						]);
-						break;
-					default:
-						throw new Exception("No Clash Class found");
+					}else if($clashObj instanceof Team)
+					{
+						//A-T
+						$strike = new TeamStrike([
+							"team_id"        => $clashObj->id,
+							"adjudicator_id" => $ownObj->id,
+							"tournament_id"  => $this->_tournament->id,
+							"user_clash_id"  => $userClash->id,
+							"accepted"       => $decision,
+						]);
+					}
+				}else if($ownObj instanceof Team)
+				{
+					//only T->A
+					$strike = new TeamStrike([
+						"team_id"        => $ownObj->id, //REVERSE!
+						"adjudicator_id" => $clashObj->id, //REVERSE!
+						"tournament_id"  => $this->_tournament->id,
+						"user_clash_id"  => $userClash->id,
+						"accepted"       => $decision,
+					]);
+				}else {
+					//T->T NOT possible
+					throw new Exception("No Clash Combination found");
 				}
 
 				if (!$strike->save()) {
