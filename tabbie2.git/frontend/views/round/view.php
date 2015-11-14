@@ -342,7 +342,7 @@ $this->params['breadcrumbs'][] = $model->name;
                     'format' => 'raw',
                     'width' => '40%',
                     'value' => function ($model, $key, $index, $widget) {
-                        /** @var Debate $model */
+                        /** @var \common\models\Debate $model */
                         $list = [];
                         $panel = common\models\Panel::findOne($model->panel_id);
                         if ($panel && count($panel->adjudicators) > 0) {

@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 
 	<?php $form = ActiveForm::begin([
 			'options' => [
-				"class" => "loading"
+				"class" => $model->isNewRecord ? "loading" : "",
 			]]
 	); ?>
 
@@ -34,10 +34,10 @@ function (query) {
   }
 SCRIPT;
 
-	echo $form->field($model, 'tags')->widget(\kartik\widgets\Select2::classname(), [
+	echo $form->field($model, 'round_tags')->widget(\kartik\widgets\Select2::classname(), [
 		'initValueText' => \yii\helpers\ArrayHelper::map($model->motionTags, "id", "name"),
 		'options'       => [
-			'placeholder' => Yii::t("app", 'Search for a Motion tag ...'),
+			'placeholder' => Yii::t("app", 'Tell us in 3-4 general keywords what the motion is about. Reuse tags ...'),
 		],
 		'pluginOptions' => [
 			'multiple'           => true,

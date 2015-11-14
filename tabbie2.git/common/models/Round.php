@@ -49,6 +49,8 @@ class Round extends \yii\db\ActiveRecord {
 	const TYP_EFL = 3;
 	const TYP_NOVICE = 4;
 
+	public $round_tags = [];
+
 	static function statusLabel($code = null) {
 
 		$labels = [
@@ -104,11 +106,12 @@ class Round extends \yii\db\ActiveRecord {
 	}
 
 	public function getTags() {
-		return ArrayHelper::getColumn($this->motionTags, "id");
+		return $this->hasMany(Tag::className(), ['round_id' => 'id']);
 	}
 
 	public function setTags($value) {
 		Tag::deleteAll(["round_id" => $this->id]);
+		$tags = [];
 		if (is_array($value)) {
 			foreach ($value as $t) {
 				if (!is_numeric($t)) {
@@ -123,11 +126,28 @@ class Round extends \yii\db\ActiveRecord {
 					"motion_tag_id" => $t,
 					"round_id" => $this->id,
 				]);
-				$tag->save();
+				if($tag->save())
+					$tags[] = $tag;
 			}
 		}
 
-		return true;
+		return $tags;
+	}
+
+	/**
+	 * After Save
+	 * Save Tags not that round is available
+	 * @param bool $insert
+	 * @param array $changedAttributes
+	 */
+	public function afterSave($insert, $changedAttributes ) {
+		$this->setTags($this->round_tags);
+		parent::afterSave($insert, $changedAttributes);
+	}
+
+	public function afterFind() {
+		$this->round_tags = ArrayHelper::getColumn($this->tags, "motion_tag_id");
+		parent::afterFind();
 	}
 
 	public function getName() {
@@ -234,7 +254,7 @@ class Round extends \yii\db\ActiveRecord {
 	 */
 	public function rules() {
 		return [
-			[['number', 'tournament_id', 'motion'], 'required'],
+			[['number', 'tournament_id', 'motion', 'round_tags'], 'required'],
 			[['id', 'number', 'tournament_id', 'published', 'type', 'level'], 'integer'],
 			[['motion', 'infoslide'], 'string'],
 			[['time', 'tags'], 'safe']
@@ -258,7 +278,7 @@ class Round extends \yii\db\ActiveRecord {
 			'prep_started'  => Yii::t('app', 'PrepTime started'),
 			'lastrun_temp'  => Yii::t('app', 'Last Temperature'),
 			'lastrun_time'  => Yii::t('app', 'ms to calculate'),
-			'tags'          => Yii::t("app", "Motion Tags"),
+			'round_tags'    => Yii::t("app", 'Motion Tags'),
 		];
 	}
 
