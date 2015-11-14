@@ -138,7 +138,7 @@ class ResultController extends BasetournamentController {
 	 *
 	 * @return mixed
 	 */
-	public function actionRound($id, $view = "venue") {
+	public function actionRound($id, $view = "session") {
 		$searchModel = new ResultSearch();
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->_tournament->id, $id);
 
@@ -166,9 +166,12 @@ class ResultController extends BasetournamentController {
 				$view = "tableview";
 				break;
 			default:
-				throw new Exception(Yii::t("app", "View File does not exist"), 404);
+				$view = Yii::$app->session->get("LastResultView");
+				if(empty($view))
+					$view = "venueview";
 		}
 
+		Yii::$app->session->set("LastResultView", $view);
 		return $this->render($view, [
 			'round_id'     => $id,
 			'round' => $round,
