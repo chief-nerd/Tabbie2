@@ -315,4 +315,20 @@ class Adjudicator extends \yii\db\ActiveRecord
 		return $pastIDs;
 	}
 
+	public function beforeDelete()
+	{
+		$panelCount = AdjudicatorInPanel::find()->where(["adjudicator_id" => $this->id])->count();
+		if (parent::beforeDelete()) {
+			if($panelCount == 0)
+				return true;
+			else {
+				Yii::$app->session->addFlash("error", Yii::t("app", "Can't delete Adjudicator {name} because he/she is already in use", [
+					"name" => $this->getName()
+				]));
+			}
+		}
+
+		return false;
+	}
+
 }

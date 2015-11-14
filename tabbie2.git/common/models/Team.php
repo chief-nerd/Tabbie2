@@ -510,4 +510,27 @@ class Team extends \yii\db\ActiveRecord {
 		return ["Points" => $calculated_points, Team::POS_A => $calculated_A_speaks, Team::POS_B => $calculated_B_speaks];
 	}
 
+	public function beforeDelete()
+	{
+		$debateQuery = Debate::find()->tournament($this->tournament_id);
+		$debateQuery->andWhere(["og_team_id" => $this->id]);
+		$debateQuery->orWhere(["oo_team_id" => $this->id]);
+		$debateQuery->orWhere(["cg_team_id" => $this->id]);
+		$debateQuery->orWhere(["co_team_id" => $this->id]);
+
+		$debatesCount = $debateQuery->count();
+
+		if (parent::beforeDelete()) {
+			if($debatesCount == 0)
+				return true;
+			else {
+				Yii::$app->session->addFlash("error", Yii::t("app", "Can't delete Team {name} because it is already in use", [
+					"name" => $this->name
+				]));
+			}
+		}
+
+		return false;
+	}
+
 }

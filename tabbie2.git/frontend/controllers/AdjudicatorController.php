@@ -291,7 +291,7 @@ class AdjudicatorController extends BasetournamentController
 	{
 		$this->findModel($id)->delete();
 
-		return $this->redirect(['index']);
+		return $this->redirect(['index', 'tournament_id' => $this->_tournament->id]);
 	}
 
 	public function actionImport()
