@@ -5,6 +5,9 @@ $(document).ready(function () {
     var url = document.location.toString();
     if (url.match('#')) {
         $('.nav-tabs a[href=#' + url.split('#')[1] + ']').tab('show');
+        $.get($('li.active a[data-toggle="tab"]').attr('data-url'), function(data) {
+            $(".tab-pane.active").html(JSON.parse(data));
+        })
     }
 
     // With HTML5 history API, we can easily prevent scrolling!
