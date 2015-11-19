@@ -14,12 +14,22 @@ class User extends \common\models\User implements Linkable
 	public function fields()
 	{
 		$fields = [
-			"name",
-			"givenname",
-			"surename",
-			"picture",
+				"name",
+				"givenname",
+				"surename",
+				"picture",
 		];
 
+		if(Yii::$app->user->id == $this->id) {
+			array_push($fields,
+				"url_slug",
+				"email",
+				"gender",
+				"language_status",
+				"last_change",
+				"language",
+				"name");
+		}
 		return $fields;
 	}
 

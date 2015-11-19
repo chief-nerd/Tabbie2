@@ -1,6 +1,7 @@
 <?php
 namespace api\controllers;
 
+use api\models\ApiUser;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -67,7 +68,16 @@ class SiteController extends Controller
 
 		$model = new LoginForm();
 		if ($model->load(Yii::$app->request->post()) && $model->login()) {
-			return $this->goBack();
+
+			if(count(Yii::$app->user->identity->apiUser) == 0) {
+				$api = new ApiUser([
+					"user_id" => Yii::$app->user->id,
+					"access_token" => Yii::$app->getSecurity()->generateRandomString(20),
+				]);
+				$api->save();
+
+				return $this->redirect("profile");
+			}
 		} else {
 			return $this->render('login', [
 				'model' => $model,
@@ -80,5 +90,13 @@ class SiteController extends Controller
 		Yii::$app->user->logout();
 
 		return $this->goHome();
+	}
+
+	public function actionProfile(){
+		$model = Yii::$app->user->identity;
+
+		return $this->render('profile', [
+				'model' => $model,
+		]);
 	}
 }

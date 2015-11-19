@@ -2,11 +2,13 @@
 
 namespace common\models;
 
+use api\models\ApiUser;
 use common\components\ObjectError;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\filters\RateLimitInterface;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\IdentityInterface;
@@ -40,6 +42,7 @@ use yii\web\IdentityInterface;
  * @property Society[]      $societies
  * @property Team[]         $teams
  * @property SpecialNeeds[] $specialNeeds
+ * @property ApiUser		$apiUser
  * @property string         $name
  */
 class User extends ActiveRecord implements IdentityInterface {
@@ -188,7 +191,7 @@ class User extends ActiveRecord implements IdentityInterface {
 	 * @return null|static
 	 */
 	public static function findIdentityByAccessToken($token, $type = null) {
-		return static::findOne(['access_token' => $token]);
+		return ApiUser::findOne(['access_token' => $token])->user;
 	}
 
 	/**
@@ -610,6 +613,16 @@ class User extends ActiveRecord implements IdentityInterface {
 	 */
 	public function getAdjudicators() {
 		return $this->hasMany(Adjudicator::className(), ['user_id' => 'id']);
+	}
+
+
+	/**
+	 * Returns the apiUser for this user
+	 *
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getApiUser() {
+		return $this->hasOne(ApiUser::className(), ['user_id' => 'id']);
 	}
 
 	/**

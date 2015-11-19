@@ -10,6 +10,8 @@
 namespace api\controllers;
 
 
+use api\models\User;
+
 class UserController extends BaseRestController
 {
 	public $modelClass = 'api\models\User';
@@ -22,5 +24,10 @@ class UserController extends BaseRestController
 		unset($actions['delete'], $actions['index'], $actions['create'], $actions['update']);
 
 		return $actions;
+	}
+
+	public function actionMe()
+	{
+		return User::findIdentityByAccessToken(\Yii::$app->request->get("access-token"));
 	}
 }
