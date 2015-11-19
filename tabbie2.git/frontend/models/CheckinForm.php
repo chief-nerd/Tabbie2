@@ -5,6 +5,7 @@ namespace frontend\models;
 use common\models\Adjudicator;
 use common\models\Team;
 use Yii;
+use yii\base\Exception;
 use yii\base\Model;
 
 /**
@@ -42,8 +43,15 @@ class CheckinForm extends Model
 		];
 	}
 
+	public static function checkNumber($number) {
+		return !preg_match("/^(AA|TA|TB)-[0-9]+$/", $number);
+	}
+
 	public function save()
 	{
+		if(self::checkNumber($this->number))
+			return ["danger" => $this->number.": ".Yii::t("app", "Not a valid input")];
+
 		$messages = [];
 		$type = substr($this->number, 0, 2);
 		$real = intval(substr($this->number, 3, strlen($this->number)));
