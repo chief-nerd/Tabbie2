@@ -1,9 +1,4 @@
 *.bak
 .idea/
 Tabbie2.iml
-# Elastic Beanstalk Files
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
-
 .DS_Store
