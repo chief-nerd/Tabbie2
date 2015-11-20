@@ -43,14 +43,10 @@ class CheckinForm extends Model
 		];
 	}
 
-	public static function checkNumber($number) {
-		return !preg_match("/^(AA|TA|TB)-[0-9]+$/", $number);
-	}
-
 	public function save()
 	{
-		if(self::checkNumber($this->number))
-			return ["danger" => $this->number.": ".Yii::t("app", "Not a valid input")];
+		if (self::checkNumber($this->number))
+			return ["danger" => $this->number . ": " . Yii::t("app", "Not a valid input")];
 
 		$messages = [];
 		$type = substr($this->number, 0, 2);
@@ -113,6 +109,11 @@ class CheckinForm extends Model
 		}
 
 		return $messages;
+	}
+
+	public static function checkNumber($number)
+	{
+		return !preg_match("/^(" . self::ADJU . "|" . self::TEAMA . "|" . self::TEAMB . ")-[0-9]+$/", $number);
 	}
 
 }
