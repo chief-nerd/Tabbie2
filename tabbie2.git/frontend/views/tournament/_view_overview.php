@@ -26,9 +26,9 @@ use common\models\Team;
             if ($info) {
                 if (Yii::$app->user->hasChairedLastRound($info) && !$info['debate']->result instanceof \common\models\Result) {
                     $button_output_buffer .= Html::a(
-                            Html::icon("envelope") . "&nbsp;" . Yii::t('app', 'Result'),
-                            ['result/create', "id" => $info['debate']->id, "tournament_id" => $model->id],
-                            ['class' => 'btn btn-success']);
+                        Html::icon("envelope") . "&nbsp;" . Yii::t('app', 'Result'),
+                        ['result/create', "id" => $info['debate']->id, "tournament_id" => $model->id],
+                        ['class' => 'btn btn-success']);
                 }
                 $refs = $model->hasOpenFeedback(Yii::$app->user->id);
                 if (is_array($refs) && $model->getTournamentHasQuestions()->count() > 0) {
@@ -39,12 +39,12 @@ use common\models\Team;
                     $param["id"] = $ref["debate"]->id;
 
                     $content_div[] = Html::a(
-                            Html::icon("comment") . "&nbsp;" . Yii::t('app', 'Feedback #{num}', ['num' => $ref["debate"]->round->label]),
-                            array_merge(['feedback/create', "tournament_id" => $model->id], $param),
-                            [
-                                    "class" => "btn btn-success",
-                                    "style" => "width: " . ((count($refs) > 0) ? 85 : 100) . "%",
-                            ]
+                        Html::icon("comment") . "&nbsp;" . Yii::t('app', 'Feedback #{num}', ['num' => $ref["debate"]->round->label]),
+                        array_merge(['feedback/create', "tournament_id" => $model->id], $param),
+                        [
+                            "class" => "btn btn-success",
+                            "style" => "width: " . ((count($refs) > 0) ? 85 : 100) . "%",
+                        ]
                     );
 
                     if (count($refs) > 0) {
@@ -56,8 +56,8 @@ use common\models\Team;
                             $param["id"] = $ref["debate"]->id;
 
                             $items[] = [
-                                    "label" => Html::icon("comment") . "&nbsp;" . Yii::t('app', 'Feedback #{num}', ['num' => $ref["debate"]->round->label]),
-                                    "url"   => array_merge(['feedback/create', "tournament_id" => $model->id], $param)
+                                "label" => Html::icon("comment") . "&nbsp;" . Yii::t('app', 'Feedback #{num}', ['num' => $ref["debate"]->round->label]),
+                                "url" => array_merge(['feedback/create', "tournament_id" => $model->id], $param)
                             ];
                         }
 
@@ -65,22 +65,22 @@ use common\models\Team;
                         $toggle[] = HTML::tag("span", "Toggle Dropdown", ["class" => "sr-only"]);
 
                         $content_div[] = Html::tag("button", implode(" ", $toggle), [
-                                "type"          => "button",
-                                "class"         => "btn btn-success dropdown-toggle",
-                                "style"         => "width: 15%;",
-                                "data-toggle"   => "dropdown",
-                                "aria-haspopup" => "true",
-                                "aria-expanded" => "false"
+                            "type" => "button",
+                            "class" => "btn btn-success dropdown-toggle",
+                            "style" => "width: 15%;",
+                            "data-toggle" => "dropdown",
+                            "aria-haspopup" => "true",
+                            "aria-expanded" => "false"
                         ]);
 
                         $content_div[] = \yii\bootstrap\Dropdown::widget([
-                                "items"        => $items,
-                                "encodeLabels" => false
+                            "items" => $items,
+                            "encodeLabels" => false
                         ]);
                     }
 
                     $wrapper_div = Html::tag("div", implode(" ", $content_div), [
-                            "class" => "btn-group splitbutton",
+                        "class" => "btn-group splitbutton",
                     ]);
 
                     $button_output_buffer .= $wrapper_div;
@@ -96,7 +96,7 @@ use common\models\Team;
                             if (isset($role->speakerB->name)) {
                                 //I am speaker A
                                 $with = Yii::t("app", "together with {teammate}", [
-                                        "teammate" => $role->speakerB->name,
+                                    "teammate" => $role->speakerB->name,
                                 ]);
                             } else {
                                 $with = Yii::t("app", "as ironman");
@@ -105,7 +105,7 @@ use common\models\Team;
                             if (isset($role->speakerA->name)) {
                                 //I am speaker B
                                 $with = Yii::t("app", "together with {teammate}", [
-                                        "teammate" => $role->speakerA->name,
+                                    "teammate" => $role->speakerA->name,
                                 ]);
                             } else {
                                 $with = Yii::t("app", "as ironman");
@@ -113,13 +113,13 @@ use common\models\Team;
                         }
 
                         $text_output_buffer .= Yii::t("app", "You are registered as team <br> '{team}' {with} for {society}", [
-                                "team"    => $role->name,
-                                "with"    => $with,
-                                "society" => $role->society->fullname,
+                            "team" => $role->name,
+                            "with" => $with,
+                            "society" => $role->society->fullname,
                         ]);
                     } elseif ($role instanceof \common\models\Adjudicator) {
                         $text_output_buffer .= Yii::t("app", "You are registered as adjudicator for {society}", [
-                                "society" => $role->society->fullname,
+                            "society" => $role->society->fullname,
                         ]);
                     }
                 }
@@ -172,12 +172,12 @@ use common\models\Team;
                         <div class="row">
                             <div class="col-xs-12 col-sm-6">
                                 <?php echo Yii::t("app", "You are <b>{pos}</b> in room <b>{room}</b>.", [
-                                        "pos"  => strtolower($pos),
-                                        "room" => $info["debate"]->venue->name,
+                                    "pos" => strtolower($pos),
+                                    "room" => $info["debate"]->venue->name,
                                 ]) ?></div>
                             <div class="col-xs-12 col-sm-6">
                                 <?php echo Yii::t("app", "Round starts at: <b>{time}</b>", [
-                                        "time" => Yii::$app->formatter->asTime($info["debate"]->round->prep_started . "+15min", "short"),
+                                    "time" => Yii::$app->formatter->asTime($info["debate"]->round->prep_started . "+15min", "short"),
                                 ]) ?>
                             </div>
                         </div>
@@ -195,37 +195,27 @@ use common\models\Team;
                         </div>
                     </div>
                 </div>
-                <? if ($info["pos"] == Panel::FUNCTION_CHAIR): ?>
+                <? if ($info["pos"] == Panel::FUNCTION_CHAIR && $info["debate"] instanceof \common\models\Debate): ?>
                     <div class="panel panel-default debate-teams">
                         <div class="panel-heading">
                             <h3 class="panel-title"><?php echo Yii::t("app", "Round #{num} Teams", ["num" => $info["debate"]->round->number]) ?></h3>
                         </div>
                         <div class="panel-body">
                             <div class="row" style="margin-top: 10px">
-                                <div class="team col-xs-12 col-sm-6">
-                                    <?= Yii::t("app", "Opening Government") ?>: <br>
-                                    <?= $info["debate"]->og_team->name ?><br/>
-                                    <?= $info["debate"]->og_team->speakerA->givenname ?>
-                                    & <?= $info["debate"]->og_team->speakerB->givenname ?>
-                                </div>
-                                <div class="team col-xs-12 col-sm-6">
-                                    <?= Yii::t("app", "Opening Opposition") ?>: <br>
-                                    <?= $info["debate"]->oo_team->name ?><br/>
-                                    <?= $info["debate"]->oo_team->speakerA->givenname ?>
-                                    & <?= $info["debate"]->oo_team->speakerB->givenname ?>
-                                </div>
-                                <div class="team col-xs-12 col-sm-6">
-                                    <?= Yii::t("app", "Closing Government") ?>: <br>
-                                    <?= $info["debate"]->cg_team->name ?><br/>
-                                    <?= $info["debate"]->cg_team->speakerA->givenname ?>
-                                    & <?= $info["debate"]->cg_team->speakerB->givenname ?>
-                                </div>
-                                <div class="team col-xs-12 col-sm-6">
-                                    <?= Yii::t("app", "Closing Opposition") ?>: <br>
-                                    <?= $info["debate"]->co_team->name ?><br/>
-                                    <?= $info["debate"]->co_team->speakerA->givenname ?>
-                                    & <?= $info["debate"]->co_team->speakerB->givenname ?>
-                                </div>
+                                <? foreach (Team::getPos() as $index => $pos): ?>
+                                    <div class="team col-xs-12 col-sm-6">
+                                        <?= Team::getPosLabel($index) ?>: <br>
+                                        <?php if ($info["debate"]->{$pos . "_team"} instanceof Team): ?>
+                                            <?= $info["debate"]->{$pos . "_team"}->name ?><br/>
+                                            <?= ($info["debate"]->{$pos . "_team"}->speakerA instanceof \common\models\User) ?
+                                                $info["debate"]->{$pos . "_team"}->speakerA->givenname : ""
+                                            ?>
+                                            <?= ($info["debate"]->{$pos . "_team"}->speakerB instanceof \common\models\User) ?
+                                                " & " . $info["debate"]->{$pos . "_team"}->speakerB->givenname : ""
+                                            ?>
+                                        <? endif; ?>
+                                    </div>
+                                <? endforeach; ?>
                             </div>
                         </div>
                     </div>
@@ -236,44 +226,44 @@ use common\models\Team;
     <div class="col-xs-12 col-md-4 col-lg-4">
         <?=
         DetailView::widget([
-                'model'      => $model,
-                'attributes' => [
-                        'id',
-                        'hostedby.fullname:text:Hosted By',
-                        [
-                                "attribute" => 'convenor',
-                                'label'     => "Convenor",
-                                'format'    => 'raw',
-                                'value'     => implode(", ", \yii\helpers\ArrayHelper::getColumn($model->convenors, "name")),
-                        ],
-                        [
-                                "attribute" => 'CATeam',
-                                'label'     => "CA Team",
-                                'format'    => 'raw',
-                                'value'     => implode(", ", \yii\helpers\ArrayHelper::getColumn($model->cAs, "name")),
-                        ],
-                        [
-                                "attribute" => 'tabmaster',
-                                'label'     => "Tab Master",
-                                'format'    => 'raw',
-                                'value'     => implode(", ", \yii\helpers\ArrayHelper::getColumn($model->tabmasters, "name")),
-                        ],
-                        [
-                                "attribute" => 'start_date',
-                                'format'    => 'raw',
-                                'value'     => Yii::$app->formatter->asDateTime($model->start_date, "short"),
-                        ],
-                        [
-                                "attribute" => 'end_date',
-                                'format'    => 'raw',
-                                'value'     => Yii::$app->formatter->asDateTime($model->end_date, "short"),
-                        ],
-                        [
-                                "attribute" => 'timezone',
-                                'format'    => 'raw',
-                                'value'     => $model->getFormatedTimeZone(),
-                        ],
+            'model' => $model,
+            'attributes' => [
+                'id',
+                'hostedby.fullname:text:Hosted By',
+                [
+                    "attribute" => 'convenor',
+                    'label' => "Convenor",
+                    'format' => 'raw',
+                    'value' => implode(", ", \yii\helpers\ArrayHelper::getColumn($model->convenors, "name")),
                 ],
+                [
+                    "attribute" => 'CATeam',
+                    'label' => "CA Team",
+                    'format' => 'raw',
+                    'value' => implode(", ", \yii\helpers\ArrayHelper::getColumn($model->cAs, "name")),
+                ],
+                [
+                    "attribute" => 'tabmaster',
+                    'label' => "Tab Master",
+                    'format' => 'raw',
+                    'value' => implode(", ", \yii\helpers\ArrayHelper::getColumn($model->tabmasters, "name")),
+                ],
+                [
+                    "attribute" => 'start_date',
+                    'format' => 'raw',
+                    'value' => Yii::$app->formatter->asDateTime($model->start_date, "short"),
+                ],
+                [
+                    "attribute" => 'end_date',
+                    'format' => 'raw',
+                    'value' => Yii::$app->formatter->asDateTime($model->end_date, "short"),
+                ],
+                [
+                    "attribute" => 'timezone',
+                    'format' => 'raw',
+                    'value' => $model->getFormatedTimeZone(),
+                ],
+            ],
         ])
         ?>
     </div>
