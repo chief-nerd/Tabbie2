@@ -23,16 +23,16 @@
     position: absolute;
     top: 0;
     right: 0;
+    display: block;
     min-width: 100%;
     min-height: 100%;
-    font-size: 100px;
-    text-align: right;
-    filter: alpha(opacity=0);
-    opacity: 0;
     outline: none;
     background: white;
+    text-align: right;
+    font-size: 100px;
+    opacity: 0;
+    filter: alpha(opacity=0);
     cursor: inherit;
-    display: block;
 }
 
 /* Pagination CENTER HACK */
@@ -50,8 +50,8 @@ html, body {
 }
 
 body {
-    padding-top: 50px;
     position: relative;
+    padding-top: 50px;
 }
 
 body.movedown {
@@ -59,17 +59,17 @@ body.movedown {
 }
 
 .swingIndicator {
+    top: -3px;
     font-weight: bold;
     font-size: 105%;
-    top: -3px;
 }
 
 /** BOOTSTRAP HACKS **/
 
 .navbar-brand > img {
-    width: 40px;
     float: left;
     margin-top: -10px;
+    width: 40px;
 }
 
 .navbar-sub .navbar-brand {
@@ -143,11 +143,11 @@ body.movedown {
 }
 
 .wrap {
-    min-height: 100%;
-    height: auto;
+    position: relative;
     margin: 0 auto -60px;
     padding: 0 0 60px;
-    position: relative;
+    min-height: 100%;
+    height: auto;
 }
 
 .wrap > .container {
@@ -155,13 +155,13 @@ body.movedown {
 }
 
 .footer {
-    height: 60px;
-    background-color: #f5f5f5;
-    border-top: 1px solid #ddd;
-    padding-top: 20px;
     position: absolute;
     bottom: 0;
+    padding-top: 20px;
     width: 100%;
+    height: 60px;
+    border-top: 1px solid #ddd;
+    background-color: #f5f5f5;
 }
 
 .jumbotron {
@@ -169,8 +169,8 @@ body.movedown {
 }
 
 .jumbotron .btn {
-    font-size: 21px;
     padding: 14px 24px;
+    font-size: 21px;
 }
 
 /* add sorting icons to gridview sort links */
@@ -178,11 +178,11 @@ a.asc:after, a.desc:after {
     position: relative;
     top: 1px;
     display: inline-block;
-    font-family: 'Glyphicons Halflings';
-    font-style: normal;
-    font-weight: normal;
-    line-height: 1;
     padding-left: 5px;
+    font-weight: normal;
+    font-style: normal;
+    font-family: 'Glyphicons Halflings';
+    line-height: 1;
 }
 
 a.asc:after {
@@ -210,8 +210,8 @@ a.desc:after {
 }
 
 .form-group.required .control-label:after {
-    content: " *";
     color: #C00;
+    content: " *";
 }
 
 .grid-view th {
@@ -225,32 +225,32 @@ a.desc:after {
 }
 
 .error-summary {
-    color: #a94442;
-    background: #fdf7f7;
-    border-left: 3px solid #eed3d7;
-    padding: 10px 20px;
     margin: 0 0 15px 0;
+    padding: 10px 20px;
+    border-left: 3px solid #eed3d7;
+    background: #fdf7f7;
+    color: #a94442;
 }
 
 .flashes {
     position: fixed;
-    left: 0;
-    right: 0;
     top: 0;
+    right: 0;
+    left: 0;
     z-index: 1040;
 }
 
 .flashes .alert {
-    width: 100%;
-    padding: 14px;
     margin: 0;
+    padding: 14px;
+    width: 100%;
     border-radius: 0;
     text-align: center;
 }
 
 .flashes div.alert:last-of-type {
-    border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
 }
 
 .site-checkin .msg {
@@ -282,9 +282,9 @@ a.desc:after {
 }
 
 .debate-teams .team {
+    margin-bottom: 10px;
     padding-bottom: 10px;
     border-bottom: 1px solid #CCC;
-    margin-bottom: 10px;
 }
 
 .debate-teams .team:nth-of-type(even) {
@@ -301,6 +301,11 @@ a.desc:after {
 
 /***** Tournament *******/
 
+.site-index .tournaments .tournament {
+    overflow: hidden;
+    height: 200px;
+}
+
 #tournament_title {
     margin: 0 0;
 }
@@ -313,12 +318,10 @@ a.desc:after {
 }
 
 .tournament-index .tournament {
-    border-radius: 8px;
-    border: #DDD 1px solid;
-    padding: 20px;
     margin: 20px 5px;
-    height: 200px;
-    overflow: hidden;
+    padding: 20px;
+    border: #DDD 1px solid;
+    border-radius: 8px;
 }
 
 .tournament-index .tournament h2 {
@@ -345,17 +348,17 @@ a.desc:after {
 /****** RESULT ******/
 
 .result-form input {
-    width: auto;
-    display: inline-block;
     position: absolute;
     right: 20px;
+    display: inline-block;
+    width: auto;
 }
 
 .result-confirm input {
-    width: auto;
-    display: inline-block;
     position: absolute;
     right: 20px;
+    display: inline-block;
+    width: auto;
 }
 
 #debates.list-view .venue {
@@ -363,12 +366,12 @@ a.desc:after {
 }
 
 #debates.list-view .venue .status {
-    width: 20px;
-    height: 20px;
-    border-radius: 10px;
-    border: 1px solid gray;
     float: left;
     margin-right: 5px;
+    width: 20px;
+    height: 20px;
+    border: 1px solid gray;
+    border-radius: 10px;
 }
 
 .status.entered {
@@ -389,9 +392,9 @@ a.desc:after {
 }
 
 .slider.slider-horizontal {
+    margin-top: 30px;
     width: 100%;
     height: 24px;
-    margin-top: 30px;
 }
 
 .tab-team-container h3, .tab-speaker-container h3 {
@@ -400,48 +403,48 @@ a.desc:after {
 
 /** LOADER */
 #loader {
-    display: none;
     position: fixed;
-    height: 100%;
-    width: 100%;
     top: 0;
     left: 0;
-    background-color: rgba(255, 255, 255, 0.98);
     z-index: 9999999;
+    display: none;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.98);
 }
 
 #loader .container {
-    height: 100%;
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
+    -ms-flex-pack: center;
+    -ms-flex-align: center;
+    height: 100%;
     -webkit-box-pack: center;
     -webkit-justify-content: center;
-    -ms-flex-pack: center;
     justify-content: center;
     -webkit-box-align: center;
     -webkit-align-items: center;
-    -ms-flex-align: center;
     align-items: center;
 }
 
 #loader img {
     position: relative;
-    width: 100%;
     max-width: 250px;
     max-height: 250px;
+    width: 100%;
     border-radius: 40px;
 }
 
 .feedback-create input[type=checkbox] {
     /* All browsers except webkit*/
-    transform: scale(2.5);
+    margin-right: 10px;
 
     /* Webkit browsers*/
-    -webkit-transform: scale(2.5);
-    margin-right: 10px;
     margin-left: 20px;
+    -webkit-transform: scale(2.5);
+    transform: scale(2.5);
 }
 
 .result-index .panel-body {
@@ -461,19 +464,19 @@ a.desc:after {
 }
 
 .tags {
-    text-align: center;
     margin: 0px 0 15px 0;
+    text-align: center;
 }
 
 .tags:after {
-    content: '';
     display: block;
     clear: both;
+    content: '';
 }
 
 .tags a {
-    padding: 0 3px;
     margin: 2px 3px;
+    padding: 0 3px;
 }
 
 .tags .s0 {
