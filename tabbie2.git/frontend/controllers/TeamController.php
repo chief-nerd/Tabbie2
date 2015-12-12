@@ -5,7 +5,7 @@ namespace frontend\controllers;
 use common\components\filter\TournamentContextFilter;
 use common\components\ObjectError;
 use common\models\Debate;
-use common\models\Round;
+use common\models\UserValue;
 use common\models\search\TeamSearch;
 use common\models\Society;
 use common\models\Team;
@@ -244,6 +244,7 @@ class TeamController extends BasetournamentController
     {
         $tournament = $this->_tournament;
         $model = new \frontend\models\ImportForm();
+        $min_columns = 8;
 
         if (Yii::$app->request->isPost) {
             //$model->scenario = "screen";
@@ -251,6 +252,7 @@ class TeamController extends BasetournamentController
                 set_time_limit(0);
                 $choices = Yii::$app->request->post("field", false);
                 $model->tempImport = @unserialize(Yii::$app->request->post("csvFile", false));
+                $model->header = @unserialize(Yii::$app->request->post("header", false));
 
                 //APPLY CHOICES
                 if (is_array($choices)) {
@@ -269,7 +271,7 @@ class TeamController extends BasetournamentController
                     if (!isset($model->tempImport[$r])) continue;
                     $row = $model->tempImport[$r];
 
-                    //Society
+                    //**** Society *****/
                     $temp_society = \common\models\Society::findOne(["fullname" => $row[1][0]]);
                     if ($temp_society instanceof Society)
                         $societyID = $temp_society->id;
@@ -290,28 +292,53 @@ class TeamController extends BasetournamentController
                         $societyID = $row[1][1]["id"];
                     }
 
-                    //UserA
+                    //**** User A *****/
+                    $userAID = null;
                     if (count($row[2]) == 1) { //NEW
                         if ($row[2][0] != "" && $row[3][0] != "" && $row[4][0] != "") {
                             $userA = User::NewViaImport($row[2][0], $row[3][0], $row[4][0], $societyID, !$model->is_test, $this->_tournament);
-                            $userAID = $userA->id;
-                        } else
-                            $userAID = null;
+                            if ($userA)
+                                $userAID = $userA->id;
+                        }
                     } else if (count($row[2]) == 2) {
                         $userAID = $row[2][1]["id"];
                     }
 
-                    //UserB
+                    //**** A Custom Attributes *****/
+                    $customAttr = [];
+                    for ($c = $min_columns; $c < count($model->header); $c++) {
+                        if ($model->header[$c][0] == 'A' && !empty($model->tempImport[$r][$c][0])) {
+                            $customAttr[substr($model->header[$c], 2)] = $model->tempImport[$r][$c][0];
+                        }
+                    }
+
+                    if (count($customAttr) > 0 && $userAID)
+                        UserValue::SaveCustomValues($customAttr, $userAID, $tournament);
+
+                    //**** User B *****/
+                    $userBID = null;
                     if (count($row[5]) == 1) { //NEW
                         if ($row[5][0] != "" && $row[6][0] != "" && $row[7][0] != "") {
                             $userB = User::NewViaImport($row[5][0], $row[6][0], $row[7][0], $societyID, !$model->is_test, $this->_tournament);
-                            $userBID = $userB->id;
-                        } else
-                            $userBID = null;
+                            if ($userB)
+                                $userBID = $userB->id;
+                        }
                     } else if (count($row[5]) == 2) {
                         $userBID = $row[5][1]["id"];
                     }
 
+                    //**** B Custom Attributes *****/
+                    $customAttr = [];
+                    for ($c = $min_columns; $c < count($model->header); $c++) {
+                        if ($model->header[$c][0] == 'B' && !empty($model->tempImport[$r][$c][0])) {
+                            $customAttr[substr($model->header[$c], 2)] = $model->tempImport[$r][$c][0];
+                        }
+                    }
+
+                    if (count($customAttr) > 0 && $userBID)
+                        UserValue::SaveCustomValues($customAttr, $userBID, $tournament);
+
+                    //**** Create Team *****/
                     if (Team::find()
                             ->tournament($this->_tournament->id)
                             ->andWhere(['speakerA_id' => $userAID, 'speakerB_id' => $userBID])
@@ -337,22 +364,26 @@ class TeamController extends BasetournamentController
                 $model->load(Yii::$app->request->post());
 
                 $row = 0;
+
                 ini_set("auto_detect_line_endings", true);
                 if ($file && ($handle = fopen($file->tempName, "r")) !== false) {
                     while (($data = fgetcsv($handle, null, $model->getDelimiterChar())) !== false) {
 
-                        $data = array_map("utf8_encode", $data);
-                        if ($row == 0) { //Don't use first column
-                            $row++;
-                            continue;
-                        }
-
-                        if (($num = count($data)) != 8) {
-                            Yii::$app->session->addFlash("error", Yii::t("app", "File Syntax Wrong! 8 columns expected"));
+                        $num = count($data);
+                        if ($num < $min_columns) {
+                            Yii::$app->session->addFlash("error", Yii::t("app", "File Syntax Wrong! At least 8 columns expected"));
                             return $this->redirect(['import', "tournament_id" => $this->_tournament->id]);
                         }
-                        for ($c = 0; $c < $num; $c++) {
-                            $model->tempImport[$row][$c][0] = utf8_encode(trim($data[$c]));
+
+                        $data = array_map("utf8_encode", $data);
+                        if ($row == 0) { //Don't use first row
+                            for ($c = 0; $c < $num; $c++) {
+                                $model->header[$c] = utf8_encode(trim($data[$c]));
+                            }
+                        } else {
+                            for ($c = 0; $c < $num; $c++) {
+                                $model->tempImport[$row][$c][0] = utf8_encode(trim($data[$c]));
+                            }
                         }
                         $row++;
                     }
@@ -438,7 +469,8 @@ class TeamController extends BasetournamentController
 
         return $this->render('import', [
             "model" => $model,
-            "tournament" => $tournament
+            "tournament" => $tournament,
+            "min_columns" => $min_columns,
         ]);
     }
 
