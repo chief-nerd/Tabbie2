@@ -317,6 +317,8 @@ a.desc:after {
     border: #DDD 1px solid;
     padding: 20px;
     margin: 20px 5px;
+    height: 200px;
+    overflow: hidden;
 }
 
 .tournament-index .tournament h2 {
