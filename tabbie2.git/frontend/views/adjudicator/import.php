@@ -95,8 +95,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     ?>
                 </td>
 
-                <? for ($c = $min_columns; $c < count($model->header); $c++): ?>
-                    <td><?= $model->tempImport[$i][$c][0] ?></td>
+                <?
+                for ($c = $min_columns; $c < count($model->header); $c++): ?>
+                    <td><? echo isset($model->tempImport[$i][$c]) ? $model->tempImport[$i][$c][0] : "" ?></td>
                 <? endfor; ?>
             </tr>
         <? endfor; ?>
