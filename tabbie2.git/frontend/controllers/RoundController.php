@@ -493,8 +493,8 @@ class RoundController extends BasetournamentController
                     $strikedTeam = $adju->getStrikedTeams()->asArray()->all();
                     $adjudicator["strikedTeams"] = ArrayHelper::getColumn($strikedTeam, "id");
 
-                    $adjudicator["pastAdjudicatorIDs"] = $adju->getPastAdjudicatorIDs($model->id);
-                    $adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs($round->id);
+                    $adjudicator["pastAdjudicatorIDs"] = $adju->getPastAdjudicatorIDs($round->id, true);
+                    $adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs($round->id, true);
 
                     if ($inPanel->function == Panel::FUNCTION_CHAIR) {
                         array_unshift($line["panel"]["adjudicators"], $adjudicator);
