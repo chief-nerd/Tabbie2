@@ -437,15 +437,16 @@ class RoundController extends BasetournamentController
             "id", "name", "breaking", "strength", "society_id", "can_chair", "are_watched",
         ];
 
-        $country_props = [
-            "id", "name", "region_id", "region_name"
-        ];
-
         $user_props = [
             "id", "name", "language_status", "gender"
         ];
 
+        $society_props = [
+            "id", "fullname", "abr"
+        ];
+
         $round = Round::findOne(["id" => $id]);
+        $societies = []; // keep a separate list of societies, so we create each once only
         if ($round instanceof Round) {
 
             /** @var Debate $model */
@@ -455,10 +456,14 @@ class RoundController extends BasetournamentController
                 foreach ($model->getTeams() as $pos => $team) {
                     $pos = strtoupper($pos);
                     $teams[$pos] = $team->toArray($team_props);
-                    $teams[$pos]["region_id"] = $team->society->country->region_id;
-                    $teams[$pos]["region_name"] = $team->society->country->getRegionName();
-                    $teams[$pos]["speaker"]["A"] = $team->speakerA->toArray($user_props);
-                    $teams[$pos]["speaker"]["B"] = $team->speakerB->toArray($user_props);
+                    $teams[$pos]["speakers"]["A"] = $team->speakerA->toArray($user_props);
+                    $teams[$pos]["speakers"]["B"] = $team->speakerB->toArray($user_props);
+
+                    // Add society to the list of societies
+                    if (!array_key_exists($team->society_id, $societies)) {
+                        $societies[$team->society_id] = $team->society->toArray($society_props);
+                        $societies[$team->society_id]["country"] = $team->society->country->alpha_2;
+                    }
                 }
 
                 $line = [
@@ -480,12 +485,13 @@ class RoundController extends BasetournamentController
                     $adjudicator["country"] = $adju->user->societies[0]->country->toArray($country_props);
                     $adjudicator["country"]["region_name"] = $adju->user->societies[0]->country->getRegionName();
                     $adjudicator["societies"] = ArrayHelper::getColumn($adju->getSocieties(true)->asArray()->all(), "id");
+                    $adjudicator["language_status"] = $adju->user->language_status;
 
                     $strikedAdju = $adju->getStrikedAdjudicators()->asArray()->all();
-                    $adjudicator["strikedAdjudicators"] = $strikedAdju;
+                    $adjudicator["strikedAdjudicators"] = ArrayHelper::getColumn($strikedAdju, "id");
 
                     $strikedTeam = $adju->getStrikedTeams()->asArray()->all();
-                    $adjudicator["strikedTeams"] = $strikedTeam;
+                    $adjudicator["strikedTeams"] = ArrayHelper::getColumn($strikedTeam, "id");
 
                     $adjudicator["pastAdjudicatorIDs"] = $adju->getPastAdjudicatorIDs($model->id);
                     $adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs($round->id);
@@ -494,6 +500,19 @@ class RoundController extends BasetournamentController
                         array_unshift($line["panel"]["adjudicators"], $adjudicator);
                     } else {
                         $line["panel"]["adjudicators"][] = $adjudicator;
+                    }
+
+                    // Add societies to the list of societies
+                    // The first if statement might be redundant, given the foreach loop after it
+                    if (!array_key_exists($adju->society_id, $societies)) {
+                        $societies[$adju->society_id] = $adju->society->toArray($society_props);
+                        $societies[$adju->society_id]["country"] = $adju->society->country->alpha_2;
+                    }
+                    foreach ($adju->societies as $society) {
+                        if (!array_key_exists($society->id, $societies)) {
+                            $societies[$society->id] = $society->toArray($society_props);
+                            $societies[$society->id]["country"] = $society->country->alpha_2;
+                        }
                     }
                 }
 
@@ -509,7 +528,7 @@ class RoundController extends BasetournamentController
                 header("Content-Type: application/json");
                 header("Content-Disposition: attachment; filename=" . $name . ".json");
                 header('Pragma: no-cache');
-                $output = json_encode($DRAW);
+                $output = json_encode(["draw" => $DRAW, "societies" => $societies]);
                 break;
             case "raw":
                 $apptype = "application/text";
