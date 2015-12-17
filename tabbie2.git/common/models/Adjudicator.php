@@ -262,7 +262,7 @@ class Adjudicator extends \yii\db\ActiveRecord
 		return (isset($table[$strength])) ? $table[$strength] : $table;
 	}
 
-	public function getPastAdjudicatorIDs($exclude_current = false, $include_all = false)
+	public function getPastAdjudicatorIDs($exclude_current = false)
 	{
 		//Works without tournament_id because adjudicator is only valid in tournament scope
 
@@ -289,16 +289,30 @@ class Adjudicator extends \yii\db\ActiveRecord
 		$model = \Yii::$app->db->createCommand($sql);
 		$past = $model->queryAll();
 
-		if ($include_all)
-			return $past;
-		else
-			return ArrayHelper::getColumn($past, "bid");
+		return ArrayHelper::getColumn($past, "bid");
 	}
 
-	public function getPastTeamIDs($exlude_round_id = false, $include_round_numbers = false)
+	public function getPastAdjudicatorIDsWithRoundNumbers($current_round)
+	{
+		$sql = "SELECT b.adjudicator_id AS bid, r.number as rno
+			FROM adjudicator_in_panel AS a
+			LEFT JOIN adjudicator_in_panel AS b ON a.panel_id = b.panel_id
+			LEFT JOIN panel AS p ON a.panel_id = p.id
+			LEFT JOIN debate AS c ON p.id = c.panel_id
+			LEFT JOIN round AS r ON r.id = c.round_id
+			WHERE a.adjudicator_id != b.adjudicator_id
+			AND a.adjudicator_id = " . $this->id . "
+			AND rno < " . $current_round_id . ";";
+
+		$model = \Yii::$app->db->createCommand($sql);
+		$past = $model->queryAll();
+		return $past;
+	}
+
+	public function getPastTeamIDs($exlude_round_id = false)
 	{
 
-		if (is_int($exlude_round_id))) {
+		if (is_int($exlude_round_id)) {
 			$sql = "SELECT og_team_id, oo_team_id, cg_team_id, co_team_id, round_id FROM adjudicator_in_panel AS aip LEFT JOIN panel ON panel.id = aip.panel_id RIGHT JOIN debate ON debate.panel_id = panel.id WHERE adjudicator_id = " . $this->id . " AND round_id < ". $exlude_round_id;
 		} else {
 			$sql = "SELECT og_team_id, oo_team_id, cg_team_id, co_team_id FROM adjudicator_in_panel AS aip LEFT JOIN panel ON panel.id = aip.panel_id RIGHT JOIN debate ON debate.panel_id = panel.id WHERE adjudicator_id = " . $this->id;
@@ -308,26 +322,30 @@ class Adjudicator extends \yii\db\ActiveRecord
 		$model = \Yii::$app->db->createCommand($sql);
 		$queryresult = $model->queryAll();
 		$pastIDs = [];
-		if ($include_round_numbers) {
-			foreach ($queryresult as $line) {
-				$pastIDs[$line["round_id"]] = [
-					$line["og_team_id"],
-					$line["oo_team_id"],
-					$line["cg_team_id"],
-					$line["co_team_id"]
-				]
-			}
-		} else {
-			foreach ($queryresult as $line) {
-				$pastIDs[] = $line["og_team_id"];
-				$pastIDs[] = $line["oo_team_id"];
-				$pastIDs[] = $line["cg_team_id"];
-				$pastIDs[] = $line["co_team_id"];
-			}
+		foreach ($queryresult as $line) {
+			$pastIDs[] = $line["og_team_id"];
+			$pastIDs[] = $line["oo_team_id"];
+			$pastIDs[] = $line["cg_team_id"];
+			$pastIDs[] = $line["co_team_id"];
 		}
-	}
 
 		return $pastIDs;
+	}
+
+	public function getPastTeamIDsWithRoundNumbers($current_round)
+	{
+
+		$sql = "SELECT og_team_id, oo_team_id, cg_team_id, co_team_id, round.number as rno
+			 FROM adjudicator_in_panel AS aip
+			 LEFT JOIN panel ON panel.id = aip.panel_id
+			 RIGHT JOIN debate ON debate.panel_id = panel.id
+			 LEFT JOIN round ON debate.round_id = round.id
+			 WHERE adjudicator_id = " . $this->id . "
+			 AND rno < ". $current_round;
+
+		$model = \Yii::$app->db->createCommand($sql);
+		$queryresult = $model->queryAll();
+		return $queryresult;
 	}
 
 	public function beforeDelete()
