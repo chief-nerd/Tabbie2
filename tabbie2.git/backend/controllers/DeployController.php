@@ -70,6 +70,7 @@ class DeployController extends Controller
                 header('HTTP/1.1 200 OK - But no Master Push');
                 echo "Not a push to " . $master_ref . "<br>\n";
                 echo "Instead push to " . $payload["ref"] . " received";
+                print_r($payload);
                 die();
             }
 
