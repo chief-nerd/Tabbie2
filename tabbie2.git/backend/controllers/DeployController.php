@@ -58,7 +58,7 @@ class DeployController extends Controller
 		$payload = json_decode(Yii::$app->request->getRawBody());
 
 		if (!isset($payload->ref) || $payload->ref !== $master_ref) {
-			header('HTTP/1.1 420 Policy Not Fulfilled - No Master Push');
+			header('HTTP/1.1 200 OK - But no Master Push');
 			echo "Not a push to $master_ref <br>\n";
 			echo "Instead push to " . $payload->ref . " received";
 			die();
