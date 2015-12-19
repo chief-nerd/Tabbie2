@@ -55,9 +55,12 @@ class DeployController extends Controller
 		//check if brunch master
 		$master_ref = "refs/heads/master";
 
-		if (Yii::$app->request->post("ref", null) !== $master_ref) {
+		$payload = json_decode(Yii::$app->request->getRawBody());
+
+		if (!isset($payload->ref) || $payload->ref !== $master_ref) {
 			header('HTTP/1.1 420 Policy Not Fulfilled - No Master Push');
-			echo "Not a push to refs/heads/master ";
+			echo "Not a push to $master_ref <br>\n";
+			echo "Instead push to " . $payload->ref . " received";
 			die();
 		}
 
