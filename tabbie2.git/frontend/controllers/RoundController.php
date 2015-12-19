@@ -23,6 +23,7 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 /**
  * RoundController implements the CRUD actions for Round model.
@@ -546,6 +547,102 @@ class RoundController extends BasetournamentController
 
     public function actionImport($id, $type = "json")
     {
+        /** @var Round $model */
+        $model = Round::findOne(["id" => $id]);
 
+        if (Yii::$app->request->isPost) {
+
+            $file = \yii\web\UploadedFile::getInstanceByName("jsonFile");
+
+            /* Check not published and no results exist */
+            $clean = true;
+            $amount_results = 0;
+            foreach ($model->debates as $debate) {
+                /** @var Debate $debate */
+                $amount_results += ($debate->result instanceof Result) ? 1 : 0;
+            }
+
+            if ($model->published || $amount_results > 0) {
+                Yii::$app->session->addFlash("warning", Yii::t("app", "Round is already active! Can't override with input."));
+
+                return $this->redirect(["round/view", "id" => $model->id, "tournament_id" => $model->tournament_id]);
+            }
+
+            if ($file instanceof UploadedFile) {
+                $filecontent = file_get_contents($file->tempName);
+                $json = json_decode($filecontent, true);
+
+                /* CLEAN old data */
+                $debates = Debate::findAll(["round_id" => $model->id]);
+                foreach ($debates as $debate) {
+                    AdjudicatorInPanel::deleteAll([
+                        "panel_id" => $debate->panel_id,
+                    ]);
+                    Panel::deleteAll([
+                        "id" => $debate->panel_id,
+                    ]);
+                }
+
+                for ($row = 0; $row < count($json); $row++) {
+
+                    $debate = $json[$row];
+                    $debate_id = $debate["id"];
+
+                    $db_debate = Debate::findOne($debate_id);
+
+                    if ($db_debate instanceof Debate) {
+
+                        $strength = $debate["strength"];
+                        $messages = $debate["messages"];
+
+                        $panel = $debate["panel"];
+
+                        $db_panel = new Panel([
+                            "used" => 0,
+                            "is_preset" => 0,
+                            "tournament_id" => $db_debate->tournament_id,
+                            "strength" => intval($strength * 1000),
+                            "messages" => $messages,
+                        ]);
+                        $db_panel->save();
+
+                        $chair_id = $panel["chair"];
+                        $db_chair = new AdjudicatorInPanel([
+                            "adjudicator_id" => $chair_id,
+                            "panel_id" => $db_panel->id,
+                            "function" => Panel::FUNCTION_CHAIR,
+                        ]);
+                        $db_chair->save();
+
+                        foreach ($panel["panellists"] as $adjuID) {
+                            $db_wing = new AdjudicatorInPanel([
+                                "adjudicator_id" => $adjuID,
+                                "panel_id" => $db_panel->id,
+                                "function" => Panel::FUNCTION_WING,
+                            ]);
+                            $db_wing->save();
+                        }
+
+                        foreach ($panel["trainees"] as $traineeID) {
+                            $db_trainee = new AdjudicatorInPanel([
+                                "adjudicator_id" => $traineeID,
+                                "panel_id" => $db_panel->id,
+                                "function" => Panel::FUNCTION_TRAINEE,
+                            ]);
+                            $db_trainee->save();
+                        }
+
+                        $db_debate->panel_id = $db_panel->id;
+                        $db_debate->save();
+                    }
+                }
+            } else {
+                Yii::$app->session->addFlash("notice", Yii::t("app", "Uploaded file was empty. Please select a file."));
+            }
+
+            return $this->redirect(["round/view", "id" => $model->id, "tournament_id" => $model->tournament_id]);
+        }
+
+        return $this->render("import", ["model" => $model]);
     }
 }

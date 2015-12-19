@@ -26,15 +26,17 @@ $total = Yii::t("app", "Total");
 			<th><?= Yii::t("app", "Room") ?></th>
 			<td><?= Html::encode($debate->venue->name) ?></td>
 		</tr>
+		<? if ($debate->getChair()): ?>
 		<tr>
 			<th><?= Yii::t("app", "Chair") ?></th>
 			<td><?= Html::encode($debate->getChair()->name) ?></td>
 		</tr>
+		<? endif; ?>
 		<?
 		$panel = "";
 		foreach ($debate->panel->getAdjudicators()->all() as $adj) {
 			if ($debate->chair->id != $adj->id)
-				$panel .= Html::encode($adj->name . ", ");
+				$panel .= Html::encode($adj->getName($debate->panel->id) . ", ");
 		}
 		if (strlen($panel) > 0):
 			?>
@@ -170,8 +172,4 @@ $total = Yii::t("app", "Total");
 			</td>
 		</tr>
 	</table>
-</div>
-<div>
-<br />
-<b>CHAIR JUDGES:</b> please provide contact details on which we can reach you between 1800 and 2100 tonight _________________________________
 </div>
