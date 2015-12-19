@@ -64,12 +64,14 @@ class DeployController extends Controller
         $master_ref = "refs/heads/master";
 
         try {
-            $payload = json_decode(Yii::$app->request->getRawBody(), true);
+
+            $body = Yii::$app->request->getBodyParam("payload");
+            $payload = json_decode($body, true);
 
             if ($payload === null) {
                 header('500 Internal Server Error');
-                echo "Payload conversion to JSON was null\n";
-                echo "Received body was: \n";
+                echo "Payload was null\n";
+                echo "Received raw body was: \n";
                 echo Yii::$app->request->getRawBody();
                 die();
             }
