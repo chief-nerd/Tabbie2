@@ -64,12 +64,12 @@ class DeployController extends Controller
         $master_ref = "refs/heads/master";
 
         try {
-            $payload = json_decode(Yii::$app->request->getRawBody());
+            $payload = json_decode(Yii::$app->request->getRawBody(), true);
 
-            if ($payload->ref != $master_ref) {
+            if (!isset($payload["ref"]) || $payload["ref"] != $master_ref) {
                 header('HTTP/1.1 200 OK - But no Master Push');
                 echo "Not a push to " . $master_ref . "<br>\n";
-                echo "Instead push to " . $payload->ref . " received";
+                echo "Instead push to " . $payload["ref"] . " received";
                 die();
             }
 
