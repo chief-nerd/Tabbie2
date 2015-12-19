@@ -52,6 +52,15 @@ class DeployController extends Controller
 
 	public function actionGitPushHook()
 	{
+		//check if brunch master
+		$master_ref = "refs/heads/master";
+
+		if (Yii::$app->request->post("ref", null) !== $master_ref) {
+			header('HTTP/1.1 420 Policy Not Fulfilled - No Master Push');
+			echo "Not a push to refs/heads/master ";
+			die();
+		}
+
 		// set the secret key
 		$hookSecret = Yii::$app->params["hookSecret"];
 
