@@ -48,6 +48,27 @@ class Adjudicator extends \yii\db\ActiveRecord
 		return new VTAQuery(get_called_class());
 	}
 
+	public static function getCSSStrength($id = null)
+	{
+		return "st" . intval($id / 10);
+	}
+
+	/**
+	 * Sort comparison function based on strength
+	 *
+	 * @param Adjudicator $a
+	 * @param Adjudicator $b
+	 *
+	 * @return boolean
+	 */
+	public static function compare_strength($a, $b)
+	{
+		$as = $a["strength"];
+		$bs = $b["strength"];
+
+		return ($as < $bs) ? 1 : (($as > $bs) ? -1 : 0);
+	}
+
 	/**
 	 * @inheritdoc
 	 */
@@ -101,25 +122,6 @@ class Adjudicator extends \yii\db\ActiveRecord
 		Yii::$app->cache->set($key, $name, 1 * 60 * 60);
 
 		return $name;
-	}
-
-	public static function getCSSStrength($id = null) {
-		return "st" . intval($id / 10);
-	}
-
-	/**
-	 * Sort comparison function based on strength
-	 *
-	 * @param Adjudicator $a
-	 * @param Adjudicator $b
-	 *
-	 * @return boolean
-	 */
-	public static function compare_strength($a, $b) {
-		$as = $a["strength"];
-		$bs = $b["strength"];
-
-		return ($as < $bs) ? 1 : (($as > $bs) ? -1 : 0);
 	}
 
 	public function getSocietyName()
@@ -292,9 +294,9 @@ class Adjudicator extends \yii\db\ActiveRecord
 		return ArrayHelper::getColumn($past, "bid");
 	}
 
-	public function getPastAdjudicatorIDsWithRoundNumbers($current_round)
+	public function getPastAdjudicatorIDsWithRoundNumbers($current_round_id)
 	{
-		$sql = "SELECT b.adjudicator_id AS bid, r.number as rno
+		$sql = "SELECT b.adjudicator_id AS bid, r.label
 			FROM adjudicator_in_panel AS a
 			LEFT JOIN adjudicator_in_panel AS b ON a.panel_id = b.panel_id
 			LEFT JOIN panel AS p ON a.panel_id = p.id
@@ -302,7 +304,7 @@ class Adjudicator extends \yii\db\ActiveRecord
 			LEFT JOIN round AS r ON r.id = c.round_id
 			WHERE a.adjudicator_id != b.adjudicator_id
 			AND a.adjudicator_id = " . $this->id . "
-			AND rno < " . $current_round_id . ";";
+			AND r.label < " . $current_round_id . ";";
 
 		$model = \Yii::$app->db->createCommand($sql);
 		$past = $model->queryAll();
@@ -335,13 +337,13 @@ class Adjudicator extends \yii\db\ActiveRecord
 	public function getPastTeamIDsWithRoundNumbers($current_round)
 	{
 
-		$sql = "SELECT og_team_id, oo_team_id, cg_team_id, co_team_id, round.number as rno
+		$sql = "SELECT og_team_id, oo_team_id, cg_team_id, co_team_id, round.label
 			 FROM adjudicator_in_panel AS aip
 			 LEFT JOIN panel ON panel.id = aip.panel_id
 			 RIGHT JOIN debate ON debate.panel_id = panel.id
 			 LEFT JOIN round ON debate.round_id = round.id
 			 WHERE adjudicator_id = " . $this->id . "
-			 AND rno < ". $current_round;
+			 AND round.label < " . $current_round;
 
 		$model = \Yii::$app->db->createCommand($sql);
 		$queryresult = $model->queryAll();

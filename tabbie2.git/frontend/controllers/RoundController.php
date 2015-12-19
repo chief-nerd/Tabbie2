@@ -445,6 +445,10 @@ class RoundController extends BasetournamentController
             "id", "fullname", "abr"
         ];
 
+        $country_props = [
+            "id", "name", "alpha_2", "region_id"
+        ];
+
         $round = Round::findOne(["id" => $id]);
         $societies = []; // keep a separate list of societies, so we create each once only
         if ($round instanceof Round) {
@@ -508,7 +512,7 @@ class RoundController extends BasetournamentController
                         $societies[$adju->society_id] = $adju->society->toArray($society_props);
                         $societies[$adju->society_id]["country"] = $adju->society->country->alpha_2;
                     }
-                    foreach ($adju->societies as $society) {
+                    foreach ($adju->getSocieties()->all() as $society) {
                         if (!array_key_exists($society->id, $societies)) {
                             $societies[$society->id] = $society->toArray($society_props);
                             $societies[$society->id]["country"] = $society->country->alpha_2;
