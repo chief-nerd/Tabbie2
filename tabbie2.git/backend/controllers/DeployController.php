@@ -66,11 +66,18 @@ class DeployController extends Controller
         try {
             $payload = json_decode(Yii::$app->request->getRawBody(), true);
 
+            if ($payload === null) {
+                header('500 Internal Server Error');
+                echo "Payload conversion to JSON was null\n";
+                echo "Received body was: \n";
+                echo Yii::$app->request->getRawBody();
+                die();
+            }
+
             if (!isset($payload["ref"]) || $payload["ref"] != $master_ref) {
                 header('HTTP/1.1 200 OK - But no Master Push');
-                echo "Not a push to " . $master_ref . "<br>\n";
+                echo "Not a push to " . $master_ref . "\n";
                 echo "Instead push to " . $payload["ref"] . " received";
-                print_r($payload);
                 die();
             }
 
