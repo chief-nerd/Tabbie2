@@ -53,10 +53,10 @@ if ($tournament->isTabMaster(Yii::$app->user->id)) {
 						<tr>
 							<?
 							if (isset($team->speakerA->name)) {
-								echo '<td>' . $team->speakerA->name . '</td>';
+								echo '<td>' . Html::a($team->speakerA->name, ["user/view", "id" => $team->speakerA->id]) . '</td>';
 							}
 							if (isset($team->speakerB->name)) {
-								echo '<td>' . $team->speakerB->name . '</td>';
+								echo '<td>' . Html::a($team->speakerB->name, ["user/view", "id" => $team->speakerB->id]) . '</td>';
 							}
 							?>
 						</tr>
@@ -67,7 +67,7 @@ if ($tournament->isTabMaster(Yii::$app->user->id)) {
 				<table class="table">
 					<? foreach ($adjudicators as $adj): ?>
 						<tr>
-							<td><?= $adj->name ?></td>
+							<td><?= Html::a($adj->user->name, ["user/view", "id" => $adj->user->id]) ?></td>
 						</tr>
 					<? endforeach; ?>
 				</table>
