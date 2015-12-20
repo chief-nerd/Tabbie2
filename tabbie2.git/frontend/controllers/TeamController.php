@@ -288,6 +288,7 @@ class TeamController extends BasetournamentController
                             Yii::$app->session->addFlash("error", Yii::t("app", "Error saving Society Relation for {society}", ["society" => $society->fullname]));
                         }
                         $societyID = $society->id;
+                        unset($society); //free memory
                     } else if (count($row[1]) == 2 && is_null($societyID)) {
                         $societyID = $row[1][1]["id"];
                     }
@@ -299,6 +300,7 @@ class TeamController extends BasetournamentController
                             $userA = User::NewViaImport($row[2][0], $row[3][0], $row[4][0], $societyID, !$model->is_test, $this->_tournament);
                             if ($userA)
                                 $userAID = $userA->id;
+                            unset($userA); //free memory
                         }
                     } else if (count($row[2]) == 2) {
                         $userAID = $row[2][1]["id"];
@@ -322,6 +324,7 @@ class TeamController extends BasetournamentController
                             $userB = User::NewViaImport($row[5][0], $row[6][0], $row[7][0], $societyID, !$model->is_test, $this->_tournament);
                             if ($userB)
                                 $userBID = $userB->id;
+                            unset($userB); //free memory
                         }
                     } else if (count($row[5]) == 2) {
                         $userBID = $row[5][1]["id"];
@@ -354,6 +357,7 @@ class TeamController extends BasetournamentController
                             Yii::$app->session->addFlash("error", Yii::t("app", "Error saving team {name}!", ["{name}" => $team->name]));
                             Yii::error("Import Errors userB: " . ObjectError::getMsg($model) . "Attributes:" . print_r($team->attributes, true), __METHOD__);
                         }
+                        unset($team); //free memory
                     }
                 }
                 set_time_limit(30);
@@ -371,7 +375,11 @@ class TeamController extends BasetournamentController
 
                         $num = count($data);
                         if ($num < $min_columns) {
-                            Yii::$app->session->addFlash("error", Yii::t("app", "File Syntax Wrong! At least 8 columns expected"));
+                            Yii::$app->session->addFlash("error",
+                                Yii::t("app", "File Syntax Wrong! At least {min} columns expected; {num} provided", [
+                                    "min" => $min_columns,
+                                    "num" => $num
+                                ]));
                             return $this->redirect(['import', "tournament_id" => $this->_tournament->id]);
                         }
 
