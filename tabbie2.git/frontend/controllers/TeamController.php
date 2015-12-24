@@ -376,7 +376,8 @@ class TeamController extends BasetournamentController
                         $num = count($data);
                         if ($num < $min_columns) {
                             Yii::$app->session->addFlash("error",
-                                Yii::t("app", "File Syntax Wrong! At least {min} columns expected; {num} provided", [
+                                Yii::t("app", "File Syntax Wrong! At least {min} columns expected; {num} provided in line {line}", [
+                                    "line" => ($row + 1),
                                     "min" => $min_columns,
                                     "num" => $num
                                 ]));

@@ -520,3 +520,11 @@ a.desc:after {
 	min-width: 100%;
 	text-align: justify;
 }
+
+.import-table .green {
+    background-color: #DDFFDD;
+}
+
+.import-table .yellow {
+    background-color: #FFFFAA;
+}

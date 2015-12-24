@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ]]); ?>
 
         <? if (isset($model->tempImport)): ?>
-            <table class="table">
+            <table class="table import-table">
                 <tr>
                     <th><?= Yii::t("app", "Team Name") ?></th>
                     <th><?= Yii::t("app", "Society") ?></th>
@@ -43,6 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </td>
                         <?
                         $societyField = $model->tempImport[$i][1];
+                        $options = [];
                         if (count($societyField) == 1) { //NEW
                             $class = "new";
                             $value = $societyField[0];
@@ -62,6 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             if ($class == "green" OR $class == "new") {
                                 echo $value;
                             } else {
+                                echo $model->tempImport[$i][1][0] . "<br>";
                                 echo Html::dropDownList("field[$i][1]", $societyField[0], $options);
                             }
                             ?>
@@ -71,6 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         $userField = $model->tempImport[$i][2];
                         $class = "none";
                         $value = "#";
+                        $options = [];
 
                         if (count($userField) == 1) { //NEW
                             $class = "new";
@@ -81,7 +84,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         } else { //Ups found multiple
                             $class = "yellow";
                             for ($a = 1; $a < count($userField); $a++) {
-                                $options[$userField[$a]["id"]] = $userField[$a]["name"];
+                                $options[$userField[$a]["id"]] = $userField[$a]["name"] . " (" . $userField[$a]["email"] . ")";
                             }
                         }
                         ?>
@@ -90,6 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             if ($class == "green" OR $class == "new" OR $class == "none") {
                                 echo $value;
                             } else {
+                                echo $model->tempImport[$i][2][0] . " " . $model->tempImport[$i][3][0] . " (" . $model->tempImport[$i][4][0] . ")<br>";
                                 echo Html::dropDownList("field[$i][2]", $userField[0], $options);
                             }
                             ?>
@@ -99,6 +103,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         $userField = $model->tempImport[$i][5];
                         $class = "none";
                         $value = "#";
+                        $options = [];
 
                         if (count($userField) == 1) { //NEW
                             $class = "new";
@@ -109,7 +114,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         } else { //Ups found multiple
                             $class = "yellow";
                             for ($a = 1; $a < count($userField); $a++) {
-                                $options[$userField[$a]["id"]] = $userField[$a]["name"];
+                                $options[$userField[$a]["id"]] = $userField[$a]["name"] . " (" . $userField[$a]["email"] . ")";
                             }
                         }
                         ?>
@@ -119,6 +124,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             if ($class == "green" OR $class == "new" OR $class == "none") {
                                 echo $value;
                             } else {
+                                echo $model->tempImport[$i][5][0] . " " . $model->tempImport[$i][6][0] . " (" . $model->tempImport[$i][7][0] . ")<br>";
                                 echo Html::dropDownList("field[$i][5]", $userField[0], $options);
                             }
                             ?>
