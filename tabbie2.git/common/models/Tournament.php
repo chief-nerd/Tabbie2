@@ -76,45 +76,122 @@ class Tournament extends \yii\db\ActiveRecord {
 	}
 
 	/**
+	 * Find a Tournament by Primary Key
+	 *
+	 * @param integer $id
+	 * @param boolean $live
+	 *
+	 * @uses Tournamnet::findOne
+	 * @return null|Tournamnet
+	 */
+	public static function findByPk($id, $live = false)
+	{
+		$tournament = Yii::$app->cache->get("tournament_" . $id);
+		if (!$tournament instanceof Tournament || $live) {
+			$tournament = Tournament::findOne(["id" => $id]);
+			Yii::$app->cache->set("tournament_" . $id, $tournament, 200);
+		}
+
+		return $tournament;
+	}
+
+	public static function getTabAlgorithmOptions()
+	{
+		$algos = [];
+		$files = scandir(Yii::getAlias("@algorithms/algorithms/"));
+		foreach ($files as $className) {
+			if (substr($className, 0, 1) == ".") {
+				continue;
+			}
+			$filename = pathinfo($className)['filename'];
+			$class = Tournament::getTabAlgorithm($filename);
+			if ($class::version() !== null) {
+				$algos[$filename] = $class::title() . " (v" . $class::version() . ")";
+			}
+		}
+
+		return $algos;
+	}
+
+	public static function getTabAlgorithm($algoClass)
+	{
+		$algoName = 'algorithms\\algorithms\\' . $algoClass;
+
+		return new $algoName();
+	}
+
+	public static function getTimeZones()
+	{
+		$now = new \DateTime();
+		$timezones = [];
+
+		foreach (DateTimeZone::listIdentifiers() as $timezone) {
+			$now->setTimezone(new DateTimeZone($timezone));
+			$offsets[] = $offset = $now->getOffset();
+			$timezones[$timezone] = '(' . self::format_GMT_offset($offset) . ') ' . self::format_timezone_name($timezone);
+		}
+
+		array_multisort($offsets, $timezones);
+		return $timezones;
+	}
+
+	private static function format_GMT_offset($offset)
+	{
+		$hours = intval($offset / 3600);
+		$minutes = abs(intval($offset % 3600 / 60));
+		return 'GMT' . ($offset ? sprintf('%+03d:%02d', $hours, $minutes) : '');
+	}
+
+	private static function format_timezone_name($name)
+	{
+		$name = str_replace('/', ', ', $name);
+		$name = str_replace('_', ' ', $name);
+		$name = str_replace('St ', 'St. ', $name);
+		return $name;
+	}
+
+	/**
 	 * @inheritdoc
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return [
-			[['url_slug', 'hosted_by_id', 'name', 'start_date', 'end_date', 'timezone'], 'required'],
-			[['hosted_by_id', 'expected_rounds', 'status'], 'integer'],
-			[['name', 'url_slug'], 'trim'],
-			[['start_date', 'end_date', 'time', 'has_esl', 'has_efl', 'has_novice', 'has_final', 'has_semifinal', 'has_octofinal', 'has_quarterfinal'], 'safe'],
-			[['url_slug', 'name', 'tabAlgorithmClass', 'accessToken'], 'string', 'max' => 100],
-			[['logo', 'badge'], 'string', 'max' => 255],
-			[['url_slug'], 'unique']
+				[['url_slug', 'hosted_by_id', 'name', 'start_date', 'end_date', 'timezone'], 'required'],
+				[['hosted_by_id', 'expected_rounds', 'status'], 'integer'],
+				[['name', 'url_slug'], 'trim'],
+				[['start_date', 'end_date', 'time', 'has_esl', 'has_efl', 'has_novice', 'has_final', 'has_semifinal', 'has_octofinal', 'has_quarterfinal'], 'safe'],
+				[['url_slug', 'name', 'tabAlgorithmClass', 'accessToken'], 'string', 'max' => 100],
+				[['logo', 'badge'], 'string', 'max' => 255],
+				[['url_slug'], 'unique']
 		];
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return [
-			'id'                => Yii::t('app', 'Tournament') . ' ' . Yii::t('app', 'ID'),
-			'hosted_by_id'      => Yii::t('app', 'Hosted by'),
-			'name'              => Yii::t('app', 'Tournament Name'),
-			'start_date'        => Yii::t('app', 'Start Date'),
-			'end_date'          => Yii::t('app', 'End Date'),
-			'timezone'          => Yii::t("app", 'Timezone'),
-			'logo'              => Yii::t('app', 'Logo'),
-			'time'              => Yii::t('app', 'Time'),
-			'url_slug'          => Yii::t('app', 'URL Slug'),
-			'tabAlgorithmClass' => Yii::t('app', 'Tab Algorithm'),
-			'expected_rounds'   => Yii::t("app", "Expected number of rounds"),
-			'has_esl'           => Yii::t("app", "Show ESL Ranking"),
-			'has_efl'           => Yii::t("app", "Show EFL Ranking"),
-			'has_novice'        => Yii::t("app", "Show Novice Ranking"),
-			'has_final'         => Yii::t("app", 'Is there a grand final'),
-			'has_semifinal'     => Yii::t("app", 'Is there a semifinal'),
-			'has_quarterfinal'  => Yii::t("app", 'Is there a quarterfinal'),
-			'has_octofinal'     => Yii::t("app", 'Is there a octofinal'),
-			'accessToken'       => Yii::t("app", 'Access Token'),
-			'badge'             => Yii::t("app", 'Participant Badge'),
+				'id' => Yii::t('app', 'Tournament') . ' ' . Yii::t('app', 'ID'),
+				'hosted_by_id' => Yii::t('app', 'Hosted by'),
+				'name' => Yii::t('app', 'Tournament Name'),
+				'start_date' => Yii::t('app', 'Start Date'),
+				'end_date' => Yii::t('app', 'End Date'),
+				'timezone' => Yii::t("app", 'Timezone'),
+				'logo' => Yii::t('app', 'Logo'),
+				'time' => Yii::t('app', 'Time'),
+				'url_slug' => Yii::t('app', 'URL Slug'),
+				'tabAlgorithmClass' => Yii::t('app', 'Tab Algorithm'),
+				'expected_rounds' => Yii::t("app", "Expected number of rounds"),
+				'has_esl' => Yii::t("app", "Show ESL Ranking"),
+				'has_efl' => Yii::t("app", "Show EFL Ranking"),
+				'has_novice' => Yii::t("app", "Show Novice Ranking"),
+				'has_final' => Yii::t("app", 'Is there a grand final'),
+				'has_semifinal' => Yii::t("app", 'Is there a semifinal'),
+				'has_quarterfinal' => Yii::t("app", 'Is there a quarterfinal'),
+				'has_octofinal' => Yii::t("app", 'Is there a octofinal'),
+				'accessToken' => Yii::t("app", 'Access Token'),
+				'badge' => Yii::t("app", 'Participant Badge'),
 		];
 	}
 
@@ -125,7 +202,8 @@ class Tournament extends \yii\db\ActiveRecord {
 	 *
 	 * @return boolean
 	 */
-	public function beforeSave($insert) {
+	public function beforeSave($insert)
+	{
 		if (parent::beforeSave($insert)) {
 			if ($insert === true) //Do only on new Records
 			{
@@ -142,7 +220,8 @@ class Tournament extends \yii\db\ActiveRecord {
 	/**
 	 * Generate a unique URL SLUG ... never fails  ;)
 	 */
-	public function generateUrlSlug() {
+	public function generateUrlSlug()
+	{
 
 		$potential_slug = Yii::$app->string->toAscii($this->fullname);
 		$potential_slug = str_replace(" ", "-", $potential_slug);
@@ -161,7 +240,8 @@ class Tournament extends \yii\db\ActiveRecord {
 		return true;
 	}
 
-	public static function findByUrlSlug($slug) {
+	public static function findByUrlSlug($slug)
+	{
 		return Tournament::findOne(["url_slug" => $slug]);
 	}
 
@@ -170,77 +250,9 @@ class Tournament extends \yii\db\ActiveRecord {
 	 *
 	 * @return string
 	 */
-	public function generateAccessToken() {
+	public function generateAccessToken()
+	{
 		return $this->accessToken = substr(md5(uniqid(mt_rand(), true)), 0, 10);
-	}
-
-	/**
-	 * Find a Tournament by Primary Key
-	 *
-	 * @param integer $id
-	 * @param boolean $live
-	 *
-	 * @uses Tournamnet::findOne
-	 * @return null|Tournamnet
-	 */
-	public static function findByPk($id, $live = false) {
-		$tournament = Yii::$app->cache->get("tournament_" . $id);
-		if (!$tournament instanceof Tournament || $live) {
-			$tournament = Tournament::findOne(["id" => $id]);
-			Yii::$app->cache->set("tournament_" . $id, $tournament, 200);
-		}
-
-		return $tournament;
-	}
-
-	public static function getTabAlgorithmOptions() {
-		$algos = [];
-		$files = scandir(Yii::getAlias("@algorithms/algorithms/"));
-		foreach ($files as $className) {
-			if (substr($className, 0, 1) == ".") {
-				continue;
-			}
-			$filename = pathinfo($className)['filename'];
-			$class = Tournament::getTabAlgorithm($filename);
-			if ($class::version() !== null) {
-				$algos[$filename] = $class::title() . " (v" . $class::version() . ")";
-			}
-		}
-
-		return $algos;
-	}
-
-	public static function getTabAlgorithm($algoClass) {
-		$algoName = 'algorithms\\algorithms\\' . $algoClass;
-
-		return new $algoName();
-	}
-
-	public static function getTimeZones() {
-		$now = new \DateTime();
-		$timezones = [];
-
-		foreach (DateTimeZone::listIdentifiers() as $timezone) {
-			$now->setTimezone(new DateTimeZone($timezone));
-			$offsets[] = $offset = $now->getOffset();
-			$timezones[$timezone] = '(' . self::format_GMT_offset($offset) . ') ' . self::format_timezone_name($timezone);
-		}
-
-		array_multisort($offsets, $timezones);
-		return $timezones;
-	}
-
-	private static function format_GMT_offset($offset) {
-		$hours = intval($offset / 3600);
-		$minutes = abs(intval($offset % 3600 / 60));
-		return 'GMT' . ($offset ? sprintf('%+03d:%02d', $hours, $minutes) : '');
-	}
-
-	private static function format_timezone_name($name) {
-		$name = str_replace('/', ', ', $name);
-		$name = str_replace('_', ' ', $name);
-		$name = str_replace('St ', 'St. ', $name);
-		return $name;
 	}
 
 	/**
@@ -484,7 +496,11 @@ class Tournament extends \yii\db\ActiveRecord {
 			if ($absolute && substr($this->logo, 0, 4) != "http") {
 				return $urlManager->createAbsoluteUrl($this->logo);
 			} else {
+				/** @todo WUDC http modification - to be removed! */
+				$this->logo = str_replace("https", "http", $this->logo);
+				/** ende */
 				return $this->logo;
+
 			}
 		} else {
 			$defaultPath = Yii::getAlias("@frontend/assets/images/") . "default-tournament.png";
