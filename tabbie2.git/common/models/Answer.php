@@ -134,4 +134,15 @@ class Answer extends \yii\db\ActiveRecord
 
 		return $element;
 	}
+
+	public function renderHelp()
+	{
+		$element = "";
+		if (isset($this->question->help)) {
+			$element = Html::tag("p", $this->question->help, [
+					"class" => "help-block"
+			]);
+		}
+		return $element;
+	}
 }

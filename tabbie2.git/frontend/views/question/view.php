@@ -34,6 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		'model' => $model,
 		'attributes' => [
 			'id',
+				'help',
 			['label' => 'Typ', 'value' => $model->getTypeOptions($model->type)],
 			'apply_T2C',
 			'apply_C2W',

@@ -3,6 +3,7 @@
 use kartik\helpers\Html;
 use yii\widgets\ActiveForm;
 use common\models\Question;
+use common\models\Answer;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\feedback */
@@ -34,10 +35,13 @@ $tournament = $this->context->_getContext();
 					 class="panel-collapse collapse <?= ($i == 0 && count($model_group) == 1) ? "in" : "" ?>"
 					 role="tabpanel" aria-labelledby="headingOne">
 					<div class="panel-body">
-						<? foreach ($models["item"] as $q_id => $model): ?>
+						<? foreach ($models["item"] as $q_id => $model):
+							/** @var Answer $model */
+							?>
 							<div class="form-group field-answer-value">
 								<?= $model->renderLabel($i, $q_id) ?>
 								<?= $model->renderField($i, $q_id) ?>
+								<?= $model->renderHelp() ?>
 								<div class="help-block"></div>
 							</div>
 						<? endforeach; ?>
