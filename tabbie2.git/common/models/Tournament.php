@@ -845,17 +845,15 @@ class Tournament extends \yii\db\ActiveRecord {
 			if ($team instanceof Team) {
 
 				foreach (Team::getPos() as $pos) {
-					$debate = Debate::find()
-						->tournament($this->id)
+					$debateQuery = Debate::find()
+							->tournament($this->id, "debate")
 						->joinWith("round")
 						->orderBy(["debate.round_id" => SORT_DESC])
-						->where([
-							'AND',
-							$pos . "_team_id"  => $team->id,
-							$pos . "_feedback" => 0,
-							'displayed'        => 1,
-						])
-						->all();
+							->andWhere($pos . "_team_id = " . $team->id)
+							->andWhere($pos . "_feedback = 0")
+							->andWhere('displayed=1');
+
+					$debate = $debateQuery->all();
 
 					foreach ($debate as $d) {
 						$feedbackDebates[] = ["type" => Feedback::FROM_TEAM, "debate" => $d, "ref" => $d->{$pos . "_team_id"}];

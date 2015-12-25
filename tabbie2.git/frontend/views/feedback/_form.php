@@ -42,7 +42,6 @@ $tournament = $this->context->_getContext();
 								<?= $model->renderLabel($i, $q_id) ?>
 								<?= $model->renderField($i, $q_id) ?>
 								<?= $model->renderHelp() ?>
-								<div class="help-block"></div>
 							</div>
 						<? endforeach; ?>
 					</div>
