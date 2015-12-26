@@ -487,8 +487,12 @@ class RoundController extends BasetournamentController
                     $adju = $inPanel->adjudicator;
                     $adjudicator = $adju->toArray($adju_props);
                     $adjudicator["gender"] = $adju->user->gender;
-                    $adjudicator["country"] = $adju->user->societies[0]->country->toArray($country_props);
-                    $adjudicator["country"]["region_name"] = $adju->user->societies[0]->country->getRegionName();
+                    $adjudicator["country"] = isset($adju->user->societies[0]) ?
+                        $adju->user->societies[0]->country->toArray($country_props) :
+                        "";
+                    $adjudicator["country"]["region_name"] = isset($adju->user->societies[0]) ?
+                        $adju->user->societies[0]->country->getRegionName() :
+                        "";
                     $adjudicator["societies"] = ArrayHelper::getColumn($adju->getSocieties(true)->asArray()->all(), "id");
                     $adjudicator["language_status"] = $adju->user->language_status;
 
