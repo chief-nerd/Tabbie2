@@ -334,7 +334,7 @@ class FeedbackController extends BasetournamentController
 
     public function actionExport()
     {
-        $delimiter = ";";
+        $delimiter = ",";
         $enclosure = "\"";
 
         $filename = $this->_tournament->name .
