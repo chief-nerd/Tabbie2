@@ -8,6 +8,11 @@ use kartik\grid\GridView;
 /* @var $model common\models\User */
 
 $this->title = $model->name;
+$tournament_id = Yii::$app->request->get("tournament_id", false);
+if ($tournament_id) {
+    $tournament = \common\models\Tournament::findOne($tournament_id);
+    $this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
+}
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-view">

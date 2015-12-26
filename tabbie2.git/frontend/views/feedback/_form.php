@@ -25,8 +25,11 @@ $tournament = $this->context->_getContext();
 				<div class="panel-heading" role="tab" id="headingOne">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#feedback-accordion"
-						   href="#collapse<?= $i ?>"
-						   aria-expanded="true" aria-controls="collapseOne">
+                           href="#collapse<?= $i ?>"
+                           aria-expanded="true"
+                           aria-controls="collapseOne"
+                           style="width:100%; display:block;"
+                        >
 							<?= $models["title"] ?>
 						</a>
 					</h4>

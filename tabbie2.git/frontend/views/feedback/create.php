@@ -16,6 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="feedback-create">
 
 	<h1><?= Html::encode($this->title) ?></h1>
+	<br>
 
 	<?= $this->render('_form', [
 		'model_group' => $model_group,
