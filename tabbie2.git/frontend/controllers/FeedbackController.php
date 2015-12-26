@@ -12,6 +12,7 @@ use common\models\Feedback;
 use common\models\Question;
 use common\models\search\AnswerSearch;
 use common\models\search\FeedbackSearch;
+use common\models\Team;
 use Yii;
 use yii\base\Exception;
 use yii\filters\VerbFilter;
@@ -345,7 +346,7 @@ class FeedbackController extends BasetournamentController
 
         $array = [
             ["RoundID", "Type",
-                "From.ID", "From.Name", "From.Region", "From.Points", "From.Strength",
+                "From.ID", "From.Name", "From.Region", "From.OverallPoints", "From.LastRoundPoints", "From.Strength",
                 "On.ID", "On.Name", "On.Region", "On.Strength"
             ],
         ];
@@ -376,9 +377,20 @@ class FeedbackController extends BasetournamentController
             $a[] = $fromObject->society->country->region_id;
             if ($fromObject instanceof Adjudicator) {
                 $a[] = null;
+                $a[] = null;
                 $a[] = $fromObject->strength;
             } else {
                 $a[] = $fromObject->points;
+                if ($f->debate->result) {
+                    $debate = $f->debate;
+                    foreach (Team::getPos() as $pos) {
+                        if ($debate->{$pos . "_team_id"} == $fromObject->id) {
+                            $a[] = $debate->result->getPoints($pos);
+                        }
+                    }
+                } else {
+                    $a[] = null;
+                }
                 $a[] = null;
             }
 
