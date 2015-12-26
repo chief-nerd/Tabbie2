@@ -15,6 +15,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
 	<h1><?= Html::encode($this->title) ?></h1>
 
+	<p class="text-right">
+		<?= Html::a(Yii::t("app", "Accept all Adjudicator Clashes"), ["strike/accept-all-adju", "tournament_id" => $tournament->id], [
+				"class" => "btn btn-success"
+		])
+		?>
+		<?= Html::a(Yii::t("app", "Accept all Team Clashes"), ["strike/accept-all-team", "tournament_id" => $tournament->id], [
+				"class" => "btn btn-success"
+		])
+		?>
+	</p>
 
 	<?= GridView::widget([
 		'dataProvider'       => $dataProvider,
