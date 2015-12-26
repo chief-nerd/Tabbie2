@@ -346,10 +346,12 @@ class FeedbackController extends BasetournamentController
 
         $filename = $this->_tournament->name .
             "-after-" .
-            str_replace(" ", "-", ($this->_tournament->getLastRound()) ? $this->_tournament->getLastRound()->getName() : "Start") .
+            (($this->_tournament->getLastRound()) ? $this->_tournament->getLastRound()->getName() : "Start") .
             "-at-" .
             date("Y-m-d-H-i-s") .
             ".csv";
+
+        $filename = str_replace(" ", "-", $filename);
 
         $array = [
             ["RoundID", "Type",
