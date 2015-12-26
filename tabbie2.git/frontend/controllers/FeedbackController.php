@@ -61,6 +61,13 @@ class FeedbackController extends BasetournamentController
                                 $this->_tournament->isCA(Yii::$app->user->id));
                         }
                     ],
+                    [
+                        'allow' => true,
+                        'actions' => ['export'],
+                        'matchCallback' => function ($rule, $action) {
+                            return $this->_tournament->validateAccessToken(Yii::$app->request->get("accessToken", ""));
+                        }
+                    ],
                 ],
             ],
         ];
