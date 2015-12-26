@@ -70,9 +70,17 @@ class Answer extends \yii\db\ActiveRecord
 		return $this->hasOne(Feedback::className(), ['id' => 'feedback_id']);
 	}
 
+	/**
+	 * Render a Label Field
+	 * @param Integer $group The Question Group the Answer belongs to
+	 * @param Integer $q_id The Question ID
+	 * @return string
+	 */
 	public function renderLabel($group, $q_id)
 	{
-		return '<label class="control-label" for="' . Html::encode($this->getName($group, $q_id)) . '">' . Html::encode($this->question->text) . '</label>';
+		return Html::label($this->question->text, $this->getName($group, $q_id), [
+				"class" => "control-label"
+		]);
 	}
 
 	public function getName($group, $q_id)
@@ -81,7 +89,10 @@ class Answer extends \yii\db\ActiveRecord
 	}
 
 	/**
-	 * @param ActiveForm $form
+	 * Render a Form Field for a Question
+	 *
+	 * @param Integer $group The Question Group the Answer belongs to
+	 * @param Integer $q_id The Question ID
 	 *
 	 * @return string
 	 */
@@ -135,6 +146,10 @@ class Answer extends \yii\db\ActiveRecord
 		return $element;
 	}
 
+	/**
+	 * Render the Help Field
+	 * @return string
+	 */
 	public function renderHelp()
 	{
 		$element = "";
@@ -144,5 +159,31 @@ class Answer extends \yii\db\ActiveRecord
 			]);
 		}
 		return $element;
+	}
+
+	/**
+	 * Returns the Formated Value of the Answer
+	 *
+	 * @return string
+	 */
+	public function getFormatValue()
+	{
+		switch ($this->question->type) {
+			case Question::TYPE_STAR:
+				$formatValue = Question::starLabels($this->value);
+				break;
+			case Question::TYPE_CHECKBOX:
+				$fv = [];
+				$labels = json_decode($this->question->param);
+				foreach (json_decode($this->value) as $v) {
+					$fv[] = $labels[$v];
+				}
+				$formatValue = implode(", ", $fv);
+				break;
+			default:
+				$formatValue = $this->value;
+		}
+
+		return $formatValue;
 	}
 }

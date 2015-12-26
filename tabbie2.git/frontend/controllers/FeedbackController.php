@@ -416,7 +416,10 @@ class FeedbackController extends BasetournamentController
                     "feedback_id" => $f->id,
                     "question_id" => $q->id,
                 ]);
-                $a[] = $answer->value;
+                if ($answer) {
+                    $a[] = $answer->getFormatValue();
+                } else
+                    $a[] = null;
             }
 
             $array[$i + 1] = $a;

@@ -39,24 +39,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <?
     $att = [];
     foreach ($model->answers as $answer) {
-        switch ($answer->question->type) {
-            case \common\models\Question::TYPE_STAR:
-                $formatValue = \common\models\Question::starLabels($answer->value);
-                break;
-            case \common\models\Question::TYPE_CHECKBOX:
-                $fv = [];
-                $labels = json_decode($answer->question->param);
-                foreach (json_decode($answer->value) as $v) {
-                    $fv[] = $labels[$v];
-                }
-                $formatValue = implode(", ", $fv);
-                break;
-            default:
-                $formatValue = $answer->value;
-        }
         $line = [
             'label' => $answer->question->text,
-            'value' => $formatValue,
+            'value' => $answer->getFormatValue(),
         ];
         array_push($att, $line);
     }
