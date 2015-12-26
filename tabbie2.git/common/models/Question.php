@@ -60,7 +60,8 @@ class Question extends \yii\db\ActiveRecord
 		return [
 			[['text', 'type'], 'required'],
 			[['type', 'apply_T2C', 'apply_C2W', 'apply_W2C'], 'integer'],
-				[['text', 'param', 'help'], 'string', 'max' => 255]
+				[['text', 'help'], 'string', 'max' => 255],
+				['param', 'string']
 		];
 	}
 
