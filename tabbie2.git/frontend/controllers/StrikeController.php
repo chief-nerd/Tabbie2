@@ -41,7 +41,7 @@ class StrikeController extends BasetournamentController
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['import', 'accept-all-team'],
+                        'actions' => ['import', 'all-teams', 'all-adjus'],
                         'matchCallback' => function ($rule, $action) {
                             return ($this->_tournament->isTabMaster(Yii::$app->user->id) && Yii::$app->user->model->role >= User::ROLE_TABMASTER);
                         }
@@ -128,14 +128,25 @@ class StrikeController extends BasetournamentController
         ]);
     }
 
-    public function actionAcceptAllTeam()
+    public function actionAllTeams($decision = "deny")
     {
+        switch ($decision) {
+            case "approve":
+                $decision = 1;
+                break;
+            case "deny":
+                $decision = 0;
+                break;
+            default:
+                Yii::$app->session->addFlash("error", Yii::t("app", "Not a valid decision"));
+                $this->redirect(["strike/import", "tournament_id" => $this->_tournament->id]);
+        }
         $clashes = UserClash::getForTournament($this->_tournament->id);
 
         foreach ($clashes as $clash) {
             if (get_class($clash->getClashedObject($this->_tournament->id)) == Team::className()) {
                 if (!TeamStrike::find()->where(["user_clash_id" => $clash->id])->exists()) {
-                    $clash->decide(1, $this->_tournament->id);
+                    $clash->decide($decision, $this->_tournament->id);
                 }
             }
         }
@@ -143,19 +154,31 @@ class StrikeController extends BasetournamentController
         $this->redirect(["strike/team_index", "tournament_id" => $this->_tournament->id]);
     }
 
-    public function actionAcceptAllAdju()
+    public function actionAllAdjus($decision = "deny")
     {
+        switch ($decision) {
+            case "approve":
+                $decision = 1;
+                break;
+            case "deny":
+                $decision = 0;
+                break;
+            default:
+                Yii::$app->session->addFlash("error", Yii::t("app", "Not a valid decision"));
+                $this->redirect(["strike/import", "tournament_id" => $this->_tournament->id]);
+        }
+
         $clashes = UserClash::getForTournament($this->_tournament->id);
 
         foreach ($clashes as $clash) {
             if (get_class($clash->getClashedObject($this->_tournament->id)) == Adjudicator::className()) {
                 if (!AdjudicatorStrike::find()->where(["user_clash_id" => $clash->id])->exists()) {
-                    $clash->decide(1, $this->_tournament->id);
+                    $clash->decide($decision, $this->_tournament->id);
                 }
             }
         }
 
-        $this->redirect(["strike/adju_index", "tournament_id" => $this->_tournament->id]);
+        $this->redirect(["strike/adjudicator_index", "tournament_id" => $this->_tournament->id]);
     }
 
     /**
