@@ -19,37 +19,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-xs-12 col-sm-6">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <?= Yii::t("app", "Adjudicator to Adjudicator Clashes"); ?>
-                </div>
-                <div class="panel-body btn-group btn-group-justified">
-                    <?= Html::a(
-                        Yii::t("app", "Accept all"),
-                        [
-                            "strike/all-adjus",
-                            "decision" => "accept",
-                            "tournament_id" => $tournament->id
-                        ],
-                        [
-                            "class" => "btn btn-success"
-                        ])
-                    ?>
-                    <?= Html::a(
-                        Yii::t("app", "Deny all"),
-                        [
-                            "strike/all-adjus",
-                            "decision" => "deny",
-                            "tournament_id" => $tournament->id
-                        ],
-                        [
-                            "class" => "btn btn-danger"
-                        ])
-                    ?>
-                </div>
-            </div>
-        </div>
-        <div class="col-xs-12 col-sm-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
                     <?= Yii::t("app", "Team to Adjudicator Clashes"); ?>
                 </div>
                 <div class="panel-body btn-group btn-group-justified">
@@ -68,6 +37,37 @@ $this->params['breadcrumbs'][] = $this->title;
                         Yii::t("app", "Deny all"),
                         [
                             "strike/all-teams",
+                            "decision" => "deny",
+                            "tournament_id" => $tournament->id
+                        ],
+                        [
+                            "class" => "btn btn-danger"
+                        ])
+                    ?>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <?= Yii::t("app", "Adjudicator to Adjudicator Clashes"); ?>
+                </div>
+                <div class="panel-body btn-group btn-group-justified">
+                    <?= Html::a(
+                        Yii::t("app", "Accept all"),
+                        [
+                            "strike/all-adjus",
+                            "decision" => "accept",
+                            "tournament_id" => $tournament->id
+                        ],
+                        [
+                            "class" => "btn btn-success"
+                        ])
+                    ?>
+                    <?= Html::a(
+                        Yii::t("app", "Deny all"),
+                        [
+                            "strike/all-adjus",
                             "decision" => "deny",
                             "tournament_id" => $tournament->id
                         ],
