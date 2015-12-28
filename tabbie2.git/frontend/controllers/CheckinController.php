@@ -147,7 +147,7 @@ class CheckinController extends BasetournamentController
 						];
 				}
 				if ($teams[$i]->speakerB) {
-					if ($userID == null || $userID == $teams[$i]->speakerA_id)
+					if ($userID == null || $userID == $teams[$i]->speakerB_id)
 						$codes[] = [
 							"id"    => CheckinForm::TEAMB . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
 							"label" => $teams[$i]->speakerB->name
