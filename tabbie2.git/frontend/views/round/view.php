@@ -81,7 +81,6 @@ $this->params['breadcrumbs'][] = $model->name;
                                             'import', 'id' => $model->id, "tournament_id" => $tournament->id], [
                                                 'data' => [
                                                     'confirm' => Yii::t('app', 'This will override the current draw! All information will be lost!'),
-                                                    'method' => 'post',
                                                 ],
                                             ]
                                         )
