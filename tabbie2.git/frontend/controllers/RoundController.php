@@ -461,7 +461,9 @@ class RoundController extends BasetournamentController
                 foreach ($model->getTeams() as $pos => $team) {
                     $pos = strtoupper($pos);
                     $teams[$pos] = $team->toArray($team_props);
+                    if ($team->speakerA)
                     $teams[$pos]["speakers"]["A"] = $team->speakerA->toArray($user_props);
+                    if ($team->speakerB)
                     $teams[$pos]["speakers"]["B"] = $team->speakerB->toArray($user_props);
 
                     // Add society to the list of societies
