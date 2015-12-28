@@ -46,7 +46,7 @@ class AdjudicatorController extends BasetournamentController
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['create', 'update', 'delete', 'replace', 'move', 'import', 'active', 'popup', 'watch', 'break', 'list', 'resetwatched'],
+                        'actions' => ['create', 'update', 'delete', 'replace', 'move', 'import', 'active', 'popup', 'watch', 'break', 'list', 'resetwatched', 'update-scores'],
                         'matchCallback' => function ($rule, $action) {
                             return ($this->_tournament->isTabMaster(Yii::$app->user->id) ||
                                 $this->_tournament->isCA(Yii::$app->user->id));
@@ -579,6 +579,67 @@ class AdjudicatorController extends BasetournamentController
             $out['results'] = ['id' => 0, 'text' => Yii::t("app", 'No matching records found')];
         }
         echo \yii\helpers\Json::encode($out);
+    }
+
+    /**
+     * Returns 20 Adjudicators in an JSON List
+     *
+     * @param type $search
+     * @param type $id
+     */
+    public function actionUpdateScores()
+    {
+        ini_set("auto_detect_line_endings", true);
+
+        if (Yii::$app->request->isPost) {
+
+            if (Yii::$app->request->post("submit") == "Download") {
+
+
+                header("Content-Type: application/csv");
+                header("Content-Disposition: attachment; filename=AdjudicatorScores.csv");
+                header('Pragma: no-cache');
+
+                ob_start();
+                $df = fopen("php://output", 'w');
+
+                $adjus = Adjudicator::find()->tournament($this->_tournament->id)->all();
+                for ($i = 0; $i < count($adjus); $i++) {
+                    $a = $adjus[$i];
+                    $row = [
+                        $a->id,
+                        $a->name,
+                        $a->strength,
+                    ];
+                    fputcsv($df, $row);
+                }
+                fclose($df);
+                return ob_get_clean();
+
+            } else {
+                $file = \yii\web\UploadedFile::getInstanceByName('csvFile');
+
+                if ($file && ($handle = fopen($file->tempName, "r")) !== false) {
+                    while (($data = fgetcsv($handle, null, ",")) !== false) {
+                        $id = $data[0];
+                        $score = $data[2];
+
+                        $adju = Adjudicator::findOne($id);
+                        if ($adju instanceof Adjudicator) {
+                            $adju->strength = $score;
+                            $adju->save();
+                        }
+
+                    }
+
+                    $this->redirect(["adjudicator/index", "tournament_id" => $this->_tournament->id]);
+                }
+            }
+        }
+
+        return $this->render("import_score", [
+
+        ]);
     }
 
 }
