@@ -728,7 +728,7 @@ class Tournament extends \yii\db\ActiveRecord
 
                 /** check judges * */
                 foreach ($debate->panel->adjudicatorInPanels as $judge) {
-                    if ($judge->adjudicator->user_id == $id) {
+                    if ($judge->adjudicator && $judge->adjudicator->user_id == $id) {
                         if ($judge->function == Panel::FUNCTION_CHAIR) {
                             $pos = Panel::FUNCTION_CHAIR;
                         } else {
