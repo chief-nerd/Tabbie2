@@ -131,7 +131,7 @@ class StrikeController extends BasetournamentController
     public function actionAllTeams($decision = "deny")
     {
         switch ($decision) {
-            case "approve":
+            case "accept":
                 $decision = 1;
                 break;
             case "deny":
@@ -157,7 +157,7 @@ class StrikeController extends BasetournamentController
     public function actionAllAdjus($decision = "deny")
     {
         switch ($decision) {
-            case "approve":
+            case "accept":
                 $decision = 1;
                 break;
             case "deny":
