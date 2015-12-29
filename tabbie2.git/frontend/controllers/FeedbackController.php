@@ -44,8 +44,10 @@ class FeedbackController extends BasetournamentController
                                 $debates = ArrayHelper::getColumn($openFeedback, "debate");
                                 /** @var Debate $debate */
                                 $debate = Debate::findOne(Yii::$app->request->get("id", 0));
-                                if (is_array($debates) && in_array($debate, $debates)) {
-                                    return true;
+
+                                foreach ($debates as $past_debates) {
+                                    if ($past_debates->id = $debate->id)
+                                        return true;
                                 }
                             }
 
