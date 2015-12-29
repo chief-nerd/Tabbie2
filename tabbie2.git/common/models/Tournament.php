@@ -743,6 +743,9 @@ class Tournament extends \yii\db\ActiveRecord
                             case Panel::FUNCTION_TRAINEE:
                                 $pos = Panel::FUNCTION_TRAINEE;
                                 break;
+
+                            default:
+                                $pos = -1;
                         }
 
                         return ['type' => 'judge', 'debate' => $debate, 'pos' => $pos];
