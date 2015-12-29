@@ -609,7 +609,7 @@ class AdjudicatorController extends BasetournamentController
                     $row = [
                         $a->id,
                         ($a->name) ? $a->name : "",
-                        ($a->email) ? $a->email : "",
+                        ($a->user->email) ? $a->user->email : "",
                         $a->strength,
                     ];
                     fputcsv($df, $row);
