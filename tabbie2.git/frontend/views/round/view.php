@@ -140,7 +140,7 @@ $this->params['breadcrumbs'][] = $model->name;
                         ], true);
                         ?>
                         <a href="<?= $url ?>" target="_blank">
-                            <?= $url ?>
+                            <?= Yii::t("app", "Copy Link") ?>
                         </a>
                     </div>
                 </div>
@@ -159,7 +159,7 @@ $this->params['breadcrumbs'][] = $model->name;
                         ], true);
                         ?>
                         <a href="<?= $url ?>" target="_blank">
-                            <?= $url ?>
+                            <?= Yii::t("app", "Copy Link") ?>
                         </a>
                     </div>
                 </div>

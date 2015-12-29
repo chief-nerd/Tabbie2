@@ -186,11 +186,12 @@ class RoundController extends BasetournamentController
             $this->redirect(["outround/create", "tournament_id" => $this->_tournament->id]); //We are already on outround
 
         if ($model->load(Yii::$app->request->post())) {
-
             if (!$model->save() || !$model->generateWorkingDraw()) {
                 Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
-            } else
+            } else {
+                $this->_tournament->updateAccessToken(500);
                 return $this->redirect(['round/view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
+            }
         }
 
         return $this->render('create', [
