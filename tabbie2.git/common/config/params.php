@@ -21,7 +21,7 @@ return [
 	'tournament_per_page'                      => 10,
 	'tournament_per_history'                   => 10,
 	'motions_per_page'                         => 10,
-	'time_to_still_consider_active_in_society' => "2 year", //NOT months because of SQL Interval -X month
+		'time_to_still_consider_active_in_society' => "100 year", //NOT months because of SQL Interval -X month
 	'activeLanguages' => [
 		'en-UK' => "English (UK)",
 		'de-AT' => "German (AT)",
