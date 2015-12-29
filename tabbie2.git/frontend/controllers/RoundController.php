@@ -462,10 +462,24 @@ class RoundController extends BasetournamentController
                 foreach ($model->getTeams() as $pos => $team) {
                     $pos = strtoupper($pos);
                     $teams[$pos] = $team->toArray($team_props);
-                    if ($team->speakerA)
-                    $teams[$pos]["speakers"]["A"] = $team->speakerA->toArray($user_props);
-                    if ($team->speakerB)
-                    $teams[$pos]["speakers"]["B"] = $team->speakerB->toArray($user_props);
+                    if ($team->speakerA) {
+                        $teams[$pos]["speakers"]["A"] = $team->speakerA->toArray($user_props);
+                        $past_society = $team->speakerA->getSocieties()->all();
+                        foreach ($past_society as $s) {
+                            $teams[$pos]["speakers"]["A"]["societies"][] = $s->id;
+                            $societies[$s->id] = $s->toArray($society_props);
+                            $societies[$s->id]["country"] = $s->country->alpha_2;
+                        }
+                    }
+                    if ($team->speakerB) {
+                        $teams[$pos]["speakers"]["B"] = $team->speakerB->toArray($user_props);
+                        $past_society = $team->speakerB->getSocieties()->all();
+                        foreach ($past_society as $s) {
+                            $teams[$pos]["speakers"]["B"]["societies"][] = $s->id;
+                            $societies[$s->id] = $s->toArray($society_props);
+                            $societies[$s->id]["country"] = $s->country->alpha_2;
+                        }
+                    }
 
                     // Add society to the list of societies
                     if (!array_key_exists($team->society_id, $societies)) {
