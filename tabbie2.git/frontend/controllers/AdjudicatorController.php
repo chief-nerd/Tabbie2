@@ -609,6 +609,7 @@ class AdjudicatorController extends BasetournamentController
                     $row = [
                         $a->id,
                         $a->name,
+                        $a->email,
                         $a->strength,
                     ];
                     fputcsv($df, $row);
@@ -622,7 +623,7 @@ class AdjudicatorController extends BasetournamentController
                 if ($file && ($handle = fopen($file->tempName, "r")) !== false) {
                     while (($data = fgetcsv($handle, null, ",")) !== false) {
                         $id = $data[0];
-                        $score = $data[2];
+                        $score = $data[3];
 
                         $adju = Adjudicator::findOne($id);
                         if ($adju instanceof Adjudicator) {

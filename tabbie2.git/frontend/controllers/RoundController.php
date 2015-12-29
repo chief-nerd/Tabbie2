@@ -584,9 +584,6 @@ class RoundController extends BasetournamentController
                     AdjudicatorInPanel::deleteAll([
                         "panel_id" => $debate->panel_id,
                     ]);
-                    Panel::deleteAll([
-                        "id" => $debate->panel_id,
-                    ]);
                 }
 
                 for ($row = 0; $row < count($json); $row++) {
@@ -603,13 +600,8 @@ class RoundController extends BasetournamentController
 
                         $panel = $debate["panel"];
 
-                        $db_panel = new Panel([
-                            "used" => 0,
-                            "is_preset" => 0,
-                            "tournament_id" => $db_debate->tournament_id,
-                            "strength" => intval($strength * 1000),
-                            "messages" => $messages,
-                        ]);
+                        $db_panel = $db_debate->panel;
+                        $db_panel->strength = $strength;
                         $db_panel->save();
 
                         $chair_id = $panel["chair"];
@@ -629,16 +621,18 @@ class RoundController extends BasetournamentController
                             $db_wing->save();
                         }
 
-                        foreach ($panel["trainees"] as $traineeID) {
-                            $db_trainee = new AdjudicatorInPanel([
-                                "adjudicator_id" => $traineeID,
-                                "panel_id" => $db_panel->id,
-                                "function" => Panel::FUNCTION_TRAINEE,
-                            ]);
-                            $db_trainee->save();
+                        if (isset($panel["trainees"])) {
+                            foreach ($panel["trainees"] as $traineeID) {
+                                $db_trainee = new AdjudicatorInPanel([
+                                    "adjudicator_id" => $traineeID,
+                                    "panel_id" => $db_panel->id,
+                                    "function" => Panel::FUNCTION_TRAINEE,
+                                ]);
+                                $db_trainee->save();
+                            }
                         }
 
-                        $db_debate->panel_id = $db_panel->id;
+                        $db_debate->messages = $messages;
                         $db_debate->save();
                     }
                 }
