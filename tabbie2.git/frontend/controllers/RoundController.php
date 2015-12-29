@@ -632,7 +632,7 @@ class RoundController extends BasetournamentController
                             }
                         }
 
-                        $db_debate->messages = $messages;
+                        //$db_debate->messages = $messages;
                         if (!$db_debate->save())
                             throw new Exception(ObjectError::getMsg($db_debate));
                     }
