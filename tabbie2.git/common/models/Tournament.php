@@ -729,10 +729,20 @@ class Tournament extends \yii\db\ActiveRecord
                 /** check judges * */
                 foreach ($debate->panel->adjudicatorInPanels as $judge) {
                     if ($judge->adjudicator && $judge->adjudicator->user_id == $id) {
-                        if ($judge->function == Panel::FUNCTION_CHAIR) {
-                            $pos = Panel::FUNCTION_CHAIR;
-                        } else {
-                            $pos = Panel::FUNCTION_WING;
+
+                        Switch ($judge->function) {
+
+                            case Panel::FUNCTION_CHAIR:
+                                $pos = Panel::FUNCTION_CHAIR;
+                                break;
+
+                            case Panel::FUNCTION_WING:
+                                $pos = Panel::FUNCTION_WING;
+                                break;
+
+                            case Panel::FUNCTION_TRAINEE:
+                                $pos = Panel::FUNCTION_TRAINEE;
+                                break;
                         }
 
                         return ['type' => 'judge', 'debate' => $debate, 'pos' => $pos];
