@@ -846,7 +846,6 @@ class Tournament extends \yii\db\ActiveRecord {
 
 				foreach (Team::getPos() as $pos) {
 					$debateQuery = Debate::find()
-							->tournament($this->id, "debate")
 							->joinWith("round")
 							->orderBy(["debate.round_id" => SORT_DESC])
 							->andWhere($pos . "_team_id = " . $team->id)
