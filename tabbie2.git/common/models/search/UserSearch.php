@@ -235,6 +235,23 @@ class UserSearch extends User
 			return ArrayHelper::map($user, "name", "name");
 	}
 
+    public static function getSearchTeamArray($tournamentid, $index_id = false)
+    {
+        $user = User::find()
+            ->leftJoin("team", "team.speakerA_id = user.id")
+            ->where(["team.tournament_id" => $tournamentid])
+            ->union(
+                static::find()
+                    ->leftJoin("team", "team.speakerB_id = user.id")
+                    ->where(["team.tournament_id" => $tournamentid]), true
+            );
+
+        if ($index_id)
+            return ArrayHelper::map($user, "id", "name");
+        else
+            return ArrayHelper::map($user, "name", "name");
+    }
+
 	/**
 	 * Creates data provider instance with search query applied
 	 *
