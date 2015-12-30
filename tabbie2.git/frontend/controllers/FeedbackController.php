@@ -155,19 +155,11 @@ class FeedbackController extends BasetournamentController
                 $already_entered = $object->got_feedback;
                 break;
             case Feedback::FROM_TEAM:
-                $object = Debate::find()->tournament($this->_tournament->id)->andWhere(
-                    "og_team_id = :og OR oo_team_id = :oo OR cg_team_id = :cg OR co_team_id = :co",
-                    [
-                        "og" => $ref,
-                        "oo" => $ref,
-                        "cg" => $ref,
-                        "co" => $ref,
-                    ]
-                )->orderBy(["id" => SORT_DESC])->one();
+                $object = Debate::findOne($id);
 
                 if (!($object instanceof Debate)) {
-                    Yii::error("Feedback: Team not found!", __METHOD__);
-                    throw new Exception(Yii::t("app", "Team not found - type wrong?"));
+                    Yii::error("Feedback: Debate not found!", __METHOD__);
+                    throw new Exception(Yii::t("app", "Debate not found - type wrong?"));
                 }
 
                 foreach ($object->getTeams(true) as $pos => $team_id) {
@@ -187,7 +179,7 @@ class FeedbackController extends BasetournamentController
             foreach ($object->panel->getAdjudicators()->all() as $a) {
                 if ($a->id != $ref) {
                     $model_group[] = [
-                        "title" => $a->name,
+                        "title" => $a->getName($object->panel->id),
                         "item" => $this->addQuestions($type),
                         "to" => $a->id,
                         "from" => $ref
@@ -196,7 +188,7 @@ class FeedbackController extends BasetournamentController
             }
         } else {
             $model_group[] = [
-                "title" => $object->panel->getChairInPanel()->adjudicator->name,
+                "title" => $object->panel->getChairInPanel()->adjudicator->getName(),
                 "item" => $this->addQuestions($type),
                 "to" => $object->panel->getChairInPanel()->adjudicator->id,
                 "from" => $ref

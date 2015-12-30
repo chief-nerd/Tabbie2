@@ -912,9 +912,11 @@ class Tournament extends \yii\db\ActiveRecord
                     $debate = $debateQuery->all();
 
                     foreach ($debate as $d) {
-                        $feedbackDebates[] = ["type" => Feedback::FROM_TEAM, "debate" => $d, "ref" => $d->{$pos . "_team_id"}];
+                        $feedbackDebates[$d->round_id] = ["type" => Feedback::FROM_TEAM, "debate" => $d, "ref" => $d->{$pos . "_team_id"}];
                     }
                 }
+
+                krsort($feedbackDebates);
 
             }
 
