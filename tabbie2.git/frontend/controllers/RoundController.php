@@ -502,6 +502,7 @@ class RoundController extends BasetournamentController
 
                     /** @var Adjudicator $adju */
                     $adju = $inPanel->adjudicator;
+                    $adju->refresh();
                     $adjudicator = $adju->toArray($adju_props);
                     $adjudicator["gender"] = $adju->user->gender;
                     $adjudicator["country"] = isset($adju->user->societies[0]) ?
@@ -559,7 +560,7 @@ class RoundController extends BasetournamentController
             case "raw":
                 $apptype = "application/text";
                 $filetype = "txt";
-                $output = print_r($DRAW, true);
+                $output = print_r(["draw" => $DRAW, "societies" => $societies], true);
                 break;
         }
 
