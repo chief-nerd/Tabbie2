@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $model->name;
     <h1><?= Html::encode($model->name) ?></h1>
 
     <div class="row">
-        <div class="<?= (!$model->published) ? "col-md-12" : "col-md-4" ?>">
+        <div class="<?= (!$model->published) ? "col-md-12" : "col-md-6" ?>">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <?= Yii::t("app", "Actions"); ?>
@@ -126,10 +126,10 @@ $this->params['breadcrumbs'][] = $model->name;
             </div>
         </div>
         <? if ($model->published): ?>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <?= Yii::t("app", "Draw Access URL"); ?>
+                        <?= Yii::t("app", "Public Access URLs"); ?>
                     </div>
                     <div class="panel-body">
                         <?
@@ -138,29 +138,21 @@ $this->params['breadcrumbs'][] = $model->name;
                             "tournament_id" => $model->tournament_id,
                             "accessToken" => $tournament->accessToken
                         ], true);
+                        echo \kartik\helpers\Html::a("Draw Display", $url, [
+                            "class" => "btn btn-default"
+                        ]);
                         ?>
-                        <a href="<?= $url ?>" target="_blank">
-                            <?= Yii::t("app", "Copy Link") ?>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <?= Yii::t("app", "Runner Monitor URL"); ?>
-                    </div>
-                    <div class="panel-body">
+                        &nbsp;
                         <?
                         $url = \yii\helpers\Url::to(["public/runner-view",
                             "id" => $model->id,
                             "tournament_id" => $model->tournament_id,
                             "accessToken" => $tournament->accessToken
                         ], true);
+                        echo \kartik\helpers\Html::a("Runner Monitor", $url, [
+                            "class" => "btn btn-default"
+                        ]);
                         ?>
-                        <a href="<?= $url ?>" target="_blank">
-                            <?= Yii::t("app", "Copy Link") ?>
-                        </a>
                     </div>
                 </div>
             </div>
