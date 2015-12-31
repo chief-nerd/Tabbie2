@@ -122,8 +122,7 @@ class PublishTabTeam extends \yii\db\ActiveRecord
         ]);
         $cache = Yii::$app->cache;
 
-        $lines = false;
-        //$lines = $cache->get($key);
+        $lines = $cache->get($key);
         if ($lines === false || $live) {
 
             $results = \common\models\Result::find()
