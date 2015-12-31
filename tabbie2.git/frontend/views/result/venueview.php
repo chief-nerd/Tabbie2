@@ -17,24 +17,30 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Venue View");
 ?>
 <div class="result-index">
 
-	<h1><?= Yii::t("app", "Results for {label}", ["label" => $round->name]) ?></h1>
 
-	<p class="text-right">
-		<?=
-		Html::checkbox("autoupdate", false, [
-			'label' => Yii::t("app", "Auto Update <i id='pjax-status' class=''></i>"),
-			"data-pjax" => 0,
-		]);
-		?>
-		&nbsp;|&nbsp;
-		<?=
-		Html::a(Html::icon("list") . "&nbsp;" . Yii::t("app", "Switch to Tableview"), ["round",
-			"id"   => $round_id,
-			"tournament_id" => $tournament->id,
-			"view" => "table",
-		], ["class" => "btn btn-default"]);
-		?>
-	</p>
+	<div class="row">
+		<div class="col-xs-12 col-sm-8">
+			<h1 style="margin-top: 0px"><?= Yii::t("app", "Results for {label}", ["label" => $round->name]) ?></h1>
+			<?=
+			Html::a(Html::icon("list") . "&nbsp;" . Yii::t("app", "Switch to Tableview"), ["round",
+					"id" => $round_id,
+					"tournament_id" => $tournament->id,
+					"view" => "table",
+			], ["class" => "btn btn-default"]);
+			?>
+			&nbsp;|&nbsp;
+			<?=
+			Html::checkbox("autoupdate", false, [
+					'label' => Yii::t("app", "Auto Update <i id='pjax-status' class=''></i>"),
+					"data-pjax" => 0,
+			]);
+			?>
+		</div>
+		<div class="col-xs-12 col-sm-4 text-center">
+			<?= $round->generateBalanceSVG(100) ?>
+		</div>
+	</div>
+
 	<!-- AJAX -->
 	<? \yii\widgets\Pjax::begin(["id" => "debates-pjax"]) ?>
 	<?=
