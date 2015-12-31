@@ -916,7 +916,8 @@ class Tournament extends \yii\db\ActiveRecord
                     }
                 }
 
-                krsort($feedbackDebates);
+                if (is_array($feedbackDebates))
+                    krsort($feedbackDebates);
 
             }
 
