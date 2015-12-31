@@ -912,7 +912,8 @@ class Tournament extends \yii\db\ActiveRecord
                     $debate = $debateQuery->all();
 
                     foreach ($debate as $d) {
-                        $feedbackDebates[$d->round_id] = ["type" => Feedback::FROM_TEAM, "debate" => $d, "ref" => $d->{$pos . "_team_id"}];
+                        if ($d instanceof Debate)
+                            $feedbackDebates[$d->round_id] = ["type" => Feedback::FROM_TEAM, "debate" => $d, "ref" => $d->{$pos . "_team_id"}];
                     }
                 }
 
@@ -938,7 +939,8 @@ class Tournament extends \yii\db\ActiveRecord
                         $type = Feedback::FROM_WING;
                     }
 
-                    $feedbackDebates[] = ["type" => $type, "debate" => $aip->panel->debate, "ref" => $judge->id];
+                    if ($aip->panel->debate instanceof Debate)
+                        $feedbackDebates[] = ["type" => $type, "debate" => $aip->panel->debate, "ref" => $judge->id];
                 }
             }
 
