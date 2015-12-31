@@ -7,6 +7,7 @@ use common\components\ObjectError;
 use kartik\helpers\Html;
 use Yii;
 use yii\base\Exception;
+use yii\caching\DbDependency;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -879,8 +880,8 @@ class Round extends \yii\db\ActiveRecord
     {
         $key = $this->tournament->cacheKey("motionBalance#" . $this->id);
         $dependency = new DbDependency([
-            "sql" => "SELECT count(*) FROM results LEFT JOIN debate ON result.debate_id = debate.id" .
-                "WHERE tournament_id = " . $this->tournament->id . " AND debate.round_id =" . $this->id
+            "sql" => "SELECT count(*) FROM result LEFT JOIN debate ON result.debate_id = debate.id " .
+                "WHERE tournament_id = " . $this->tournament->id . " AND round_id=" . $this->id
         ]);
 
         $html = Yii::$app->cache->get($key);
