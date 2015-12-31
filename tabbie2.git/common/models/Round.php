@@ -877,90 +877,103 @@ class Round extends \yii\db\ActiveRecord
 
     public function generateBalanceSVG($size = 60)
     {
-        $posMatrix = [
-            "og" => 0,
-            "og_x" => 0,
-            "og_y" => 0,
-            "oo" => 0,
-            "oo_x" => 0,
-            "oo_y" => 0,
-            "cg" => 0,
-            "cg_x" => 0,
-            "cg_y" => 0,
-            "co" => 0,
-            "co_x" => 0,
-            "co_y" => 0,
-        ];
-        $base = $size / 2;
-        $color = "#AAF;";
-        $gray = "#555";
-        $factor = 3;
-        $sum = 0;
+        $key = $this->tournament->cacheKey("motionBalance#" . $this->id);
+        $dependency = new DbDependency([
+            "sql" => "SELECT count(*) FROM results LEFT JOIN debate ON result.debate_id = debate.id" .
+                "WHERE tournament_id = " . $this->tournament->id . " AND debate.round_id =" . $this->id
+        ]);
 
-        foreach ($this->getDebates()->all() as $debate) {
-            $result = $debate->result;
-            if ($result instanceof Result) {
-                foreach (Team::getPos() as $pos) {
-                    $posMatrix[$pos] += $result->{$pos . "_place"};
-                    $sum += $result->{$pos . "_place"} / $factor;
+        $html = Yii::$app->cache->get($key);
+        if (!$html) {
+
+            $posMatrix = [
+                "og" => 0,
+                "og_x" => 0,
+                "og_y" => 0,
+                "oo" => 0,
+                "oo_x" => 0,
+                "oo_y" => 0,
+                "cg" => 0,
+                "cg_x" => 0,
+                "cg_y" => 0,
+                "co" => 0,
+                "co_x" => 0,
+                "co_y" => 0,
+            ];
+            $base = $size / 2;
+            $color = "#AAF;";
+            $gray = "#555";
+            $factor = 3;
+            $sum = 0;
+
+            foreach ($this->getDebates()->all() as $debate) {
+                $result = $debate->result;
+                if ($result instanceof Result) {
+                    foreach (Team::getPos() as $pos) {
+                        $posMatrix[$pos] += $result->{$pos . "_place"};
+                        $sum += $result->{$pos . "_place"} / $factor;
+                    }
                 }
             }
-        }
 
-        if ($sum > 0) {
-            foreach ($posMatrix as $pos => $pm) {
-                $posMatrix[$pos . "_percent"] = round($posMatrix[$pos] / $sum, 2);
+            if ($sum > 0) {
+                foreach ($posMatrix as $pos => $pm) {
+                    $posMatrix[$pos . "_percent"] = round($posMatrix[$pos] / $sum, 2);
+                }
+                $posMatrix["og_x"] = $posMatrix["og_y"] = $base * (1 - $posMatrix["og_percent"]);
+
+                $posMatrix["oo_x"] = $base * (1 - $posMatrix["oo_percent"]);
+                $posMatrix["oo_y"] = $base * ($posMatrix["oo_percent"]) + $base;
+
+                $posMatrix["co_x"] = $posMatrix["co_y"] = $base * ($posMatrix["co_percent"]) + $base;
+
+                $posMatrix["cg_x"] = $base * ($posMatrix["cg_percent"]) + $base;
+                $posMatrix["cg_y"] = $base * (1 - $posMatrix["cg_percent"]);
             }
-            $posMatrix["og_x"] = $posMatrix["og_y"] = $base * (1 - $posMatrix["og_percent"]);
 
-            $posMatrix["oo_x"] = $base * (1 - $posMatrix["oo_percent"]);
-            $posMatrix["oo_y"] = $base * ($posMatrix["oo_percent"]) + $base;
+            $poly = Html::tag("polygon", null, [
+                "points" =>
+                    $posMatrix["og_x"] . "," . $posMatrix["og_y"] . " " .
+                    $posMatrix["oo_x"] . "," . $posMatrix["oo_y"] . " " .
+                    $posMatrix["co_x"] . "," . $posMatrix["co_y"] . " " .
+                    $posMatrix["cg_x"] . "," . $posMatrix["cg_y"],
+                "style" => "fill:$color"
+            ]);
 
-            $posMatrix["co_x"] = $posMatrix["co_y"] = $base * ($posMatrix["co_percent"]) + $base;
+            $horizon = Html::tag("line", null, [
+                "x1" => 0,
+                "y1" => $size / 2,
+                "x2" => $size,
+                "y2" => $size / 2,
+                "style" => "stroke:$gray; stroke-width:1",
+            ]);
+            $vertik = Html::tag("line", null, [
+                "x1" => $size / 2,
+                "y1" => 0,
+                "x2" => $size / 2,
+                "y2" => $size,
+                "style" => "stroke:$gray;stroke-width:1",
+            ]);
+            $quarter = $size / 4;
+            $medium = Html::tag("polygon", null, [
+                "points" => $quarter . "," . $quarter . " " .
+                    $quarter . "," . (3 * $quarter) . ", " .
+                    (3 * $quarter) . "," . (3 * $quarter) . " " .
+                    (3 * $quarter) . "," . $quarter,
+                "style" => "fill:transparent; stroke:$gray; stroke-width:1"
+            ]);
+            $out = Html::tag("polygon", null, [
+                "points" => "0,0 " .
+                    "0,$size " .
+                    "$size,$size " .
+                    "$size,0",
+                "style" => "fill:transparent; stroke:$gray; stroke-width:1"
+            ]);
 
-            $posMatrix["cg_x"] = $base * ($posMatrix["cg_percent"]) + $base;
-            $posMatrix["cg_y"] = $base * (1 - $posMatrix["cg_percent"]);
+            $html = Html::tag("svg", $poly . $horizon . $vertik . $medium . $out, ["viewBox" => "0 0 $size $size", "width" => $size, "height" => $size]);
+            Yii::$app->cache->set($key, $html, 0, $dependency);
         }
 
-        $poly = Html::tag("polygon", null, [
-            "points" =>
-                $posMatrix["og_x"] . "," . $posMatrix["og_y"] . " " .
-                $posMatrix["oo_x"] . "," . $posMatrix["oo_y"] . " " .
-                $posMatrix["co_x"] . "," . $posMatrix["co_y"] . " " .
-                $posMatrix["cg_x"] . "," . $posMatrix["cg_y"],
-            "style" => "fill:$color"
-        ]);
-
-        $horizon = Html::tag("line", null, [
-            "x1" => 0,
-            "y1" => $size / 2,
-            "x2" => $size,
-            "y2" => $size / 2,
-            "style" => "stroke:$gray; stroke-width:1",
-        ]);
-        $vertik = Html::tag("line", null, [
-            "x1" => $size / 2,
-            "y1" => 0,
-            "x2" => $size / 2,
-            "y2" => $size,
-            "style" => "stroke:$gray;stroke-width:1",
-        ]);
-        $quarter = $size / 4;
-        $medium = Html::tag("polygon", null, [
-            "points" => $quarter . "," . $quarter . " " .
-                $quarter . "," . (3 * $quarter) . ", " .
-                (3 * $quarter) . "," . (3 * $quarter) . " " .
-                (3 * $quarter) . "," . $quarter,
-            "style" => "fill:transparent; stroke:$gray; stroke-width:1"
-        ]);
-        $out = Html::tag("polygon", null, [
-            "points" => "0,0 " .
-                "0,$size " .
-                "$size,$size " .
-                "$size,0",
-            "style" => "fill:transparent; stroke:$gray; stroke-width:1"
-        ]);
-
-        return Html::tag("svg", $poly . $horizon . $vertik . $medium . $out, ["viewBox" => "0 0 $size $size", "width" => $size, "height" => $size]);
+        return $html;
     }
 }
