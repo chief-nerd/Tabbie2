@@ -47,6 +47,7 @@ use common\models\Team;
                         ]
                     );
 
+                    $items = [];
                     if (count($refs) > 0) {
 
                         $item = [];
