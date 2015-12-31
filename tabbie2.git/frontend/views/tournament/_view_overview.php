@@ -53,6 +53,7 @@ use common\models\Team;
                         foreach ($refs as $ref) {
                             $param = $ref;
                             unset($param["debate"]);
+                            if (!$ref["debate"] instanceof \common\models\Debate) continue;
                             $param["id"] = $ref["debate"]->id;
 
                             $items[] = [
