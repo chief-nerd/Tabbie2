@@ -933,13 +933,17 @@ class Tournament extends \yii\db\ActiveRecord
                     ->all();
 
                 foreach ($aips as $aip) {
+
+                    /** @Todo Do better then that shit */
+                    if (!$aip->panel || !$aip->panel->debate || $aip->panel->debate->round->displayed != 1) continue;
+
                     if ($aip->function == Panel::FUNCTION_CHAIR) {
                         $type = Feedback::FROM_CHAIR;
                     } else {
                         $type = Feedback::FROM_WING;
                     }
 
-                    if ($aip->panel->debate instanceof Debate)
+                    if ($aip->panel->debate instanceof Debate) //Keep in for preset panel, they dont have a debate yet
                         $feedbackDebates[] = ["type" => $type, "debate" => $aip->panel->debate, "ref" => $judge->id];
                 }
             }
