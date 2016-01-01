@@ -759,12 +759,19 @@ class Tournament extends \yii\db\ActiveRecord
 
     /**
      * Get's the last round
-     *
+     * @param bool $onlyOpen gets the last open round
      * @return Round
      */
-    public function getLastRound()
+    public function getLastRound($onlyOpen = true)
     {
-        return $this->getRounds()->where(["displayed" => 1])->orderBy(['id' => SORT_DESC])->one();
+        $roundQuery = $this->getRounds()
+            ->where(["displayed" => 1])
+            ->orderBy(['id' => SORT_DESC]);
+
+        if ($onlyOpen == true)
+            $roundQuery->andWhere(["closed" => 0]);
+
+        return $roundQuery->one();
     }
 
     /**
