@@ -696,73 +696,11 @@ class Tournament extends \yii\db\ActiveRecord
     }
 
     /**
-     * @param Tournament $model
-     *
-     * @return array|false
-     */
-    public function getLastDebateInfo($id)
-    {
-        if (!is_int($id)) {
-            return false;
-        }
-
-        $lastRound = $this->getLastRound();
-
-        if ($lastRound) {
-            foreach ($lastRound->getDebates()->all() as $debate) {
-
-                /** check teams* */
-                /** @var $debate Debate */
-                if ($debate->isOGTeamMember($id)) {
-                    return ['type' => 'team', 'debate' => $debate, 'pos' => Team::OG];
-                }
-                if ($debate->isOOTeamMember($id)) {
-                    return ['type' => 'team', 'debate' => $debate, 'pos' => Team::OO];
-                }
-                if ($debate->isCGTeamMember($id)) {
-                    return ['type' => 'team', 'debate' => $debate, 'pos' => Team::CG];
-                }
-                if ($debate->isCOTeamMember($id)) {
-                    return ['type' => 'team', 'debate' => $debate, 'pos' => Team::CO];
-                }
-
-                /** check judges * */
-                foreach ($debate->panel->adjudicatorInPanels as $judge) {
-                    if ($judge->adjudicator && $judge->adjudicator->user_id == $id) {
-
-                        Switch ($judge->function) {
-
-                            case Panel::FUNCTION_CHAIR:
-                                $pos = Panel::FUNCTION_CHAIR;
-                                break;
-
-                            case Panel::FUNCTION_WING:
-                                $pos = Panel::FUNCTION_WING;
-                                break;
-
-                            case Panel::FUNCTION_TRAINEE:
-                                $pos = Panel::FUNCTION_TRAINEE;
-                                break;
-
-                            default:
-                                $pos = -1;
-                        }
-
-                        return ['type' => 'judge', 'debate' => $debate, 'pos' => $pos];
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * Get's the last round
      * @param bool $onlyOpen gets the last open round
      * @return Round
      */
-    public function getLastRound($onlyOpen = true)
+    public function getLastRound($onlyOpen = false)
     {
         $roundQuery = $this->getRounds()
             ->where(["displayed" => 1])

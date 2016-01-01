@@ -3,6 +3,7 @@ use kartik\helpers\Html;
 use common\models\Tournament;
 use common\models\Panel;
 use common\models\Debate;
+use common\models\Round;
 
 /** @var Tournament $model */
 ?>
@@ -19,27 +20,36 @@ use common\models\Debate;
     if ($model->status === Tournament::STATUS_RUNNING): ?>
         <div class="col-xs-12 col-md-8 col-lg-8">
             <?
-            $info = $model->getLastDebateInfo(Yii::$app->user->id);
+            if (is_int(Yii::$app->user->id)) {
+                /** @var Round $lastRound */
+                $lastRound = $model->getLastRound();
+                if ($lastRound instanceof Round) {
+                    $info = $lastRound->getLastDebateInfo();
+                    if ($info) {
+                        echo $this->render('_view_buttons', [
+                            'info' => $info,
+                            'model' => $model
+                        ]);
 
-            if ($info) {
-                echo $this->render('_view_buttons', [
-                    'info' => $info,
-                    'model' => $model
-                ]);
+                        echo $this->render('_view_roundinfo', [
+                            'info' => $info,
+                        ]);
 
-                echo $this->render('_view_roundinfo', [
-                    'info' => $info,
-                ]);
-
-                if ($info["pos"] == Panel::FUNCTION_CHAIR && $info["debate"] instanceof Debate) {
-                    echo $this->render("_view_debateinfo", [
-                        "model" => $info["debate"]
+                        if ($info["pos"] == Panel::FUNCTION_CHAIR && $info["debate"] instanceof Debate) {
+                            echo $this->render("_view_debateinfo", [
+                                "model" => $info["debate"]
+                            ]);
+                        }
+                    } else {
+                        echo $this->render('_view_noopenround', [
+                            'model' => $model
+                        ]);
+                    }
+                } else {
+                    echo $this->render('_view_reginfo', [
+                        'model' => $model,
                     ]);
                 }
-            } else {
-                echo $this->render('_view_reginfo', [
-                    'model' => $model,
-                ]);
             }
             ?>
         </div>

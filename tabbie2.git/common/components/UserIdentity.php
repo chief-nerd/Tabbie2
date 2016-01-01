@@ -69,7 +69,7 @@ class UserIdentity extends \yii\web\User {
 	}
 
 	/**
-	 * @param Round $lastRound
+	 * @param string[] $info
 	 *
 	 * @return boolean
 	 */
