@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $model->name;
 						<? if (!$model->published): ?>
 							<?
 							if ($debateDataProvider->getCount() > 0)
-								echo Html::a(\kartik\helpers\Html::icon("thumbs-up") . "&nbsp" . Yii::t('app', 'Publish Tab'), ['publish', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success']);
+								echo Html::a(\kartik\helpers\Html::icon("thumbs-up") . "&nbsp" . Yii::t('app', 'Publish approved Draw'), ['publish', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success']);
 							else
 								echo Html::a(\kartik\helpers\Html::icon("repeat") . "&nbsp" . Yii::t('app', 'Retry to generate Draw'), ['redraw', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success loading']);
 							?>
@@ -68,12 +68,50 @@ $this->params['breadcrumbs'][] = $model->name;
 									<li class="divider"></li>
 									<li>
 										<?=
-										Html::a(\kartik\helpers\Html::icon("file") . "&nbsp" . Yii::t('app', 'Generate new draw from blank'), ['redraw', 'id' => $model->id, "tournament_id" => $tournament->id], [
-											'class' => 'loading',
-											'data'  => [
+										Html::a(\kartik\helpers\Html::icon("export") . "&nbsp" .
+												Yii::t('app', 'Export Draw as JSON'), [
+												'export', 'id' => $model->id, "tournament_id" => $tournament->id, "type" => "json"
+										])
+										?>
+									</li>
+									<li>
+										<?=
+										Html::a(\kartik\helpers\Html::icon("import") . "&nbsp" .
+												Yii::t('app', 'Import Draw from JSON'), [
+												'import', 'id' => $model->id, "tournament_id" => $tournament->id], [
+														'data' => [
+																'confirm' => Yii::t('app', 'This will override the current draw! All information will be lost!'),
+														],
+												]
+										)
+										?>
+									</li>
+								</ul>
+							</div>
+
+							<div class="btn-group">
+								<?=
+								Html::a(\kartik\helpers\Html::icon("repeat") . "&nbsp" . Yii::t('app', 'Re-draw Round'), ['redraw', 'id' => $model->id, "tournament_id" => $tournament->id], [
+										'class' => 'btn btn-danger',
+										'data' => [
 												'confirm' => Yii::t('app', 'Are you sure you want to re-draw the round? All information will be lost!'),
-												'method'  => 'post',
-											],
+												'method' => 'post',
+										],
+								]) ?>
+
+								<button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown"
+										aria-expanded="false">
+									<span class="caret"></span>
+									<span class="sr-only"><?= Yii::t("app", "Toggle Dropdown") ?></span>
+								</button>
+								<ul class="dropdown-menu" role="menu">
+									<li>
+										<?=
+										Html::a(\kartik\helpers\Html::icon("trash") . "&nbsp" . Yii::t('app', 'Delete Round'), ['delete', 'id' => $model->id, "tournament_id" => $tournament->id], [
+												'data' => [
+														'confirm' => Yii::t('app', 'Are you sure you want to DELETE the round? All information will be lost!'),
+														'method' => 'post',
+												],
 										])
 										?>
 									</li>
@@ -88,41 +126,33 @@ $this->params['breadcrumbs'][] = $model->name;
 			</div>
 		</div>
 		<? if ($model->published): ?>
-			<div class="col-md-4">
+			<div class="col-md-6">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<?= Yii::t("app", "Draw Access URL"); ?>
+						<?= Yii::t("app", "Public Access URLs"); ?>
 					</div>
 					<div class="panel-body">
 						<?
 						$url = \yii\helpers\Url::to(["public/draw",
-							"id"            => $model->id,
-							"tournament_id" => $model->tournament_id,
-							"accessToken"   => $tournament->accessToken
+								"id" => $model->id,
+								"tournament_id" => $model->tournament_id,
+								"accessToken" => $tournament->accessToken
 						], true);
+						echo \kartik\helpers\Html::a("Draw Display", $url, [
+								"class" => "btn btn-default"
+						]);
 						?>
-						<a href="<?= $url ?>" target="_blank">
-							<?= $url ?>
-						</a>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<?= Yii::t("app", "Runner Monitor URL"); ?>
-					</div>
-					<div class="panel-body">
+						&nbsp;
 						<?
 						$url = \yii\helpers\Url::to(["public/runner-view",
-							"id"            => $model->id,
-							"tournament_id" => $model->tournament_id,
-							"accessToken"   => $tournament->accessToken
+								"id" => $model->id,
+								"tournament_id" => $model->tournament_id,
+								"accessToken" => $tournament->accessToken
 						], true);
+						echo \kartik\helpers\Html::a("Runner Monitor", $url, [
+								"class" => "btn btn-default"
+						]);
 						?>
-						<a href="<?= $url ?>" target="_blank">
-							<?= $url ?>
-						</a>
 					</div>
 				</div>
 			</div>
