@@ -84,8 +84,8 @@ class Round extends \yii\db\ActiveRecord
         if ($t->has_esl) {
             $options[self::TYP_ESL] = Yii::t("app", "ESL");
         }
-        //if($t->has_efl)
-        //$options[self::TYP_EFL] = Yii::t("app", "EFL");
+        if ($t->has_efl)
+            $options[self::TYP_EFL] = Yii::t("app", "EFL");
         $options[self::TYP_NOVICE] = Yii::t("app", "Novice");
 
         return $options;
