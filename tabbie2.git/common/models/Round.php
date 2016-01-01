@@ -28,9 +28,8 @@ use yii\helpers\ArrayHelper;
  * @property bool $closed
  * @property float $lastrun_temp
  * @property integer $lastrun_time
- * @property datetime $prep_started
- * @property datetime $finished_time
- * @property TabAfterRound[] $tabAfterRounds
+ * @property string $prep_started
+ * @property string $finished_time
  * @property Tournament $tournament
  * @property Tag[] $tags
  * @property MotionTag[] $motionTags
@@ -52,6 +51,9 @@ class Round extends \yii\db\ActiveRecord
     const TYP_NOVICE = 4;
 
     public $round_tags = [];
+
+    const TIME_PREP = (15 * 60);
+    const TIME_DEBATE = (((8 * 7) + 8) * 60);
 
     static function statusLabel($code = null)
     {
@@ -342,10 +344,8 @@ class Round extends \yii\db\ActiveRecord
 
     public function isJudgingTime()
     {
-        $debatetime = (8 * 7) + 8;
-        $preptime = 15;
         if ($this->prep_started) {
-            $judgeTime = strtotime($this->prep_started) + $preptime + $debatetime;
+            $judgeTime = strtotime($this->prep_started) + self::TIME_PREP + self::TIME_DEBATE;
 
             if (time() > $judgeTime) {
                 return true;
@@ -357,9 +357,8 @@ class Round extends \yii\db\ActiveRecord
 
     public function isStartingTime()
     {
-        $preptime = 15;
         if ($this->prep_started) {
-            $prepende = strtotime($this->prep_started) + $preptime;
+            $prepende = strtotime($this->prep_started) + self::TIME_PREP;
 
             if (time() > $prepende) {
                 return true;
