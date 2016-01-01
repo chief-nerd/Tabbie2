@@ -885,7 +885,6 @@ class Round extends \yii\db\ActiveRecord
         ]);
 
         $html = Yii::$app->cache->get($key);
-        $html = false;
         if (!$html) {
 
             $posMatrix = [
