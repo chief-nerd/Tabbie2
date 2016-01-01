@@ -885,6 +885,7 @@ class Round extends \yii\db\ActiveRecord
         ]);
 
         $html = Yii::$app->cache->get($key);
+        $html = false;
         if (!$html) {
 
             $posMatrix = [
@@ -904,15 +905,15 @@ class Round extends \yii\db\ActiveRecord
             $base = $size / 2;
             $color = "#AAF;";
             $gray = "#555";
-            $factor = 3;
+            $factor = 2;
             $sum = 0;
 
             foreach ($this->getDebates()->all() as $debate) {
                 $result = $debate->result;
                 if ($result instanceof Result) {
                     foreach (Team::getPos() as $pos) {
-                        $posMatrix[$pos] += $result->{$pos . "_place"};
-                        $sum += $result->{$pos . "_place"} / $factor;
+                        $posMatrix[$pos] += $result->getPoints($pos);
+                        $sum += $result->getPoints($pos) / $factor;
                     }
                 }
             }
@@ -971,10 +972,44 @@ class Round extends \yii\db\ActiveRecord
                 "style" => "fill:transparent; stroke:$gray; stroke-width:1"
             ]);
 
-            $html = Html::tag("svg", $poly . $horizon . $vertik . $medium . $out, ["viewBox" => "0 0 $size $size", "width" => $size, "height" => $size]);
+            $html = Html::tag("svg", $poly . $horizon . $vertik . $medium . $out, [
+                "viewBox" => "0 0 $size $size",
+                "width" => $size,
+                "height" => $size,
+                "style" => "display:inline-block;",
+            ]);
             Yii::$app->cache->set($key, $html, 0, $dependency);
         }
 
         return $html;
+    }
+
+    /**
+     * @param null $pos
+     * @return array
+     */
+    public function getAmountOfResults()
+    {
+        $amount = [
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0]
+        ];
+
+        foreach ($this->getDebates()->all() as $debate) {
+            $result = $debate->result;
+            if ($result instanceof Result) {
+                for ($i = 0; $i <= 3; $i++) {
+                    $amount[$i][($result->{Team::getPos($i) . "_place"} - 1)]++;
+                }
+            }
+        }
+
+        for ($i = 0; $i <= 3; $i++) {
+            $amount[$i][4] = array_sum($amount[$i]);
+        }
+
+        return $amount;
     }
 }
