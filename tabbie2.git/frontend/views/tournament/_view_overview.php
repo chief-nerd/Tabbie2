@@ -191,7 +191,7 @@ use common\models\Team;
                             <? if ($info["debate"]->round->infoslide): ?>
                                 <div class="col-xs-12">
                                     <?php echo Yii::t("app", "InfoSlide") ?>:<br>
-                                    <?php echo $info["debate"]->round->motion ?>
+                                    <?php echo $info["debate"]->round->infoslide ?>
                                 </div>
                             <? endif; ?>
                         </div>
