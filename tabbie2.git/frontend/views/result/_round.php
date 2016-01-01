@@ -22,10 +22,9 @@ $posStat = $model->getAmountOfResults();
             <table class="table">
                 <tr>
                     <th></th>
-                    <th><?= Yii::t("app", "1st") ?></th>
-                    <th><?= Yii::t("app", "2nd") ?></th>
-                    <th><?= Yii::t("app", "3rd") ?></th>
-                    <th><?= Yii::t("app", "4th") ?></th>
+                    <? for ($i = 1; $i <= 4; $i++): ?>
+                        <th><?= Yii::$app->formatter->asOrdinal($i) ?></th>
+                    <? endfor; ?>
                 </tr>
                 <? for ($i = 0; $i < 4; $i++): ?>
                     <tr>
