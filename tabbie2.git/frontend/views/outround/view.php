@@ -70,7 +70,7 @@ $this->params['breadcrumbs'][] = $model->name;
 										<?=
 										Html::a(\kartik\helpers\Html::icon("export") . "&nbsp" .
 												Yii::t('app', 'Export Draw as JSON'), [
-												'export', 'id' => $model->id, "tournament_id" => $tournament->id, "type" => "json"
+												'/round/export', 'id' => $model->id, "tournament_id" => $tournament->id, "type" => "json"
 										])
 										?>
 									</li>
@@ -78,7 +78,7 @@ $this->params['breadcrumbs'][] = $model->name;
 										<?=
 										Html::a(\kartik\helpers\Html::icon("import") . "&nbsp" .
 												Yii::t('app', 'Import Draw from JSON'), [
-												'import', 'id' => $model->id, "tournament_id" => $tournament->id], [
+												'/round/import', 'id' => $model->id, "tournament_id" => $tournament->id], [
 														'data' => [
 																'confirm' => Yii::t('app', 'This will override the current draw! All information will be lost!'),
 														],
