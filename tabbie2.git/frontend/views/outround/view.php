@@ -361,21 +361,52 @@ $this->params['breadcrumbs'][] = $model->name;
                             'size' => 'md',
                             'placement' => PopoverX::ALIGN_BOTTOM,
                             'content' => $popcontent,
-                            'footer' => "" . Html::button(Yii::t('app', 'Replace'), [
-                                    'class' => 'btn btn-sm btn-default',
-                                    'data' => [
-                                        'toggle' => 'modal',
-                                        'target' => '#changeAdjudicatorForm' . $adj->id,
+                            'footer' => "" .
+                                /*Html::a(\kartik\helpers\Html::icon("trash") . "&nbsp;" .
+                                    Yii::t("app", 'Delete'),
+                                    [
+                                        "round/adju-remove",
+                                        "id" => $model->round_id,
+                                        "tournament_id" => $model->tournament_id,
+                                        "adju_id" => $adj->id,
+                                        "debate_id" => $model->id,
                                     ],
-                                ]) .
-                                Html::a(\kartik\helpers\Html::icon("folder-open") . "&nbsp;" . Yii::t("app", 'View Feedback'), ["feedback/adjudicator", "tournament_id" => $model->tournament_id, "AnswerSearch" => ["id" => $adj->id]], ['class' => 'btn btn-sm btn-default', 'target' => '_blank', 'data-pjax' => "0"]) .
-                                Html::a(\kartik\helpers\Html::icon("folder-open") . "&nbsp;" . Yii::t("app", 'View User'), ["adjudicator/view", "id" => $adj->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-sm btn-default', 'target' => '_blank', 'data-pjax' => "0"]),
+                                    [
+                                        'class' => 'btn btn-sm btn-default',
+                                        'target' => '_blank',
+                                        'data-pjax' => "0"
+                                    ]) .*/
+                                Html::button(\kartik\helpers\Html::icon("retweet") . "&nbsp;" .
+                                    Yii::t('app', 'Replace'),
+                                    [
+                                        'class' => 'btn btn-sm btn-default',
+                                        'data' => [
+                                            'toggle' => 'modal',
+                                            'target' => '#changeAdjudicatorForm' . $adj->id,
+                                        ],
+                                    ]) .
+                                Html::a(\kartik\helpers\Html::icon("folder-open") . "&nbsp;" .
+                                    Yii::t("app", 'View'),
+                                    [
+                                        "adjudicator/view",
+                                        "id" => $adj->id,
+                                        "tournament_id" => $model->tournament_id],
+                                    [
+                                        'class' => 'btn btn-sm btn-default',
+                                        'target' => '_blank',
+                                        'data-pjax' => "0"
+                                    ]),
                             'toggleButton' => [
                                 'label' => $adj->user->name,
                                 'class' => 'btn btn-sm adj ' . $class,
                                 "data-id" => $adj->id,
                                 "data-strength" => $adj->strength,
-                                "data-href" => yii\helpers\Url::to(["adjudicator/popup", "id" => $adj->id, "round_id" => $model->round_id, "tournament_id" => $model->tournament_id]),
+                                "data-href" => yii\helpers\Url::to([
+                                    "adjudicator/popup",
+                                    "id" => $adj->id,
+                                    "round_id" => $model->round_id,
+                                    "tournament_id" => $model->tournament_id
+                                ]),
                             ],
                         ]);
 

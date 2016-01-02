@@ -662,4 +662,18 @@ class RoundController extends BasetournamentController
 
         return $this->render("import", ["model" => $model]);
     }
+
+    public function actionAdjuRemove($id, $adju_id, $debate_id)
+    {
+        $debate = Debate::findOne($debate_id);
+
+        if ($debate instanceof Debate) {
+            $aip = AdjudicatorInPanel::findOne([
+                "panel_id" => $debate->panel_id,
+                "adjudicator_id" => intval($adju_id),
+            ]);
+        }
+
+        return $this->redirect(["round/view", "id" => $id, "tournament_id" => $debate->tournament_id]);
+    }
 }
