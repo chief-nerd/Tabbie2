@@ -416,7 +416,7 @@ class Round extends \yii\db\ActiveRecord
         if ($this->prep_started) {
             $judgeTime = strtotime($this->prep_started) + self::TIME_PREP + self::TIME_DEBATE;
 
-            if (time() > $judgeTime) {
+            if (time() < $judgeTime) {
                 return true;
             }
         }
