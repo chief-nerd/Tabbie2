@@ -5,7 +5,9 @@ namespace frontend\controllers;
 use common\components\filter\TournamentContextFilter;
 use common\components\ObjectError;
 use common\models\Adjudicator;
+use common\models\AdjudicatorInPanel;
 use common\models\Country;
+use common\models\Debate;
 use common\models\Panel;
 use common\models\search\AdjudicatorSearch;
 use common\models\User;
@@ -46,7 +48,7 @@ class AdjudicatorController extends BasetournamentController
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['create', 'update', 'delete', 'replace', 'move', 'import', 'active', 'popup', 'watch', 'break', 'list', 'resetwatched', 'update-scores'],
+                        'actions' => ['create', 'update', 'delete', 'replace', 'replaceadju', 'move', 'import', 'active', 'popup', 'watch', 'break', 'list', 'resetwatched', 'update-scores'],
                         'matchCallback' => function ($rule, $action) {
                             return ($this->_tournament->isTabMaster(Yii::$app->user->id) ||
                                 $this->_tournament->isCA(Yii::$app->user->id));
@@ -154,9 +156,18 @@ class AdjudicatorController extends BasetournamentController
     /**
      * Function called when move results are sent
      */
-    public function actionMove()
+    public function actionReplaceadju($id)
     {
+        if ($params = Yii::$app->request->get()) {
+            $debate = Debate::findOne(["id" => $params["debateid"]]);
 
+            /** @var AdjudicatorInPanel $old */
+            $old = AdjudicatorInPanel::findOne(["panel_id" => $debate->panel_id, "adjudicator_id" => $id]);
+            $old->adjudicator_id = intval($params["new_adju"]);
+            $old->save();
+        }
+
+        return $this->redirect(["outround/view", "id" => $debate->round_id, "tournament_id" => $debate->tournament_id, "view" => "#draw"]);
     }
 
     /**

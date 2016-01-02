@@ -336,6 +336,7 @@ $this->params['breadcrumbs'][] = $model->name;
 			'width'     => '40%',
 			'value'     => function ($model, $key, $index, $widget) {
 				/** @var Debate $model */
+				$adjuOptions = \common\models\search\AdjudicatorSearch::getSearchArray($model->tournament_id, true);
 				$list = [];
 				$panel = common\models\Panel::findOne($model->panel_id);
 				if ($panel && count($panel->adjudicators) > 0) {
@@ -357,7 +358,11 @@ $this->params['breadcrumbs'][] = $model->name;
 							'placement'    => PopoverX::ALIGN_BOTTOM,
 							'content'      => $popcontent,
 							'footer'       => "" .
-								//Html::a(\kartik\helpers\Html::icon("move") . "&nbsp;" . Yii::t("app", 'Move'), ["adjudicator/move", "id" => $adj->id, "debate" => $model->id, "tournament_id" => $model->tournament_id], ['class' => 'moveAdj btn btn-sm btn-primary']) .
+									$this->render("/round/_replaceAdjus", [
+											"model" => $model,
+											"adju" => $adj,
+											"adjuOptions" => $adjuOptions,
+									]) .
 								Html::a(\kartik\helpers\Html::icon("folder-open") . "&nbsp;" . Yii::t("app", 'View Feedback'), ["feedback/adjudicator", "tournament_id" => $model->tournament_id, "AnswerSearch" => ["id" => $adj->id]], ['class' => 'btn btn-sm btn-default', 'target' => '_blank', 'data-pjax' => "0"]) .
 								Html::a(\kartik\helpers\Html::icon("folder-open") . "&nbsp;" . Yii::t("app", 'View User'), ["adjudicator/view", "id" => $adj->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-sm btn-default', 'target' => '_blank', 'data-pjax' => "0"]),
 							'toggleButton' => [
