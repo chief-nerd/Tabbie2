@@ -15,7 +15,6 @@ $form = ActiveForm::begin([
 	'method' => 'get',
 	'id' => $id,
 ]);
-$venueOptions = \common\models\search\VenueSearch::getSearchArray($model->tournament_id, true);
 
 echo Select2::widget([
 	'name'    => 'new_venue',
