@@ -50,6 +50,13 @@ class Round extends \yii\db\ActiveRecord
     const TYP_EFL = 3;
     const TYP_NOVICE = 4;
 
+    const LEVEL_IN = 0;
+    const LEVEL_PDO = 9;
+    const LEVEL_OCTO = 8;
+    const LEVEL_QUARTER = 4;
+    const LEVEL_SEMI = 2;
+    const LEVEL_FINAL = 1;
+
     public $round_tags = [];
 
     const TIME_PREP = (15 * 60);
@@ -98,17 +105,20 @@ class Round extends \yii\db\ActiveRecord
         $options = [];
         $t = $this->tournament;
         if ($t->has_final) {
-            $options[1] = Yii::t("app", "Final");
+            $options[self::LEVEL_FINAL] = Yii::t("app", "Final");
         }
         if ($t->has_semifinal) {
-            $options[2] = Yii::t("app", "Semifinal");
+            $options[self::LEVEL_SEMI] = Yii::t("app", "Semifinal");
         }
         if ($t->has_quarterfinal) {
-            $options[4] = Yii::t("app", "Quarterfinal");
+            $options[self::LEVEL_QUARTER] = Yii::t("app", "Quarterfinal");
         }
         if ($t->has_octofinal) {
-            $options[8] = Yii::t("app", "Octofinal");
+            $options[self::LEVEL_OCTO] = Yii::t("app", "Octofinal");
         }
+        /*if ($t->has_pdocto) {
+            $options[self::LEVEL_PDO] = Yii::t("app", "PD-Octofinal");
+        }*/
 
         return $options;
     }
@@ -197,15 +207,15 @@ class Round extends \yii\db\ActiveRecord
     public function getLevelLabel()
     {
         switch ($this->level) {
-            case 1:
+            case self::LEVEL_FINAL:
                 return Yii::t("app", "Final");
-            case 2:
+            case self::LEVEL_SEMI:
                 return Yii::t("app", "Semifinal");
-            case 4:
+            case self::LEVEL_QUARTER:
                 return Yii::t("app", "Quarterfinal");
-            case 8:
+            case self::LEVEL_OCTO:
                 return Yii::t("app", "Octofinal");
-            case 9:
+            case self::LEVEL_PDO:
                 return Yii::t("app", "PD-Octofinal");
         }
     }
@@ -233,21 +243,21 @@ class Round extends \yii\db\ActiveRecord
 
                 if ($t->has_final && in_array(2, ArrayHelper::getColumn($rounds, "level")) || !$t->has_semifinal) {
                     $this->label = "final";
-                    $this->level = 1;
+                    $this->level = self::LEVEL_FINAL;
                 } else {
                     if ($t->has_semifinal && in_array(4, ArrayHelper::getColumn($rounds, "level")) || !$t->has_quarterfinal) {
                         $this->label = "semi";
-                        $this->level = 2;
+                        $this->level = self::LEVEL_SEMI;
                     } else {
                         if (
                             $t->has_quarterfinal && in_array(8, ArrayHelper::getColumn($rounds, "level")) || !$t->has_octofinal
                         ) {
                             $this->label = "quarter";
-                            $this->level = 4;
+                            $this->level = self::LEVEL_QUARTER;
                         } else {
                             if ($t->has_octofinal) {
                                 $this->label = "octo";
-                                $this->level = 8;
+                                $this->level = self::LEVEL_OCTO;
                             }
                         }
                     }
