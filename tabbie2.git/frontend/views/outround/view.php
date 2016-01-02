@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $model->name;
                             if ($debateDataProvider->getCount() > 0)
                                 echo Html::a(\kartik\helpers\Html::icon("thumbs-up") . "&nbsp" . Yii::t('app', 'Publish approved Draw'), ['publish', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success']);
                             else
-                                echo Html::a(\kartik\helpers\Html::icon("repeat") . "&nbsp" . Yii::t('app', 'Retry to generate Draw'), ['redraw', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success loading']);
+                                echo Html::a(\kartik\helpers\Html::icon("repeat") . "&nbsp" . Yii::t('app', 'Retry to set Draw'), ['set-debate', 'id' => $model->id, "tournament_id" => $tournament->id], ['class' => 'btn btn-success']);
                             ?>
 
                             <!-- Split button -->
