@@ -13,7 +13,7 @@ use yii\widgets\DetailView;
 
 \frontend\assets\RoundviewAsset::register($this);
 
-$this->title = Yii::t("app", "Outround {number}", ["number" => $model->label]);
+$this->title = $model->name;
 $tournament = $this->context->_getContext();
 $this->params['breadcrumbs'][] = ['label' => $tournament->fullname, 'url' => ['tournament/view', "id" => $tournament->id]];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Rounds'), 'url' => ['index', "tournament_id" => $tournament->id]];
