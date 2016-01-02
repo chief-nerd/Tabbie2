@@ -235,6 +235,7 @@ $this->params['breadcrumbs'][] = $model->name;
     <a name="draw"></a>
     <?= $this->render("_filter", ["model" => $model, "debateSearchModel" => $debateSearchModel]) ?>
     <?
+    $venueOptions = \common\models\search\VenueSearch::getSearchArray($model->tournament_id, true);
     $gridColumns = [
         [
             'class' => 'kartik\grid\ExpandRowColumn',
@@ -254,9 +255,12 @@ $this->params['breadcrumbs'][] = $model->name;
             'label' => Yii::t("app", 'Venue'),
             'width' => '8%',
             'format' => 'raw',
-            'value' => function ($model, $key, $index, $widget) {
+            'value' => function ($model, $key, $index, $widget) use ($venueOptions) {
                 if (!$model->round->published)
-                    return $this->render("_changeVenue", ["model" => $model]);
+                    return $this->render("_changeVenue", [
+                        "model" => $model,
+                        "venueOptions" => $venueOptions
+                    ]);
                 else
                     return $model->venue->name;
             },
