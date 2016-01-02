@@ -13,7 +13,7 @@ Modal::begin([
     'header' => '<h4 style="margin:0; padding:0">' . Yii::t("app", "Replace adjudicator {adjudicator} with", [
             "adjudicator" => $adju->getName()
         ]) . '</h4>',
-    'toggleButton' => ['label' => 'Replace', 'class' => 'btn btn-sm btn-default'],
+    //'toggleButton' => ['label' => 'Replace', 'class' => 'btn btn-sm btn-default'],
 ]);
 $id = 'replaceAdjudicatorForm_' . $adju->id;
 $form = ActiveForm::begin([
