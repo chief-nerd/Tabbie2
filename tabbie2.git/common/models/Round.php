@@ -206,7 +206,7 @@ class Round extends \yii\db\ActiveRecord
             case 8:
                 return Yii::t("app", "Octofinal");
             case 9:
-                return Yii::t("app", "DP-Octofinal");
+                return Yii::t("app", "PD-Octofinal");
         }
     }
 
