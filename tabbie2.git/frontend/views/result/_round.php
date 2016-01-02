@@ -9,6 +9,8 @@ $posStat = $model->getAmountOfResults();
     <div class="row">
         <div class="col-xs-12">
             <h2><?= $model->getName() ?></h2>
+
+            <p><?= $model->motion ?></p>
         </div>
     </div>
     <div class="row">
