@@ -222,6 +222,7 @@ $this->params['breadcrumbs'][] = $model->name;
     <?
     $adjuOptions = \common\models\search\AdjudicatorSearch::getSearchArray($model->tournament_id, true);
     $venueOptions = \common\models\search\VenueSearch::getSearchArray($model->tournament_id, true);
+    $teamOptions = \common\models\search\TeamSearch::getSearchArray($model->tournament_id, true);
     $gridColumns = [
         [
             'class' => 'kartik\grid\ExpandRowColumn',
@@ -255,21 +256,53 @@ $this->params['breadcrumbs'][] = $model->name;
             'class' => '\kartik\grid\DataColumn',
             'attribute' => 'og_team.name',
             'label' => Yii::t("app", "OG Team"),
+            'format' => 'raw',
+            'value' => function ($model, $key, $index, $widget) use ($teamOptions) {
+                return $this->render("/round/_changeTeam", [
+                    "model" => $model->og_team,
+                    "debate" => $model,
+                    "teamOptions" => $teamOptions
+                ]);
+            },
         ],
         [
             'class' => '\kartik\grid\DataColumn',
             'attribute' => 'oo_team.name',
             'label' => Yii::t("app", "OO Team"),
+            'format' => 'raw',
+            'value' => function ($model, $key, $index, $widget) use ($teamOptions) {
+                return $this->render("/round/_changeTeam", [
+                    "model" => $model->oo_team,
+                    "debate" => $model,
+                    "teamOptions" => $teamOptions
+                ]);
+            },
         ],
         [
             'class' => '\kartik\grid\DataColumn',
             'attribute' => 'cg_team.name',
             'label' => Yii::t("app", 'CG Team'),
+            'format' => 'raw',
+            'value' => function ($model, $key, $index, $widget) use ($teamOptions) {
+                return $this->render("/round/_changeTeam", [
+                    "model" => $model->cg_team,
+                    "debate" => $model,
+                    "teamOptions" => $teamOptions
+                ]);
+            },
         ],
         [
             'class' => '\kartik\grid\DataColumn',
             'attribute' => 'co_team.name',
             'label' => Yii::t("app", 'CO Team'),
+            'format' => 'raw',
+            'value' => function ($model, $key, $index, $widget) use ($teamOptions) {
+                return $this->render("/round/_changeTeam", [
+                    "model" => $model->co_team,
+                    "debate" => $model,
+                    "teamOptions" => $teamOptions
+                ]);
+            },
         ],
         [
             'class' => '\kartik\grid\DataColumn',
