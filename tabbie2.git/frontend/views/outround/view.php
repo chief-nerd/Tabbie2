@@ -220,6 +220,7 @@ $this->params['breadcrumbs'][] = $model->name;
     <a name="draw"></a>
     <?= $this->render("/round/_filter", ["model" => $model, "debateSearchModel" => $debateSearchModel]) ?>
     <?
+    $adjuOptions = \common\models\search\AdjudicatorSearch::getSearchArray($model->tournament_id, true);
     $gridColumns = [
         [
             'class' => 'kartik\grid\ExpandRowColumn',
@@ -334,9 +335,8 @@ $this->params['breadcrumbs'][] = $model->name;
             'label' => Yii::t("app", 'Adjudicator'),
             'format' => 'raw',
             'width' => '40%',
-            'value' => function ($model, $key, $index, $widget) {
+            'value' => function ($model, $key, $index, $widget) use ($adjuOptions) {
                 /** @var Debate $model */
-                $adjuOptions = \common\models\search\AdjudicatorSearch::getSearchArray($model->tournament_id, true);
                 $list = [];
                 $panel = common\models\Panel::findOne($model->panel_id);
                 if ($panel && count($panel->adjudicators) > 0) {
