@@ -16,6 +16,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1 style="margin-top: 0px"><?= Yii::t("app", "Motion Balance") ?></h1>
 
+    <p><?= $round->motion ?></p>
+
     <?
     echo \yii\widgets\ListView::widget([
         'dataProvider' => $rounds,
