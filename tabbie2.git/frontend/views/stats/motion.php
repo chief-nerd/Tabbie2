@@ -25,7 +25,7 @@ use common\models\Round;
                         </div>
                         <div class="col-xs-12 col-sm-8">
 
-                            <?= Html::a("<h2 style='margin-top:0'>" . $round->name . "</h2>", ["round/view", "id" => $round->id, "tournament_id" => $model->id]); ?>
+                            <h2 style='margin-top:0'><?= $round->name ?></h2>
 
                             <p><?= Html::encode($round->motion) ?></p>
 
