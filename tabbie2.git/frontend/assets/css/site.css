@@ -528,3 +528,7 @@ a.desc:after {
 .import-table .yellow {
     background-color: #FFFFAA;
 }
+
+.table.slim th, .table.slim td {
+    padding: 2px;
+}

@@ -1057,24 +1057,35 @@ class Round extends \yii\db\ActiveRecord
      */
     public function getAmountOfResults()
     {
-        $amount = [
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0]
-        ];
+        $key = $this->tournament->cacheKey("matrix#" . $this->id);
+        $dependency = new DbDependency([
+            "sql" => "SELECT count(*) FROM result LEFT JOIN debate ON result.debate_id = debate.id " .
+                "WHERE tournament_id = " . $this->tournament->id . " AND round_id=" . $this->id
+        ]);
 
-        foreach ($this->getDebates()->all() as $debate) {
-            $result = $debate->result;
-            if ($result instanceof Result) {
-                for ($i = 0; $i <= 3; $i++) {
-                    $amount[$i][($result->{Team::getPos($i) . "_place"} - 1)]++;
+        $amount = Yii::$app->cache->get($key);
+        if (!$amount) {
+            $amount = [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ];
+
+            foreach ($this->getDebates()->all() as $debate) {
+                $result = $debate->result;
+                if ($result instanceof Result) {
+                    for ($i = 0; $i <= 3; $i++) {
+                        $amount[$i][($result->{Team::getPos($i) . "_place"} - 1)]++;
+                    }
                 }
             }
-        }
 
-        for ($i = 0; $i <= 3; $i++) {
-            $amount[$i][4] = array_sum($amount[$i]);
+            for ($i = 0; $i <= 3; $i++) {
+                $amount[$i][4] = array_sum($amount[$i]);
+            }
+
+            Yii::$app->cache->set($key, $amount, 0, $dependency);
         }
 
         return $amount;
