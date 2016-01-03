@@ -39,7 +39,11 @@ use common\models\Round;
                                     </tr>
                                     <? for ($i = 0; $i < 4; $i++): ?>
                                         <tr>
-                                            <th><?= \common\models\Team::getPosLabel($i) ?></th>
+                                            <th>
+                                                <div class="hidden-xs"><?= \common\models\Team::getPosLabel($i) ?></div>
+                                                <div
+                                                    class="visible-xs-inline-block"><?= strtoupper(\common\models\Team::getPos($i)) ?></div>
+                                            </th>
                                             <? for ($a = 0; $a < 4; $a++): ?>
                                                 <td>
                                                     <?= Yii::$app->formatter->asPercent(($posStat[$i][4] > 0) ? $posStat[$i][$a] / $posStat[$i][4] : 0) ?></td>
