@@ -84,6 +84,7 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord
 				'novice_place',
 				'points',
 				'speaks',
+					'avg',
 				'object.speaker.name',
 				'object.team.name',
 			];
@@ -143,13 +144,14 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord
 						"object" => ["team" => $team->toArray(), "speaker" => $team->speakerA->toArray()],
 						"points" => 0,
 						"speaks" => 0,
+							"avg" => 0,
 					]);
 				}
 				if ($team->speakerB_id) {
 					$lines[$team->speakerB_id] = new TabLine([
 						"object" => ["team" => $team->toArray(), "speaker" => $team->speakerB->toArray()],
 						"points" => 0,
-						"speaks" => 0,
+							"avg" => 0,
 					]);
 				}
 			}
@@ -165,6 +167,7 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord
 							$line->points = $line->points + $result->getPoints($p);
 							$line->results_array[$result->debate->round->number] = $result->getSpeakerSpeaksText($p, $s);
 							$line->speaks = $line->speaks + $result->getSpeakerSpeaks($p, $s);
+							$line->avg = number_format($line->speaks / (count($line->results_array)), 1);
 
 							$lines[$result->debate->{$p . "_team"}->{"speaker" . $s . "_id"}] = $line;
 						}

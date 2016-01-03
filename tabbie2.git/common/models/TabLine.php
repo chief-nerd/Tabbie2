@@ -14,6 +14,7 @@ class TabLine extends Model
 	public $object;
 	public $points;
 	public $speaks;
+	public $avg;
 	public $enl_place;
 	public $esl_place;
 	public $efl_place;
