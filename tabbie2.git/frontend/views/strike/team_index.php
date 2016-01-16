@@ -16,11 +16,16 @@ $this->params['breadcrumbs'][] = $this->title;
 	<h1><?= Html::encode($this->title) ?></h1>
 
 	<p>
-		<?= Html::a(Yii::t('app', 'Create Additional {modelClass}', [
+		<?= Html::a(Yii::t('app', 'Create {modelClass}', [
 			'modelClass' => 'Team Strikes',
 		]), ['team_create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success']) ?>
-
-		<?= Html::a(Yii::t('app', 'Import Strikes'), ['import', "tournament_id" => $tournament->id], ['class' => 'btn btn-default']) ?>
+		<?
+		if ($tournament->isTabMaster(Yii::$app->user->id) &&
+				Yii::$app->user->model->role >= \common\models\User::ROLE_TABMASTER
+		) {
+			echo Html::a(Yii::t('app', 'Import Strikes'), ['import', "tournament_id" => $tournament->id], ['class' => 'btn btn-default']);
+		}
+		?>
 	</p>
 
 	<?= GridView::widget([

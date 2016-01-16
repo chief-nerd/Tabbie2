@@ -44,9 +44,13 @@ class StrikeController extends BasetournamentController
                         'actions' => ['import', 'all-teams', 'all-adjus'],
                         'matchCallback' => function ($rule, $action) {
                             return ($this->_tournament->isTabMaster(Yii::$app->user->id) && Yii::$app->user->model->role >= User::ROLE_TABMASTER);
-                        }
+                        },
                     ],
                 ],
+                'denyCallback' => function ($rule, $action) {
+                    Yii::$app->session->setFlash("error", "403: " . Yii::t("app", "Only authorised Tabmasters can access this function"));
+                    return $this->goBack(Yii::$app->request->referrer);
+                },
             ],
         ];
     }
