@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use algorithms\TabAlgorithm;
 use JmesPath\Tests\_TestJsonStringClass;
 use kartik\widgets\TimePicker;
 use Yii;
@@ -107,7 +108,7 @@ class Tournament extends \yii\db\ActiveRecord
                 continue;
             }
             $filename = pathinfo($className)['filename'];
-            $class = Tournament::getTabAlgorithm($filename);
+            $class = Tournament::getTabAlgorithmClass($filename);
             if ($class::version() !== null) {
                 $algos[$filename] = $class::title() . " (v" . $class::version() . ")";
             }
@@ -116,11 +117,25 @@ class Tournament extends \yii\db\ActiveRecord
         return $algos;
     }
 
-    public static function getTabAlgorithm($algoClass)
+    /**
+     * Returns the fully clssified Class Name
+     * @param $algoClass
+     * @return string
+     */
+    public static function getTabAlgorithmClass($algoClass)
     {
-        $algoName = 'algorithms\\algorithms\\' . $algoClass;
+        return 'algorithms\\algorithms\\' . $algoClass;
+    }
 
-        return new $algoName();
+    /**
+     * Get a new Instance of the Tab Algorithm
+     *
+     * @return \algorithms\TabAlgorithm
+     */
+    public function getTabAlgorithmInstance()
+    {
+        $className = Tournament::getTabAlgorithmClass($this->tabAlgorithmClass);
+        return new $className();
     }
 
     public static function getTimeZones()
@@ -718,16 +733,6 @@ class Tournament extends \yii\db\ActiveRecord
     public function getRounds()
     {
         return $this->hasMany(Round::className(), ['tournament_id' => 'id']);
-    }
-
-    /**
-     * Get a new Instance of the Tab Algorithm
-     *
-     * @return \common\components\TabAlgorithm
-     */
-    public function getTabAlgorithmInstance()
-    {
-        return Tournament::getTabAlgorithm($this->tabAlgorithmClass);
     }
 
     /**
