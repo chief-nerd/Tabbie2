@@ -227,10 +227,7 @@ class Tournament extends \yii\db\ActiveRecord
     public function generateUrlSlug()
     {
         $potential_slug = URLify::filter($this->fullname);
-        $potential_slug = str_replace(" 2016 "," ",$potential_slug);
-        $potential_slug = str_replace(" 2016","",$potential_slug);
-        $potential_slug = str_replace("2016 ","",$potential_slug);
-        $potential_slug = str_replace("2016"," ",$potential_slug);
+        $potential_slug = preg_replace("\s?20\d\d\s?", "", $potential_slug);
         $potential_slug = str_replace(" ", "-", $potential_slug);
 
         if (Tournament::findByUrlSlug($potential_slug) !== null) {
