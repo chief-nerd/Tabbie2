@@ -20,7 +20,13 @@ $this->params['breadcrumbs'][] = $this->title;
 			'modelClass' => 'Adjudicator Strikes',
 		]), ['adjudicator_create', "tournament_id" => $tournament->id], ['class' => 'btn btn-success']) ?>
 
-		<?= Html::a(Yii::t('app', 'Import Strikes'), ['import', "tournament_id" => $tournament->id], ['class' => 'btn btn-default']) ?>
+		<?
+		if ($tournament->isTabMaster(Yii::$app->user->id) &&
+				Yii::$app->user->model->role >= \common\models\User::ROLE_TABMASTER
+		) {
+			echo Html::a(Yii::t('app', 'Import Strikes'), ['import', "tournament_id" => $tournament->id], ['class' => 'btn btn-default']);
+		}
+		?>
 	</p>
 
 	<?= GridView::widget([
