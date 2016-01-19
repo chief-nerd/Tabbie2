@@ -13,6 +13,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\UrlManager;
 use DateTimeZone;
+use URLify;
 
 /**
  * This is the model class for table "tournament".
