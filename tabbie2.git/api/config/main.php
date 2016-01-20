@@ -14,7 +14,7 @@ return [
 	'id' => 'app-api',
 	'basePath' => dirname(__DIR__),
 	'controllerNamespace' => 'api\controllers',
-	'bootstrap' => ['gii', 'log'],
+		'bootstrap' => ['log'],
 	'components' => [
 		'request' => [
 			'baseUrl' => $baseUrl,
