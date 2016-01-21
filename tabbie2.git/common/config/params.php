@@ -7,7 +7,7 @@ return [
 	'bugURL'								   => 'https://github.com/Tabbie2/issues/issues',
 	'user.passwordResetTokenExpire'            => 7200,
 	'appName'                                  => 'Tabbie2',
-	'appUrl'                                   => 'http://www.tabbie.org',
+		'appUrl' => 'https://www.tabbie.org',
 	'slogan'                                   => 'Next generation BP tabbing',
 	'stdTabAlgorithm'                          => "StrictWUDCRules",
 	'speaks_max'                               => 99,

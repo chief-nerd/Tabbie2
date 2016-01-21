@@ -536,7 +536,10 @@ class Tournament extends \yii\db\ActiveRecord
         } else {
             $defaultPath = Yii::getAlias("@frontend/assets/images/") . "default-tournament.png";
 
-            return Yii::$app->assetManager->publish($defaultPath)[1];
+            if ($absolute)
+                return Yii::$app->params["appUrl"] . Yii::$app->assetManager->publish($defaultPath)[1];
+            else
+                return Yii::$app->assetManager->publish($defaultPath)[1];
         }
     }
 

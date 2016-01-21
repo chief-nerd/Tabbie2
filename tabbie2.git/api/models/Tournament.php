@@ -53,6 +53,7 @@ class Tournament extends \common\models\Tournament implements Linkable
 		};
 
 		$fields['logo'] = function ($model) {
+			/** @var $model Tournament */
 			return $model->getLogo(true, Yii::$app->urlManagerFrontend);
 		};
 
