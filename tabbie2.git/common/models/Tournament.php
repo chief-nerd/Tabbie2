@@ -529,8 +529,6 @@ class Tournament extends \yii\db\ActiveRecord
             if ($absolute && substr($this->logo, 0, 4) != "http") {
                 return $urlManager->createAbsoluteUrl($this->logo);
             } else {
-                /** @todo WUDC http modification - to be removed! */
-                $this->logo = str_replace("https", "http", $this->logo);
                 /** ende */
                 return $this->logo;
 
