@@ -178,22 +178,22 @@ class TournamentController extends BasetournamentController {
 					$tab->save();
 				}
 
-				$energyConf = new models\EnergyConfig();
-				if ($energyConf->setup($model)) {
-					Yii::$app->session->addFlash("success", Yii::t("app", "Tournament successfully created"));
-				} else {
-					Yii::error("Error in Energy Config Setup: " . ObjectError::getMsg($energyConf), __METHOD__);
-					Yii::$app->session->addFlash("error", Yii::t("app", "Tournament created but Energy config failed!") . ObjectError::getMsg($energyConf));
-				}
-				return $this->redirect(['view', 'id' => $model->id]);
-			} else {
-				Yii::$app->session->setFlash("error", Yii::t("app", "Can't save Tournament!") . ObjectError::getMsg($model));
-				Yii::error("Error saving Tournament: " . ObjectError::getMsg($model), __METHOD__);
-			}
-		}
-		//Preset variables
-		$model->tabAlgorithmClass = Yii::$app->params["stdTabAlgorithm"];
-		$convenor = \yii\helpers\ArrayHelper::map($model->convenors, "id", "name");
+                $energyConf = new models\EnergyConfig();
+                if ($energyConf->setup($model)) {
+                    Yii::$app->session->addFlash("success", Yii::t("app", "Tournament successfully created"));
+                } else {
+                    Yii::error("Error in Energy Config Setup: " . ObjectError::getMsg($energyConf), __METHOD__);
+                    Yii::$app->session->addFlash("error", Yii::t("app", "Tournament created but Energy config failed!") . ObjectError::getMsg($energyConf));
+                }
+                return $this->redirect(['view', 'id' => $model->id]);
+            } else {
+                Yii::$app->session->setFlash("error", Yii::t("app", "Can't save Tournament!") . ObjectError::getMsg($model));
+                Yii::error("Error saving Tournament: " . ObjectError::getMsg($model), __METHOD__);
+            }
+        }
+        //Preset variables
+        $model->tabAlgorithmClass = Yii::$app->params["stdTabAlgorithm"];
+        $convenor = \yii\helpers\ArrayHelper::map($model->convenors, "id", "name");
 
 		return $this->render('create', [
 			'model'    => $model,
@@ -301,140 +301,144 @@ class TournamentController extends BasetournamentController {
 	public function activeInputAvailable($tournament) {
 		$user_id = Yii::$app->user->id;
 
-		$activeRound = models\Round::findOne(["tournament_id" => $tournament->id, "displayed" => 1, "published" => 1, "closed" => 0,]);
+        $activeRound = models\Round::findOne(["tournament_id" => $tournament->id, "displayed" => 1, "published" => 1, "closed" => 0,]);
 
-		if ($activeRound) {
-			$debate = models\Debate::findOneByChair($user_id, $tournament->id, $activeRound->id);
-			if ($debate instanceof models\Debate) {
-				return $debate->id;
-			}
-		}
+        if ($activeRound) {
+            $debate = models\Debate::findOneByChair($user_id, $tournament->id, $activeRound->id);
+            if ($debate instanceof models\Debate) {
+                return $debate->id;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * Sync with DebReg System
-	 *
-	 * @param integer $id
-	 *
-	 * @return string|\yii\web\Response
-	 * @throws \yii\web\NotFoundHttpException
-	 */
-	public function actionDebregSync($id) {
-		set_time_limit(0); //Prevent timeout ... this can take time
+    /**
+     * Sync with DebReg System
+     *
+     * @param integer $id
+     *
+     * @return string|\yii\web\Response
+     * @throws \yii\web\NotFoundHttpException
+     */
+    public function actionDebregSync($id)
+    {
+        set_time_limit(0); //Prevent timeout ... this can take time
 
-		$tournament = $this->findModel($id);
-		$model = new DebregsyncForm();
+        $tournament = $this->findModel($id);
+        $model = new DebregsyncForm();
 
-		if (Yii::$app->request->isPost) {
+        if (Yii::$app->request->isPost) {
 
-			$a_fix = $t_fix = $s_fix = [];
+            $a_fix = $t_fix = $s_fix = [];
 
-			if (Yii::$app->request->post("mode") == "refactor") {
-				$a_fix = Yii::$app->request->post("Adju", []);
-				$t_fix = Yii::$app->request->post("Team", []);
-				$s_fix = Yii::$app->request->post("Soc", []);
-			}
+            if (Yii::$app->request->post("mode") == "refactor") {
+                $a_fix = Yii::$app->request->post("Adju", []);
+                $t_fix = Yii::$app->request->post("Team", []);
+                $s_fix = Yii::$app->request->post("Soc", []);
+            }
 
-			$model->load(Yii::$app->request->post());
-			$model->tournament = $this->_tournament;
+            $model->load(Yii::$app->request->post());
+            $model->tournament = $this->_tournament;
 
-			$error = $model->getAccessKey();
+            $error = $model->getAccessKey();
 
-			if ($error === true) {
-				try {
-					$unresolved = $model->doSync($a_fix, $t_fix, $s_fix);
-				} catch (Exception $ex) {
-					Yii::$app->session->addFlash("error", $ex->getMessage() . " :" . $ex->getLine());
-				}
-				if (count($unresolved) == 0) {
-					Yii::$app->session->addFlash("success", Yii::t("app", "DebReg Syncing successful"));
+            if ($error === true) {
+                try {
+                    $unresolved = $model->doSync($a_fix, $t_fix, $s_fix);
+                } catch (Exception $ex) {
+                    Yii::$app->session->addFlash("error", $ex->getMessage() . " :" . $ex->getLine());
+                }
+                if (count($unresolved) == 0) {
+                    Yii::$app->session->addFlash("success", Yii::t("app", "DebReg Syncing successful"));
 
-					return $this->redirect(['view', 'id' => $tournament->id]);
-				} else {
-					return $this->render('sync_resolve', [
-						'unresolved' => $unresolved,
-						'tournament' => $tournament,
-						'model'      => $model
-					]);
-				}
-			} else {
-				$model->addError("password", $error);
-			}
+                    return $this->redirect(['view', 'id' => $tournament->id]);
+                } else {
+                    return $this->render('sync_resolve', [
+                        'unresolved' => $unresolved,
+                        'tournament' => $tournament,
+                        'model' => $model
+                    ]);
+                }
+            } else {
+                $model->addError("password", $error);
+            }
 
-		}
+        }
 
-		return $this->render('sync_login', [
-			'model'      => $model,
-			'tournament' => $tournament]);
-	}
+        return $this->render('sync_login', [
+            'model' => $model,
+            'tournament' => $tournament]);
+    }
 
-	/**
-	 * Migrate back to Tabbie v1
-	 *
-	 * @param    integer $id
-	 */
-	public function actionMigrateTabbie($id) {
-		/** Make output UTF-8 */
-		mb_internal_encoding('UTF-8');
-		mb_http_output('UTF-8');
-		mb_http_input('UTF-8');
-		mb_language('uni');
-		mb_regex_encoding('UTF-8');
-		ob_start('mb_output_handler');
+    /**
+     * Migrate back to Tabbie v1
+     *
+     * @param    integer $id
+     */
+    public function actionMigrateTabbie($id)
+    {
+        /** Make output UTF-8 */
+        mb_internal_encoding('UTF-8');
+        mb_http_output('UTF-8');
+        mb_http_input('UTF-8');
+        mb_language('uni');
+        mb_regex_encoding('UTF-8');
+        ob_start('mb_output_handler');
 
-		$export = new TabbieExport();
-		echo implode("<br>\n", $export->generateV1SQL($this->_tournament));
-		exit();
-	}
+        $export = new TabbieExport();
+        echo implode("<br>\n", $export->generateV1SQL($this->_tournament));
+        exit();
+    }
 
-	/**
-	 * Migrate back to Tabbie v1
-	 *
-	 * @param    integer $id
-	 */
-	public function actionDownloadSql($id) {
-		/** Make output UTF-8 */
-		mb_internal_encoding('UTF-8');
-		mb_http_output('UTF-8');
-		mb_http_input('UTF-8');
-		mb_language('uni');
-		mb_regex_encoding('UTF-8');
-		ob_start('mb_output_handler');
-		header('Content-Type: application/octet-stream');
-		header('Content-Disposition: attachment; filename=' . basename($this->_tournament->name) . ' - ' . date("Y-m-d H:i:s") . '.sql');
+    /**
+     * Migrate back to Tabbie v1
+     *
+     * @param    integer $id
+     */
+    public function actionDownloadSql($id)
+    {
+        /** Make output UTF-8 */
+        mb_internal_encoding('UTF-8');
+        mb_http_output('UTF-8');
+        mb_http_input('UTF-8');
+        mb_language('uni');
+        mb_regex_encoding('UTF-8');
+        ob_start('mb_output_handler');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename=' . basename($this->_tournament->name) . ' - ' . date("Y-m-d H:i:s") . '.sql');
 
-		$export = new TabbieExport();
-		echo implode("\n", $export->generateSQL($this->_tournament));
-		exit();
-	}
+        $export = new TabbieExport();
+        echo implode("\n", $export->generateSQL($this->_tournament));
+        exit();
+    }
 
-	/**
-	 * Returns 20 societies in an JSON List
-	 *
-	 * @param type $search
-	 * @param type $sid
-	 */
-	public function actionList(array $search = null, $tid = null) {
-		$search["term"] = HtmlPurifier::process($search["term"]);
-		$tid = intval($tid);
+    /**
+     * Returns 20 societies in an JSON List
+     *
+     * @param type $search
+     * @param type $sid
+     */
+    public function actionList(array $search = null, $tid = null)
+    {
+        $search["term"] = HtmlPurifier::process($search["term"]);
+        $tid = intval($tid);
 
-		$out = ['more' => false];
-		if (!is_null($search["term"]) && $search["term"] != "" && $search["term"] != "null") {
-			$query = new \yii\db\Query;
-			$query->select(["id", "CONCAT(name,' ',SUBSTRING(start_date, 1,4)) as text"])
-				->from('tournament')
-				->andWhere(["LIKE", "name", $search["term"]])
-				->limit(20);
-			$command = $query->createCommand();
-			$data = $command->queryAll();
-			$out['results'] = array_values($data);
-		} elseif ($tid > 0) {
-			$out['results'] = ['id' => $tid, 'text' => Tournament::findOne($tid)->fullname];
-		} else {
-			$out['results'] = ['id' => 0, 'text' => "No results found"];
-		}
-		echo \yii\helpers\Json::encode($out);
-	}
+        $out = ['more' => false];
+        if (!is_null($search["term"]) && $search["term"] != "" && $search["term"] != "null") {
+            $query = new \yii\db\Query;
+            $query->select(["id", "CONCAT(name,' ',SUBSTRING(start_date, 1,4)) as text"])
+                ->from('tournament')
+                ->andWhere(["LIKE", "name", $search["term"]])
+                ->limit(20);
+            $command = $query->createCommand();
+            $data = $command->queryAll();
+            $out['results'] = array_values($data);
+        } elseif ($tid > 0) {
+            $out['results'] = ['id' => $tid, 'text' => Tournament::findOne($tid)->fullname];
+        } else {
+            $out['results'] = ['id' => 0, 'text' => "No results found"];
+        }
+        echo \yii\helpers\Json::encode($out);
+    }
 }
