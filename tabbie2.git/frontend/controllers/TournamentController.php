@@ -270,6 +270,15 @@ class TournamentController extends BasetournamentController {
 					$tab->save();
 				}
 
+				models\EnergyConfig::deleteAll(["tournament_id" => $model->id]);
+				$energyConf = new models\EnergyConfig();
+				if ($energyConf->setup($model)) {
+					Yii::$app->session->addFlash("success", Yii::t("app", "Tournament successfully updated"));
+				} else {
+					Yii::error("Error in Energy Config Updated: " . ObjectError::getMsg($energyConf), __METHOD__);
+					Yii::$app->session->addFlash("error", Yii::t("app", "Tournament updated but Energy config updated failed!") . ObjectError::getMsg($energyConf));
+				}
+
 				Yii::$app->cache->set("tournament" . $model->id, $model, 120);
 
 				return $this->redirect(['view', 'id' => $model->id]);
