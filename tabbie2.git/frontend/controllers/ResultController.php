@@ -15,6 +15,7 @@ use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
+use yii\helpers\Json;
 
 /**
  * ResultController implements the CRUD actions for Result model.
@@ -140,7 +141,10 @@ class ResultController extends BasetournamentController
             }
             $result->save();
         }
-
+        Yii::$app->redis->executeCommand('PUBLISH', [
+            'channel' => 'notification',
+            'message' => Json::encode(['debate' => $id, 'message' => $result->checked])
+        ]);
         return $this->actionRound($result->debate->round_id, "table");
     }
 

@@ -307,6 +307,26 @@ class AdjudicatorController extends BasetournamentController
         return $this->redirect(['index', 'tournament_id' => $this->_tournament->id]);
     }
 
+    /**
+     * Removes an adjudicator from a panel.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     *
+     * @param integer $id
+     *
+     * @return mixed
+     */
+    public function actionRemove()
+    {
+        if (Yii::$app->request->isPost)
+                $params = Yii::$app->request->post();
+            else
+                $params = Yii::$app->request->get();
+
+        $old = AdjudicatorInPanel::findOne(["panel_id" => $debate->panel_id, "adjudicator_id" => $id]);
+
+        $old->delete();
+    }
+
     public function actionImport()
     {
         $tournament = $this->_tournament;
