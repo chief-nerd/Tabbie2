@@ -113,8 +113,14 @@ class Panel extends \yii\db\ActiveRecord
 			"function" => "1",
 		]);
 
+		if($chair) {
+			$chair_id = $chair->adjudicator_id;
+		} else {
+			$chair_id = FALSE;
+		}
+
 		foreach ($this->getAdjudicators()->orderBy(["strength" => SORT_DESC])->all() as $adj) {
-			if ($adj->id == $chair->adjudicator_id) {
+			if ($adj->id === $chair_id) {
 				array_unshift($list, "<b>" . $adj->getName($this->id) . "</b>");
 			} else
 				$list[] = $adj->getName($this->id);

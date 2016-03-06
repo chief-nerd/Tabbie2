@@ -358,7 +358,13 @@ $this->params['breadcrumbs'][] = $model->name;
                 $list = [];
                 $panel = common\models\Panel::findOne($model->panel_id);
                 if ($panel && count($panel->adjudicators) > 0) {
-                    $panel_chair_id = $model->getChair()->id;
+
+                    $panel_chair = $model->getChair();
+                    if ($panel_chair) {
+                        $panel_chair_id = $panel_chair->id;
+                    } else
+                        $panel_chair_id = null;
+
                     foreach ($panel->getAdjudicators()->orderBy(['strength' => SORT_DESC])->all() as $adj) {
 
                         $popcontent = \kartik\helpers\Html::icon("refresh") . "&nbsp;" . Yii::t("app", "Loading ...");
