@@ -172,7 +172,7 @@ class LanguageController extends Controller {
 				$cmd = Yii::$app->db->createCommand(
 					"INSERT INTO message (id, language, translation)
 					 SELECT DISTINCT id, '{lang}', null FROM source_message;", [
-					"lang" => $model->language
+					"{lang}" => $model->language
 				]);
 				if($cmd->execute())
 					return $this->redirect(['view', 'id' => $model->language]);
