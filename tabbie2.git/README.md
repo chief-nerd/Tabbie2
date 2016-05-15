@@ -1,12 +1,13 @@
 Tabbie2 - Source Code
 ===================================
 
-This is a Yii 2 application best for developing complex Web applications with multiple tiers.
-The structure includes three tiers:
+This is a Yii 2 php application (http://www.yiiframework.com) with multiple tiers.
+The structure is:
 ```
-- front end    What the user sees and uses
-- back end     What the tabbie admin uses and makes analysis and entering variables
+- frontend     What the user sees and uses
+- backend      What the tabbie admin uses and makes analysis and entering variables
 - console      What the webserver uses to execute cronjobs
+- api          What an app, react frontend or external service might use to make REST API calls
 ```
 each of which
 is a separate Yii application.
