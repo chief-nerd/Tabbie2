@@ -19,6 +19,8 @@ DIRECTORY STRUCTURE
 -------------------
 
 ```
+algorithms
+    algorithms/          contains the different algorithms that a user can choose from
 common
     config/              contains shared configurations
     mail/                contains view files for e-mails
@@ -65,9 +67,6 @@ GETTING STARTED
 After you install the application, you have to conduct the following steps to initialize
 the installed application. You only need to do these once for all.
 
-. Run command `git submodule init`
-. Run command `git submodule update`
-. Run command `git submodule foreach git checkout master`
 . Install composer (https://getcomposer.org)
 . run `composer global require "fxp/composer-asset-plugin:~1.0.0"`
 . run `composer update` to load the vendor directory
