@@ -25,5 +25,6 @@ return [
     'activeLanguages' => [
         'en-UK' => "English (UK)",
         'de-AT' => "German (AT)",
+        'he-IL' => "Hebrew (IL)"
     ]
 ];
