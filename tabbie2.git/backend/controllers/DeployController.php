@@ -109,9 +109,6 @@ class DeployController extends Controller
             // execute
             exec("cd $git_root && git pull", $out);
 
-            $out[] = "<h4>=== Git Submodules ===</h4>";
-            exec("cd $git_root && git submodule foreach git pull origin master", $out);
-
             //make migrations
             $out[] = "<h3>=== Migrate ===</h3>";
             exec("php $git_root/tabbie2.git/yii migrate/up --interactive=0", $out);
