@@ -1,6 +1,0 @@
-[submodule "tabbie2.git/algorithms"]
-	path = tabbie2.git/algorithms
-	url = https://github.com/JakobReiter/tabbie2-algorithms.git
-[submodule "drawRoundApp.git"]
-		path = drawRoundApp.git
-		url = https://github.com/JakobReiter/tabbie2-DrawRoundApp.git
