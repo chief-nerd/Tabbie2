@@ -7,4 +7,4 @@ Tabbie2.iml
 !.elasticbeanstalk/*.global.yml
 .DS_Store
 
-/tabbie2.git/api/web/doc/*
+tabbie2.git/api/web/doc/*
