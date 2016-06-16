@@ -57,7 +57,7 @@ class AdjudicatorController extends BaseRestController
                     ->where([
                         "panel_id" => $from_panel,
                     ])
-                    ->orderBy(["strength" => SORT_ASC])
+                    ->orderBy(["strength" => SORT_DESC])
                     ->one();
                 $strongestAdju->function = Panel::FUNCTION_CHAIR;
                 if (!$strongestAdju->save()) {
@@ -70,10 +70,10 @@ class AdjudicatorController extends BaseRestController
             if ($to_function == Panel::FUNCTION_CHAIR) {
                 //is set as chair in new panel ... set old_chair in to_panel to wing
                 //set ALL chairs (there should only be one, but nevermind) to wings. This heals bad data.
-                AdjudicatorInPanel::updateAll([
+                $updated = AdjudicatorInPanel::updateAll([
                     "function" => Panel::FUNCTION_WING,
                 ], [
-                    "panel_id" => $from_panel,
+                    "panel_id" => $to_panel,
                     "function" => Panel::FUNCTION_CHAIR,
                 ]);
             }
