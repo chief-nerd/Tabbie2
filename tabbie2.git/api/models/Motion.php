@@ -16,9 +16,16 @@ use yii\web\Linkable;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 
+/**
+ * Class Motion
+ * @package api\models
+ */
 class Motion extends \common\models\Motion implements Linkable
 {
 
+	/**
+	 * @return array
+	 */
 	public static function findAll()
 	{
 		$all = parent::findAll();
@@ -30,6 +37,9 @@ class Motion extends \common\models\Motion implements Linkable
 		return $models;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function fields()
 	{
 		$fields = parent::fields();
@@ -48,6 +58,9 @@ class Motion extends \common\models\Motion implements Linkable
 		return $fields;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getLinks()
 	{
 		$links = [

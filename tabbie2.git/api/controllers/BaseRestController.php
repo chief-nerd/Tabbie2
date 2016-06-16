@@ -19,9 +19,20 @@ use yii\rest\ActiveController as Controller;
 use yii\web\Response;
 use Yii;
 
+/**
+ * Class BaseRestController
+ * @package api\controllers
+ */
 class BaseRestController extends Controller
 {
+	/**
+	 * @var string The model class to map
+	 */
+	public $modelClass;
 
+	/**
+	 * @return array
+	 */
 	public function behaviors()
 	{
 		return [

@@ -14,7 +14,7 @@ use yii\filters\VerbFilter;
 class SiteController extends Controller
 {
 	/**
-	 * @inheritdoc
+	 * @return array
 	 */
 	public function behaviors()
 	{
@@ -44,7 +44,8 @@ class SiteController extends Controller
 	}
 
 	/**
-	 * @inheritdoc
+	 * Return the allowed action for this object
+	 * @return array
 	 */
 	public function actions()
 	{
@@ -55,11 +56,17 @@ class SiteController extends Controller
 		];
 	}
 
+	/**
+	 * @return string
+	 */
 	public function actionIndex()
 	{
 		return $this->render('index');
 	}
 
+	/**
+	 * @return string|\yii\web\Response
+	 */
 	public function actionLogin()
 	{
 		if (!\Yii::$app->user->isGuest) {
@@ -85,6 +92,9 @@ class SiteController extends Controller
 		}
 	}
 
+	/**
+	 * @return \yii\web\Response
+	 */
 	public function actionLogout()
 	{
 		Yii::$app->user->logout();
@@ -92,6 +102,9 @@ class SiteController extends Controller
 		return $this->goHome();
 	}
 
+	/**
+	 * @return string
+	 */
 	public function actionProfile(){
 		$model = Yii::$app->user->identity;
 

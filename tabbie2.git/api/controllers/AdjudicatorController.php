@@ -14,10 +14,21 @@ use common\models\Panel;
 use yii\base\Exception;
 use yii\web\NotFoundHttpException;
 
+/**
+ * Class AdjudicatorController
+ * @package api\controllers
+ */
 class AdjudicatorController extends BaseRestController
 {
+    /**
+     * @inheritdoc
+     */
     public $modelClass = 'api\models\Adjudicator';
 
+    /**
+     * Return the allowed action for this object
+     * @return array
+     */
     public function actions()
     {
         $actions = parent::actions();

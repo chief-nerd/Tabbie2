@@ -9,11 +9,21 @@
 
 namespace api\controllers;
 
-
+/**
+ * Class TournamentController
+ * @package api\controllers
+ */
 class TournamentController extends BaseRestController
 {
+	/**
+	 * @inheritdoc
+	 */
 	public $modelClass = 'api\models\Tournament';
 
+	/**
+	 * Return the allowed action for this object
+	 * @return array
+	 */
 	public function actions()
 	{
 		$actions = parent::actions();

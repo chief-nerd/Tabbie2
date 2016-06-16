@@ -2,15 +2,20 @@
 
 namespace api\models;
 
-
 use Yii;
 use yii\web\Link;
 use yii\helpers\Url;
 use yii\web\Linkable;
 
-
+/**
+ * Class Adjudicator
+ * @package api\models
+ */
 class Adjudicator extends \common\models\Adjudicator implements Linkable
 {
+	/**
+	 * @return array
+	 */
 	public function fields()
 	{
 		$fields = [
@@ -29,6 +34,9 @@ class Adjudicator extends \common\models\Adjudicator implements Linkable
 		return $fields;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getLinks()
 	{
 		$links = [

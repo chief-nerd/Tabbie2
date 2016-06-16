@@ -8,9 +8,15 @@ use yii\web\Link;
 use yii\helpers\Url;
 use yii\web\Linkable;
 
-
+/**
+ * Class Society
+ * @package api\models
+ */
 class Society extends \common\models\Society implements Linkable
 {
+	/**
+	 * @return array
+	 */
 	public function extraFields()
 	{
 		$fields = $this->fields();
@@ -19,6 +25,9 @@ class Society extends \common\models\Society implements Linkable
 		return $fields;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function fields()
 	{
 		$fields = parent::fields();
@@ -35,6 +44,9 @@ class Society extends \common\models\Society implements Linkable
 		return $fields;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getLinks()
 	{
 		$links = [

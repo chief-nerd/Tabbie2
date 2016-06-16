@@ -14,10 +14,21 @@ use yii\data\ActiveDataProvider;
 use yii\web\BadRequestHttpException;
 use Yii;
 
+/**
+ * Class SocietyController
+ * @package api\controllers
+ */
 class SocietyController extends BaseRestController
 {
+	/**
+	 * @inheritdoc
+	 */
 	public $modelClass = 'api\models\Society';
 
+	/**
+	 * Return the allowed action for this object
+	 * @return array
+	 */
 	public function actions()
 	{
 		$actions = parent::actions();
@@ -28,6 +39,11 @@ class SocietyController extends BaseRestController
 		return $actions;
 	}
 
+	/**
+	 * @param null $country
+	 * @param null $abr
+	 * @return ActiveDataProvider
+	 */
 	public function actionSearch($country = null, $abr = null)
 	{
 		return new ActiveDataProvider([

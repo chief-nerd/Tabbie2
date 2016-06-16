@@ -21,10 +21,21 @@ use yii\base\NotSupportedException;
 use yii\data\ArrayDataProvider;
 use yii\web\NotFoundHttpException;
 
+/**
+ * Class CheckinController
+ * @package api\controllers
+ */
 class CheckinController extends BaseRestController
 {
+    /**
+     * @inheritdoc
+     */
     public $modelClass = 'api\models\User';
 
+    /**
+     * Return the allowed action for this object
+     * @return array
+     */
     public function actions()
     {
         $actions = parent::actions();
@@ -35,6 +46,10 @@ class CheckinController extends BaseRestController
         return $actions;
     }
 
+    /**
+     * @param $tournament
+     * @return array
+     */
     public function actionIndex($tournament)
     {
 
@@ -80,6 +95,11 @@ class CheckinController extends BaseRestController
         return $returnObject;
     }
 
+    /**
+     * @param $id
+     * @return array
+     * @throws NotFoundHttpException
+     */
     public function actionView($id)
     {
         if (CheckinForm::checkNumber($id))
@@ -131,6 +151,12 @@ class CheckinController extends BaseRestController
         return $message;
     }
 
+    /**
+     * @param $id
+     * @param null $key
+     * @return array
+     * @throws NotFoundHttpException
+     */
     public function actionUpdate($id, $key = null)
     {
         if (CheckinForm::checkNumber($id))

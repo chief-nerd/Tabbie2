@@ -8,9 +8,15 @@ use yii\web\Link;
 use yii\helpers\Url;
 use yii\web\Linkable;
 
-
+/**
+ * Class Panel
+ * @package api\models
+ */
 class Panel extends \common\models\Panel implements Linkable
 {
+    /**
+     * @return array
+     */
     public function fields()
     {
         $fields = [
@@ -46,6 +52,9 @@ class Panel extends \common\models\Panel implements Linkable
         return $fields;
     }
 
+    /**
+     * @return array
+     */
     public function extraFields()
     {
         $fields = $this->fields();
@@ -79,6 +88,9 @@ class Panel extends \common\models\Panel implements Linkable
         return $fields;
     }
 
+    /**
+     * @return array
+     */
     public function getLinks()
     {
         $debateID = $this->debate->id;

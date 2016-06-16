@@ -8,9 +8,15 @@ use yii\web\Link;
 use yii\helpers\Url;
 use yii\web\Linkable;
 
-
+/**
+ * Class Tournament
+ * @package api\models
+ */
 class Tournament extends \common\models\Tournament implements Linkable
 {
+	/**
+	 * @return array
+	 */
 	public function extraFields()
 	{
 		$fields = $this->fields();
@@ -31,6 +37,9 @@ class Tournament extends \common\models\Tournament implements Linkable
 		return $fields;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function fields()
 	{
 		$fields = parent::fields();
@@ -87,6 +96,9 @@ class Tournament extends \common\models\Tournament implements Linkable
 		return $fields;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getLinks()
 	{
 		$links = [

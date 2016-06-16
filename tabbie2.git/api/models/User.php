@@ -8,9 +8,16 @@ use yii\web\Link;
 use yii\helpers\Url;
 use yii\web\Linkable;
 
-
+/**
+ * Class User
+ * @package api\models
+ */
 class User extends \common\models\User implements Linkable
 {
+	/**
+	 * Define User fields to publish
+	 * @return array
+	 */
 	public function fields()
 	{
 		$fields = [
@@ -33,6 +40,10 @@ class User extends \common\models\User implements Linkable
 		return $fields;
 	}
 
+	/**
+	 * Get related Links
+	 * @return array
+	 */
 	public function getLinks()
 	{
 		$links = [
