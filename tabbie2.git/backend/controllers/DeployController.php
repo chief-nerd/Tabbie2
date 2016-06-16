@@ -126,7 +126,7 @@ class DeployController extends Controller
 
             //update API Documentation
             $out[] = "<h3>=== Create API Documentation ===</h3>";
-            exec("cd $git_root && rm -rf ./tabbie2.git/api/web/doc/ && php ./tabbie2.git/yii api/index ./tabbie2.git/api/controllers,./tabbie2.git/api/models/ ./tabbie2.git/api/web/doc", $out);
+            exec("cd $git_root && rm -rf ./tabbie2.git/api/web/doc/ && php ./tabbie2.git/yii api/index ./tabbie2.git/api/controllers,./tabbie2.git/api/models/ ./tabbie2.git/api/web/doc --pageTitle='Tabbie2 API Documentation'", $out);
 
             //Flush Caches
             $out[] = "<h3>=== Flush Cache ===</h3>";

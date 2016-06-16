@@ -31,7 +31,7 @@ class DevController extends Controller
         $git_root = \Yii::$app->basePath . "/../../";
 
         $out[] = "\nUpdating API Documentation \n----------------";
-        exec("cd $git_root && rm -rf ./tabbie2.git/api/web/doc/ && php ./tabbie2.git/yii api/index ./tabbie2.git/api/controllers,./tabbie2.git/api/models/ ./tabbie2.git/api/web/doc", $out);
+        exec("cd $git_root && rm -rf ./tabbie2.git/api/web/doc/ && php ./tabbie2.git/yii api/index ./tabbie2.git/api/controllers,./tabbie2.git/api/models/ ./tabbie2.git/api/web/doc --pageTitle='Tabbie2 API Documentation'", $out);
 
         echo join("\n", $out);
     }
