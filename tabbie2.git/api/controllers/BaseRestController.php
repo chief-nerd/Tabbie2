@@ -45,7 +45,7 @@ class BaseRestController extends Controller
 			],
 			'rateLimiter' => [
 				'class' => RateLimiter::className(),
-				'enableRateLimitHeaders' => true, //Do not spoil
+				'enableRateLimitHeaders' => false, //Do not spoil
 			],
 		];
 	}
