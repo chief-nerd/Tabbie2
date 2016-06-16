@@ -106,11 +106,14 @@ class TeamSearch extends Team
 		return $dataProvider;
 	}
 
-	public static function getSearchArray($tid)
+    public static function getSearchArray($tid, $keys = false)
 	{
 		$teams = Team::find()->where(["tournament_id" => $tid])->asArray()->all();
 
-		return ArrayHelper::map($teams, "name", "name");
+        if ($keys)
+            return ArrayHelper::map($teams, "id", "name");
+        else
+            return ArrayHelper::map($teams, "name", "name");
 	}
 
 	public static function getSpeakerSearchArray($tid)

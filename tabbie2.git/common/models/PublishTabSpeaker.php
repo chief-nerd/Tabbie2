@@ -84,6 +84,7 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord
 				'novice_place',
 				'points',
 				'speaks',
+					'avg',
 				'object.speaker.name',
 				'object.team.name',
 			];
@@ -143,13 +144,14 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord
 						"object" => ["team" => $team->toArray(), "speaker" => $team->speakerA->toArray()],
 						"points" => 0,
 						"speaks" => 0,
+							"avg" => 0,
 					]);
 				}
 				if ($team->speakerB_id) {
 					$lines[$team->speakerB_id] = new TabLine([
 						"object" => ["team" => $team->toArray(), "speaker" => $team->speakerB->toArray()],
 						"points" => 0,
-						"speaks" => 0,
+							"avg" => 0,
 					]);
 				}
 			}
@@ -165,6 +167,7 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord
 							$line->points = $line->points + $result->getPoints($p);
 							$line->results_array[$result->debate->round->number] = $result->getSpeakerSpeaksText($p, $s);
 							$line->speaks = $line->speaks + $result->getSpeakerSpeaks($p, $s);
+							$line->avg = number_format($line->speaks / (count($line->results_array)), 1);
 
 							$lines[$result->debate->{$p . "_team"}->{"speaker" . $s . "_id"}] = $line;
 						}
@@ -176,9 +179,10 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord
 
 			$i = 1;
 			$jumpover = 0;
+			$last_line = null;
 			foreach ($lines as $index => $line) {
-				if (isset($lines[$index - 1]))
-					if (!($lines[$index - 1]->speaks == $lines[$index]->speaks)) {
+				if ($last_line !== null)
+					if (!($lines[$last_line]->speaks == $lines[$index]->speaks)) {
 						$i++;
 						if ($jumpover > 0) {
 							$i = $i + $jumpover;
@@ -187,6 +191,8 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord
 					} else {
 						$jumpover++;
 					}
+
+				$last_line = $index;
 				$line->enl_place = $i;
 				$lines[$index] = $line;
 			}
@@ -194,11 +200,12 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord
 			if ($_tournament->has_esl) {
 				$i = 0;
 				$jumpover = 0;
+				$last_line = null;
 				foreach ($lines as $index => $line) {
 					if ($line->object["speaker"]["language_status"] >= User::LANGUAGE_ESL) {
 						if ($line->object["speaker"]["id"]) {
-							if (isset($lines[$index - 1])) {
-								if (!($lines[$index - 1]->points == $lines[$index]->points && $lines[$index - 1]->speaks == $lines[$index]->speaks)) {
+							if ($last_line !== null) {
+								if (!($lines[$last_line]->speaks == $lines[$index]->speaks)) {
 									$i++;
 									if ($jumpover > 0) {
 										$i = $i + $jumpover;
@@ -209,6 +216,7 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord
 								}
 							} else $i++;
 
+							$last_line = $index;
 							$line->esl_place = $i;
 							$lines[$index] = $line;
 						}
@@ -219,11 +227,14 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord
 			if ($_tournament->has_efl) {
 				$i = 0;
 				$jumpover = 0;
+				$last_line = null;
 				foreach ($lines as $index => $line) {
 					if ($line->object["speaker"]["language_status"] >= User::LANGUAGE_EFL) {
 						if ($line->object["speaker"]["id"]) {
-							if (isset($lines[$index - 1])) {
-								if (!($lines[$index - 1]->points == $lines[$index]->points && $lines[$index - 1]->speaks == $lines[$index]->speaks)) {
+							if ($last_line !== null) {
+								if (!($lines[$last_line]->points == $lines[$index]->points &&
+										$lines[$last_line]->speaks == $lines[$index]->speaks)
+								) {
 									$i++;
 									if ($jumpover > 0) {
 										$i = $i + $jumpover;
@@ -234,6 +245,7 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord
 								}
 							} else $i++;
 
+							$last_line = $index;
 							$line->efl_place = $i;
 							$lines[$index] = $line;
 						}
@@ -243,11 +255,13 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord
 			if ($_tournament->has_novice) {
 				$i = 0;
 				$jumpover = 0;
+				$last_line = null;
 				foreach ($lines as $index => $line) {
 					if ($line->object["speaker"]["language_status"] == User::LANGUAGE_NOVICE) {
 						if ($line->object["speaker"]["id"]) {
-							if (isset($lines[$index - 1])) {
-								if (!($lines[$index - 1]->points == $lines[$index]->points && $lines[$index - 1]->speaks == $lines[$index]->speaks)) {
+							if ($last_line !== null) {
+								if (!($lines[$last_line]->speaks == $lines[$index]->speaks)
+								) {
 									$i++;
 									if ($jumpover > 0) {
 										$i = $i + $jumpover;
@@ -258,6 +272,7 @@ class PublishTabSpeaker extends \yii\db\ActiveRecord
 								}
 							} else $i++;
 
+							$last_line = $index;
 							$line->novice_place = $i;
 							$lines[$index] = $line;
 						}

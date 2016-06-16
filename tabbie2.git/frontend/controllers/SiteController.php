@@ -7,6 +7,7 @@ use common\models\Country;
 use common\models\InSociety;
 use common\models\LoginForm;
 use common\models\Society;
+use common\models\Tournament;
 use frontend\models\ContactForm;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
@@ -246,6 +247,19 @@ class SiteController extends BaseController {
 		return $this->render('resetPassword', [
 			'model' => $model,
 		]);
+	}
+
+	public function actionView($event = null)
+	{
+		if (strlen($event) == 0)
+			$this->redirect("/");
+
+		$tournament = Tournament::find()->where(["LIKE", "name", $event])->orderBy(["start_date" => SORT_DESC])->one();
+
+		if (!$tournament)
+			$this->redirect("/");
+		else
+			$this->redirect(["tournament/view", "id" => $tournament->id]);
 	}
 
 }

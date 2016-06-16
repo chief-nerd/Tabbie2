@@ -58,8 +58,16 @@ $this->params['breadcrumbs'][] = $this->title;
 			'format'              => 'raw',
 			'value'               => function ($model, $key, $index, $widget) {
 				return Html::ul([
-					($model->speakerA) ? Html::a($model->speakerA->name, ["user/view", "id" => $model->speakerA->id]) : \common\models\User::NONE,
-					($model->speakerB) ? Html::a($model->speakerB->name, ["user/view", "id" => $model->speakerB->id]) : \common\models\User::NONE
+						($model->speakerA) ? Html::a($model->speakerA->name, [
+								"user/view",
+								"id" => $model->speakerA->id,
+								"tournament_id" => $model->tournament_id
+						]) : \common\models\User::NONE,
+						($model->speakerB) ? Html::a($model->speakerB->name, [
+								"user/view",
+								"id" => $model->speakerB->id,
+								"tournament_id" => $model->tournament_id
+						]) : \common\models\User::NONE
 				],
 					["encode" => false]);
 			},

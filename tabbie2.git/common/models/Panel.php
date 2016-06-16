@@ -22,8 +22,11 @@ use Yii;
 class Panel extends \yii\db\ActiveRecord
 {
 
+	const FUNCTION_TRAINEE = 2;
 	const FUNCTION_CHAIR = 1;
 	const FUNCTION_WING = 0;
+
+	const INDICATOR_TRAINEE = "(t)";
 
 	public $set_adjudicators = [];
 
@@ -32,6 +35,7 @@ class Panel extends \yii\db\ActiveRecord
 		$label = [
 			self::FUNCTION_CHAIR => Yii::t("app", "Chair"),
 			self::FUNCTION_WING  => Yii::t("app", "Wing"),
+				self::FUNCTION_TRAINEE => Yii::t("app", "Trainee"),
 		];
 
 		return $label[$id];
@@ -44,31 +48,6 @@ class Panel extends \yii\db\ActiveRecord
 	public static function find()
 	{
 		return new TournamentQuery(get_called_class());
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function rules() {
-		return [
-			[['strength', 'tournament_id', 'used', 'is_preset'], 'integer'],
-			[['time', 'set_adjudicators'], 'safe'],
-			[['tournament_id'], 'required']
-		];
-	}
-
-	/**
-	 * @inheritdoc
-	 */
-	public function attributeLabels() {
-		return [
-			'id'            => Yii::t('app', 'ID'),
-			'strength'      => Yii::t('app', 'Strength'),
-			'time'          => Yii::t('app', 'Time'),
-			'tournament_id' => Yii::t('app', 'Tournament') . ' ' . Yii::t('app', 'ID'),
-			'used'          => Yii::t('app', 'Used'),
-			'is_preset'     => Yii::t('app', 'Is Preset Panel'),
-		];
 	}
 
 	/**
@@ -99,6 +78,33 @@ class Panel extends \yii\db\ActiveRecord
 		}
 	}
 
+	/**
+	 * @inheritdoc
+	 */
+	public function rules()
+	{
+		return [
+				[['strength', 'tournament_id', 'used', 'is_preset'], 'integer'],
+				[['time', 'set_adjudicators'], 'safe'],
+				[['tournament_id'], 'required']
+		];
+	}
+
+	/**
+	 * @inheritdoc
+	 */
+	public function attributeLabels()
+	{
+		return [
+				'id' => Yii::t('app', 'ID'),
+				'strength' => Yii::t('app', 'Strength'),
+				'time' => Yii::t('app', 'Time'),
+				'tournament_id' => Yii::t('app', 'Tournament') . ' ' . Yii::t('app', 'ID'),
+				'used' => Yii::t('app', 'Used'),
+				'is_preset' => Yii::t('app', 'Is Preset Panel'),
+		];
+	}
+
 	public function getAdjudicatorsString()
 	{
 		$list = [];
@@ -107,11 +113,17 @@ class Panel extends \yii\db\ActiveRecord
 			"function" => "1",
 		]);
 
+		if($chair) {
+			$chair_id = $chair->adjudicator_id;
+		} else {
+			$chair_id = FALSE;
+		}
+
 		foreach ($this->getAdjudicators()->orderBy(["strength" => SORT_DESC])->all() as $adj) {
-			if ($adj->id == $chair->adjudicator_id) {
-				array_unshift($list, "<b>" . $adj->name . "</b>");
+			if ($adj->id === $chair_id) {
+				array_unshift($list, "<b>" . $adj->getName($this->id) . "</b>");
 			} else
-				$list[] = $adj->name;
+				$list[] = $adj->getName($this->id);
 		}
 
 		return implode(", ", $list);

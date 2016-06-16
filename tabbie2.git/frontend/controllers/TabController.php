@@ -93,7 +93,7 @@ class TabController extends BasetournamentController
 				"enl_place" => $line->enl_place,
 				"esl_place" => $line->esl_place,
 				"cache_results" => json_encode($line->results_array),
-				"speaks"    => $line->speaks,
+					"speaks" => ($line->speaks) ? $line->speaks : 0,
 			]);
 			if (!$ptt->save())
 				throw new Exception("Save Error " . ObjectError::getMsg($ptt));
@@ -109,7 +109,7 @@ class TabController extends BasetournamentController
 					"enl_place" => $line->enl_place,
 					"esl_place" => $line->esl_place,
 					"cache_results" => json_encode($line->results_array),
-					"speaks"    => $line->speaks,
+						"speaks" => ($line->speaks) ? $line->speaks : 0,
 				]);
 				if (!$ptt->save())
 					throw new Exception("Save Error " . ObjectError::getMsg($ptt));

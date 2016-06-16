@@ -36,12 +36,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                             'label'       => Yii::t("app", "Team Tab"),
-                            'linkOptions' => ['data-url' => \yii\helpers\Url::to(['stats/team-tab', "tournament_id" => $model->id])],
+                        'linkOptions' => ['data-url' => \yii\helpers\Url::to(['stats/team-tab', "tournament_id" => $model->id])],
                             'options'     => ['id' => 'team-tab'],
                     ],
                     [
                             'label'       => Yii::t("app", "Speaker Tab"),
-                            'linkOptions' => ['data-url' => \yii\helpers\Url::to(['stats/speaker-tab', "tournament_id" => $model->id])],
+                        'linkOptions' => ['data-url' => \yii\helpers\Url::to(['stats/speaker-tab', "tournament_id" => $model->id])],
                             'options'     => ['id' => 'speaker-tab'],
                     ],
                     [

@@ -12,7 +12,6 @@ namespace api\controllers;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBasicAuth;
 use yii\filters\auth\HttpBearerAuth;
-use yii\filters\auth\QueryParamAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\RateLimiter;
 use yii\filters\VerbFilter;
@@ -23,11 +22,6 @@ use Yii;
 class BaseRestController extends Controller
 {
 
-	public function init() {
-		Yii::$app->user->enableSession = false;
-		Yii::$app->user->loginUrl = null;
-		Yii::$app->user->enableAutoLogin = false;
-	}
 	public function behaviors()
 	{
 		return [
@@ -35,7 +29,7 @@ class BaseRestController extends Controller
 				'class' => ContentNegotiator::className(),
 				'formats' => [
 					'application/json' => Response::FORMAT_JSON,
-					//'application/xml' => Response::FORMAT_XML,
+					'application/xml' => Response::FORMAT_XML,
 				],
 			],
 			'verbFilter' => [
@@ -47,12 +41,11 @@ class BaseRestController extends Controller
 				'authMethods' => [
 					//HttpBasicAuth::className(),
 					//HttpBearerAuth::className(),
-					QueryParamAuth::className(),
 				],
 			],
 			/*'rateLimiter' => [
 				'class' => RateLimiter::className(),
-				'enableRateLimitHeaders' => false, //Do not spoil
+				'enableRateLimitHeaders' => true, //Do not spoil
 			],*/
 		];
 	}

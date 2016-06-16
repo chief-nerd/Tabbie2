@@ -25,25 +25,28 @@ return [
         'response' => [
             'charset' => 'UTF-8',
         ],
-        'assetManager' => [
-            'linkAssets' => true,
-        ],
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => \common\models\ApiUser::className(),
+            'enableSession' => false,
+            'loginUrl' => null,
+            'enableAutoLogin' => false,
         ],
         'urlManager' => [
             "class" => "yii\web\urlManager",
-            'baseUrl' => "/",
+            'baseUrl' => $baseUrl,
             'enablePrettyUrl' => true,
             'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
                 '' => 'site/index',
-                '<controller:\w+>/<id:\d+>' => '<controller>/view',
-                '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
-                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'motion'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'tournament'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'panel'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'adjudicator',
+                    'extraPatterns' => [
+                        'POST move' => 'move',
+                    ]
+                ],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'society',
                     'extraPatterns' => [
                         'GET search' => 'search',
@@ -61,7 +64,7 @@ return [
             'targets' => [
                 [
                     'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
+                    'levels' => ['error', 'warning', 'info'],
                 ],
             ],
         ],

@@ -6,7 +6,7 @@
  * @author   jareiter
  * @version
  */
-$height = 100;
+$height = 78;
 ?>
 	<!DOCTYPE html>
 	<html>

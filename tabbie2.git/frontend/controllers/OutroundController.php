@@ -34,7 +34,9 @@ class OutroundController extends RoundController
 				'class' => AccessControl::className(),
 				'rules' => [
 					array_merge_recursive(parent::behaviors()["access"]["rules"][0], [
-						'actions' => [],
+							'actions' => [
+									'switch-team'
+							],
 					]),
 					array_merge_recursive(parent::behaviors()["access"]["rules"][1], [
 						'actions' => ['set-debate'],
@@ -152,5 +154,29 @@ class OutroundController extends RoundController
 			'model'        => $model,
 			'amount_rooms' => $model->level
 		]);
+	}
+
+	public function actionSwitchTeam($id, $did, $ta, $tb)
+	{
+		$pos_a = null;
+		$pos_b = null;
+
+		$debate = Debate::findOne($did);
+		if ($debate instanceof Debate) {
+			foreach ($debate->getTeams(true) as $pos => $team_search) {
+				if ($team_search == $ta)
+					$pos_a = $pos;
+				if ($team_search == $tb)
+					$pos_b = $pos;
+			}
+
+			$out_back = $debate->{$pos_a . "_team_id"};
+			$debate->{$pos_a . "_team_id"} = $debate->{$pos_b . "_team_id"};
+			$debate->{$pos_b . "_team_id"} = $out_back;
+
+			$debate->save();
+		}
+
+		return $this->redirect(["outround/view", "id" => $id, "tournament_id" => $debate->tournament_id]);
 	}
 }

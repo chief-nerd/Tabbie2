@@ -17,24 +17,28 @@ $this->params['breadcrumbs'][] = Yii::t("app", "Table View");
 ?>
 <div class="result-index">
 
-	<h1><?= Yii::t("app", "Results for {label}", ["label" => $round->name]) ?></h1>
+	<div class="row">
+		<div class="col-xs-12 col-sm-8">
+			<h1 style="margin-top: 0px"><?= Yii::t("app", "Results for {label}", ["label" => $round->name]) ?></h1>
+		</div>
+		<div class="col-xs-12 col-sm-4 text-center">
+			<?=
+			Html::checkbox("autoupdate", false, [
+					'label' => Yii::t("app", "Auto Update <i id='pjax-status' class=''></i>"),
+					"data-pjax" => 0,
+			]);
+			?>
+			&nbsp;|&nbsp;
+			<?=
+			Html::a(Html::icon("tower") . "&nbsp;" . Yii::t("app", "Switch to Venue View"), ["round",
+					"id" => $round_id,
+					"tournament_id" => $tournament->id,
+					"view" => "venue",
+			], ["class" => "btn btn-default"]);
+			?>
+		</div>
+	</div>
 
-	<p class="text-right">
-		<?=
-		Html::checkbox("autoupdate", false, [
-			'label' => Yii::t("app", "Auto Update <i id='pjax-status' class=''></i>"),
-			"data-pjax" => 0,
-		]);
-		?>
-		&nbsp;|&nbsp;
-		<?=
-		Html::a(Html::icon("tower") . "&nbsp;" . Yii::t("app", "Switch to Venue View"), ["round",
-			"id"   => $round_id,
-			"tournament_id" => $tournament->id,
-			"view" => "venue",
-		], ["class" => "btn btn-default"]);
-		?>
-	</p>
 	* ... <?= Yii::t("app", "Swing Team Score") ?>
 	<!-- AJAX -->
 	<?

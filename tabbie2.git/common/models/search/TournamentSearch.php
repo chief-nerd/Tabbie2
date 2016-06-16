@@ -19,8 +19,8 @@ class TournamentSearch extends Tournament
 
         $filter = [];
         foreach ($t as $v) {
-            if (isset($v["number"]))
-                $filter[$v["number"]] = $v["number"];
+            if (isset($v["label"]))
+                $filter[$v["label"]] = $v["label"];
         }
 
         return $filter;

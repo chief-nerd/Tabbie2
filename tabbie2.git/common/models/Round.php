@@ -7,6 +7,7 @@ use common\components\ObjectError;
 use kartik\helpers\Html;
 use Yii;
 use yii\base\Exception;
+use yii\caching\DbDependency;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -27,9 +28,8 @@ use yii\helpers\ArrayHelper;
  * @property bool $closed
  * @property float $lastrun_temp
  * @property integer $lastrun_time
- * @property datetime $prep_started
- * @property datetime $finished_time
- * @property TabAfterRound[] $tabAfterRounds
+ * @property string $prep_started
+ * @property string $finished_time
  * @property Tournament $tournament
  * @property Tag[] $tags
  * @property MotionTag[] $motionTags
@@ -50,7 +50,17 @@ class Round extends \yii\db\ActiveRecord
     const TYP_EFL = 3;
     const TYP_NOVICE = 4;
 
+    const LEVEL_IN = 0;
+    const LEVEL_PDO = 9;
+    const LEVEL_OCTO = 8;
+    const LEVEL_QUARTER = 4;
+    const LEVEL_SEMI = 2;
+    const LEVEL_FINAL = 1;
+
     public $round_tags = [];
+
+    const TIME_PREP = (15 * 60);
+    const TIME_DEBATE = (((8 * 7) + 8) * 60);
 
     static function statusLabel($code = null)
     {
@@ -83,8 +93,8 @@ class Round extends \yii\db\ActiveRecord
         if ($t->has_esl) {
             $options[self::TYP_ESL] = Yii::t("app", "ESL");
         }
-        //if($t->has_efl)
-        //$options[self::TYP_EFL] = Yii::t("app", "EFL");
+        if ($t->has_efl)
+            $options[self::TYP_EFL] = Yii::t("app", "EFL");
         $options[self::TYP_NOVICE] = Yii::t("app", "Novice");
 
         return $options;
@@ -95,17 +105,20 @@ class Round extends \yii\db\ActiveRecord
         $options = [];
         $t = $this->tournament;
         if ($t->has_final) {
-            $options[1] = Yii::t("app", "Final");
+            $options[self::LEVEL_FINAL] = Yii::t("app", "Final");
         }
         if ($t->has_semifinal) {
-            $options[2] = Yii::t("app", "Semifinal");
+            $options[self::LEVEL_SEMI] = Yii::t("app", "Semifinal");
         }
         if ($t->has_quarterfinal) {
-            $options[4] = Yii::t("app", "Quarterfinal");
+            $options[self::LEVEL_QUARTER] = Yii::t("app", "Quarterfinal");
         }
         if ($t->has_octofinal) {
-            $options[8] = Yii::t("app", "Octofinal");
+            $options[self::LEVEL_OCTO] = Yii::t("app", "Octofinal");
         }
+        /*if ($t->has_pdocto) {
+            $options[self::LEVEL_PDO] = Yii::t("app", "PD-Octofinal");
+        }*/
 
         return $options;
     }
@@ -194,14 +207,16 @@ class Round extends \yii\db\ActiveRecord
     public function getLevelLabel()
     {
         switch ($this->level) {
-            case 1:
+            case self::LEVEL_FINAL:
                 return Yii::t("app", "Final");
-            case 2:
+            case self::LEVEL_SEMI:
                 return Yii::t("app", "Semifinal");
-            case 4:
+            case self::LEVEL_QUARTER:
                 return Yii::t("app", "Quarterfinal");
-            case 8:
+            case self::LEVEL_OCTO:
                 return Yii::t("app", "Octofinal");
+            case self::LEVEL_PDO:
+                return Yii::t("app", "PD-Octofinal");
         }
     }
 
@@ -228,21 +243,21 @@ class Round extends \yii\db\ActiveRecord
 
                 if ($t->has_final && in_array(2, ArrayHelper::getColumn($rounds, "level")) || !$t->has_semifinal) {
                     $this->label = "final";
-                    $this->level = 1;
+                    $this->level = self::LEVEL_FINAL;
                 } else {
                     if ($t->has_semifinal && in_array(4, ArrayHelper::getColumn($rounds, "level")) || !$t->has_quarterfinal) {
                         $this->label = "semi";
-                        $this->level = 2;
+                        $this->level = self::LEVEL_SEMI;
                     } else {
                         if (
                             $t->has_quarterfinal && in_array(8, ArrayHelper::getColumn($rounds, "level")) || !$t->has_octofinal
                         ) {
                             $this->label = "quarter";
-                            $this->level = 4;
+                            $this->level = self::LEVEL_QUARTER;
                         } else {
                             if ($t->has_octofinal) {
                                 $this->label = "octo";
-                                $this->level = 8;
+                                $this->level = self::LEVEL_OCTO;
                             }
                         }
                     }
@@ -326,6 +341,63 @@ class Round extends \yii\db\ActiveRecord
         throw new Exception("Unknow Round status for Round" . $this->number . " No create time");
     }
 
+    /**
+     * Get the last Debate from a Round
+     * @return array|false
+     *
+     */
+    public function getLastDebateInfo()
+    {
+        if (is_int(Yii::$app->user->id)) {
+            $id = Yii::$app->user->id;
+            foreach ($this->getDebates()->all() as $debate) {
+
+                /** check teams* */
+                /** @var $debate Debate */
+                if ($debate->isOGTeamMember($id)) {
+                    return ['type' => 'team', 'debate' => $debate, 'pos' => Team::OG];
+                }
+                if ($debate->isOOTeamMember($id)) {
+                    return ['type' => 'team', 'debate' => $debate, 'pos' => Team::OO];
+                }
+                if ($debate->isCGTeamMember($id)) {
+                    return ['type' => 'team', 'debate' => $debate, 'pos' => Team::CG];
+                }
+                if ($debate->isCOTeamMember($id)) {
+                    return ['type' => 'team', 'debate' => $debate, 'pos' => Team::CO];
+                }
+
+                /** check judges * */
+                foreach ($debate->panel->adjudicatorInPanels as $judge) {
+                    if ($judge->adjudicator && $judge->adjudicator->user_id == $id) {
+
+                        Switch ($judge->function) {
+
+                            case Panel::FUNCTION_CHAIR:
+                                $pos = Panel::FUNCTION_CHAIR;
+                                break;
+
+                            case Panel::FUNCTION_WING:
+                                $pos = Panel::FUNCTION_WING;
+                                break;
+
+                            case Panel::FUNCTION_TRAINEE:
+                                $pos = Panel::FUNCTION_TRAINEE;
+                                break;
+
+                            default:
+                                $pos = -1;
+                        }
+
+                        return ['type' => 'judge', 'debate' => $debate, 'pos' => $pos];
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
     public function hasAllResultsEntered()
     {
         $remainingResults = Debate::find()
@@ -341,12 +413,10 @@ class Round extends \yii\db\ActiveRecord
 
     public function isJudgingTime()
     {
-        $debatetime = (8 * 7) + 8;
-        $preptime = 15;
         if ($this->prep_started) {
-            $judgeTime = strtotime($this->prep_started) + $preptime + $debatetime;
+            $judgeTime = strtotime($this->prep_started) + self::TIME_PREP + self::TIME_DEBATE;
 
-            if (time() > $judgeTime) {
+            if (time() < $judgeTime) {
                 return true;
             }
         }
@@ -356,9 +426,8 @@ class Round extends \yii\db\ActiveRecord
 
     public function isStartingTime()
     {
-        $preptime = 15;
         if ($this->prep_started) {
-            $prepende = strtotime($this->prep_started) + $preptime;
+            $prepende = strtotime($this->prep_started) + self::TIME_PREP;
 
             if (time() > $prepende) {
                 return true;
@@ -875,4 +944,150 @@ class Round extends \yii\db\ActiveRecord
         return Team::find()->active()->tournament($this->tournament_id)->andWhere(["isSwing" => 1])->count();
     }
 
+    public function generateBalanceSVG($size = 60)
+    {
+        $key = $this->tournament->cacheKey("motionBalance#" . $this->id);
+        $dependency = new DbDependency([
+            "sql" => "SELECT count(*) FROM result LEFT JOIN debate ON result.debate_id = debate.id " .
+                "WHERE tournament_id = " . $this->tournament->id . " AND round_id=" . $this->id
+        ]);
+
+        $html = Yii::$app->cache->get($key);
+        if (!$html) {
+
+            $posMatrix = [
+                "og" => 0,
+                "og_x" => 0,
+                "og_y" => 0,
+                "oo" => 0,
+                "oo_x" => 0,
+                "oo_y" => 0,
+                "cg" => 0,
+                "cg_x" => 0,
+                "cg_y" => 0,
+                "co" => 0,
+                "co_x" => 0,
+                "co_y" => 0,
+            ];
+            $base = $size / 2;
+            $color = "#AAF;";
+            $gray = "#555";
+            $factor = 2;
+            $sum = 0;
+
+            foreach ($this->getDebates()->all() as $debate) {
+                $result = $debate->result;
+                if ($result instanceof Result) {
+                    foreach (Team::getPos() as $pos) {
+                        $posMatrix[$pos] += $result->getPoints($pos);
+                        $sum += $result->getPoints($pos) / $factor;
+                    }
+                }
+            }
+
+            if ($sum > 0) {
+                foreach ($posMatrix as $pos => $pm) {
+                    $posMatrix[$pos . "_percent"] = round($posMatrix[$pos] / $sum, 2);
+                }
+                $posMatrix["og_x"] = $posMatrix["og_y"] = $base * (1 - $posMatrix["og_percent"]);
+
+                $posMatrix["oo_x"] = $base * (1 - $posMatrix["oo_percent"]);
+                $posMatrix["oo_y"] = $base * ($posMatrix["oo_percent"]) + $base;
+
+                $posMatrix["co_x"] = $posMatrix["co_y"] = $base * ($posMatrix["co_percent"]) + $base;
+
+                $posMatrix["cg_x"] = $base * ($posMatrix["cg_percent"]) + $base;
+                $posMatrix["cg_y"] = $base * (1 - $posMatrix["cg_percent"]);
+            }
+
+            $poly = Html::tag("polygon", null, [
+                "points" =>
+                    $posMatrix["og_x"] . "," . $posMatrix["og_y"] . " " .
+                    $posMatrix["oo_x"] . "," . $posMatrix["oo_y"] . " " .
+                    $posMatrix["co_x"] . "," . $posMatrix["co_y"] . " " .
+                    $posMatrix["cg_x"] . "," . $posMatrix["cg_y"],
+                "style" => "fill:$color"
+            ]);
+
+            $horizon = Html::tag("line", null, [
+                "x1" => 0,
+                "y1" => $size / 2,
+                "x2" => $size,
+                "y2" => $size / 2,
+                "style" => "stroke:$gray; stroke-width:1",
+            ]);
+            $vertik = Html::tag("line", null, [
+                "x1" => $size / 2,
+                "y1" => 0,
+                "x2" => $size / 2,
+                "y2" => $size,
+                "style" => "stroke:$gray;stroke-width:1",
+            ]);
+            $quarter = $size / 4;
+            $medium = Html::tag("polygon", null, [
+                "points" => $quarter . "," . $quarter . " " .
+                    $quarter . "," . (3 * $quarter) . ", " .
+                    (3 * $quarter) . "," . (3 * $quarter) . " " .
+                    (3 * $quarter) . "," . $quarter,
+                "style" => "fill:transparent; stroke:$gray; stroke-width:1"
+            ]);
+            $out = Html::tag("polygon", null, [
+                "points" => "0,0 " .
+                    "0,$size " .
+                    "$size,$size " .
+                    "$size,0",
+                "style" => "fill:transparent; stroke:$gray; stroke-width:1"
+            ]);
+
+            $html = Html::tag("svg", $poly . $horizon . $vertik . $medium . $out, [
+                "viewBox" => "0 0 $size $size",
+                "width" => $size,
+                "height" => $size,
+                "style" => "display:inline-block;",
+            ]);
+            Yii::$app->cache->set($key, $html, 0, $dependency);
+        }
+
+        return $html;
+    }
+
+    /**
+     * @param null $pos
+     * @return array
+     */
+    public function getAmountOfResults()
+    {
+        $key = $this->tournament->cacheKey("matrix#" . $this->id);
+        $dependency = new DbDependency([
+            "sql" => "SELECT count(*) FROM result LEFT JOIN debate ON result.debate_id = debate.id " .
+                "WHERE tournament_id = " . $this->tournament->id . " AND round_id=" . $this->id
+        ]);
+
+        $amount = Yii::$app->cache->get($key);
+        if (!$amount) {
+            $amount = [
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0]
+            ];
+
+            foreach ($this->getDebates()->all() as $debate) {
+                $result = $debate->result;
+                if ($result instanceof Result) {
+                    for ($i = 0; $i <= 3; $i++) {
+                        $amount[$i][($result->{Team::getPos($i) . "_place"} - 1)]++;
+                    }
+                }
+            }
+
+            for ($i = 0; $i <= 3; $i++) {
+                $amount[$i][4] = array_sum($amount[$i]);
+            }
+
+            Yii::$app->cache->set($key, $amount, 0, $dependency);
+        }
+
+        return $amount;
+    }
 }

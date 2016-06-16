@@ -12,7 +12,8 @@ use common\models\Feedback;
  */
 class FeedbackSearch extends Feedback
 {
-
+    public $to;
+    public $from;
 	public $round_number;
 	public $venue_name;
 
@@ -23,7 +24,7 @@ class FeedbackSearch extends Feedback
 	{
 		return [
 			[['id', 'debate_id', 'round_number'], 'integer'],
-			['venue_name', 'string'],
+            [['venue_name', 'to', 'from'], 'string'],
 			[['time'], 'safe'],
 		];
 	}
@@ -66,8 +67,8 @@ class FeedbackSearch extends Feedback
 					'desc' => ['CHAR_LENGTH(venue.name) DESC, venue.name' => SORT_DESC],
 				],
 				'round_number' => [
-					'asc'  => ['round.number' => SORT_ASC],
-					'desc' => ['round.number' => SORT_DESC],
+                    'asc' => ['round.label' => SORT_ASC],
+                    'desc' => ['round.label' => SORT_DESC],
 				],
 				'time' => [
 					'asc'  => ['time' => SORT_ASC],
@@ -84,7 +85,7 @@ class FeedbackSearch extends Feedback
 			'id'                   => $this->id,
 			'debate_id'            => $this->debate_id,
 			'time'                 => $this->time,
-			'round.number'         => $this->round_number,
+            'round.label' => $this->round_number,
 			'debate.tournament_id' => $tournament_id,
 		]);
 

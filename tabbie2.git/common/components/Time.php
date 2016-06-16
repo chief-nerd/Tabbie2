@@ -13,8 +13,8 @@ use yii\base\Component;
 
 class Time extends Component
 {
-	public function UTC($time = 'now')
+	public function UTC($time = 'now', $format = \DateTime::W3C)
 	{
-		return (new \DateTime($time, new \DateTimeZone('UTC')))->format(\DateTime::W3C);
+		return (new \DateTime($time, new \DateTimeZone('UTC')))->format($format);
 	}
 }

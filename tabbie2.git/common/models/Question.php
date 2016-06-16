@@ -38,6 +38,20 @@ class Question extends \yii\db\ActiveRecord
 		return 'question';
 	}
 
+	public static function starLabels($id = null)
+	{
+		$table = [
+				0 => Yii::t("app", "Not Rated"),
+				1 => Yii::t("app", "Not Good"),
+				2 => Yii::t("app", "Decent"),
+				3 => Yii::t("app", "Good"),
+				4 => Yii::t("app", "Very Good"),
+				5 => Yii::t("app", "Excellent"),
+		];
+
+		return ($id !== null) ? $table[$id] : $table;
+	}
+
 	/**
 	 * @inheritdoc
 	 */
@@ -46,7 +60,8 @@ class Question extends \yii\db\ActiveRecord
 		return [
 			[['text', 'type'], 'required'],
 			[['type', 'apply_T2C', 'apply_C2W', 'apply_W2C'], 'integer'],
-			[['text', 'param'], 'string', 'max' => 255]
+				[['text', 'help'], 'string', 'max' => 255],
+				['param', 'string']
 		];
 	}
 
@@ -57,26 +72,14 @@ class Question extends \yii\db\ActiveRecord
 	{
 		return [
 			'id'        => Yii::t('app', 'ID'),
-			'text'      => Yii::t('app', 'Text'),
+				'text' => Yii::t('app', 'Question Text'),
 			'type'      => Yii::t('app', 'Type'),
 			'param' => Yii::t('app', 'Parameter if needed'),
 			'apply_T2C' => Yii::t('app', 'Apply to Team -> Chair'),
 			'apply_C2W' => Yii::t('app', 'Apply to Chair -> Wing'),
 			'apply_W2C' => Yii::t('app', 'Apply to Wing -> Chair'),
+				'help' => Yii::t('app', 'Help Text'),
 		];
-	}
-
-	public static function starLabels($id = null) {
-		$table = [
-			0 => Yii::t("app", "Not Rated"),
-			1 => Yii::t("app", "Not Good"),
-			2 => Yii::t("app", "Decent"),
-			3 => Yii::t("app", "Good"),
-			4 => Yii::t("app", "Very Good"),
-			5 => Yii::t("app", "Excellent"),
-		];
-
-		return ($id !== null) ? $table[$id] : $table;
 	}
 
 	/**

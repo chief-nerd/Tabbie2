@@ -21,6 +21,7 @@ class ImportForm extends Model
 
 	public $csvFile;
 	public $tempImport;
+	public $header;
 	public $delimiter;
 	public $is_test;
 

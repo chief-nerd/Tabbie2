@@ -90,7 +90,7 @@ $this->title = "Round " . $round->number . " Draw";
 			<?= yii\helpers\Html::button(Yii::t("app", "Show Motion"), ["disabled" => "disabled", "class" => "btn btn-success", "id" => 'motion']) ?>
 		</center>
 		<div class="col-sm-12" id="infoslideContent" style="display:none; margin-bottom: 100%">
-			<h2><?= $round->infoslide ?></h2>
+			<h2><?= nl2br($round->infoslide) ?></h2>
 		</div>
 		<div class="col-sm-12 text-center" id="motionContent"
 			 data-href="<?= yii\helpers\Url::to(["public/start-round",

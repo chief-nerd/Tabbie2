@@ -23,6 +23,7 @@ use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 /**
  * RoundController implements the CRUD actions for Round model.
@@ -185,11 +186,12 @@ class RoundController extends BasetournamentController
             $this->redirect(["outround/create", "tournament_id" => $this->_tournament->id]); //We are already on outround
 
         if ($model->load(Yii::$app->request->post())) {
-
             if (!$model->save() || !$model->generateWorkingDraw()) {
                 Yii::$app->session->addFlash("error", ObjectError::getMsg($model));
-            } else
+            } else {
+                $this->_tournament->updateAccessToken(500);
                 return $this->redirect(['round/view', 'id' => $model->id, "tournament_id" => $model->tournament_id]);
+            }
         }
 
         return $this->render('create', [
@@ -437,15 +439,20 @@ class RoundController extends BasetournamentController
             "id", "name", "breaking", "strength", "society_id", "can_chair", "are_watched",
         ];
 
-        $country_props = [
-            "id", "name", "region_id", "region_name"
-        ];
-
         $user_props = [
             "id", "name", "language_status", "gender"
         ];
 
+        $society_props = [
+            "id", "fullname", "abr"
+        ];
+
+        $country_props = [
+            "id", "name", "alpha_2", "region_id"
+        ];
+
         $round = Round::findOne(["id" => $id]);
+        $societies = []; // keep a separate list of societies, so we create each once only
         if ($round instanceof Round) {
 
             /** @var Debate $model */
@@ -455,10 +462,30 @@ class RoundController extends BasetournamentController
                 foreach ($model->getTeams() as $pos => $team) {
                     $pos = strtoupper($pos);
                     $teams[$pos] = $team->toArray($team_props);
-                    $teams[$pos]["region_id"] = $team->society->country->region_id;
-                    $teams[$pos]["region_name"] = $team->society->country->getRegionName();
-                    $teams[$pos]["speaker"]["A"] = $team->speakerA->toArray($user_props);
-                    $teams[$pos]["speaker"]["B"] = $team->speakerB->toArray($user_props);
+                    if ($team->speakerA) {
+                        $teams[$pos]["speakers"]["A"] = $team->speakerA->toArray($user_props);
+                        $past_society = $team->speakerA->getSocieties()->all();
+                        foreach ($past_society as $s) {
+                            $teams[$pos]["speakers"]["A"]["societies"][] = $s->id;
+                            $societies[$s->id] = $s->toArray($society_props);
+                            $societies[$s->id]["country"] = $s->country->alpha_2;
+                        }
+                    }
+                    if ($team->speakerB) {
+                        $teams[$pos]["speakers"]["B"] = $team->speakerB->toArray($user_props);
+                        $past_society = $team->speakerB->getSocieties()->all();
+                        foreach ($past_society as $s) {
+                            $teams[$pos]["speakers"]["B"]["societies"][] = $s->id;
+                            $societies[$s->id] = $s->toArray($society_props);
+                            $societies[$s->id]["country"] = $s->country->alpha_2;
+                        }
+                    }
+
+                    // Add society to the list of societies
+                    if (!array_key_exists($team->society_id, $societies)) {
+                        $societies[$team->society_id] = $team->society->toArray($society_props);
+                        $societies[$team->society_id]["country"] = $team->society->country->alpha_2;
+                    }
                 }
 
                 $line = [
@@ -475,25 +502,44 @@ class RoundController extends BasetournamentController
 
                     /** @var Adjudicator $adju */
                     $adju = $inPanel->adjudicator;
+                    $adju->refresh();
                     $adjudicator = $adju->toArray($adju_props);
                     $adjudicator["gender"] = $adju->user->gender;
-                    $adjudicator["country"] = $adju->user->societies[0]->country->toArray($country_props);
-                    $adjudicator["country"]["region_name"] = $adju->user->societies[0]->country->getRegionName();
+                    $adjudicator["country"] = isset($adju->user->societies[0]) ?
+                        $adju->user->societies[0]->country->toArray($country_props) :
+                        "";
+                    $adjudicator["country"]["region_name"] = isset($adju->user->societies[0]) ?
+                        $adju->user->societies[0]->country->getRegionName() :
+                        "";
                     $adjudicator["societies"] = ArrayHelper::getColumn($adju->getSocieties(true)->asArray()->all(), "id");
+                    $adjudicator["language_status"] = $adju->user->language_status;
 
                     $strikedAdju = $adju->getStrikedAdjudicators()->asArray()->all();
-                    $adjudicator["strikedAdjudicators"] = $strikedAdju;
+                    $adjudicator["strikedAdjudicators"] = ArrayHelper::getColumn($strikedAdju, "id");
 
                     $strikedTeam = $adju->getStrikedTeams()->asArray()->all();
-                    $adjudicator["strikedTeams"] = $strikedTeam;
+                    $adjudicator["strikedTeams"] = ArrayHelper::getColumn($strikedTeam, "id");
 
-                    $adjudicator["pastAdjudicatorIDs"] = $adju->getPastAdjudicatorIDs($model->id);
-                    $adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs($round->id);
+                    $adjudicator["pastAdjudicatorIDs"] = $adju->getPastAdjudicatorIDsWithRoundNumbers($round->number);
+                    $adjudicator["pastTeamIDs"] = $adju->getPastTeamIDsWithRoundNumbers($round->number);
 
                     if ($inPanel->function == Panel::FUNCTION_CHAIR) {
                         array_unshift($line["panel"]["adjudicators"], $adjudicator);
                     } else {
                         $line["panel"]["adjudicators"][] = $adjudicator;
+                    }
+
+                    // Add societies to the list of societies
+                    // The first if statement might be redundant, given the foreach loop after it
+                    if (!array_key_exists($adju->society_id, $societies)) {
+                        $societies[$adju->society_id] = $adju->society->toArray($society_props);
+                        $societies[$adju->society_id]["country"] = $adju->society->country->alpha_2;
+                    }
+                    foreach ($adju->getSocieties()->all() as $society) {
+                        if (!array_key_exists($society->id, $societies)) {
+                            $societies[$society->id] = $society->toArray($society_props);
+                            $societies[$society->id]["country"] = $society->country->alpha_2;
+                        }
                     }
                 }
 
@@ -509,12 +555,12 @@ class RoundController extends BasetournamentController
                 header("Content-Type: application/json");
                 header("Content-Disposition: attachment; filename=" . $name . ".json");
                 header('Pragma: no-cache');
-                $output = json_encode($DRAW);
+                $output = json_encode(["draw" => $DRAW, "societies" => $societies]);
                 break;
             case "raw":
                 $apptype = "application/text";
                 $filetype = "txt";
-                $output = print_r($DRAW, true);
+                $output = print_r(["draw" => $DRAW, "societies" => $societies], true);
                 break;
         }
 
@@ -523,6 +569,111 @@ class RoundController extends BasetournamentController
 
     public function actionImport($id, $type = "json")
     {
+        /** @var Round $model */
+        $model = Round::findOne(["id" => $id]);
 
+        if (Yii::$app->request->isPost) {
+
+            $file = \yii\web\UploadedFile::getInstanceByName("jsonFile");
+
+            /* Check not published and no results exist */
+            $clean = true;
+            $amount_results = 0;
+            foreach ($model->debates as $debate) {
+                /** @var Debate $debate */
+                $amount_results += ($debate->result instanceof Result) ? 1 : 0;
+            }
+
+            if ($model->published || $amount_results > 0) {
+                Yii::$app->session->addFlash("warning", Yii::t("app", "Round is already active! Can't override with input."));
+
+                return $this->redirect(["round/view", "id" => $model->id, "tournament_id" => $model->tournament_id]);
+            }
+
+            if ($file instanceof UploadedFile) {
+                $filecontent = file_get_contents($file->tempName);
+                $json = json_decode($filecontent, true);
+
+                /* CLEAN old data */
+                $debates = Debate::findAll(["round_id" => $model->id]);
+                foreach ($debates as $debate) {
+                    AdjudicatorInPanel::deleteAll([
+                        "panel_id" => $debate->panel_id,
+                    ]);
+                }
+
+                for ($row = 0; $row < count($json); $row++) {
+
+                    $debate = $json[$row];
+                    $debate_id = $debate["id"];
+
+                    $db_debate = Debate::findOne($debate_id);
+
+                    if ($db_debate instanceof Debate) {
+
+                        $strength = $debate["strength"];
+                        $messages = $debate["messages"];
+
+                        $panel = $debate["panel"];
+
+                        $db_panel = $db_debate->panel;
+                        $db_panel->strength = $strength;
+                        $db_panel->save();
+
+                        $chair_id = $panel["chair"];
+                        $db_chair = new AdjudicatorInPanel([
+                            "adjudicator_id" => $chair_id,
+                            "panel_id" => $db_panel->id,
+                            "function" => Panel::FUNCTION_CHAIR,
+                        ]);
+                        $db_chair->save();
+
+                        foreach ($panel["panellists"] as $adjuID) {
+                            $db_wing = new AdjudicatorInPanel([
+                                "adjudicator_id" => $adjuID,
+                                "panel_id" => $db_panel->id,
+                                "function" => Panel::FUNCTION_WING,
+                            ]);
+                            $db_wing->save();
+                        }
+
+                        if (isset($panel["trainees"])) {
+                            foreach ($panel["trainees"] as $traineeID) {
+                                $db_trainee = new AdjudicatorInPanel([
+                                    "adjudicator_id" => $traineeID,
+                                    "panel_id" => $db_panel->id,
+                                    "function" => Panel::FUNCTION_TRAINEE,
+                                ]);
+                                $db_trainee->save();
+                            }
+                        }
+
+                        //$db_debate->messages = $messages;
+                        //if (!$db_debate->save())
+                        //    throw new Exception(ObjectError::getMsg($db_debate));
+                    }
+                }
+            } else {
+                Yii::$app->session->addFlash("notice", Yii::t("app", "Uploaded file was empty. Please select a file."));
+            }
+
+            return $this->redirect(["round/view", "id" => $model->id, "tournament_id" => $model->tournament_id]);
+        }
+
+        return $this->render("import", ["model" => $model]);
+    }
+
+    public function actionAdjuRemove($id, $adju_id, $debate_id)
+    {
+        $debate = Debate::findOne($debate_id);
+
+        if ($debate instanceof Debate) {
+            $aip = AdjudicatorInPanel::findOne([
+                "panel_id" => $debate->panel_id,
+                "adjudicator_id" => intval($adju_id),
+            ]);
+        }
+
+        return $this->redirect(["round/view", "id" => $id, "tournament_id" => $debate->tournament_id]);
     }
 }

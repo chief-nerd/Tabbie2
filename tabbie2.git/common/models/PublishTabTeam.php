@@ -19,267 +19,292 @@ use yii\data\ArrayDataProvider;
  * @property Team $team
  * @property Tournament $tournament
  */
-class PublishTabTeam extends \yii\db\ActiveRecord {
+class PublishTabTeam extends \yii\db\ActiveRecord
+{
 
-	/**
-	 * @inheritdoc
-	 */
-	public static function tableName() {
-		return 'publish_tab_team';
-	}
+    /**
+     * @inheritdoc
+     */
+    public static function tableName()
+    {
+        return 'publish_tab_team';
+    }
 
-	/**
-	 * @inheritdoc
-	 * @return TournamentQuery
-	 */
-	public static function find() {
-		return new TournamentQuery(get_called_class());
-	}
+    /**
+     * @inheritdoc
+     * @return TournamentQuery
+     */
+    public static function find()
+    {
+        return new TournamentQuery(get_called_class());
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function rules() {
-		return [
-			[['tournament_id', 'team_id'], 'required'],
-			[['tournament_id', 'team_id', 'enl_place', 'esl_place', 'speaks'], 'integer'],
-			[['cache_results'], 'string']
-		];
-	}
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['tournament_id', 'team_id'], 'required'],
+            [['tournament_id', 'team_id', 'enl_place', 'esl_place', 'speaks'], 'integer'],
+            [['cache_results'], 'string']
+        ];
+    }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function attributeLabels() {
-		return [
-			'id' => Yii::t('app', 'ID'),
-			'tournament_id' => Yii::t('app', 'Tournament') . ' ' . Yii::t('app', 'ID'),
-			'team_id' => Yii::t('app', 'Team') . ' ' . Yii::t('app', 'ID'),
-			'enl_place' => Yii::t('app', 'ENL Place'),
-			'esl_place' => Yii::t('app', 'ESL Place'),
-			'cache_results' => Yii::t('app', 'Cache Results'),
-			'speaks' => Yii::t('app', 'Speaker Points'),
-		];
-	}
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => Yii::t('app', 'ID'),
+            'tournament_id' => Yii::t('app', 'Tournament') . ' ' . Yii::t('app', 'ID'),
+            'team_id' => Yii::t('app', 'Team') . ' ' . Yii::t('app', 'ID'),
+            'enl_place' => Yii::t('app', 'ENL Place'),
+            'esl_place' => Yii::t('app', 'ESL Place'),
+            'cache_results' => Yii::t('app', 'Cache Results'),
+            'speaks' => Yii::t('app', 'Speaker Points'),
+        ];
+    }
 
-	public static function getDataProvider($_tournament, $live = false) {
-		$key = $_tournament->cacheKey("teamTabADP");
-		$dependency = new DbDependency([
-			"sql" => "SELECT count(*) FROM result LEFT JOIN debate ON result.debate_id = debate.id WHERE tournament_id = " . $_tournament->id
-		]);
-		$cache = Yii::$app->cache;
+    public static function getDataProvider($_tournament, $live = false)
+    {
+        $key = $_tournament->cacheKey("teamTabADP");
+        $dependency = new DbDependency([
+            "sql" => "SELECT count(*) FROM result LEFT JOIN debate ON result.debate_id = debate.id WHERE tournament_id = " . $_tournament->id
+        ]);
+        $cache = Yii::$app->cache;
 
-		$dataProvider = $cache->get($key);
-		if ($dataProvider === false || $live) {
+        $dataProvider = $cache->get($key);
+        if ($dataProvider === false || $live) {
 
-			$lines = PublishTabTeam::generateTeamTab($_tournament, $live);
+            $lines = PublishTabTeam::generateTeamTab($_tournament, $live);
 
-			$attributes = [
-				'enl_place',
-				'esl_place',
-				'efl_place',
-				'novice_place',
-				'points',
-				'speaks',
-				'object.name',
-			];
+            $attributes = [
+                'enl_place',
+                'esl_place',
+                'efl_place',
+                'novice_place',
+                'points',
+                'speaks',
+                'object.name',
+            ];
 
-			foreach ($_tournament->inrounds as $r) {
-				$attributes[] = 'results_array.' . $r->number;
-			}
+            foreach ($_tournament->inrounds as $r) {
+                $attributes[] = 'results_array.' . $r->number;
+            }
 
-			$dataProvider = new ArrayDataProvider([
-				'allModels' => $lines,
-				'sort' => [
-					'defaultOrder' => 'enl_place',
-					'attributes' => $attributes,
-				],
-				'pagination' => false
-			]);
+            $dataProvider = new ArrayDataProvider([
+                'allModels' => $lines,
+                'sort' => [
+                    'defaultOrder' => 'enl_place',
+                    'attributes' => $attributes,
+                ],
+                'pagination' => false
+            ]);
 
-			$cache->set($key, $dataProvider, 3600, $dependency);
-		}
+            $cache->set($key, $dataProvider, 3600, $dependency);
+        }
 
-		return $dataProvider;
-	}
+        return $dataProvider;
+    }
 
-	/**
-	 * @param Tournament $_tournament
-	 *
-	 * @return \common\models\TabLine[]
-	 */
-	public static function generateTeamTab($_tournament, $live = false) {
-		$key = $_tournament->cacheKey("teamTab");
-		$dependency = new DbDependency([
-			"sql" => "SELECT count(*) FROM result LEFT JOIN debate ON result.debate_id = debate.id WHERE tournament_id = " . $_tournament->id
-		]);
-		$cache = Yii::$app->cache;
+    /**
+     * @param Tournament $_tournament
+     *
+     * @return \common\models\TabLine[]
+     */
+    public static function generateTeamTab($_tournament, $live = false)
+    {
+        $key = $_tournament->cacheKey("teamTab");
+        $dependency = new DbDependency([
+            "sql" => "SELECT count(*) FROM result LEFT JOIN debate ON result.debate_id = debate.id WHERE tournament_id = " . $_tournament->id
+        ]);
+        $cache = Yii::$app->cache;
 
-		$lines = $cache->get($key);
-		if ($lines === false || $live) {
+        $lines = $cache->get($key);
+        if ($lines === false || $live) {
 
-			$results = \common\models\Result::find()
-				->leftJoin("debate", "debate.id = result.debate_id")
-				->leftJoin("round", "debate.round_id = round.id")
-				->where([
-					"debate.tournament_id" => $_tournament->id,
-					"round.type" => Round::TYP_IN,
-				])->all();
+            $results = \common\models\Result::find()
+                ->leftJoin("debate", "debate.id = result.debate_id")
+                ->leftJoin("round", "debate.round_id = round.id")
+                ->where([
+                    "debate.tournament_id" => $_tournament->id,
+                    "round.type" => Round::TYP_IN,
+                ])->all();
 
-			$teams = \common\models\Team::find()->where(["tournament_id" => $_tournament->id])->all();
+            $teams = \common\models\Team::find()->where(["tournament_id" => $_tournament->id])->all();
 
-			$lines = [];
+            $lines = [];
 
-			foreach ($teams as $team) {
-				$lines[$team->id] = new \common\models\TabLine([
-					"object" => $team->toArray(),
-					"points" => 0,
-					"speaks" => 0,
-				]);
-			}
+            foreach ($teams as $team) {
+                $lines[$team->id] = new \common\models\TabLine([
+                    "object" => $team->toArray(),
+                    "points" => 0,
+                    "speaks" => 0,
+                ]);
+            }
 
-			foreach ($results as $result) {
-				/* @var $result \common\models\Result */
-				foreach (Team::getPos() as $p) {
-					$line = $lines[$result->debate->{$p . "_team_id"}];
+            foreach ($results as $result) {
+                /* @var $result \common\models\Result */
+                foreach (Team::getPos() as $p) {
+                    $line = $lines[$result->debate->{$p . "_team_id"}];
 
-					$line->points = $line->points + $result->getPoints($p);
-					$line->speaks = $line->speaks + $result->{$p . "_speaks"};
-					$line->results_array[$result->debate->round->number] = $result->getPlaceText($p);
+                    $line->points = $line->points + $result->getPoints($p);
+                    $line->speaks = $line->speaks + $result->{$p . "_speaks"};
+                    $line->results_array[$result->debate->round->number] = $result->getPlaceText($p);
 
-					$lines[$result->debate->{$p . "_team_id"}] = $line;
-				}
-			}
+                    $lines[$result->debate->{$p . "_team_id"}] = $line;
+                }
+            }
 
-			usort($lines, 'common\models\PublishTabTeam::rankTeamsWithSpeaks');
+            usort($lines, 'common\models\PublishTabTeam::rankTeamsWithSpeaks');
 
-			$i = 1;
-			$jumpover = 0;
-			foreach ($lines as $index => $line) {
-				if (isset($lines[$index - 1])) {
-					if (!($lines[$index - 1]->points == $lines[$index]->points && $lines[$index - 1]->speaks == $lines[$index]->speaks)) {
-						$i++;
-						if ($jumpover > 0) {
-							$i = $i + $jumpover;
-							$jumpover = 0;
-						}
-					} else {
-						$jumpover++;
-					}
-				}
-				$line->enl_place = $i;
-				$lines[$index] = $line;
-			}
+            $i = 1;
+            $jumpover = 0;
+            $last_line = null;
+            foreach ($lines as $index => $line) {
+                if ($last_line !== null) {
+                    if (!($lines[$last_line]->points == $lines[$index]->points && $lines[$last_line]->speaks == $lines[$index]->speaks)) {
+                        $i++;
+                        if ($jumpover > 0) {
+                            $i = $i + $jumpover;
+                            $jumpover = 0;
+                        }
+                    } else {
+                        $jumpover++;
+                    }
+                }
+                $last_line = $index;
 
-			if ($_tournament->has_esl) {
-				$i = 0;
-				$jumpover = 0;
-				foreach ($lines as $index => $line) {
-					if ($line->object["language_status"] >= User::LANGUAGE_ESL) {
-						if (isset($lines[$index - 1])) {
-							if (!($lines[$index - 1]->points == $lines[$index]->points && $lines[$index - 1]->speaks == $lines[$index]->speaks)) {
-								$i++;
-								if ($jumpover > 0) {
-									$i = $i + $jumpover;
-									$jumpover = 0;
-								}
-							} else {
-								$jumpover++;
-							}
-						} else {
-							$i++;
-						}
+                $line->enl_place = $i;
+                $lines[$index] = $line;
+            }
 
-						$line->esl_place = $i;
-						$lines[$index] = $line;
-					}
-				}
-			}
+            if ($_tournament->has_esl) {
+                $i = 0;
+                $jumpover = 0;
+                $last_line = null;
+                foreach ($lines as $index => $line) {
+                    if ($line->object["language_status"] >= User::LANGUAGE_ESL) {
+                        if ($last_line !== null) {
+                            if (!($lines[$last_line]->points == $lines[$index]->points &&
+                                $lines[$last_line]->speaks == $lines[$index]->speaks)
+                            ) {
+                                $i++;
+                                if ($jumpover > 0) {
+                                    $i = $i + $jumpover;
+                                    $jumpover = 0;
+                                }
+                            } else {
+                                $jumpover++;
+                            }
+                        } else {
+                            $i++;
+                        }
 
-			if ($_tournament->has_efl) {
-				$i = 0;
-				$jumpover = 0;
-				foreach ($lines as $index => $line) {
-					if ($line->object["language_status"] >= User::LANGUAGE_EFL) {
-						if (isset($lines[$index - 1])) {
-							if (!($lines[$index - 1]->points == $lines[$index]->points && $lines[$index - 1]->speaks == $lines[$index]->speaks)) {
-								$i++;
-								if ($jumpover > 0) {
-									$i = $i + $jumpover;
-									$jumpover = 0;
-								}
-							} else {
-								$jumpover++;
-							}
-						} else {
-							$i++;
-						}
+                        $last_line = $index;
+                        $line->esl_place = $i;
+                        $lines[$index] = $line;
+                    }
+                }
+            }
 
-						$line->efl_place = $i;
-						$lines[$index] = $line;
-					}
-				}
-			}
+            if ($_tournament->has_efl) {
+                $i = 0;
+                $jumpover = 0;
+                $last_line = null;
+                foreach ($lines as $index => $line) {
+                    if ($line->object["language_status"] >= User::LANGUAGE_EFL) {
+                        if ($last_line !== null) {
+                            if (!($lines[$last_line]->points == $lines[$index]->points &&
+                                $lines[$last_line]->speaks == $lines[$index]->speaks)
+                            ) {
+                                $i++;
+                                if ($jumpover > 0) {
+                                    $i = $i + $jumpover;
+                                    $jumpover = 0;
+                                }
+                            } else {
+                                $jumpover++;
+                            }
+                        } else {
+                            $i++;
+                        }
 
-			if ($_tournament->has_novice) {
-				$i = 0;
-				$jumpover = 0;
-				foreach ($lines as $index => $line) {
-					if ($line->object["language_status"] == User::LANGUAGE_NOVICE) {
-						if (isset($lines[$index - 1])) {
-							if (!($lines[$index - 1]->points == $lines[$index]->points && $lines[$index - 1]->speaks == $lines[$index]->speaks)) {
-								$i++;
-								if ($jumpover > 0) {
-									$i = $i + $jumpover;
-									$jumpover = 0;
-								}
-							} else {
-								$jumpover++;
-							}
-						} else {
-							$i++;
-						}
+                        $last_line = $index;
+                        $line->efl_place = $i;
+                        $lines[$index] = $line;
+                    }
+                }
+            }
 
-						$line->novice_place = $i;
-						$lines[$index] = $line;
-					}
-				}
-			}
+            if ($_tournament->has_novice) {
+                $i = 0;
+                $jumpover = 0;
 
-			$cache->set($key, $lines, 0, $dependency);
-		}
+                foreach ($lines as $index => $line) {
+                    if ($line->object["language_status"] == User::LANGUAGE_NOVICE) {
+                        if ($last_line !== null) {
+                            if (!($lines[$last_line]->points == $lines[$index]->points &&
+                                $lines[$last_line]->speaks == $lines[$index]->speaks)
+                            ) {
+                                $i++;
+                                if ($jumpover > 0) {
+                                    $i = $i + $jumpover;
+                                    $jumpover = 0;
+                                }
+                            } else {
+                                $jumpover++;
+                            }
+                        } else {
+                            $i++;
+                        }
 
-		return $lines;
-	}
+                        $last_line = $index;
+                        $line->novice_place = $i;
+                        $lines[$index] = $line;
+                    }
+                }
+            }
 
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getTeam() {
-		return $this->hasOne(Team::className(), ['id' => 'team_id']);
-	}
+            $cache->set($key, $lines, 0, $dependency);
+        }
 
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getTournament() {
-		return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
-	}
+        return $lines;
+    }
 
-	/**
-	 * Rank Teams by points and then by Speaker points
-	 *
-	 * @param $a
-	 * @param $b
-	 *
-	 * @using rankSpeaker
-	 * @return int
-	 */
-	public function rankTeamsWithSpeaks($a, $b) {
-		$ap = $a["points"];
-		$bp = $b["points"];
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTeam()
+    {
+        return $this->hasOne(Team::className(), ['id' => 'team_id']);
+    }
 
-		return ($ap < $bp) ? 1 : (($ap > $bp) ? -1 : PublishTabSpeaker::rankSpeaker($a, $b));
-	}
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTournament()
+    {
+        return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
+    }
+
+    /**
+     * Rank Teams by points and then by Speaker points
+     *
+     * @param $a
+     * @param $b
+     *
+     * @using rankSpeaker
+     * @return int
+     */
+    public function rankTeamsWithSpeaks($a, $b)
+    {
+        $ap = $a["points"];
+        $bp = $b["points"];
+
+        return ($ap < $bp) ? 1 : (($ap > $bp) ? -1 : PublishTabSpeaker::rankSpeaker($a, $b));
+    }
 
 }

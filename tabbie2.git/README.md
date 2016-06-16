@@ -1,12 +1,13 @@
 Tabbie2 - Source Code
 ===================================
 
-This is a Yii 2 application best for developing complex Web applications with multiple tiers.
-The structure includes three tiers:
+This is a Yii 2 php application (http://www.yiiframework.com) with multiple tiers.
+The structure is:
 ```
-- front end    What the user sees and uses
-- back end     What the tabbie admin uses and makes analysis and entering variables
+- frontend     What the user sees and uses
+- backend      What the tabbie admin uses and makes analysis and entering variables
 - console      What the webserver uses to execute cronjobs
+- api          What an app, react frontend or external service might use to make REST API calls
 ```
 each of which
 is a separate Yii application.
@@ -19,6 +20,8 @@ DIRECTORY STRUCTURE
 -------------------
 
 ```
+algorithms
+    algorithms/          contains the different algorithms that a user can choose from
 common
     config/              contains shared configurations
     mail/                contains view files for e-mails
@@ -65,15 +68,13 @@ GETTING STARTED
 After you install the application, you have to conduct the following steps to initialize
 the installed application. You only need to do these once for all.
 
-. Run command `git submodule init`
-. Run command `git submodule update`
-. Run command `git submodule foreach git checkout master`
-. Install composer (https://getcomposer.org)
-. run `composer global require "fxp/composer-asset-plugin:~1.0.0"`
-. run `composer update` to load the vendor directory
-. Run command `php init` to initialize the application with a specific environment.
-. Create a new database and adjust the `components['db']` configuration in `common/config/main-local.php` accordingly.
-. Apply migrations with console command `yii migrate`. This will create tables needed for the application to work.
+1. Install composer (https://getcomposer.org)
+2. Open terminal and go to the /tabbie2.git folder.
+3. run `composer global require "fxp/composer-asset-plugin:~1.0.0"`
+4. run `composer update` to load the vendor directory - this will take some time
+5. Run command `php init` to initialize the application with a specific environment.
+6. Create a new database and adjust the configuration in `common/config/main-local.php` accordingly.
+7. Apply migrations with console command `yii migrate`. This will create tables needed for the application to work.
 
 To login into the application, you need to first sign up, with any of your email address, username and password.
 Then, you can login into the application with same email address and password at any time.

@@ -29,7 +29,7 @@ class UserUrlRule extends UrlRule
 				$user = User::findOne($params['id']);
 				if ($user instanceof User) {
 					unset($params['id']);
-					if ($parts[1] == "view")
+                    if ($parts[1] == "view" && count($params) == 0)
 						$parts[1] = null;
 
 					$route = "user/" . $user->url_slug . "/" . $parts[1];
@@ -119,7 +119,7 @@ class UserUrlRule extends UrlRule
 
 				$modul = "other";
 
-				if (count($parts) <= 3 || $parts[3] == "login")
+				if (count($parts) <= 3 || $parts[2] == "view" || $parts[2] == "update")
 					$modul = "user";
 
 				if (isset($parts[3]) && $parts[3] == "")
