@@ -28,6 +28,19 @@ class AdjudicatorController extends BaseRestController
         return $actions;
     }
 
+    /**
+     * Move adjudicator to another panel
+     *
+     * @param integer $adjudicator_id ID of the adjudicator that will be moved
+     * @param integer $from_panel ID of the panel the adju is from
+     * @param integer $to_panel ID of the panel the adju shoul be moved to
+     * @param integer $to_function function the adjudicator should have in the new panel. Default: Panel::FUNCTION_WING = 0
+     *
+     * @return array Result code with status and message
+     *
+     * @throws Exception
+     * @throws NotFoundHttpException
+     */
     public function actionMove($adjudicator_id, $from_panel, $to_panel, $to_function = Panel::FUNCTION_WING)
     {
         $adjuInPanel = AdjudicatorInPanel::find()->where([
