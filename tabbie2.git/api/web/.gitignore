@@ -1,4 +1,5 @@
 /index.php
 /index-test.php
 /assets/*
-doc/*
+/doc/*
+/doc/cache/
