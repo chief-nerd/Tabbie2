@@ -84,18 +84,18 @@ class ApiUser extends \yii\db\ActiveRecord implements IdentityInterface, RateLim
 
     public function getRateLimit($request, $action)
     {
-        return [$this->rateLimit, Yii::$app->params['requestsPerSecond']]; // $rateLimit requests per second
+        return [Yii::$app->params['requestsPerSecond'], 1]; // $rateLimit requests per second
     }
 
     public function loadAllowance($request, $action)
     {
-        return [$this->rl_remaining, $this->rl_timestamp];
+        return [$this->rl_remaining, strtotime($this->rl_timestamp)];
     }
 
     public function saveAllowance($request, $action, $allowance, $timestamp)
     {
         $this->rl_remaining = $allowance;
-        $this->rl_timestamp = $timestamp;
+        $this->rl_timestamp = date('Y-m-d H:i:s', $timestamp);
         $this->save();
     }
 
