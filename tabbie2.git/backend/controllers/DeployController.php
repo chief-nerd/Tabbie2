@@ -124,6 +124,10 @@ class DeployController extends Controller
                 $out[] = $translate[$last];
             }
 
+            //update API Documentation
+            $out[] = "<h3>=== Create API Documentation ===</h3>";
+            exec("cd $git_root && rm -rf ./tabbie2.git/api/web/doc/ && php ./tabbie2.git/yii api/index ./tabbie2.git/api/controllers,./tabbie2.git/api/models/ ./tabbie2.git/api/web/doc", $out);
+
             //Flush Caches
             $out[] = "<h3>=== Flush Cache ===</h3>";
             exec("php $git_root/tabbie2.git/yii cache/flush-schema --interactive=0", $out);

@@ -23,6 +23,20 @@ class DevController extends Controller
     public $defaultAction = "copy-db";
 
     /**
+     * Update the API documentation under /api/web/doc
+     */
+    public function actionUpdateDoc()
+    {
+        $out = [];
+        $git_root = \Yii::$app->basePath . "/../../";
+
+        $out[] = "\nUpdating API Documentation \n----------------";
+        exec("cd $git_root && rm -rf ./tabbie2.git/api/web/doc/ && php ./tabbie2.git/yii api/index ./tabbie2.git/api/controllers,./tabbie2.git/api/models/ ./tabbie2.git/api/web/doc", $out);
+
+        echo join("\n", $out);
+    }
+
+    /**
      * Copy the live DB to the local DB
      * ! overrides local data !
      */
