@@ -43,10 +43,10 @@ class BaseRestController extends Controller
 					//HttpBearerAuth::className(),
 				],
 			],
-			'rateLimiter' => [
+			/*'rateLimiter' => [
 				'class' => RateLimiter::className(),
-				'enableRateLimitHeaders' => false, //Do not spoil
-			],
+				'enableRateLimitHeaders' => true, //Do not spoil
+			],*/
 		];
 	}
 }

@@ -8,6 +8,7 @@ use yii\base\Exception;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\filters\auth\HttpBasicAuth;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\IdentityInterface;
@@ -661,6 +662,14 @@ class User extends ActiveRecord implements IdentityInterface
     public function getClashes()
     {
         return $this->hasMany(UserClash::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApiUser()
+    {
+        return $this->hasMany(ApiUser::className(), ['user_id' => 'id']);
     }
 
     /**
