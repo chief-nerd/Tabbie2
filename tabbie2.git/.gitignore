@@ -39,3 +39,4 @@ frontend/web/sub/
 !.elasticbeanstalk/config.yml
 
 api/web/doc/*
+/api/web/doc/
