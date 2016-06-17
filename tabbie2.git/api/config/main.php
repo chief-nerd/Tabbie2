@@ -12,6 +12,7 @@ $params = array_merge(
 
 return [
     'id' => 'app-api',
+    'name' => 'Tabbie2 API',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'api\controllers',
     'bootstrap' => ['log'],
@@ -39,9 +40,7 @@ return [
             'showScriptName' => false,
             'rules' => [
                 '' => 'site/index',
-                'profile' => 'site/profile',
-                'login' => 'site/login',
-                'jwt' => 'site/jwt',
+                '<action>' => 'site/<action>',
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'user',
                     'extraPatterns' => [
                         'GET me' => 'me',
