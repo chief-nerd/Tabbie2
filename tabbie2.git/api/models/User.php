@@ -25,13 +25,13 @@ class User extends \common\models\User implements Linkable
 				"givenname",
 				"surename",
 				"picture",
+			"gender",
 		];
 
 		if(Yii::$app->user->id == $this->id) {
 			array_push($fields,
 				"url_slug",
 				"email",
-				"gender",
 				"language_status",
 				"last_change",
 				"language",
@@ -47,7 +47,10 @@ class User extends \common\models\User implements Linkable
 	public function getLinks()
 	{
 		$links = [
-			Link::REL_SELF => Url::to(['user/view', "id" => $this->id], true),
+			Link::REL_SELF => [
+				"api" => Url::to(['user/view', "id" => $this->id], true),
+				"web" => Yii::$app->urlManagerFrontend->createAbsoluteUrl(['user/view', "id" => $this->id]),
+			],
 		];
 
 		return $links;

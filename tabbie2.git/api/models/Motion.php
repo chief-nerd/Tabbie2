@@ -64,7 +64,10 @@ class Motion extends \common\models\Motion implements Linkable
 	public function getLinks()
 	{
 		$links = [
-			Link::REL_SELF => Url::to(['motion/view', "id" => $this->id], true),
+			Link::REL_SELF => [
+				"api" => Url::to(['motion/view', "id" => $this->id], true),
+				//no web
+			],
 		];
 
 		if (\Yii::$app->controller->action->id != "index")

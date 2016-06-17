@@ -14,50 +14,52 @@ use yii\web\Linkable;
  */
 class Society extends \common\models\Society implements Linkable
 {
-	/**
-	 * @return array
-	 */
-	public function extraFields()
-	{
-		$fields = $this->fields();
+    /**
+     * @return array
+     */
+    public function extraFields()
+    {
+        $fields = $this->fields();
 
 
-		return $fields;
-	}
+        return $fields;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function fields()
-	{
-		$fields = parent::fields();
+    /**
+     * @return array
+     */
+    public function fields()
+    {
+        $fields = parent::fields();
 
-		// remove fields that contain sensitive information
-		unset(
-			$fields['country_id']
-		);
+        // remove fields that contain sensitive information
+        unset(
+            $fields['country_id']
+        );
 
-		$fields['country'] = function ($model) {
-			return $model->country->name;
-		};
+        $fields['country'] = function ($model) {
+            return $model->country->name;
+        };
 
-		return $fields;
-	}
+        return $fields;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getLinks()
-	{
-		$links = [
-			Link::REL_SELF => Url::to(['society/view', "id" => $this->id], true),
-			//'self_web' => Yii::$app->urlManagerFrontend->createAbsoluteUrl(['tournament/view', "id" => $this->id]),
-		];
+    /**
+     * @return array
+     */
+    public function getLinks()
+    {
+        $links = [
+            Link::REL_SELF => [
+                "api" => Url::to(['society/view', "id" => $this->id], true),
+                'web' => Yii::$app->urlManagerFrontend->createAbsoluteUrl(['tournament/view', "id" => $this->id]),
+            ],
+        ];
 
-		if (Yii::$app->controller->action->id != "index")
-			$links["index"] = Url::to(['society/index'], true);
+        if (Yii::$app->controller->action->id != "index")
+            $links["index"] = Url::to(['society/index'], true);
 
-		return $links;
-	}
+        return $links;
+    }
 
 }

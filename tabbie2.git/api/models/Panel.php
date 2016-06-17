@@ -30,8 +30,7 @@ class Panel extends \common\models\Panel implements Linkable
             foreach ($model->adjudicatorInPanels as $aip) {
 
                 $section = "";
-                switch($aip->function)
-                {
+                switch ($aip->function) {
                     case Panel::FUNCTION_CHAIR:
                         $section = "chair";
                         break;
@@ -65,8 +64,7 @@ class Panel extends \common\models\Panel implements Linkable
             foreach ($model->adjudicatorInPanels as $aip) {
 
                 $section = "";
-                switch($aip->function)
-                {
+                switch ($aip->function) {
                     case Panel::FUNCTION_CHAIR:
                         $section = "chair";
                         break;
@@ -95,7 +93,10 @@ class Panel extends \common\models\Panel implements Linkable
     {
         $debateID = $this->debate->id;
         $links = [
-            Link::REL_SELF => Url::to(['user/view', "id" => $this->id], true),
+            Link::REL_SELF => [
+                'api' => Url::to(['user/view', "id" => $this->id], true),
+                //no web
+            ],
             'debate' => Url::to(['debate/view', "id" => $debateID], true),
         ];
 
