@@ -44,6 +44,7 @@ use yii\web\IdentityInterface;
  * @property SpecialNeeds[] $specialNeeds
  * @property string $name
  * @property UserValue[] $userValues
+ * @property ApiUser $apiUser
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -669,7 +670,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getApiUser()
     {
-        return $this->hasMany(ApiUser::className(), ['user_id' => 'id']);
+        return $this->hasOne(ApiUser::className(), ['user_id' => 'id']);
     }
 
     /**

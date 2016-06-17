@@ -9,8 +9,9 @@
 
 namespace api\controllers;
 
-
+use Yii;
 use api\models\User;
+use common\models\LoginForm;
 
 /**
  * Class UserController
@@ -43,6 +44,6 @@ class UserController extends BaseRestController
 	 */
 	public function actionMe()
 	{
-		return User::findIdentityByAccessToken(\Yii::$app->request->get("access-token"));
+		return $this->redirect(["user/view", "id" => Yii::$app->user->id]);
 	}
 }

@@ -1,14 +1,29 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: jakob
- * Date: 19/11/15
- * Time: 16:50
- *
- * @var $model \common\models\User
- */
+use  yii\widgets\DetailView;
+
 ?>
 
 <div class="site-profile">
-    AccessToken: <?= $model->apiUser->access_token ?>
+    <h1><?= $model->name ?></h1>
+
+    <?php
+    echo DetailView::widget([
+        'model' => $model,
+        'attributes' => [
+            'apiUser.rl_timestamp',
+            'apiUser.rl_remaining',
+        ],
+    ])
+    ?>
+
+    <hr>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">JWT Token for Header Authorization</h3>
+        </div>
+        <div class="panel-body" style="overflow-wrap: break-word">
+            <?= $model->apiUser->getAuthorization() ?>
+        </div>
+    </div>
 </div>

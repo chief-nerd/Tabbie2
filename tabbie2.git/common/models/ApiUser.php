@@ -20,6 +20,8 @@ use yii\web\IdentityInterface;
  */
 class ApiUser extends \yii\db\ActiveRecord implements IdentityInterface, RateLimitInterface
 {
+    use \damirka\JWT\UserTrait;
+
     /**
      * @inheritdoc
      */
@@ -63,25 +65,6 @@ class ApiUser extends \yii\db\ActiveRecord implements IdentityInterface, RateLim
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
-    /**
-     * Find user by AccessToken for API request
-     *
-     * @param mixed $token
-     * @param null $type
-     *
-     * @return null|static
-     */
-    public static function findIdentityByAccessToken($token, $type = null)
-    {
-        switch($type)
-        {
-            case HttpBasicAuth::className():
-                return static::find()->where(['access_token' => $token])->one();
-        }
-
-        return false;
-    }
-
     public function getRateLimit($request, $action)
     {
         return [Yii::$app->params['requestsPerSecond'], 1]; // $rateLimit requests per second
@@ -117,7 +100,16 @@ class ApiUser extends \yii\db\ActiveRecord implements IdentityInterface, RateLim
      */
     public function getId()
     {
-        return $this->user->getId();
+        return $this->user->id;
+    }
+
+    /**
+     * Get the ID that is in the JWT included as JTI
+     * @return int
+     */
+    public function getJTI()
+    {
+        return $this->id;
     }
 
     /**
@@ -148,5 +140,23 @@ class ApiUser extends \yii\db\ActiveRecord implements IdentityInterface, RateLim
     public function validateAuthKey($authKey)
     {
         return $this->user->validateAuthKey($authKey);
+    }
+
+    /**
+     * Get the secret Key for the JWT
+     * @return mixed
+     */
+    protected static function getSecretKey()
+    {
+        return Yii::$app->params["JWT-secret-key"];
+    }
+
+    /**
+     * Returns the Authorization string uses in the request Header 'Authorization'
+     * @return string
+     */
+    public function getAuthorization()
+    {
+        return "Bearer " . $this->getJWT();
     }
 }

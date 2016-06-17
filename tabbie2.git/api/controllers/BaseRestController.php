@@ -50,8 +50,8 @@ class BaseRestController extends Controller
 			'authenticator' => [
 				'class' => CompositeAuth::className(),
 				'authMethods' => [
-					HttpBasicAuth::className(),
-					//HttpBearerAuth::className(),
+					//HttpBasicAuth::className(),
+					HttpBearerAuth::className(),
 				],
 			],
 			'rateLimiter' => [

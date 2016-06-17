@@ -39,6 +39,14 @@ return [
             'showScriptName' => false,
             'rules' => [
                 '' => 'site/index',
+                'profile' => 'site/profile',
+                'login' => 'site/login',
+                'jwt' => 'site/jwt',
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'user',
+                    'extraPatterns' => [
+                        'GET me' => 'me',
+                    ]
+                ],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'motion'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'tournament'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'panel'],
@@ -52,7 +60,6 @@ return [
                         'GET search' => 'search',
                     ]
                 ],
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'user'],
             ],
         ],
         'urlManagerFrontend' => array_merge($frontendConfig["components"]["urlManager"], [
