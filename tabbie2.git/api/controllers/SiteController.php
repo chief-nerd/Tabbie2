@@ -32,6 +32,9 @@ class SiteController extends Controller
     public function behaviors()
     {
         return [
+            'corsFilter' => [
+                'class' => \yii\filters\Cors::className(),
+            ],
             'contentNegotiator' => [
                 'class' => ContentNegotiator::className(),
                 'only' => ['jwt'],

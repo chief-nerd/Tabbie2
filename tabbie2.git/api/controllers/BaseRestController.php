@@ -36,6 +36,9 @@ class BaseRestController extends Controller
 	public function behaviors()
 	{
 		return [
+			'corsFilter' => [
+				'class' => \yii\filters\Cors::className(),
+			],
 			'contentNegotiator' => [
 				'class' => ContentNegotiator::className(),
 				'formats' => [
