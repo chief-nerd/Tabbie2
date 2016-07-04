@@ -18,6 +18,7 @@ class User extends \common\models\User implements Linkable
 			"givenname",
 			"surename",
 			"picture",
+			"language_status",
 		];
 
 		return $fields;
