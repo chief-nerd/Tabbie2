@@ -14,10 +14,21 @@ use common\models\Panel;
 use yii\base\Exception;
 use yii\web\NotFoundHttpException;
 
+/**
+ * Class AdjudicatorController
+ * @package api\controllers
+ */
 class AdjudicatorController extends BaseRestController
 {
+    /**
+     * @inheritdoc
+     */
     public $modelClass = 'api\models\Adjudicator';
 
+    /**
+     * Return the allowed action for this object
+     * @return array
+     */
     public function actions()
     {
         $actions = parent::actions();
@@ -28,6 +39,19 @@ class AdjudicatorController extends BaseRestController
         return $actions;
     }
 
+    /**
+     * Move adjudicator to another panel
+     *
+     * @param integer $adjudicator_id ID of the adjudicator that will be moved
+     * @param integer $from_panel ID of the panel the adju is from
+     * @param integer $to_panel ID of the panel the adju shoul be moved to
+     * @param integer $to_function function the adjudicator should have in the new panel. Default: Panel::FUNCTION_WING = 0
+     *
+     * @return array Result code with status and message
+     *
+     * @throws Exception
+     * @throws NotFoundHttpException
+     */
     public function actionMove($adjudicator_id, $from_panel, $to_panel, $to_function = Panel::FUNCTION_WING)
     {
         $adjuInPanel = AdjudicatorInPanel::find()->where([
@@ -44,7 +68,7 @@ class AdjudicatorController extends BaseRestController
                     ->where([
                         "panel_id" => $from_panel,
                     ])
-                    ->orderBy(["strength" => SORT_ASC])
+                    ->orderBy(["strength" => SORT_DESC])
                     ->one();
                 $strongestAdju->function = Panel::FUNCTION_CHAIR;
                 if (!$strongestAdju->save()) {
@@ -57,10 +81,10 @@ class AdjudicatorController extends BaseRestController
             if ($to_function == Panel::FUNCTION_CHAIR) {
                 //is set as chair in new panel ... set old_chair in to_panel to wing
                 //set ALL chairs (there should only be one, but nevermind) to wings. This heals bad data.
-                AdjudicatorInPanel::updateAll([
+                $updated = AdjudicatorInPanel::updateAll([
                     "function" => Panel::FUNCTION_WING,
                 ], [
-                    "panel_id" => $from_panel,
+                    "panel_id" => $to_panel,
                     "function" => Panel::FUNCTION_CHAIR,
                 ]);
             }

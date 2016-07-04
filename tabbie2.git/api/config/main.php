@@ -12,6 +12,7 @@ $params = array_merge(
 
 return [
     'id' => 'app-api',
+    'name' => 'Tabbie2 API',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'api\controllers',
     'bootstrap' => ['log'],
@@ -39,6 +40,12 @@ return [
             'showScriptName' => false,
             'rules' => [
                 '' => 'site/index',
+                '<action>' => 'site/<action>',
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'user',
+                    'extraPatterns' => [
+                        'GET me' => 'me',
+                    ]
+                ],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'motion'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'tournament'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'panel'],
@@ -52,7 +59,6 @@ return [
                         'GET search' => 'search',
                     ]
                 ],
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'user'],
             ],
         ],
         'urlManagerFrontend' => array_merge($frontendConfig["components"]["urlManager"], [

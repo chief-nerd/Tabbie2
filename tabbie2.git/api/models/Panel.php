@@ -8,9 +8,15 @@ use yii\web\Link;
 use yii\helpers\Url;
 use yii\web\Linkable;
 
-
+/**
+ * Class Panel
+ * @package api\models
+ */
 class Panel extends \common\models\Panel implements Linkable
 {
+    /**
+     * @return array
+     */
     public function fields()
     {
         $fields = [
@@ -24,8 +30,7 @@ class Panel extends \common\models\Panel implements Linkable
             foreach ($model->adjudicatorInPanels as $aip) {
 
                 $section = "";
-                switch($aip->function)
-                {
+                switch ($aip->function) {
                     case Panel::FUNCTION_CHAIR:
                         $section = "chair";
                         break;
@@ -46,6 +51,9 @@ class Panel extends \common\models\Panel implements Linkable
         return $fields;
     }
 
+    /**
+     * @return array
+     */
     public function extraFields()
     {
         $fields = $this->fields();
@@ -56,8 +64,7 @@ class Panel extends \common\models\Panel implements Linkable
             foreach ($model->adjudicatorInPanels as $aip) {
 
                 $section = "";
-                switch($aip->function)
-                {
+                switch ($aip->function) {
                     case Panel::FUNCTION_CHAIR:
                         $section = "chair";
                         break;
@@ -79,11 +86,17 @@ class Panel extends \common\models\Panel implements Linkable
         return $fields;
     }
 
+    /**
+     * @return array
+     */
     public function getLinks()
     {
         $debateID = $this->debate->id;
         $links = [
-            Link::REL_SELF => Url::to(['user/view', "id" => $this->id], true),
+            Link::REL_SELF => [
+                'api' => Url::to(['user/view', "id" => $this->id], true),
+                //no web
+            ],
             'debate' => Url::to(['debate/view', "id" => $debateID], true),
         ];
 
