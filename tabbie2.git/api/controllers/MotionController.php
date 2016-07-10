@@ -12,10 +12,21 @@ namespace api\controllers;
 use api\models\Motion;
 use yii\data\ArrayDataProvider;
 
+/**
+ * Class MotionController
+ * @package api\controllers
+ */
 class MotionController extends BaseRestController
 {
+	/**
+	 * @inheritdoc
+	 */
 	public $modelClass = 'api/models/Motion';
 
+	/**
+	 * Return the allowed action for this object
+	 * @return array
+	 */
 	public function actions()
 	{
 		$actions = parent::actions();
@@ -31,6 +42,9 @@ class MotionController extends BaseRestController
 		return $actions;
 	}
 
+	/**
+	 * @return ArrayDataProvider
+	 */
 	public function prepareDataProvider()
 	{
 		$models = Motion::findAll();
@@ -41,6 +55,11 @@ class MotionController extends BaseRestController
 		]);
 	}
 
+	/**
+	 * @param $id
+	 * @return \common\models\Motion
+	 * @throws \yii\web\NotFoundHttpException
+	 */
 	public function findModel($id)
 	{
 		return Motion::findOne($id);

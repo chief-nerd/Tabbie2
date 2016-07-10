@@ -9,11 +9,21 @@
 
 namespace api\controllers;
 
-
+/**
+ * Class PanelController
+ * @package api\controllers
+ */
 class PanelController extends BaseRestController
 {
+	/**
+	 * @inheritdoc
+	 */
 	public $modelClass = 'api\models\Panel';
 
+	/**
+	 * Return the allowed action for this object
+	 * @return array
+	 */
 	public function actions()
 	{
 		$actions = parent::actions();

@@ -6,3 +6,5 @@ Tabbie2.iml
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 .DS_Store
+
+tabbie2.git/api/web/doc/*

@@ -36,3 +36,7 @@ frontend/web/sub/
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+!.elasticbeanstalk/config.yml
+
+api/web/doc/*
+/api/web/doc/

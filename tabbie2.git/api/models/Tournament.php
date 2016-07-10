@@ -8,9 +8,15 @@ use yii\web\Link;
 use yii\helpers\Url;
 use yii\web\Linkable;
 
-
+/**
+ * Class Tournament
+ * @package api\models
+ */
 class Tournament extends \common\models\Tournament implements Linkable
 {
+	/**
+	 * @return array
+	 */
 	public function extraFields()
 	{
 		$fields = $this->fields();
@@ -31,6 +37,9 @@ class Tournament extends \common\models\Tournament implements Linkable
 		return $fields;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function fields()
 	{
 		$fields = parent::fields();
@@ -87,16 +96,25 @@ class Tournament extends \common\models\Tournament implements Linkable
 		return $fields;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getLinks()
 	{
 		$links = [
-			Link::REL_SELF => Url::to(['tournament/view', "id" => $this->id], true),
-			'self_web' => Yii::$app->urlManagerFrontend->createAbsoluteUrl(['tournament/view', "id" => $this->id]),
-			'hosted_by' => Url::to(['society/view', "id" => $this->hosted_by_id], true),
+			Link::REL_SELF => [
+				"api" => Url::to(['tournament/view', "id" => $this->id], true),
+				"web" => Yii::$app->urlManagerFrontend->createAbsoluteUrl(['tournament/view', "id" => $this->id])
+			],
+			"hosted_by" => Url::to(['society/view', "id" => $this->hosted_by_id], true),
 		];
 
 		if (Yii::$app->controller->action->id != "index")
 			$links["index"] = Url::to(['tournament/index'], true);
+
+		foreach ($this->rounds as $round) {
+			$links['rounds'][] = Url::to(['round/view', "id" => $round->id], true);
+		}
 
 		return $links;
 	}

@@ -40,7 +40,10 @@
     "codemix/yii2-localeurls": "*",
     "kartik-v/yii2-editable": "*",
     "aws/aws-sdk-php": "*",
-    "jbroadway/urlify" : "*"
+    "jbroadway/urlify": "*",
+    "conquer/oauth2": "*",
+    "yiisoft/yii2-authclient": "^2.0",
+    "damirka/yii2-jwt": "^0.1.0"
   },
   "require-dev": {
     "yiisoft/yii2-codeception": "*",

@@ -35,11 +35,12 @@ AppAsset::register($this);
 	]);
 	$menuItems = [
 		['label' => 'Home', 'url' => ['/site/index']],
-		['label' => 'Documentation', 'url' => ['documentation/index']],
+		['label' => 'Documentation', 'url' => ['/doc']],
 	];
 	if (Yii::$app->user->isGuest) {
 		$menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
 	} else {
+		$menuItems[] = ['label' => 'Profile', 'url' => ['/site/profile']];
 		$menuItems[] = [
 			'label'       => 'Logout (' . Yii::$app->user->identity->givenname . ')',
 			'url'         => ['/site/logout'],
