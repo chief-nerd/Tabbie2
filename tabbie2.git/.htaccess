@@ -70,6 +70,10 @@ Options -Indexes
   RewriteEngine on
   RewriteBase /
 
+#redirect every request to https - comment out of local testing
+  RewriteCond %{HTTPS} off
+  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
 #rewrite for api
   RewriteCond %{HTTP_HOST} ^api.
   RewriteRule ^(.*)$ api/web/$1 [L]
