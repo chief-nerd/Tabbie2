@@ -212,7 +212,7 @@ class StrictWUDCRules extends TabAlgorithm
 				$this->DRAW[$lineID]->overrideAdjudicators($preset_panels[$i]["adju"]);
 				$this->DRAW[$lineID]->hasPresetPanel = true; //Prevent moving!
 				$this->DRAW[$lineID]->offLimit = count($preset_panels[$i]["adju"]) - 1;
-				$this->DRAW[$lineID]->panelID = $preset_panels[$presetCount]["id"];
+				$this->DRAW[$lineID]->panelID = $preset_panels[$i]["id"];
 				if (count($freeAdju) > 0) {
 					$freeAdju = array_reverse($freeAdju);
 					foreach ($freeAdju as $adj) {
