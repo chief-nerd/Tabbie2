@@ -590,6 +590,9 @@ class Round extends \yii\db\ActiveRecord
             $algo->tournament_id = $this->tournament->id;
             $algo->energyConfig = EnergyConfig::loadArray($this->tournament->id);
             $algo->round_number = $this->number;
+            $passAdjudicatorsStrength = $adjudicators_strengthArray;
+            rsort($passAdjudicatorsStrength);
+            $algo->strengthArray = $passAdjudicatorsStrength;
 
             if (count($adjudicators_strengthArray) == 0) {
                 $algo->average_adjudicator_strength = 0;
