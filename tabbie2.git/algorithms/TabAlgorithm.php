@@ -58,11 +58,25 @@ abstract class TabAlgorithm extends \yii\base\Object
     public $average_adjudicator_strength;
 
     /**
-     * Standard diviation of the Adjudicator Strength
+     * Standard deviation of the Adjudicator Strength
      *
      * @var float
      */
     public $SD_of_adjudicators;
+
+    /**
+     * Array of Distribution of Adjudicator Strength
+     *
+     * @var float
+     */
+    public $strengthArray;
+
+    /**
+     * Array of Distribution of Debates Strength
+     *
+     * @var float
+     */
+    public $pointsArray;
 
     /**
      * Setter Class for the Draw
