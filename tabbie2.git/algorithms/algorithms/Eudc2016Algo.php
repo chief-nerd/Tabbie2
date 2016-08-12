@@ -18,7 +18,7 @@ use yii\helpers\ArrayHelper;
  *
  * @package algorithm\algorithms
  */
-class StrictWUDCRulesCiaran extends TabAlgorithm
+class Eudc2016Algo extends TabAlgorithm
 {
 
 	private $uphill_probability = 0.5;
@@ -149,13 +149,14 @@ class StrictWUDCRulesCiaran extends TabAlgorithm
 		$this->DRAW = $this->sort_draw_by_points($this->DRAW);
 
         foreach($this->DRAW as $drawStrength){
+        $debatePoints = [];
             foreach($drawStrength->teams as $teamPoints){
                 $debatePoints[] = $teamPoints["points"];
             }
             $this->pointsArray[] = max($debatePoints);
         }
 
-        sort($this->pointsArray);
+        rsort($this->pointsArray);
 
 		/**
 		 * Initial allocate the adjudicators
@@ -474,6 +475,47 @@ class StrictWUDCRulesCiaran extends TabAlgorithm
 
 		for ($run = 0; $run < $max_runs; $run++) {
 
+		    if(fmod($run, 10) == 0){
+                do {
+                    $chosen_line_a = mt_rand(0, ($maxDrawIterations - 1));
+                    $chosen_line_b = mt_rand(0, ($maxDrawIterations - 1));
+
+                    //Create new lines for future. CLONE IS IMPORTANT NO REFERENCES PLEASE!!!!!!!
+                    $new_line_a = clone $DRAW[$chosen_line_a];
+                    $new_line_b = clone $DRAW[$chosen_line_b];
+
+                } while ($chosen_line_a == $chosen_line_b);
+
+                $swapped = $this->swap_panels($new_line_a, $new_line_b);
+
+                $new_line_a = $swapped[0];
+                $new_line_b = $swapped[1];
+
+                //Calculate new Energy Levels for new lines
+                $new_line_a = $this->calcEnergyLevel($new_line_a);
+                $new_line_b = $this->calcEnergyLevel($new_line_b);
+
+                //Get Energy Comparison
+                $oldEnergy = $DRAW[$chosen_line_a]->energyLevel + $DRAW[$chosen_line_b]->energyLevel;
+                $newEnergy = $new_line_a->energyLevel + $new_line_b->energyLevel;
+
+                $energyImprovement = $oldEnergy - $newEnergy;
+
+                $this->temp = $this->decrease_temp($this->temp);
+
+                $energy = DrawLine::getDrawEnergy($DRAW);
+
+                if ($energyImprovement > 0) {
+                    $DRAW[$chosen_line_a] = $new_line_a;
+                    $DRAW[$chosen_line_b] = $new_line_b;
+                    $best_draw = $DRAW;
+                    $energy = DrawLine::getDrawEnergy($DRAW);
+                    $this->best_energy = $energy;
+                    Yii::trace("New draw best_energy: " . $this->best_energy, __METHOD__);
+                    $best_moment = $run;
+                }
+            }
+
 			/** @var DrawLine $new_line_a */
 			$new_line_a = null;
 			$new_line_b = null;
@@ -595,6 +637,49 @@ class StrictWUDCRulesCiaran extends TabAlgorithm
 			$line_x->setAdjudicator($pos_b, $adju_a);
 			$line_y->setAdjudicator($pos_a, $adju_b);
 		}
+
+		return [$line_x, $line_y];
+	}
+
+	/**
+	 * Swaps 2 Panels
+	 *
+	 * @param DrawLine $line_a
+	 * @param DrawLine $line_b
+	 * 
+	 */
+	public function swap_panels($line_a, $line_b)
+	{
+		$line_x = clone $line_a;
+		$line_y = clone $line_b;
+
+		$adju_a = $line_x->getAdjudicators();
+		$adju_b = $line_y->getAdjudicators();
+
+        $off_limit_a = $line_x->offLimit;
+        $off_limit_b = $line_y->offLimit;
+
+        $panel_id_a = $line_x->panelID;
+        $panel_id_b = $line_y->panelID;
+
+		$line_x->overrideAdjudicators($adju_b);
+        $line_y->overrideAdjudicators($adju_a);
+
+        if($line_x->hasPresetPanel && !$line_y->hasPresetPanel){
+            $line_y->hasPresetPanel = true;
+            $line_x->hasPresetPanel = false;
+        }
+
+        else if(!$line_x->hasPresetPanel && $line_y->hasPresetPanel){
+            $line_y->hasPresetPanel = false;
+            $line_x->hasPresetPanel = true;
+        }
+
+        $line_x->offLimit = $off_limit_b;
+        $line_y->offLimit = $off_limit_a;
+
+        $line_x->panelID = $panel_id_b;
+        $line_y->panelID = $panel_id_a;
 
 		return [$line_x, $line_y];
 	}
@@ -968,10 +1053,12 @@ class StrictWUDCRulesCiaran extends TabAlgorithm
 			foreach ($line->getTeams() as $team) {
 				if (isset($pastIDs[$team["id"]])) {
 					$occurence = $pastIDs[$team["id"]];
+                    if ($occurence > 1)
+                        $level = "warning";
 					if ($occurence > 2)
 						$level = "error";
 					else
-						$level = "warning";
+						$level = "info";
 					$line->addMessage($level, Yii::t("app", "Adjudicator {adju} has judged Team {team} x {occ} before.", [
 						"adju" => $adjudicator["name"],
 						"team" => $team["name"],
@@ -1058,10 +1145,12 @@ class StrictWUDCRulesCiaran extends TabAlgorithm
 
         $debates_matching = array_keys($this->pointsArray, $debatePointLevel);
 
-        $hi = $this->strengthArray[$debates_matching[0]];
         $lo = $this->strengthArray[end($debates_matching)];
+        $hi = $this->strengthArray[$debates_matching[0]];
 
         $n=$line->getChair()["strength"];
+        $test = $debates_matching[0];
+        $hi = $this->strengthArray[$debates_matching[0]];
 
         if ($n >= $lo && $n <= $hi) $diff = 0;
         else if ($n < $lo) $diff = $lo - $n;
