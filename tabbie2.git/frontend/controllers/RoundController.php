@@ -53,7 +53,7 @@ class RoundController extends BasetournamentController
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['create', 'publish', 'redraw', 'improve', 'export', 'import'],
+                        'actions' => ['create', 'delete', 'publish', 'redraw', 'improve', 'export', 'import'],
                         'matchCallback' => function ($rule, $action) {
                             return ($this->_tournament->isTabMaster(Yii::$app->user->id));
                         }
@@ -230,6 +230,8 @@ class RoundController extends BasetournamentController
      */
     public function actionDelete($id)
     {
+        //Tag::deleteAll(["round_id" => $this->id]);
+
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
@@ -390,8 +392,11 @@ class RoundController extends BasetournamentController
             ])->orderBy(["panel_id" => SORT_DESC])->one();
 
             $temp = $a_in_panel->panel_id;
+            $temp_pos = $a_in_panel->function;
             $a_in_panel->panel_id = $b_in_panel->panel_id;
+            $a_in_panel->function = $b_in_panel->function;
             $b_in_panel->panel_id = $temp;
+            $b_in_panel->function = $temp_pos;
 
             if ($a_in_panel->validate() && $b_in_panel->validate()) {
                 if ($a_in_panel->save() && $b_in_panel->save())
