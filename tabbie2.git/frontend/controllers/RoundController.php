@@ -498,7 +498,7 @@ class RoundController extends BasetournamentController
                     "venue" => $model->venue_id,
                     "teams" => $teams,
                     "panel" => $model->panel->toArray($panel_props),
-                    "messages" => [],
+                    "messages" => $model->messages,
                     "energy" => 0,
                 ];
                 $line["panel"]["adjudicators"] = [];
@@ -607,16 +607,18 @@ class RoundController extends BasetournamentController
                     ]);
                 }
 
-                for ($row = 0; $row < count($json); $row++) {
+                $test_variable = count($json['draw']);
 
-                    $debate = $json[$row];
+                for ($row = 0; $row < count($json['draw']); $row++) {
+
+                    $debate = $json['draw'][$row];
                     $debate_id = $debate["id"];
 
                     $db_debate = Debate::findOne($debate_id);
 
                     if ($db_debate instanceof Debate) {
 
-                        $strength = $debate["strength"];
+                        $strength = $debate['panel']["strength"];
                         $messages = $debate["messages"];
 
                         $panel = $debate["panel"];
@@ -625,17 +627,18 @@ class RoundController extends BasetournamentController
                         $db_panel->strength = $strength;
                         $db_panel->save();
 
-                        $chair_id = $panel["chair"];
+                        $chair_id = $panel['adjudicators'][0];
                         $db_chair = new AdjudicatorInPanel([
-                            "adjudicator_id" => $chair_id,
+                            "adjudicator_id" => $chair_id['id'],
                             "panel_id" => $db_panel->id,
                             "function" => Panel::FUNCTION_CHAIR,
                         ]);
                         $db_chair->save();
 
-                        foreach ($panel["panellists"] as $adjuID) {
+                        for($countPanellists = 1; $countPanellists < count($panel['adjudicators']); $countPanellists++){
+                            $adjuID = $panel['adjudicators'][$countPanellists];
                             $db_wing = new AdjudicatorInPanel([
-                                "adjudicator_id" => $adjuID,
+                                "adjudicator_id" => $adjuID['id'],
                                 "panel_id" => $db_panel->id,
                                 "function" => Panel::FUNCTION_WING,
                             ]);
