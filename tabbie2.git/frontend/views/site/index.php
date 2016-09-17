@@ -82,7 +82,7 @@ $this->title = Yii::$app->params["slogan"];
 
 				<p>Tabbie2 is Amazon AWS hosted and comes with a mobile responsive frontend, e-Ballots and e-Feedback
 					system.
-					Therefor no setup required! Just register, import your
+					Therefore no setup is required! Just register, import your
 					data via CSV or DebReg link and start tabbing.</p>
 			</div>
 			<div class="col-lg-4">
