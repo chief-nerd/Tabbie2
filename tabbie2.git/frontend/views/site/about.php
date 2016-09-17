@@ -45,7 +45,7 @@ $this->registerJs($googleMaps, \yii\web\View::POS_END);
 <div class="site-about">
 	<h1><?= Html::encode($this->title) ?></h1>
 
-	<p>Tabbie 2 is the new edition of the famous Tabbie system. It comes freshly pimped and rewritten from the core to
+	<p>Tabbie 2 is the new edition of the famous Tabbie system. It comes redesigned and rewritten from the core to
 		handle small and large tournaments at the same time.</p>
 
 	<div class="row">
