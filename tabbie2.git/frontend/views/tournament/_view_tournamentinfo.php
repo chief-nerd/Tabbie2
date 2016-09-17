@@ -20,7 +20,7 @@ echo DetailView::widget([
         ],
         [
             "attribute" => 'tabmaster',
-            'label' => "Tab Master",
+            'label' => "Tab Director",
             'format' => 'raw',
             'value' => implode(", ", \yii\helpers\ArrayHelper::getColumn($model->tabmasters, "name")),
         ],
