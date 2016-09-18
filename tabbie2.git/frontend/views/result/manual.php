@@ -7,7 +7,7 @@ use kartik\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model common\models\Result */
 
-$this->title = Yii::t('app', 'Enter {modelClass} Manual', [
+$this->title = Yii::t('app', 'Enter {modelClass} Manually', [
 	'modelClass' => 'Result',
 ]);
 $tournament = $this->context->_getContext();

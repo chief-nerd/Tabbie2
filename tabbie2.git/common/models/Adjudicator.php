@@ -93,8 +93,8 @@ class Adjudicator extends \yii\db\ActiveRecord
             'user_id' => Yii::t('app', 'User') . ' ' . Yii::t('app', 'ID'),
             'strength' => Yii::t('app', 'Strength'),
             'societyName' => Yii::t('app', 'Society') . ' ' . Yii::t('app', 'Name'),
-            'can_chair' => Yii::t('app', 'can Chair'),
-            'are_watched' => Yii::t('app', 'are Watched'),
+            'can_chair' => Yii::t('app', 'Can Chair'),
+            'are_watched' => Yii::t('app', 'Are Watched'),
             'society_id' => Yii::t('app', 'Society'),
         ];
     }
