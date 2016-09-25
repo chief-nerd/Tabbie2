@@ -154,7 +154,7 @@ SCRIPT;
 			],
 		],
 		'options'       => [
-			'placeholder' => Yii::t("app", 'Choose your Tabmaster ...'),
+			'placeholder' => Yii::t("app", 'Choose your Tab Director ...'),
 		],
 		'pluginOptions' => [
 			'multiple'           => true,

@@ -48,7 +48,7 @@ class StrikeController extends BasetournamentController
                     ],
                 ],
                 'denyCallback' => function ($rule, $action) {
-                    Yii::$app->session->setFlash("error", "403: " . Yii::t("app", "Only authorised Tabmasters can access this function"));
+                    Yii::$app->session->setFlash("error", "403: " . Yii::t("app", "Only authorised Tab Directors can access this function"));
                     return $this->goBack(Yii::$app->request->referrer);
                 },
             ],
