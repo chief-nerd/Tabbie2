@@ -19,6 +19,10 @@ $total = Yii::t("app", "Total");
 <div class="predetails">
     <table>
         <tr>
+            <th><?= Yii::t("app", "Round") ?></th>
+            <td><?= $round->label ?></td>
+        </tr>
+        <tr>
             <th><?= Yii::t("app", "Debate ID") ?></th>
             <td><?= $debate->id ?></td>
         </tr>
@@ -54,18 +58,18 @@ $total = Yii::t("app", "Total");
 
 <div class="headline">
     <table>
-        <? if ($round->infoslide): ?>
+<!--        <?/* if ($round->infoslide): */?>
             <tr class="infoslide">
-                <th><?= Yii::t("app", "InfoSlide") ?>:</th>
+                <th><?/*= Yii::t("app", "InfoSlide") */?>:</th>
                 <td>
-                    <div><?= Html::encode($round->infoslide) ?></div>
+                    <div><?/*= substr(Html::encode($round->infoslide), 140) */?></div>
                 </td>
             </tr>
-        <? endif; ?>
+        --><?/* endif; */?>
         <tr class="motion">
             <th><?= Yii::t("app", "Motion") ?>:</th>
             <td>
-                <div><?= Html::encode($round->motion) ?></div>
+                <div><?= substr(Html::encode($round->motion), 0, 200) ?></div>
             </td>
         </tr>
     </table>
