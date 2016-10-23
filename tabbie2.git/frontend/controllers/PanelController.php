@@ -114,7 +114,7 @@ class PanelController extends BasetournamentController {
 				Yii::$app->session->addFlash("error", Yii::t("app", "Error saving Panel:") . ObjectError::getMsg($model));
 				Yii::error("Error saving Panel" . ObjectError::getMsg($model), __METHOD__);
 
-				for ($i = 0; $i < 4; $i++) {
+				for ($i = 0; $i < 5; $i++) {
 					$model->set_adjudicators[] = Yii::$app->request->post("Panel")["set_adjudicators"][$i];
 				}
 			}
