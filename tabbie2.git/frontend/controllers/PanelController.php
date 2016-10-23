@@ -119,7 +119,7 @@ class PanelController extends BasetournamentController {
 				}
 			}
 		} else {
-			for ($i = 0; $i < 4; $i++) {
+			for ($i = 0; $i < 5; $i++) {
 				$model->set_adjudicators[] = new Adjudicator();
 			}
 		}
