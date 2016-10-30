@@ -515,6 +515,7 @@ class Round extends \yii\db\ActiveRecord
 
                     $adjudicator["pastAdjudicatorIDs"] = $adju->getPastAdjudicatorIDs($this->id);
                     $adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs($this->id);
+                    $adjudicator["gender"] = $adju->gender;
 
                     $total += $adju->strength;
 
@@ -546,6 +547,7 @@ class Round extends \yii\db\ActiveRecord
 
                     $adjudicators[$i]["pastAdjudicatorIDs"] = $adjudicatorsObjects[$i]->getPastAdjudicatorIDs();
                     $adjudicators[$i]["pastTeamIDs"] = $adjudicatorsObjects[$i]->getPastTeamIDs();
+                    $adjudicators[$i]["gender"] = $adjudicatorsObjects[$i]->gender;
                 }
             }
 
@@ -855,6 +857,7 @@ class Round extends \yii\db\ActiveRecord
             $adju = $inPanel->adjudicator;
             $adjudicator = $adju->attributes;
             $adjudicator["name"] = $adju->name;
+            $adjudicator["gender"] = $adju->gender;
             $adjudicator["societies"] = ArrayHelper::getColumn($adju->getSocieties(true)->asArray()->all(), "id");
 
             $strikedAdju = $adju->getStrikedAdjudicators()->asArray()->all();
@@ -864,7 +867,7 @@ class Round extends \yii\db\ActiveRecord
             $adjudicator["strikedTeams"] = $strikedTeam;
 
             $adjudicator["pastAdjudicatorIDs"] = $adju->getPastAdjudicatorIDs($this->id);
-            $adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs(true);
+            $adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs($this->id);
 
             if ($inPanel->function == Panel::FUNCTION_CHAIR) {
                 $drawline->addChair($adjudicator);
@@ -908,6 +911,7 @@ class Round extends \yii\db\ActiveRecord
         $algo->tournament_id = $this->tournament->id;
         $algo->energyConfig = EnergyConfig::loadArray($this->tournament->id);
         $algo->round_number = $this->number;
+        $algo->round_id = $this->id;
 
         $adjudicators_Query = Adjudicator::find()->active()->tournament($this->tournament->id);
         $adjudicators_strengthArray = ArrayHelper::getColumn(
@@ -924,7 +928,9 @@ class Round extends \yii\db\ActiveRecord
             $debate = Debate::findOne($newLine->id);
             if ($debate instanceof Debate) {
                 $debate->energy = $newLine->energyLevel;
+                usort($newLine->messages, function($a, $b){ return strcmp($a["key"], $b["key"]); });
                 $debate->setMessages($newLine->messages);
+                //$debate->setMessages($newLine->messages);
                 if (!$debate->save()) {
                     throw new Exception(
                         Yii::t("app", "Can't save debate! Errors:<br>{errors}", [
