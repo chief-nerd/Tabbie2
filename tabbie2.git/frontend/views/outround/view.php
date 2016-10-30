@@ -306,24 +306,9 @@ $this->params['breadcrumbs'][] = $model->name;
         ],
         [
             'class' => '\kartik\grid\DataColumn',
-            'attribute' => 'highestPoints',
-            'label' => Yii::t("app", 'Points'),
-            'width' => "80px",
-        ],
-        [
-            'class' => '\kartik\grid\DataColumn',
             'attribute' => 'panel.strength',
             'label' => Yii::t("app", 'Strength'),
             'width' => "80px",
-        ],
-        [
-            'class' => '\kartik\grid\DataColumn',
-            'attribute' => 'language_status',
-            'label' => Yii::t("app", 'Language'),
-            'value' => function ($model, $key, $index, $widget) {
-                return \common\models\User::getLanguageStatusLabel($model->getLanguage_status(), true);
-            },
-            'visible' => $model->tournament->has_esl,
         ],
         [
             'class' => '\kartik\grid\DataColumn',
