@@ -144,6 +144,26 @@ class Adjudicator extends \yii\db\ActiveRecord
         return $name;
     }
 
+    /**
+     * Get the Gender of the Adjudicator.
+     *
+     * @return string
+     */
+    public function getGender($panel_id = null)
+    {
+        $key = "AdjudicatorGender#" . $this->id . "#" . $panel_id;
+
+        if (Yii::$app->cache->exists($key)) {
+            return Yii::$app->cache->get($key);
+        }
+
+        $gender = $this->user->gender;
+
+        Yii::$app->cache->set($key, $gender, 1 * 60 * 60);
+
+        return $gender;
+    }
+
     public function getSocietyName()
     {
         return $this->society->fullname;

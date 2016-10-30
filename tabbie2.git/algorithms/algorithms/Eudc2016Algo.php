@@ -8,6 +8,7 @@ use common\models\DrawLine;
 use common\models\EnergyConfig;
 use common\models\Team;
 use common\models\Venue;
+use common\models\User;
 use Yii;
 use yii\base\Exception;
 use yii\helpers\ArrayHelper;
@@ -848,7 +849,12 @@ class Eudc2016Algo extends TabAlgorithm
 				"label" => Yii::t("app", "Chair not Ciaran Perfect"),
 				"key"   => "ciaranPerfect",
 				"value" => 50,
-			]
+			],
+            [
+            "label" => Yii::t("app", "Gender Balance"),
+            "key"   => "genderBalance",
+            "value" => 1000,
+            ],
 		];
 
 		foreach ($config as $c) {
@@ -1139,6 +1145,14 @@ class Eudc2016Algo extends TabAlgorithm
      */
     public function energyRule_CiaranPerfect($line)
     {
+
+    // This is in order to avoid an error when you drag and drop a judge after the draw is made.
+        if(is_null($this->pointsArray)){
+            $line->energyLevel = $line->energyLevel + 0; //Multiply with occurance
+
+            return $line;
+        }
+
         $penalty = $this->energyConfig["ciaranPerfect"];
 
         $debatePointLevel = $line->getLevel();
@@ -1158,13 +1172,45 @@ class Eudc2016Algo extends TabAlgorithm
 
         $penalty = pow($diff,2) * $penalty;
 
-        $line->addMessage("info", Yii::t("app", "Adjudicator {adju} is not Ciaran perfect by {value}.", [
-            "adju" => $line->getChair()["name"],
-            "value" => $diff,
-        ]), $penalty);
+        if($penalty > 0) {
+            $line->addMessage("info", Yii::t("app", "Adjudicator {adju} is not Ciaran perfect by {value}.", [
+                "adju" => $line->getChair()["name"],
+                "value" => $diff,
+            ]), $penalty);
+        }
 
         $line->energyLevel += ($penalty); //Multiply with occurance
 
         return $line;
     }
+
+
+    public function energyRule_GenderBalance($line){
+        $gender_spread = [];
+        foreach ($line->getAdjudicators() as $adjudicator) {
+            $gender_current = $adjudicator['gender'];
+            if(!array_key_exists($gender_current, $gender_spread))
+            {
+                $gender_spread[$gender_current] = 1;
+            }
+            else {
+                $gender_spread[$gender_current]++;
+            }
+        }
+
+        $num_judges = count($line->getAdjudicators());
+
+        foreach($gender_spread as $gender){
+            if ($gender == $num_judges){
+                $penalty = $this->energyConfig["genderBalance"];
+                $line->energyLevel += ($penalty);
+                $line->addMessage("error", Yii::t("app", "Panel all has gender {genderval}", [
+                "genderval" => $gender,
+            ]), $penalty);
+            }
+        }
+
+        return $line;
+    }
+
 }

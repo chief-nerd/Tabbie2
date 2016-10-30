@@ -51,6 +51,13 @@ abstract class TabAlgorithm extends \yii\base\Object
     public $round_number;
 
     /**
+     * Current Round ID
+     *
+     * @var integer
+     */
+    public $round_id;
+
+    /**
      * Average Adjudicator Strength in the tournament
      *
      * @var float
