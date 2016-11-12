@@ -25,7 +25,8 @@ $this->params['breadcrumbs'][] = $this->title;
 			'class'              => '\kartik\grid\DataColumn',
 			'attribute'          => 'name',
 			'filterType'         => GridView::FILTER_SELECT2,
-				'filter' => \common\models\search\UserSearch::getSearchTeamArray($tournament->id),
+			'filter' => \common\models\search\TeamSearch::getSpeakerSearchArray($tournament->id),
+			//'filter' => \common\models\search\UserSearch::getSearchTeamArray($tournament->id),
 			'filterWidgetOptions' => [
 				'pluginOptions' => ['allowClear' => true],
 			],
