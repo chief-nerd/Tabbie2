@@ -13,6 +13,10 @@
 			<li>CO: <?= $model->co_team->society->fullname ?>
 				(<?= \common\models\User::getLanguageStatusLabel($model->co_team->language_status, true) ?>)
 			</li>
+			<li>
+				DebateID: <?= $model->id ?>
+				PanelID: <?= $model->panel->id ?>
+			</li>
 		</ul>
 	</div>
 	<div class="col-xs-5 messages">
