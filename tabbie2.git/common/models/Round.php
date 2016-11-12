@@ -1012,9 +1012,9 @@ class Round extends \yii\db\ActiveRecord
             $poly = Html::tag("polygon", null, [
                 "points" =>
                     $posMatrix["og_x"] . "," . $posMatrix["og_y"] . " " . // Top-Left
-                    $posMatrix["cg_x"] . "," . $posMatrix["cg_y"] . " " . // Bottom-Left
+                    $posMatrix["oo_x"] . "," . $posMatrix["oo_y"] . " " . // Bottom-Left
                     $posMatrix["co_x"] . "," . $posMatrix["co_y"] . " " . // Bottom-Right
-                    $posMatrix["oo_x"] . "," . $posMatrix["oo_y"],        // Top-Right
+                    $posMatrix["cg_x"] . "," . $posMatrix["cg_y"],        // Top-Right
                 "style" => "fill:$color"
             ]);
 
