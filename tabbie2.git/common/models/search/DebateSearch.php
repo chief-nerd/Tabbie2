@@ -17,6 +17,7 @@ class DebateSearch extends Debate
 	public $adjudicator;
 	public $team;
 	public $language_status;
+    public $modulo;
 
 	/**
 	 * @inheritdoc
@@ -25,7 +26,7 @@ class DebateSearch extends Debate
 	{
 		return [
 			[['id', 'round_id', 'tournament_id', 'og_team_id', 'oo_team_id', 'cg_team_id', 'co_team_id', 'panel_id', 'venue_id', 'og_feedback', 'oo_feedback', 'cg_feedback', 'co_feedback'], 'integer'],
-			[['venue', 'team', 'adjudicator'], 'string'],
+			[['venue', 'team', 'adjudicator', 'modulo'], 'string'],
 			[['time', 'highestPoints', 'language_status'], 'safe'],
 		];
 	}
@@ -134,6 +135,9 @@ class DebateSearch extends Debate
 				"coteam.language_status = " . $this->language_status
 			);
 
+        if(is_numeric($this->modulo))
+            $query->andWhere("debate.id % 4 = " . $this->modulo);
+
 		$query->andWhere(["like", "CONCAT(user.givenname, ' ', user.surename)", $params["DebateSearch"]["adjudicator"]]);
 		$query->andWhere(["like", "venue.name", $params["DebateSearch"]["venue"]]);
 
@@ -153,6 +157,16 @@ class DebateSearch extends Debate
 
 		return $filter;
 	}
+
+    public static function getModuloSearchArray($roundid)
+    {
+        $filter['1'] = '1';
+        $filter['2'] = '2';
+        $filter['3'] = '3';
+        $filter['0'] = '4';
+
+        return $filter;
+    }
 
 	public static function getTeamSearchArray($tournamentid)
 	{

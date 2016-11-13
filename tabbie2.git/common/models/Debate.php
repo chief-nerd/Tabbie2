@@ -325,4 +325,9 @@ class Debate extends \yii\db\ActiveRecord
 		return ($this->messages) ? json_decode($this->messages) : [];
 	}
 
+	public function getModulo()
+    {
+        return (($this->id % 4));
+    }
+
 }

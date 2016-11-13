@@ -12,9 +12,11 @@ $form = ActiveForm::begin([
 	<h3>Filter</h3>
 	<div class="row">
 		<?
-		$cols = 4;
+		$cols = 5;
 		if ($model->tournament->has_esl)
-			$cols = 3;
+			$cols--;
+		if ($model->tournament->has_quarterfinal)
+			$cols--;
 		?>
 		<div class="col-md-<?= $cols ?>">
 			<?
@@ -76,5 +78,21 @@ $form = ActiveForm::begin([
 			]);
 			?>
 		</div>
+		<? if ($model->tournament->has_quarterfinal): ?>
+		<div class="col-md-1">
+			<?
+			echo $form->field($debateSearchModel, 'modulo')->widget(Select2::classname(), [
+				'data'         => \common\models\search\DebateSearch::getModuloSearchArray($model->id),
+				'options'      => ['placeholder' => Yii::t("app", 'Select a Quartile ...')],
+				'pluginOptions' => [
+					'allowClear' => true
+				],
+				"pluginEvents" => [
+					"change" => "function() { document.getElementById('filterForm').submit(); }",
+				]
+			]);
+			?>
+		</div>
+		<? endif; ?>
 	</div>
 <?php ActiveForm::end(); ?>
