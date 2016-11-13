@@ -99,7 +99,7 @@ $this->title = "Round " . $round->number . " Draw";
 				 "accessToken"   => $round->tournament->accessToken
 			 ]) ?>"
 			 style="display:none; margin-top: 20px;">
-			<h1><?= $round->motion ?></h1>
+			<h1><?= nl2br($round->motion) ?></h1>
 		</div>
 	</div>
 <? else: ?>
@@ -114,7 +114,7 @@ $this->title = "Round " . $round->number . " Draw";
 				 "accessToken"   => $round->tournament->accessToken
 			 ]) ?>"
 			 style="display:none; margin-top: 50px;">
-			<h1><?= $round->motion ?></h1>
+			<h1><?= nl2br($round->motion) ?></h1>
 		</div>
 	</div>
 <? endif; ?>
