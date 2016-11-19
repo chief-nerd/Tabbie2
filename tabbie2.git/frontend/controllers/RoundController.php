@@ -656,6 +656,10 @@ class RoundController extends BasetournamentController
                             }
                         }
 
+                        $round = $db_panel->debate->round;
+                        $newLines = $round->updateEnergy(["newPanel" => $db_panel->debate->id, "oldPanel" => $db_panel->debate->id]);
+                        $round->refresh();
+
                         //$db_debate->messages = $messages;
                         //if (!$db_debate->save())
                         //    throw new Exception(ObjectError::getMsg($db_debate));
