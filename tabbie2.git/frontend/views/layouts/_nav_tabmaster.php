@@ -36,7 +36,7 @@ $team_items = [
     ['label' => Html::icon("flag") . "&nbsp;" . Yii::t("app", 'Strike Team'), 'url' => ['strike/team_index', "tournament_id" => $tournament->id]],
 ];
 
-if ($tournament->has_esl) {
+if ($tournament->has_esl || $tournament->has_novice) {
     $team_items[] = '<li class="divider"></li>';
     $team_items[] = ['label' => Yii::t("app", 'Language Officers'), 'url' => ['language/officer', "tournament_id" => $tournament->id]];
     $team_items[] = ['label' => Yii::t("app", 'Language Status Review'), 'url' => ['language/index', "tournament_id" => $tournament->id]];
