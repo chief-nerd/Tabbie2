@@ -510,6 +510,7 @@ class RoundController extends BasetournamentController
                     $adju->refresh();
                     $adjudicator = $adju->toArray($adju_props);
                     $adjudicator["gender"] = $adju->user->gender;
+                    $adjudiator["language"] = $adju->user->language;
                     $adjudicator["country"] = isset($adju->user->societies[0]) ?
                         $adju->user->societies[0]->country->toArray($country_props) :
                         "";

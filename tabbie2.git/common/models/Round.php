@@ -516,6 +516,7 @@ class Round extends \yii\db\ActiveRecord
                     $adjudicator["pastAdjudicatorIDs"] = $adju->getPastAdjudicatorIDs($this->id);
                     $adjudicator["pastTeamIDs"] = $adju->getPastTeamIDs($this->id);
                     $adjudicator["gender"] = $adju->gender;
+                    $adjudicator["language"] = $adju->language;
 
                     $total += $adju->strength;
 
@@ -548,6 +549,7 @@ class Round extends \yii\db\ActiveRecord
                     $adjudicators[$i]["pastAdjudicatorIDs"] = $adjudicatorsObjects[$i]->getPastAdjudicatorIDs();
                     $adjudicators[$i]["pastTeamIDs"] = $adjudicatorsObjects[$i]->getPastTeamIDs();
                     $adjudicators[$i]["gender"] = $adjudicatorsObjects[$i]->gender;
+                    $adjudicators[$i]["language"] = $adjudicatorsObjects[$i]->language;
                 }
             }
 
@@ -858,6 +860,7 @@ class Round extends \yii\db\ActiveRecord
             $adjudicator = $adju->attributes;
             $adjudicator["name"] = $adju->name;
             $adjudicator["gender"] = $adju->gender;
+            $adjudicator["language"] = $adju->language;
             $adjudicator["societies"] = ArrayHelper::getColumn($adju->getSocieties(true)->asArray()->all(), "id");
 
             $strikedAdju = $adju->getStrikedAdjudicators()->asArray()->all();

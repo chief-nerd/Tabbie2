@@ -164,6 +164,26 @@ class Adjudicator extends \yii\db\ActiveRecord
         return $gender;
     }
 
+    /**
+     * Get the ESL Status of the Adjudicator.
+     *
+     * @return string
+     */
+    public function getLanguage($panel_id = null)
+    {
+        $key = "AdjudicatorESL#" . $this->id . "#" . $panel_id;
+
+        if (Yii::$app->cache->exists($key)) {
+            return Yii::$app->cache->get($key);
+        }
+
+        $language_status = $this->user->language_status;
+
+        Yii::$app->cache->set($key, $language_status, 1 * 60 * 60);
+
+        return $language_status;
+    }
+
     public function getSocietyName()
     {
         return $this->society->fullname;

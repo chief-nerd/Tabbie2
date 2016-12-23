@@ -40,8 +40,12 @@ $this->context->layout = null;
 		<td>@todo</td>
 	</tr>
 	<tr>
+		<th>Language</th>
+		<td><?= $model->getLanguage() ?></td>
+	</tr>
+	<!--<tr>
 		<th><?= Yii::t("app", "Pointer") ?></th>
 		<td>@todo</td>
-	</tr>
+	</tr>-->
 </table>
 <div class="clear"></div>
