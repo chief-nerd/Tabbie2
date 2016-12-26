@@ -71,9 +71,9 @@ Options -Indexes
   RewriteBase /
 
 #redirect every request to https - except if tabbie.dev domain for local testing
-  RewriteCond %{HTTP_HOST} !\.dev$
-  RewriteCond %{HTTPS} off
-  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+#  RewriteCond %{HTTP_HOST} !\.dev$
+#  RewriteCond %{HTTPS} off
+#  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
 #rewrite for api
   RewriteCond %{HTTP_HOST} ^api.
