@@ -56,6 +56,11 @@ class TeamSearch extends Team
 			->joinWith("speakerB")
 			->where(["tournament_id" => $this->tournament_id]);
 
+
+        if (!$this->societyName) {
+            $query->joinWith("society");
+        }
+
 		$dataProvider = new ActiveDataProvider([
 			'query'      => $query,
 			'pagination' => [
@@ -87,10 +92,12 @@ class TeamSearch extends Team
 		$query->andWhere(["like", "CONCAT(uA.givenname, ' ', uA.surename)", $this->speakerName]);
 		$query->orWhere(["like", "CONCAT(uB.givenname, ' ', uB.surename)", $this->speakerName]);
 
-		// filter by society name
-		$query->joinWith(['society' => function ($q) {
-			$q->where(['like', 'society.fullname', $this->societyName]);
-		}]);
+        // filter by society name
+        if ($this->societyName) {
+            $query->joinWith(['society' => function ($q) {
+                $q->where(['like', 'society.fullname', $this->societyName]);
+            }]);
+        }
 
 		$query->andFilterWhere(['id' => $this->id]);
 		$query->andFilterWhere(['active' => $this->active]);
