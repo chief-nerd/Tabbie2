@@ -15,6 +15,7 @@ use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
+use yii\helpers\Json;
 
 /**
  * ResultController implements the CRUD actions for Result model.
@@ -140,7 +141,10 @@ class ResultController extends BasetournamentController
             }
             $result->save();
         }
-
+        Yii::$app->redis->executeCommand('PUBLISH', [
+            'channel' => 'notification',
+            'message' => Json::encode(['debate' => $result->debate->id, 'message' => $result->checked, 'type' => 'confirmation'])
+        ]);
         return $this->actionRound($result->debate->round_id, "table");
     }
 
@@ -225,6 +229,11 @@ class ResultController extends BasetournamentController
                             ->where(["round_id" => $roundid])
                             ->count();
 
+                        Yii::$app->redis->executeCommand('PUBLISH', [
+                            'channel' => 'notification',
+                            'message' => Json::encode(['type' => 'result', 'debate' => $model->debate_id, 'og_place' => $model->og_place, 'oo_place' => $model->oo_place, 'cg_place' => $model->cg_place, 'co_place' => $model->co_place])
+                        ]);
+
                         return $this->render('thankyou', [
                             "model" => $model,
                             "place" => $place,
@@ -270,6 +279,11 @@ class ResultController extends BasetournamentController
 
         if ($model->load(Yii::$app->request->post())) {
             if ($model->confirmed == "true") {
+
+                Yii::$app->redis->executeCommand('PUBLISH', [
+                    'channel' => 'notification',
+                    'message' => Json::encode(['type' => 'result', 'debate' => $model->debate_id, 'og_place' => $model->og_place, 'oo_place' => $model->oo_place, 'cg_place' => $model->cg_place, 'co_place' => $model->co_place])
+                ]);
 
                 $model->entered_by_id = Yii::$app->user->id;
 

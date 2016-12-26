@@ -20,6 +20,7 @@ use yii\base\Exception;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
+use yii\helpers\Json;
 
 /**
  * AdjudicatorController implements the CRUD actions for Adjudicator model.
@@ -124,6 +125,15 @@ class AdjudicatorController extends BasetournamentController
                         throw new Exception(Yii::t("app", "No condition matched"));
                     }
 
+                    $adjudicator = Adjudicator::findOne(["id" => $params["id"]]);
+                    $adjudicator_name = $adjudicator->user->givenname . " " . $adjudicator->user->surename;
+                    $adjudicator_strength = $adjudicator->strength;
+
+                    Yii::$app->redis->executeCommand('PUBLISH', [
+                        'channel' => 'notification',
+                        'message' => Json::encode(["type" => "changejudge", "id" => $ID, "new_panel" => $NEW, "pos" => $POS, "name" => $adjudicator_name, "strength" => $adjudicator_strength], JSON_NUMERIC_CHECK)
+                    ]);
+
                     /** Recalculate Energy and Messages */
 
                     $round = $newPanel->debate->round;
@@ -132,8 +142,13 @@ class AdjudicatorController extends BasetournamentController
                     // Refresh Values to check
                     $oldPanel->refresh();
                     $newPanel->refresh();
-                    if ($oldPanel->check() && $newPanel->check())
+                    if ($oldPanel->check() && $newPanel->check()) {
+                        Yii::$app->redis->executeCommand('PUBLISH', [
+                            'channel' => 'notification',
+                            'message' => Json::encode(["type" => "roundUpdate", "data" => $newLines])
+                        ]);
                         return json_encode($newLines);
+                    }
                     else {
                         $error_message = Yii::t("app", "Did not pass panel check old: {old} / new: {new}", [
                             "old" => (($oldPanel->check()) ? 'true' : 'false'),
