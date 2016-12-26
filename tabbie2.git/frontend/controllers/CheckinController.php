@@ -136,7 +136,9 @@ class CheckinController extends BasetournamentController
 			$adju = models\Adjudicator::find()->tournament($this->_tournament->id)->all();
 
 			$len_t = strlen($teams[0]->id) + 1;
+            $len_t = 8;
 			$len_a = strlen($adju[0]->id) + 1;
+            $len_a = 8;
 
 			for ($i = 0; $i < count($teams); $i++) {
 				if ($teams[$i]->speakerA) {
@@ -191,28 +193,43 @@ class CheckinController extends BasetournamentController
 				foreach ($do_person as $todo) {
 					$adju = models\Adjudicator::find()->tournament($this->_tournament->id)->andWhere(["user_id" => $todo])->one();
 					if ($adju instanceof models\Adjudicator) {
+                        $paps = 'No preference';
+                        if (isset($adju->user->getCustomValues($this->_tournament->id)['Food']['value'])) {
+                            $paps = $adju->user->getCustomValues($this->_tournament->id)['Food']['value'];
+                        }
 						$person[] = $this->cPerson(
 							$adju->user->name,
 							$adjuText,
-							CheckinForm::ADJU . "-" . $adju->id,
-							$adju->society->fullname
+                            CheckinForm::ADJU . "-" . str_pad($adju->id, 8, "0", STR_PAD_LEFT),
+                            $adju->society->fullname,
+                            $paps
 						);
 					} else {
 						$team = models\Team::find()->tournament($this->_tournament->id)->andWhere("speakerA_id = $todo OR speakerB_id = $todo")->one();
 						if ($team instanceof models\Team) {
 							if ($team->speakerA_id == $todo) {
+                                $paps = 'No preference';
+                                if (isset($team->speakerA->getCustomValues($this->_tournament->id)['Food']['value'])) {
+                                    $paps = $team->speakerA->getCustomValues($this->_tournament->id)['Food']['value'];
+                                }
 								$person[] = $this->cPerson(
 									$team->speakerA->name,
 									$team->name,
-									CheckinForm::TEAMA . "-" . $team->id,
-									$team->society->fullname
+                                    CheckinForm::TEAMA . "-" . str_pad($team->id, 8, "0", STR_PAD_LEFT),
+                                    $team->society->fullname,
+                                    $paps
 								);
 							} else {
+                                $paps = 'No preference';
+                                if (isset($team->speakerB->getCustomValues($this->_tournament->id)['Food']['value'])) {
+                                    $paps = $team->speakerB->getCustomValues($this->_tournament->id)['Food']['value'];
+                                }
 								$person[] = $this->cPerson(
 									$team->speakerB->name,
 									$team->name,
-									CheckinForm::TEAMB . "-" . $team->id,
-									$team->society->fullname
+                                    CheckinForm::TEAMB . "-" . str_pad($team->id, 8, "0", STR_PAD_LEFT),
+                                    $team->society->fullname,
+                                    $paps
 								);
 							}
 						} else {
@@ -234,19 +251,29 @@ class CheckinController extends BasetournamentController
 						$society = $teams[$i]->society->fullname;
 
 						if ($teams[$i]->speakerA) {
+                            $paps = 'No preference';
+                            if (isset($teams[$i]->speakerA->getCustomValues($this->_tournament->id)['Food']['value'])) {
+                                $paps = $teams[$i]->speakerA->getCustomValues($this->_tournament->id)['Food']['value'];
+                            }
 							$person[] = $this->cPerson(
 								$teams[$i]->speakerA->name,
 								$teams[$i]->name,
-								CheckinForm::TEAMA . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
-								$society
+                                CheckinForm::TEAMA . "-" . str_pad($teams[$i]->id, 8, "0", STR_PAD_LEFT),
+                                $society,
+                                $paps
 							);
 						}
 						if ($teams[$i]->speakerB) {
+                            $paps = 'No preference';
+                            if (isset($teams[$i]->speakerB->getCustomValues($this->_tournament->id)['Food']['value'])) {
+                                $paps = $teams[$i]->speakerB->getCustomValues($this->_tournament->id)['Food']['value'];
+                            }
 							$person[] = $this->cPerson(
 								$teams[$i]->speakerB->name,
 								$teams[$i]->name,
-								CheckinForm::TEAMB . "-" . str_pad($teams[$i]->id, $len_t, "0", STR_PAD_LEFT),
-								$society
+                                CheckinForm::TEAMB . "-" . str_pad($teams[$i]->id, 8, "0", STR_PAD_LEFT),
+                                $society,
+                                $paps
 							);
 						}
 					}
@@ -254,11 +281,16 @@ class CheckinController extends BasetournamentController
 				if (count($adju) > 0) {
 					$len_a = strlen($adju[0]->id) + 1;
 					for ($i = 0; $i < count($adju); $i++) {
+                        $paps = 'No preference';
+                        if (isset($adju[$i]->user->getCustomValues($this->_tournament->id)['Food']['value'])) {
+                            $paps = $adju[$i]->user->getCustomValues($this->_tournament->id)['Food']['value'];
+                        }
 						$person[] = $this->cPerson(
 							$adju[$i]->user->name,
 							$adjuText,
-							CheckinForm::ADJU . "-" . str_pad($adju[$i]->id, $len_a, "0", STR_PAD_LEFT),
-							$adju[$i]->society->fullname
+                            CheckinForm::ADJU . "-" . str_pad($adju[$i]->id, 8, "0", STR_PAD_LEFT),
+                            $adju[$i]->society->fullname,
+                            $paps
 						);
 					}
 				}
@@ -274,7 +306,7 @@ class CheckinController extends BasetournamentController
 				"margin" => Yii::$app->request->post("margin", 0),
 				"style"  => '@frontend/assets/css/badge.css',
 				"css" => ".paper { width: 100%; height: 100%; bolder: " . Yii::$app->request->post("border", "none") . ";}
-						  .badge { width: 50%; height: 100%; }
+						  .badge { width: 100%; height: 100%; }
 						  .code { padding-top: " . (76 - Yii::$app->request->post("margin", 0)) . "mm; }",
 			];
 
@@ -284,7 +316,7 @@ class CheckinController extends BasetournamentController
 				"style"  => '@frontend/assets/css/badge.css',
 				//"css" => ".paper { width: 14.8cm; height: 10.5cm;} .badge { width: 7.4cm; height: 10.5cm }",
 				"css" => ".paper { width: 50%; height: 50%; bolder: " . Yii::$app->request->post("border", "none") . ";}
-						  .badge { width: 50%; height: 50%; }
+						  .badge { width: 100%; height: 50%; }
 						  .code { padding-top: " . (76 - (Yii::$app->request->post("margin", 0) / 2)) . "mm; }",
 			];
 
@@ -299,7 +331,7 @@ class CheckinController extends BasetournamentController
 			$pdf = new Pdf([
 				'mode'         => Pdf::MODE_UTF8, // leaner size using standard fonts
 				'format'       => $set["format"],
-				'orientation'  => Pdf::ORIENT_LANDSCAPE,
+                'orientation' => Pdf::ORIENT_PORTRAIT,
 				'cssInline'    => $set["css"],
 				'cssFile'      => '@frontend/assets/css/badge.css',
 				'content'      => $this->renderPartial("badges", [
@@ -315,11 +347,13 @@ class CheckinController extends BasetournamentController
 				"marginHeader" => 0,
 				"marginFooter" => 0,
 				'options'      => [
-					'title' => 'Badgets for ' . $this->_tournament->name,
+                    'title' => 'Badges for ' . $this->_tournament->name,
 				],
 			]);
 
 			$mpdf = $pdf->getApi();
+
+            //$pdf->setfont('trebuchet');
 
 			return $pdf->render();
 		}
@@ -327,13 +361,14 @@ class CheckinController extends BasetournamentController
 		return $this->render("badge_select");
 	}
 
-	public function cPerson($name, $extra, $code, $society)
+    public function cPerson($name, $extra, $code, $society, $dietary)
 	{
 		return [
 			"name"    => $name,
 			"extra"   => $extra,
 			"code"    => $code,
 			"society" => $society,
+            "dietary" => $dietary
 		];
 	}
 
