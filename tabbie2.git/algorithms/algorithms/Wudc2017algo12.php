@@ -1251,24 +1251,26 @@ class Wudc2017algo12 extends TabAlgorithm
         $penalty = $this->energyConfig["judge_rotation"];
         foreach ($line->getAdjudicators() as $adjudicator) {
             $adj = \common\models\Adjudicator::findOne($adjudicator['id']);
-            $adj->refresh();
+            $penTotal = 0;
+            $roundAvg = ($this->round_number - 1) * 1.5;
+            $lineLevel = $line->getLevel();
             $pastIDs = $adj->getPastTeamIDsWithRoundNumbers($this->round_number);
-            $arrlength = count($pastIDs);
-            $roomPoints = [];
-            foreach ($pastIDs as $pastID) {
-                \common\models\Adjudicator::findOne($pastID['og_team_id']);
-
+            $arrLength = count($pastIDs);
+            for ($x = 0; $x < $arrLength; $x++) {
+                if ($pastIDs[$x]['label'] > 1) {
+                    $og_team = \common\models\Team::findOne($pastIDs[$x]['og_team_id']);
+                    $og_pts = $og_team->getPointsAfterRound($pastIDs[$x]['label'] - 1);
+                    $penValue = $og_pts - 1.5 * ($pastIDs[$x]['label'] - 1);
+                    $penTotal += ($penValue * $penalty) ^ 2;
+                }
             }
-            $arrlength = count($roomPoints);
-            for ($x = 0; $x < $arrlength; $x++) {
-                $roomPoints[$x] = $roomPoints[$x] - 1.5 * ($x + 1);
-                $penValue += $roomPoints[$x] * $penalty;
+            $penTotal += $penalty * ($lineLevel - $roundAvg) ^ 2;
+            if ($penTotal) {
+                $line->energyLevel += ($penTotal);
+                $line->addMessage("info", Yii::t("app", "Rotation Factor: {rotationDifference}", [
+                    "rotationDifference" => round($penTotal, 3),
+                ]), $penalty);
             }
-            $penalty = $penValue ^ 2;
-            $line->energyLevel += ($penalty);
-            $line->addMessage("info", Yii::t("app", "Rotation Factor: {rotationDifference}", [
-                "rotationDifference" => round($penValue, 3),
-            ]), $penalty);
         }
 
         return $line;
