@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-    var socket = io.connect('http://172.16.14.32:8890');
+    var socket = io.connect('http://192.168.1.80:8890');
 
     socket.on('notification', function (data) {
 

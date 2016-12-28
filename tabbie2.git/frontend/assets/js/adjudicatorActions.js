@@ -63,7 +63,9 @@ function init() {
                 pos: position
             }
         }).success(function (data) {
+            console.log(data);
             obj = JSON.parse(data);
+            console.log(obj);
             if (typeof obj.newPanel != "undefined" && typeof obj.oldPanel != "undefined") {
                 console.log("Saved!");
 
