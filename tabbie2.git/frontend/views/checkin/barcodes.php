@@ -34,7 +34,7 @@ $height = 78;
 			.code {
 				float: left;
 				border: 1px solid #eee;
-				width: 273px;
+                width: 300px;
 				height: <?= $height ?>px;
 			}
 		</style>
