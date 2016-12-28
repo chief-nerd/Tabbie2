@@ -339,6 +339,6 @@ class CheckinController extends BasetournamentController
 
 	public function sortPerson($a, $b)
 	{
-		return strcmp($a["name"], $b["name"]);
+        return strcmp($a["society"], $b["society"]);
 	}
 }
