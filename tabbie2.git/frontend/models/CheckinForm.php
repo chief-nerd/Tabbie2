@@ -45,6 +45,7 @@ class CheckinForm extends Model
 
 	public function save()
 	{
+        $this->number = rtrim($this->number, '_');
 		if (self::checkNumber($this->number))
 			return ["danger" => $this->number . ": " . Yii::t("app", "Not a valid input")];
 
