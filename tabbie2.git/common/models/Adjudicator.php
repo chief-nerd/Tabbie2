@@ -124,7 +124,7 @@ class Adjudicator extends \yii\db\ActiveRecord
         $key = "AdjudicatorName#" . $this->id . "#" . $panel_id;
 
         if (Yii::$app->cache->exists($key)) {
-            return Yii::$app->cache->get($key);
+            //    return Yii::$app->cache->get($key);
         }
 
         $name = $this->user->name;

@@ -3,6 +3,7 @@
 use kartik\grid\GridView;
 
 $this->context->menuItems = [
+	['label' => 'Brought to you by #SkyBox'],
 	['label' => Yii::t("app", 'Overview'), 'url' => ["public/rounds", "tournament_id" => $round->tournament_id, "accessToken" => $round->tournament->accessToken]],
 	['label' => Yii::t("app", 'Run'), 'url' => "#run", "linkOptions" => ["class" => "run"]],
 ];

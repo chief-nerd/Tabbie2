@@ -744,6 +744,10 @@ class Tournament extends \yii\db\ActiveRecord
      */
     public function getAmountBreakingTeams()
     {
+        if ($this->id == '526' || $this->id == 160) {
+            //TODO: Fix this properly.
+            return 48;
+        }
         if ($this->has_octofinal) {
             return 32;
         }
