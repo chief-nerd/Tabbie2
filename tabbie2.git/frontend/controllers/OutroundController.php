@@ -12,6 +12,8 @@ use common\models\search\DebateSearch;
 use common\models\Outround;
 use common\models\Team;
 use common\models\Venue;
+use kartik\mpdf\Pdf;
+use mPDF;
 use Yii;
 use yii\base\Exception;
 use yii\filters\AccessControl;
@@ -179,4 +181,26 @@ class OutroundController extends RoundController
 
 		return $this->redirect(["outround/view", "id" => $id, "tournament_id" => $debate->tournament_id]);
 	}
+
+    public function actionPrintballots($id, $debug = false)
+    {
+        set_time_limit(0);
+        $model = Round::findOne(["id" => $id]);
+
+        $pdf = new Pdf([
+            'mode' => Pdf::MODE_UTF8, // leaner size using standard fonts
+            'format' => Pdf::FORMAT_A4,
+            'orientation' => Pdf::ORIENT_LANDSCAPE,
+            'cssFile' => '@frontend/assets/css/ballot.css',
+            'content' => $this->renderPartial("ballots", [
+                "model" => $model
+            ]),
+            'options' => [
+                'title' => 'Ballots OutRound ' . $model->number,
+            ],
+        ]);
+
+        //renderAjax does the trick for no layout
+        return $pdf->render();
+    }
 }
