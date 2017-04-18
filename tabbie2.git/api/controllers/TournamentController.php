@@ -1,6 +1,6 @@
 <?php
 /**
- * MotionController.php File
+ * TournamentController.php File
  *
  * @package  Tabbie2
  * @author   jareiter
