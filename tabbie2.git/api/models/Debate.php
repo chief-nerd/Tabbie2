@@ -63,19 +63,31 @@ class Debate extends \common\models\Debate implements Linkable
 
 		$fields['participants'] = function ($model) {
 		    $participants = [];
+		    $debaters = [];
+		    $adjudicators = [];
             $teams = ['og_team', 'oo_team', 'cg_team', 'co_team'];
             $positions = ['speakerA', 'speakerB'];
 
             foreach ($teams as $t) {
                 foreach ($positions as $p) {
-                    array_push($participants, [
+                    array_push($debaters, [
                         "userId" => $model[$t][$p . "_id"],
-                        "givenName" => $model[$t][$p]->givenname,
-                        "sureName" => $model[$t][$p]->surename,
+                        "name" => $model[$t][$p]->getName(),
                         "position" => $t
                     ]);
                 }
             }
+
+            foreach ($model->panel->getAdjudicatorsObjects() as $a) {
+                array_push($adjudicators, [
+                    "userId" => $a->id,
+                    "name" => $a->name,
+                    "canChair" => $a->can_chair
+                ]);
+            }
+
+            $participants['debaters'] = $debaters;
+            $participants['adjudicators'] = $adjudicators;
 
 			return $participants;
 		};
