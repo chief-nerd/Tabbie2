@@ -9,9 +9,11 @@
 
 namespace api\controllers;
 
+use api\models\Tournament;
 use Yii;
 use api\models\User;
 use common\models\LoginForm;
+use yii\data\ActiveDataProvider;
 
 /**
  * Class UserController
@@ -45,5 +47,27 @@ class UserController extends BaseRestController
 	public function actionMe()
 	{
 		return $this->redirect(["user/view", "id" => Yii::$app->user->id]);
+	}
+
+	/**
+	 * @param null $tournament_id
+     * @param null $user_id
+	 * @return Array
+	 */
+	public function actionGettournamentrole($user_id = null, $tournament_id = null)
+	{
+	    if ($user_id != null and $tournament_id != null) {
+            $tournament = Tournament::find()
+                ->where(["id" => $tournament_id])
+                ->one();
+
+            return [
+                "tournamentId" => $tournament_id,
+                "userId" => $user_id,
+                "role" => $tournament->user_role_string((int) $user_id)
+            ];
+        } else {
+	        return [];
+        }
 	}
 }

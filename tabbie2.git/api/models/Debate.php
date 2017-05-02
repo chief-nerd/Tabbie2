@@ -80,7 +80,7 @@ class Debate extends \common\models\Debate implements Linkable
 
             foreach ($model->panel->getAdjudicatorsObjects() as $a) {
                 array_push($adjudicators, [
-                    "userId" => $a->id,
+                    "userId" => $a->user_id,
                     "name" => $a->name,
                     "canChair" => $a->can_chair
                 ]);
