@@ -398,7 +398,7 @@ class Team extends \yii\db\ActiveRecord {
 
 		for ($i = 1; $i <= $number; $i++) {
 			$debateQuery = Debate::find()->leftJoin("round", "round.id = debate.round_id")->where([
-				"round.number"        => $i,
+                "round.label" => $i,
 				"round.tournament_id" => $this->tournament_id
 			]);
 

@@ -125,7 +125,7 @@ class RoundController extends BasetournamentController
      */
     protected function findModel($id)
     {
-        if (($model = Round::findOne($id)) !== null) {
+        if (($model = Round::findOne(["id" => $id, "tournament_id" => $this->_tournament->id])) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
