@@ -48,7 +48,7 @@ class AdjudicatorController extends BasetournamentController
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['create', 'update', 'delete', 'replace', 'replaceadju', 'move', 'import', 'active', 'popup', 'watch', 'break', 'list', 'resetwatched', 'update-scores'],
+                        'actions' => ['create', 'update', 'delete', 'replace', 'replaceadju', 'remove', 'move', 'import', 'active', 'popup', 'watch', 'break', 'list', 'resetwatched', 'update-scores'],
                         'matchCallback' => function ($rule, $action) {
                             return ($this->_tournament->isTabMaster(Yii::$app->user->id) ||
                                 $this->_tournament->isCA(Yii::$app->user->id));
@@ -168,6 +168,25 @@ class AdjudicatorController extends BasetournamentController
         }
 
         return $this->redirect(["outround/view", "id" => $debate->round_id, "tournament_id" => $debate->tournament_id, "view" => "#draw"]);
+    }
+
+    /**
+     * Function called when delete adjudicator is callled
+     */
+    public function actionRemove()
+    {
+        if ($params = Yii::$app->request->get()) {
+            $debate = Debate::findOne(["id" => $params["debate_id"]]);
+            /** @var AdjudicatorInPanel $old */
+            $old = AdjudicatorInPanel::findOne(["panel_id" => $debate->panel_id, "adjudicator_id" => $params["adj_id"]]);
+            if ($old->is_chair()) {
+                Yii::$app->session->addFlash("error", Yii::t("app", "Can't remove this adjudicator because they are a chair"));
+                return $this->redirect(["round/view", "id" => $debate->round_id, "tournament_id" => $debate->tournament_id, "view" => "#draw"]);
+            }
+            $old->delete();
+        }
+
+        return $this->redirect(["round/view", "id" => $debate->round_id, "tournament_id" => $debate->tournament_id, "view" => "#draw"]);
     }
 
     /**
