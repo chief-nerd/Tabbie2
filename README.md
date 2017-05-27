@@ -16,24 +16,26 @@ DIRECTORY STRUCTURE
 Install with Docker
 -----------------
 - Install Docker CE (https://www.docker.com/community-edition#/download) :)
-- Go to `` of the repository (where the `docker-compose.yml` file is)
+- Go to `\` of the repository (where the `docker-compose.yml` file is)
 - run `docker-compose build web`
 - run `docker-compose run --rm web sh install.sh`
 
 Start/Stop with Docker
 -----------------
 Start the webserver with `docker-compose up`. Stop with key `Ctrl+C`
+
 Or start in demon mode `docker-compose up -d` and stop with `docker-compose stop`.
 
 Main Contributors
 -----------------
 
 Jakob Reiter - repo owner
+
 Richard Coates - algorithm evangelist
 
 
 BASED ON
 --------
 This Version 2 of Tabbie is based on the work of Tabbie from Bob Nimo
-[https://github.com/tswsl1989/tabbie]
+https://github.com/tswsl1989/tabbie
 
