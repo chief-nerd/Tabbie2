@@ -6,5 +6,3 @@ COPY ./apache2.conf /etc/apache2/apache2.conf
 RUN a2enmod headers && service apache2 restart
 
 WORKDIR /var/www/html
-
-ADD install.sh ./install.sh
