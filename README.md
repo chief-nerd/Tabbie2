@@ -12,6 +12,19 @@ DIRECTORY STRUCTURE
       schema/           contains the mysql schema representation for MySQLWorkbench
       CI/               contains images and other corporate design elements
 
+
+Install with Docker
+-----------------
+- Install Docker CE (https://www.docker.com/community-edition#/download) :)
+- Go to `\` of the repository (where the `docker-compose.yml` file is)
+- run `docker-compose build web`
+- run `docker-compose run --rm web sh install.sh`
+
+Start/Stop with Docker
+-----------------
+Start the webserver with `docker-compose up`. Stop with key `Ctrl+C`
+Or start in demon mode `docker-compose up -d` and stop with `docker-compose stop`.
+
 Main Contributors
 -----------------
 

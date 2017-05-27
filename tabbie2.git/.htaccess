@@ -5,7 +5,7 @@ Options -Indexes
 </IfModule>
 
 <IfModule mod_deflate.c>
-    # compress text, html, javascript, css, xml:
+  # compress text, html, javascript, css, xml:
   AddOutputFilterByType DEFLATE application/javascript
   AddOutputFilterByType DEFLATE application/rss+xml
   AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
@@ -70,8 +70,10 @@ Options -Indexes
   RewriteEngine on
   RewriteBase /
 
-#redirect every request to https - except if tabbie.dev domain for local testing
+#redirect every request to https - except if tabbie.dev or localhost domain for local testing
   RewriteCond %{HTTP_HOST} !\.dev$
+  RewriteCond %{HTTP_HOST} !=localhost
+  RewriteCond %{HTTP_HOST} !=127.0.0.1
   RewriteCond %{HTTPS} off
   RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 

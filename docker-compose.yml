@@ -1,0 +1,33 @@
+version: '2'
+
+services:
+  web:
+    build: .
+    volumes:
+      - ./tabbie2.git/:/var/www/html/
+    links:
+      - db
+    # For Apache based image http and https:
+    ports:
+      - "80:80"
+      - "443:443"
+    # Autostart at boottime
+    restart: always
+    # Send log output to syslog
+    #logging:
+    #  driver: "syslog"
+    #  options:
+    #    tag: "docker-tabbie-web"
+
+  db:
+    image: mysql:5.6
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: secret-root
+      MYSQL_DATABASE: tabbie2
+      MYSQL_USER: tabbie2
+      MYSQL_PASSWORD: tabbie2
+
+    # Autostart at boottime
+    #restart: always
