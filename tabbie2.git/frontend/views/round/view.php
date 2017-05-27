@@ -376,15 +376,26 @@ $this->params['breadcrumbs'][] = $model->name;
                         if (isset($adj->user->gender))
                             $class .= " " . \common\models\User::getCSSGender($adj->user->gender);
 
+                        $footer = Html::a(\kartik\helpers\Html::icon("folder-open") . "&nbsp;" . Yii::t("app", 'View Feedback'), ["feedback/adjudicator", "tournament_id" => $model->tournament_id, "AnswerSearch" => ["id" => $adj->id]], ['class' => 'btn btn-sm btn-default', 'target' => '_blank', 'data-pjax' => "0"]) .
+                            Html::a(\kartik\helpers\Html::icon("folder-open") . "&nbsp;" . Yii::t("app", 'View User'), ["adjudicator/view", "id" => $adj->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-sm btn-default', 'target' => '_blank', 'data-pjax' => "0"]);
+
+                        if (!$model->round->published)
+                            $footer .= Html::a(\kartik\helpers\Html::icon("eject") . "&nbsp;"
+                                . Yii::t("app", 'Remove Judge'),
+                                ["adjudicator/remove", "adj_id" => $adj->id, "debate_id" => $model->id, "tournament_id" => $model->tournament_id],
+                                ['class' => 'btn btn-sm btn-default',
+                                    'data' =>
+                                        ['confirm' => Yii::t('app', 'Are you sure? You cannot put this judge back in (yet)!'),
+                                            'method' => 'get'],
+                                ]
+                            );
+
                         $popup_obj = PopoverX::widget([
                             'header' => $adj->name . " " . $adj->user->getGenderIcon(),
                             'size' => 'md',
                             'placement' => PopoverX::ALIGN_BOTTOM,
                             'content' => $popcontent,
-                            'footer' => "" .
-                                //Html::a(\kartik\helpers\Html::icon("move") . "&nbsp;" . Yii::t("app", 'Move'), ["adjudicator/move", "id" => $adj->id, "debate" => $model->id, "tournament_id" => $model->tournament_id], ['class' => 'moveAdj btn btn-sm btn-primary']) .
-                                Html::a(\kartik\helpers\Html::icon("folder-open") . "&nbsp;" . Yii::t("app", 'View Feedback'), ["feedback/adjudicator", "tournament_id" => $model->tournament_id, "AnswerSearch" => ["id" => $adj->id]], ['class' => 'btn btn-sm btn-default', 'target' => '_blank', 'data-pjax' => "0"]) .
-                                Html::a(\kartik\helpers\Html::icon("folder-open") . "&nbsp;" . Yii::t("app", 'View User'), ["adjudicator/view", "id" => $adj->id, "tournament_id" => $model->tournament_id], ['class' => 'btn btn-sm btn-default', 'target' => '_blank', 'data-pjax' => "0"]),
+                            'footer' => $footer,
                             'toggleButton' => [
                                 'label' => $adj->getName($panel->id),
                                 'class' => 'btn btn-sm adj ' . $class,
