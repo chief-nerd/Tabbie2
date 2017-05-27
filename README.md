@@ -18,7 +18,7 @@ Install with Docker
 - Install Docker CE (https://www.docker.com/community-edition#/download) :)
 - Go to `\` of the repository (where the `docker-compose.yml` file is)
 - run `docker-compose build web`
-- run `docker-compose run --rm web sh install.sh`
+- run `docker-compose exec web sh install.sh`
 
 Start/Stop with Docker
 -----------------
