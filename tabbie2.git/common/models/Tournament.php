@@ -923,7 +923,7 @@ class Tournament extends \yii\db\ActiveRecord
                 foreach ($aips as $aip) {
 
                     /** @Todo Do better then that shit */
-                    if (!$aip->panel || !$aip->panel->debate || $aip->panel->debate->round->displayed != 1) continue;
+                    if (!$aip->panel || !$aip->panel->debate || !$aip->panel->debate->round || $aip->panel->debate->round->displayed != 1) continue;
 
                     if ($aip->function == Panel::FUNCTION_CHAIR) {
                         $type = Feedback::FROM_CHAIR;
