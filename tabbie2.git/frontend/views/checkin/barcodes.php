@@ -41,13 +41,14 @@ $height = 78;
 	</head>
 <body>
 <?php
-for ($i = 0; $i < $offset; $i++)
-	echo \kartik\helpers\Html::tag("div", "", ["class" => "code"]);
+if (isset($offset))
+    for ($i = 0; $i < $offset; $i++)
+        echo \kartik\helpers\Html::tag("div", "", ["class" => "code"]);
 
 foreach ($codes as $c): ?>
 	<div class="code">
 		<?
-		echo \jakobreiter\quaggajs\BarcodeFactory::generateIMG($c["id"], $c["id"] . " " . $c["label"], $height);
+            echo \jakobreiter\quaggajs\BarcodeFactory::generateIMG($c["id"], $c["id"] . " " . $c["label"], $height);
 		?>
 	</div>
 <? endforeach; ?>
