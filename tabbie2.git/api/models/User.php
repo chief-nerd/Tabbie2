@@ -21,10 +21,11 @@ class User extends \common\models\User implements Linkable
 	public function fields()
 	{
 		$fields = [
-				"name",
-				"givenname",
-				"surename",
-				"picture",
+            "name",
+            "givenname",
+            "surename",
+            "picture",
+            "id",
 			"gender",
 		];
 
