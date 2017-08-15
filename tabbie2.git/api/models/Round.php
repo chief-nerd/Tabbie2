@@ -40,7 +40,8 @@ class Round extends \common\models\Round implements Linkable
             $fields['displayed'],
             $fields['lastrun_temp'],
             $fields['time'], // This field doesn't seem to hold data about the debate but when the model was changed?
-            $fields['finished_time']
+            $fields['finished_time'],
+            $fields['motion']
 		);
 
 		return $fields;
