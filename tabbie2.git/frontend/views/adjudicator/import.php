@@ -131,7 +131,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <div class="row">
             <div class="col-xs-12">
-                <?= $form->field($model, 'is_test')->checkbox(); ?>
+                <?= $form->field($model, 'send_mail_option')->checkbox(); ?>
             </div>
         </div>
 
