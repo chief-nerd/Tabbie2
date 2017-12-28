@@ -230,11 +230,15 @@ class RoundController extends BasetournamentController
      */
     public function actionDelete($id)
     {
-        //Tag::deleteAll(["round_id" => $this->id]);
+        $round = $this->findModel($id);
 
-        $this->findModel($id)->delete();
+        foreach ($round->tags as $motion_tag)
+            $motion_tag->delete();
 
-        return $this->redirect(['index']);
+        $tournament_id = $round->tournament_id;
+        $round->delete();
+
+        return $this->redirect(['index', "tournament_id" => $tournament_id]);
     }
 
     /**

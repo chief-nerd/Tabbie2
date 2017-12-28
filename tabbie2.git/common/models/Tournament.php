@@ -791,11 +791,15 @@ class Tournament extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return bool
+     * @param null $id
+     * @return bool / Team / Adjudicator
      */
-    public function user_role()
+    public function user_role($id = null)
     {
-        $id = Yii::$app->user->id;
+        if ($id == null) {
+            $id = Yii::$app->user->id;
+        }
+
         if (!is_int($id)) {
             return false;
         }
@@ -809,12 +813,40 @@ class Tournament extends \yii\db\ActiveRecord
             return $team;
         }
 
-        $adju = Adjudicator::find()->tournament($this->id)->andWhere(["user_id" => $id])->one();
+        $adju = Adjudicator::find()
+            ->tournament($this->id)
+            ->andWhere("user_id = $id")
+            ->one();
         if ($adju instanceof Adjudicator) {
             return $adju;
         }
 
         return false;
+    }
+
+    /**
+     * @param null $id
+     * @return bool / string
+     */
+    public function user_role_string($id = null)
+    {
+        if ($id == null) {
+            $id = Yii::$app->user->id;
+        }
+
+        $role_obj = $this->user_role($id);
+        if ($role_obj == false) {
+            return $role_obj;
+        }
+
+        $role = null;
+        if ($role_obj instanceof Team) {
+            $role = 'debater';
+        } elseif ($role_obj instanceof Adjudicator) {
+            $role = 'adjudicator';
+        }
+
+        return $role;
     }
 
     /**
@@ -891,7 +923,7 @@ class Tournament extends \yii\db\ActiveRecord
                 foreach ($aips as $aip) {
 
                     /** @Todo Do better then that shit */
-                    if (!$aip->panel || !$aip->panel->debate || $aip->panel->debate->round->displayed != 1) continue;
+                    if (!$aip->panel || !$aip->panel->debate || !$aip->panel->debate->round || $aip->panel->debate->round->displayed != 1) continue;
 
                     if ($aip->function == Panel::FUNCTION_CHAIR) {
                         $type = Feedback::FROM_CHAIR;

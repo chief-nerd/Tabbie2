@@ -2,7 +2,7 @@ Tabbie2 - the new way to tab
 =======
 
 Welcome to Tabbie2. This is how this git is structured.
-All pushes to branch: master will be also pushed to the live version at https://wwww.tabbie.org
+All pushes to branch: master will be also pushed to the live version at https://www.tabbie.org
 
 
 DIRECTORY STRUCTURE

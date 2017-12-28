@@ -44,10 +44,22 @@ return [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'user',
                     'extraPatterns' => [
                         'GET me' => 'me',
+                        'GET gettournamentrole' => 'gettournamentrole',
+                        'GET generatebarcode' => 'generatebarcode'
                     ]
                 ],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'motion'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'round',
+                    'extraPatterns' => [
+                        'GET filter' => 'filter',
+                    ]
+                ],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'tournament'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'debate',
+                    'extraPatterns' => [
+                        'GET filter' => 'filter',
+                    ]
+                ],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'panel'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'adjudicator',
                     'extraPatterns' => [

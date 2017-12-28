@@ -43,12 +43,30 @@ use common\models\Panel;
             </div>
         </div>
         <div class="row" style="margin-top: 10px">
-            <div class="col-xs-12">
+            <? $col_width = 12;
+            $denominator = 1;
+            if ($info["debate"]->round->infoslide)
+                $denominator++;
+            if ($pos == 'Chair' && count($info["debate"]->panel->adjudicatorInPanels) > 1)
+                $denominator++;
+            $col_width = $col_width / $denominator;
+            ?>
+            <? if ($pos == 'Chair' && count($info["debate"]->panel->adjudicatorInPanels) > 1) : ?>
+                <div class="col-xs-12 col-sm-<?= $col_width ?>">
+                    <?php echo Yii::t("app", "Panel:") . '<br />' ?>
+                    <? $wings = $info["debate"]->panel->adjudicatorInPanels ?>
+                    <?php foreach ($info["debate"]->panel->adjudicatorInPanels as $wing) {
+                        if (!$wing->is_chair())
+                            echo $wing->adjudicator->name . '<br />';
+                    } ?>
+                </div>
+            <? endif; ?>
+            <div class="col-xs-12 col-sm-<?= $col_width ?>">
                 <?php echo Yii::t("app", "Motion") ?>:<br>
                 <?php echo $info["debate"]->round->motion ?>
             </div>
             <? if ($info["debate"]->round->infoslide): ?>
-                <div class="col-xs-12">
+                <div class="col-xs-12 col-sm-<?= $col_width ?>">
                     <?php echo Yii::t("app", "InfoSlide") ?>:<br>
                     <?php echo $info["debate"]->round->infoslide ?>
                 </div>
