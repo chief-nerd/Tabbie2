@@ -2,6 +2,10 @@
  * Regions
  */
 
+.region {
+    color: #000000
+}
+
 /* Europe */
 .region .NOEU {
     background-color: #28334C;
