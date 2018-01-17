@@ -964,7 +964,7 @@ class Round extends \yii\db\ActiveRecord
                 "WHERE tournament_id = " . $this->tournament->id . " AND round_id=" . $this->id
         ]);
 
-        $html = Yii::$app->cache->get($key);
+        // $html = Yii::$app->cache->get($key);
         if (!$html) {
 
             $posMatrix = [
@@ -1003,13 +1003,13 @@ class Round extends \yii\db\ActiveRecord
                 }
                 $posMatrix["og_x"] = $posMatrix["og_y"] = $base * (1 - $posMatrix["og_percent"]);
 
-                $posMatrix["oo_x"] = $base * (1 - $posMatrix["oo_percent"]);
-                $posMatrix["oo_y"] = $base * ($posMatrix["oo_percent"]) + $base;
+                $posMatrix["oo_x"] = $base * ($posMatrix["oo_percent"]) + $base;
+                $posMatrix["oo_y"] = $base * (1 - $posMatrix["oo_percent"]);
 
                 $posMatrix["co_x"] = $posMatrix["co_y"] = $base * ($posMatrix["co_percent"]) + $base;
 
-                $posMatrix["cg_x"] = $base * ($posMatrix["cg_percent"]) + $base;
-                $posMatrix["cg_y"] = $base * (1 - $posMatrix["cg_percent"]);
+                $posMatrix["cg_x"] = $base * (1 - $posMatrix["cg_percent"]);
+                $posMatrix["cg_y"] = $base * ($posMatrix["cg_percent"]) + $base;
             }
 
             $poly = Html::tag("polygon", null, [
@@ -1053,11 +1053,11 @@ class Round extends \yii\db\ActiveRecord
                 "x" => 4,
                 "y" => 15,
             ], $labelattributes));
-            $labeloo = Html::tag("text", 'OO', array_merge([
+            $labelcg = Html::tag("text", 'CG', array_merge([
                 "x" => 4,
                 "y" => $size - 6
             ], $labelattributes));
-            $labelcg = Html::tag("text", 'CG', array_merge([
+            $labeloo = Html::tag("text", 'OO', array_merge([
                 "x" => $size - 22,
                 "y" => 15,
             ], $labelattributes));
