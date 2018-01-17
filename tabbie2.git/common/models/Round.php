@@ -1043,6 +1043,29 @@ class Round extends \yii\db\ActiveRecord
                     (3 * $quarter) . "," . $quarter,
                 "style" => "fill:transparent; stroke:$gray; stroke-width:1"
             ]);
+
+            $labelattributes = [
+                "font-size" => "12",
+                "fill" => "#999",
+                "font-family" => "Helvetica Neue, Helvetica, Arial, sans-serif"
+            ];
+            $labelog = Html::tag("text", 'OG', array_merge([
+                "x" => 4,
+                "y" => 15,
+            ], $labelattributes));
+            $labeloo = Html::tag("text", 'OO', array_merge([
+                "x" => 4,
+                "y" => $size - 6
+            ], $labelattributes));
+            $labelcg = Html::tag("text", 'CG', array_merge([
+                "x" => $size - 22,
+                "y" => 15,
+            ], $labelattributes));
+            $labelco = Html::tag("text", 'CO', array_merge([
+                "x" => $size - 22,
+                "y" => $size - 6,
+            ], $labelattributes));
+
             $out = Html::tag("polygon", null, [
                 "points" => "0,0 " .
                     "0,$size " .
@@ -1051,7 +1074,8 @@ class Round extends \yii\db\ActiveRecord
                 "style" => "fill:transparent; stroke:$gray; stroke-width:1"
             ]);
 
-            $html = Html::tag("svg", $poly . $horizon . $vertik . $medium . $out, [
+            $html = Html::tag("svg", $poly . $horizon . $vertik . $medium .
+                                     $labelog . $labeloo . $labelcg . $labelco . $out, [
                 "viewBox" => "0 0 $size $size",
                 "width" => $size,
                 "height" => $size,
