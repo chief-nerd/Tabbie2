@@ -2,8 +2,8 @@
  * Regions
  */
 
-.region {
-    background-color: #000000
+.region .adj {
+    background-color: #CCC; /* Add gray backgronud for region-less adjs */
 }
 
 /* Europe */
