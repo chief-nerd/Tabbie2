@@ -399,7 +399,7 @@ class User extends ActiveRecord implements IdentityInterface
             }
 
             if ($send_mail) {
-                self::sendNewUserMail($userA, $password, $tournament);
+                // self::sendNewUserMail($userA, $password, $tournament);
             }
 
             return $userA;
