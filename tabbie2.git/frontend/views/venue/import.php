@@ -64,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'delimiter')->dropDownList(\frontend\models\ImportForm::getDelimiterOptions()); ?>
             </div>
         </div>
-		<?= Html::activeHiddenInput($model, 'is_test', ["value" => 0]) ?>
+		<?= Html::activeHiddenInput($model, 'send_mail_option', ["value" => 0]) ?>
 		<div class="form-group">
 			<?= Html::submitButton(Yii::t('app', 'Import'), ['class' => 'btn btn-success']) ?>
 		</div>

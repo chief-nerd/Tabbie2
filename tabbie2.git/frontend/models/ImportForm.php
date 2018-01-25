@@ -23,7 +23,7 @@ class ImportForm extends Model
 	public $tempImport;
 	public $header;
 	public $delimiter;
-	public $is_test;
+	public $send_mail_option;
 
 	public static function getDelimiterOptions() {
 		return [
@@ -39,8 +39,8 @@ class ImportForm extends Model
 	public function rules() {
 		return [
 			[['csvFile'], 'required'],
-			[['is_test'], 'integer'],
-			[['delimiter', 'is_test'], 'safe']
+			[['send_mail_option'], 'integer'],
+			[['delimiter', 'send_mail_option'], 'safe']
 		];
 	}
 
@@ -52,7 +52,7 @@ class ImportForm extends Model
 		return [
 			'csvFile' => Yii::t("app", 'CSV File'),
 			'delimiter' => Yii::t("app", 'Delimiter'),
-			'is_test'   => Yii::t("app", 'Mark as Test Data Import (prohibits Email sending)'),
+			'send_mail_option'   => Yii::t("app", 'Send emails to participants'),
 		];
 	}
 

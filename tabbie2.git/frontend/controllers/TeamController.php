@@ -297,7 +297,7 @@ class TeamController extends BasetournamentController
                     $userAID = null;
                     if (count($row[2]) == 1) { //NEW
                         if ($row[2][0] != "" && $row[3][0] != "" && $row[4][0] != "") {
-                            $userA = User::NewViaImport($row[2][0], $row[3][0], $row[4][0], $societyID, !$model->is_test, $this->_tournament);
+                            $userA = User::NewViaImport($row[2][0], $row[3][0], $row[4][0], $societyID, $model->send_mail_option, $this->_tournament);
                             if ($userA)
                                 $userAID = $userA->id;
                             unset($userA); //free memory
@@ -321,7 +321,7 @@ class TeamController extends BasetournamentController
                     $userBID = null;
                     if (count($row[5]) == 1) { //NEW
                         if ($row[5][0] != "" && $row[6][0] != "" && $row[7][0] != "") {
-                            $userB = User::NewViaImport($row[5][0], $row[6][0], $row[7][0], $societyID, !$model->is_test, $this->_tournament);
+                            $userB = User::NewViaImport($row[5][0], $row[6][0], $row[7][0], $societyID, $model->send_mail_option, $this->_tournament);
                             if ($userB)
                                 $userBID = $userB->id;
                             unset($userB); //free memory
