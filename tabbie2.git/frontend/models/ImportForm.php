@@ -6,7 +6,7 @@ use Yii;
 use yii\base\Model;
 
 /**
- * ContactForm is the model behind the contact form.
+ * ImportForm is the model behind the import form.
  */
 class ImportForm extends Model
 {
