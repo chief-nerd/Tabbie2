@@ -398,9 +398,23 @@ class RoundController extends BasetournamentController
             $temp = $a_in_panel->panel_id;
             $temp_pos = $a_in_panel->function;
             $a_in_panel->panel_id = $b_in_panel->panel_id;
-            $a_in_panel->function = $b_in_panel->function;
+
+            if($b_in_panel->function === Panel::FUNCTION_CHAIR){
+                $a_in_panel->function = $b_in_panel->function;
+            }
+            else{
+                $a_in_panel->function = $b_in_panel->function + $a->trainee;
+            }
+
             $b_in_panel->panel_id = $temp;
-            $b_in_panel->function = $temp_pos;
+
+            if($temp_pos === Panel::FUNCTION_CHAIR){
+                $b_in_panel->function = $temp_pos;
+            }
+            else{
+                $b_in_panel->function = $temp_pos + $a->trainee;
+            }
+
 
             if ($a_in_panel->validate() && $b_in_panel->validate()) {
                 if ($a_in_panel->save() && $b_in_panel->save())

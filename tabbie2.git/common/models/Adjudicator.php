@@ -289,6 +289,14 @@ class Adjudicator extends \yii\db\ActiveRecord
         return $this->can_chair;
     }
 
+    /**
+     * @return bool
+     */
+    public function getTrainee()
+    {
+        return $this->strength === 0;
+    }
+
     public function getStrengthOutput()
     {
         return Adjudicator::getStrengthLabel($this->strength) . " (" . $this->strength . ")";
@@ -303,7 +311,7 @@ class Adjudicator extends \yii\db\ActiveRecord
     {
         if ($strength !== null) {
             if ($strength === 0) {
-                return Yii::t("app", 'Not Rated');
+                return Yii::t("app", 'Not Rated / Trainee');
             }
             $strength = intval($strength / 10);
         }
