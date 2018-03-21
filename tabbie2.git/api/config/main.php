@@ -44,6 +44,7 @@ return [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'user',
                     'extraPatterns' => [
                         'GET me' => 'me',
+												'GET myhistory' => 'myhistory',
                         'GET gettournamentrole' => 'gettournamentrole',
                         'GET generatebarcode' => 'generatebarcode'
                     ]
