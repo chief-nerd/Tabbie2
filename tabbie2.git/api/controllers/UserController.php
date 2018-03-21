@@ -53,6 +53,53 @@ class UserController extends BaseRestController
 	}
 
 	/**
+	 * Returns the self Identity's history
+	 * @return null|static
+	 */
+	public function actionMyhistory()
+	{
+		$output_array = [];
+		$teams = User::findOne(Yii::$app->user->id)->getTeams()->joinWith("tournament")->orderBy(["tournament.end_date" => SORT_DESC])->all();
+
+		foreach($teams as $team){
+			$AorB = $team->speakerA->id == Yii::$app->user->id ? 'A' : 'B';
+			$debates = $team->getDebates()->all();
+			$debate_results = [];
+
+			foreach($debates as $debate){
+				$motion = $debate->round->motion;
+				$roundNum = $debate->round->label;
+				$position = 'Unknown';
+
+				foreach(array_keys($debate->teams) as $possible_position){
+					if($debate->teams[$possible_position]->id == $team->id){
+						$position = $possible_position;
+					}
+				}
+
+				$ranking = $debate->result->getAttributes()[$position.'_place'];
+				$your_speaks = $debate->result->getAttributes()[$position.'_'.$AorB.'_speaks'];
+
+				$debate_results[] = [
+					'Round' => $roundNum,
+					'Motion' => trim($motion),
+					'Position' => strtoupper($position),
+					'Ranking' => $this->ordinal($ranking),
+					'Your speaks' => $your_speaks
+				];
+			}
+
+			$output_array[] = [
+				'Tournament Name' => $team->tournament->name,
+				'Tournament Date' => date_format(date_create_from_format('Y-m-d H:i:s', $team->tournament->start_date), 'd/m/Y'),
+				'Rounds' => $debate_results,
+			];
+		}
+
+		return $output_array;
+	}
+
+	/**
 	 * @param null $tournament_id
      * @param null $user_id
 	 * @return array
@@ -137,5 +184,13 @@ class UserController extends BaseRestController
 			"id"    => $code,
 			"society" => $society,
 		];
+	}
+
+	function ordinal($number) {
+		$ends = array('th','st','nd','rd','th','th','th','th','th','th');
+		if ((($number % 100) >= 11) && (($number%100) <= 13))
+			return $number. 'th';
+		else
+			return $number. $ends[$number % 10];
 	}
 }
