@@ -38,7 +38,7 @@ class HistoryController extends BaseuserController
 	{
 		$model = User::findOne($this->_user->id);
 
-		$query = $model->getTeams()->joinWith("tournament")->orderBy(["tournament.end_date" => SORT_DESC]);
+		$query = $model->getTeams()->joinWith("tournament")->andWhere('tournament.status = 2')->orderBy(["tournament.end_date" => SORT_DESC]);
 
 		$dataProvider = new ActiveDataProvider([
 			"query" => $query,
