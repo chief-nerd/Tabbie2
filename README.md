@@ -21,6 +21,6 @@ Richard Coates - algorithm evangelist
 
 BASED ON
 --------
-This Version 2 of Tabbie is based on the work of Tabbie from Bob Nimo
+This Version 2 of Tabbie is based on the work of Tabbie from Tom Lake
 [https://github.com/tswsl1989/tabbie]
-
+Other contributors to the original Tabbie project include Giles Robertson, Isabel Nimmo, Klaas van Schelven, Deepak Jois, Ben Walker, Giles Robertson, Meir Maor, and Joshua Lo
