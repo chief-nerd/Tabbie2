@@ -26,7 +26,7 @@ class User extends \common\models\User implements Linkable
             "surename",
             "picture",
             "id",
-			"gender",
+						"gender",
 		];
 
 		if(Yii::$app->user->id == $this->id) {
