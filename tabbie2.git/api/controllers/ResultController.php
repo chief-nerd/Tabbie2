@@ -30,8 +30,8 @@ class ResultController extends BaseRestController
 	{
 		$actions = parent::actions();
 
-		// disable the "delete" and "create" actions
-		unset($actions['delete'], $actions['create'], $actions['update']);
+		// disable the actions we don't want
+		unset($actions['delete'], $actions['index'], $actions['create'], $actions['update']);
 
 		return $actions;
 	}
