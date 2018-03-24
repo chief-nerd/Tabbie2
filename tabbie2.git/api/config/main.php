@@ -50,6 +50,7 @@ return [
                     ]
                 ],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'motion'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'result'],
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'round',
                     'extraPatterns' => [
                         'GET filter' => 'filter',
