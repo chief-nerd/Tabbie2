@@ -46,7 +46,6 @@ class RoundController extends BaseRestController
 			'query' => Round::find()
                 ->where(["round.tournament_id" => $tournament_id])
                 ->andWhere(["round.published" => 1])
-                ->andWhere(["round.displayed" => 1])
 		]);
 	}
 }
