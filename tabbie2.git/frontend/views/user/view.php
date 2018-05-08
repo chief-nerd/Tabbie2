@@ -33,6 +33,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     'name',
                     'email:email',
                     [
+                        'label' => Yii::t("app", "GDPR Consent"),
+                        'value' => \common\models\User::getGPDRStatusLabel($model->gdprconsent)
+                    ],
+                    [
                         'label' => Yii::t("app", "Language Status"),
                         'value' => \common\models\User::getLanguageStatusLabel($model->language_status)
                     ],

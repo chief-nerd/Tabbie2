@@ -37,6 +37,7 @@ use yii\web\IdentityInterface;
  * @property string $picture
  * @property string $time
  * @property string $language
+ * @property string $gdprconsent
  * @property Adjudicator[] $adjudicators
  * @property InSociety[] $inSocieties
  * @property Society[] $societies
@@ -70,6 +71,9 @@ class User extends ActiveRecord implements IdentityInterface
     const LANGUAGE_INTERVIEW = 4;
     const LANGUAGE_MIXED = -1;
     const LANGUAGE_NOVICE = -2;
+
+    const GDPR_NONE = 0;
+    const GDPR_CONSENT = 1;
 
     const NONE = "(not set)";
 
@@ -258,6 +262,14 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
+		public static function gdprOptions()
+		{
+			return [
+				self::GDPR_NONE => Yii::t("app", "Not consenting"),
+				self::GDPR_CONSENT => Yii::t("app", "Consenting"),
+			];
+		}
+
     public static function generatePlaceholder($tournament_slug)
     {
         $swing_User = User::find()->where(["LIKE", "url_slug", $tournament_slug])->orderBy(["id" => SORT_DESC])->one();
@@ -277,6 +289,7 @@ class User extends ActiveRecord implements IdentityInterface
             "email" => "speaker." . $letter . "@" . $tournament_slug . ".tabbie.com",
             "role" => User::ROLE_PLACEHOLDER,
             "status" => User::STATUS_ACTIVE,
+            "gdprconsent" => User::GDPR_CONSENT,
             "last_change" => date("Y-m-d H:i:s"),
             "time" => date("Y-m-d H:i:s"),
         ]);
@@ -306,6 +319,15 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->auth_key = Yii::$app->security->generateRandomString();
     }
+
+    public static function getGPDRStatusLabel($id){
+    	$status = [
+    		self::GDPR_NONE => Yii::t("app", 'Not Consented'),
+    		self::GDPR_CONSENT => Yii::t("app", 'Consented'),
+			];
+
+			return $status[$id];
+		}
 
     public static function getLanguageStatusLabel($id = null, $short = false)
     {
@@ -507,7 +529,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['password', 'password_repeat'], 'string', 'on' => 'first_login'],
             [['password', 'password_repeat'], 'required', 'on' => 'first_login'],
 
-            [['id', 'role', 'status', 'language_status', 'language_status_by_id'], 'integer'],
+            [['id', 'role', 'status', 'language_status', 'language_status_by_id', 'gdprconsent'], 'integer'],
             [['picture'], 'string'],
             [['url_slug', 'password_hash', 'password_reset_token', 'email', 'givenname', 'surename'], 'string', 'max' => 255],
 
@@ -524,10 +546,13 @@ class User extends ActiveRecord implements IdentityInterface
             ['gender', 'default', 'value' => self::GENDER_NOTREVEALING],
             ['gender', 'in', 'range' => [self::GENDER_MALE, self::GENDER_FEMALE, self::GENDER_OTHER, self::GENDER_NOTREVEALING]],
 
+						['gdprconsent', 'default', 'value' => self::GDPR_CONSENT],
+            ['gdprconsent', 'in', 'range' => [self::GDPR_NONE, self::GDPR_CONSENT]],
+
             ['language_status', 'default', 'value' => self::LANGUAGE_NONE],
             ['language_status', 'in', 'range' => [self::LANGUAGE_NONE, self::LANGUAGE_ENL, self::LANGUAGE_ESL, self::LANGUAGE_EFL, self::LANGUAGE_INTERVIEW, self::LANGUAGE_NOVICE]],
 
-            [['password', 'password_repeat', 'url_slug', 'language', 'time', 'last_change', 'societies_id', 'language_status_update'], 'safe'],
+            [['password', 'password_repeat', 'url_slug', 'language', 'time', 'last_change', 'societies_id', 'language_status_update', 'gdprconsent'], 'safe'],
         ];
     }
 
@@ -563,6 +588,7 @@ class User extends ActiveRecord implements IdentityInterface
             'language_status' => Yii::t('app', 'Language Status'),
             'picture' => Yii::t('app', 'Picture'),
             'time' => Yii::t('app', 'Time'),
+            'gdprconsent' => Yii::t('app', 'GDPR Consent'),
         ];
     }
 
