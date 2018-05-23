@@ -57,8 +57,10 @@ use yii\web\JsExpression;
 		<div class="col-sm-6">
 			<?= $form->field($model, 'gender')->dropDownList(\common\models\User::genderOptions()) ?>
 		</div>
-		<div class="col-sm-6 col-sm-push-4">
-            <? //echo $form->field($model, 'language')->dropDownList(\common\models\User::languageOptions()) ?>
+        <div class="col-sm-6">
+        </div>
+		<div class="col-sm-6">
+            <? echo $form->field($model, 'gdprconsent')->dropDownList(\common\models\User::gdprOptions()) ?>
 		</div>
 	</div>
 

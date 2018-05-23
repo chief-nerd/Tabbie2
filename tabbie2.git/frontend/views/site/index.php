@@ -72,6 +72,18 @@ $this->title = Yii::$app->params["slogan"];
 				<?= Html::a(Html::icon("plus") . "&nbsp;" . Yii::t("app", "Create Tournament"), ['tournament/create'], ["class" => "btn btn-lg btn-success btn-block"]) ?>
 			</div>
 		</div>
+    <? if (!Yii::$app->user->isGuest && Yii::$app->user->identity->gdprconsent != 1): ?>
+        <div class="row">
+            <div class="col-xs-12 hidden-sm col-md-2 col-lg-2">
+                &nbsp;
+            </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <?= Html::a(\kartik\helpers\Html::icon("cog") . "&nbsp" . Yii::t('app', 'Update GDPR Settings'), ['/user/update', 'id' => Yii::$app->user->id], ['class' => 'btn btn-primary btn-danger']) ?>
+          </div>
+        </div>
+    <? endif; ?>
 	</div>
 
 	<div class="body-content">
