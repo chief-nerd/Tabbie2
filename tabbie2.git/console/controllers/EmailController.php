@@ -24,7 +24,7 @@ class EmailController extends Controller {
 		do {
 			$emailBatch = [];
 
-			$allUsers = User::find()->where(['gdprconsent' => 0, 'id' => 37])->limit(99)->offset($offset)->all();
+			$allUsers = User::find()->where(['gdprconsent' => 0])->limit(99)->offset($offset)->all();
 
 			foreach ($allUsers as $user) {
 				$emailBatch[] = Yii::$app->mailer->compose('@frontend/views/emails/gdpr', [])
