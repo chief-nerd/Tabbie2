@@ -89,6 +89,8 @@ if ($this->context->hasMethod("_getContext")) {
             <p class="pull-right">
                 <?= HTML::a(Yii::t("app", "Report a Bug"), Yii::$app->params["bugURL"], ["target" => "_blank"]) ?>
                 <?= " | " ?>
+                <?= HTML::a(Yii::t("app", "Privacy Policy"), Yii::$app->params["privacy-policy"], ["target" => "_blank"]) ?>
+                <?= " | " ?>
                 <?= HTML::a(Yii::t("app", "Contact"), 'mailto:' . Yii::$app->params["adminEmail"]) ?>
             </p>
         </div>
