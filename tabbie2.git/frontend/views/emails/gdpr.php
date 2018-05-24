@@ -328,7 +328,7 @@
                                         <h3>Why do we want your consent?</h3>
                                         First and foremost to publish tabs, so that people can see the information relating to your performance in previous competitions.
                                         Secondly, to do large-scale analysis over competitions, so that we can track performance between competitions.
-                                        For example, using the <a href="http://mdr.monashdebaters.com/volume-12-2014/introducing-elo-ratings-in-british-parliamentary-debating/">proposal made by Ashish and MDG in the MDR</a>, we have been able to create a rudimentary rating system to discover who has been the best BP debater in the world by Tabbie rating since 2015 (the list will be published if and when I receive the consent of all of the world-ranked number 1s (they know who they are!!)).
+                                        For example, using the <a href="http://mdr.monashdebaters.com/volume-12-2014/introducing-elo-ratings-in-british-parliamentary-debating/">proposal made by Ashish and MDG in the MDR</a>, we have been able to create a rudimentary rating system to discover who has been the best BP debater in the world by Tabbie rating since 2015.
                                     </td>
                                 </tr>
                                 <tr>
