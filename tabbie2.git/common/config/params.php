@@ -5,6 +5,7 @@ return [
     'adminEmail' => 'admin@tabbie.org',
     'supportEmail' => 'support@tabbie.org',
     'bugURL' => 'https://github.com/JakobReiter/tabbie2/issues',
+    'privacy-policy' => '/site/privacy-policy',
     'user.passwordResetTokenExpire' => 7200,
     'appName' => 'Tabbie2',
     'appUrl' => 'https://www.tabbie.org',

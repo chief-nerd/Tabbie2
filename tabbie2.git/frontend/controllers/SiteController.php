@@ -141,6 +141,10 @@ class SiteController extends BaseController {
 		return $this->render('how-to');
 	}
 
+	public function actionPrivacyPolicy() {
+		return $this->render('privacy-policy');
+	}
+
 	public function actionAddNewSociety($name = "") {
 		$model = new Society();
 
