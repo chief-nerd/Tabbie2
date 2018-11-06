@@ -205,7 +205,7 @@ class Result extends \yii\db\ActiveRecord {
 	 * @return int
 	 */
 	public function getPoints($p) {
-		if ($this->{$p . "_irregular"} > Team::IRREGULAR_NORMAL) {
+		if ($this->{$p . "_irregular"} == Team::IRREGULAR_SWING) {
 			return 0;
 		}
 
