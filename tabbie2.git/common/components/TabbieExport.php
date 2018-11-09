@@ -553,7 +553,7 @@
 		{
 			if ($name == "tournament_id") {
 				return "@tournament";
-			} else if ($a === null || $name == "id")
+			} else if ($a === null)
 				return "NULL";
 			else if (is_string($a)) {
 				return "'" . addslashes($a) . "'";
