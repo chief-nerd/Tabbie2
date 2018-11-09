@@ -43,8 +43,10 @@ class Result extends \common\models\Result implements Linkable
 					$hashTable = [];
 
 					foreach($debates as $debate){
-						$result = $debate->result;
-						$hashTable[] = ['venue' => $debate->venue->name, 'hash' => md5($result->og_A_speaks.$result->og_B_speaks.$result->oo_A_speaks.$result->oo_B_speaks.$result->cg_A_speaks.$result->cg_B_speaks.$result->co_A_speaks.$result->co_B_speaks)];
+						if(isset($debate->result)){
+							$result = $debate->result;
+							$hashTable[] = ['venue' => $debate->venue->name, 'hash' => md5($result->og_A_speaks.$result->og_B_speaks.$result->oo_A_speaks.$result->oo_B_speaks.$result->cg_A_speaks.$result->cg_B_speaks.$result->co_A_speaks.$result->co_B_speaks)];
+						}
 					}
 
 					return $hashTable;
