@@ -452,7 +452,7 @@
 			$sqlFile[] = "";
 
 			$sqlFile[] = $this->generateINSERT([$tournament]);
-			$sqlFile[] = "SET @tournament = LAST_INSERT_ID();";
+			$sqlFile[] = "SET @tournament = ".$tournament->id.";";
 			$sqlFile[] = "";
 
 			$teams = models\Team::find()->tournament($tournament->id)->all();
@@ -490,7 +490,6 @@
 
 			$collection[] = $teams;
 			$collection[] = $adjus;
-			$collection[] = models\TeamStrike::find()->tournament($tournament->id)->all();
 			$collection[] = models\AdjudicatorStrike::find()->tournament($tournament->id)->all();
 			$collection[] = models\Venue::find()->tournament($tournament->id)->all();
 			$collection[] = models\LanguageOfficer::find()->tournament($tournament->id)->all();
