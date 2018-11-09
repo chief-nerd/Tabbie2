@@ -496,6 +496,12 @@
 			$collection[] = models\LanguageOfficer::find()->tournament($tournament->id)->all();
 			$collection[] = models\EnergyConfig::find()->tournament($tournament->id)->all();
 			$collection[] = models\Round::find()->tournament($tournament->id)->all();
+			$collection[] = models\Language::find()->all();
+			$collection[] = models\MotionTag::find()->all();
+			$collection[] = models\Society::find()->all();
+			$collection[] = models\Message::find()->all();
+			$collection[] = models\Country::find()->all();
+			
 
 			$debates = models\Debate::find()->tournament($tournament->id)->all();
 
