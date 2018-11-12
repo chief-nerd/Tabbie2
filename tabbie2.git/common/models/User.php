@@ -552,7 +552,7 @@ class User extends ActiveRecord implements IdentityInterface
             ['language_status', 'default', 'value' => self::LANGUAGE_NONE],
             ['language_status', 'in', 'range' => [self::LANGUAGE_NONE, self::LANGUAGE_ENL, self::LANGUAGE_ESL, self::LANGUAGE_EFL, self::LANGUAGE_INTERVIEW, self::LANGUAGE_NOVICE]],
 
-            [['givenname', 'surename', 'password', 'password_repeat', 'url_slug', 'language', 'time', 'last_change', 'societies_id', 'language_status_update', 'gdprconsent'], 'safe'],
+            [['givenname', 'surename', 'email', 'password', 'password_repeat', 'url_slug', 'language', 'time', 'last_change', 'societies_id', 'language_status_update', 'gdprconsent'], 'safe'],
         ];
     }
 
