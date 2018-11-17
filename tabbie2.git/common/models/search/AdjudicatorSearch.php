@@ -121,10 +121,14 @@ class AdjudicatorSearch extends Adjudicator
 
         // filter by user name
         if ($this->name)
-            $query->andWhere('CONCAT(user.givenname, " ", user.surename) LIKE "%' . $this->name . '%"');
+            $query->andWhere('CONCAT(user.givenname, " ", user.surename) LIKE CONCAT("%", :name, "%")', [
+                ':name' => $this->name
+            ]);
 
         if ($this->societyName)
-            $query->andWhere('society.fullname LIKE "%' . $this->societyName . '%"');
+            $query->andWhere('society.fullname LIKE CONCAT("%", :societyName, "%")', [
+                ':societyName' => $this->societyName
+            ]);
 
         return $dataProvider;
     }
