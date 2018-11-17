@@ -122,10 +122,12 @@ class DebateSearch extends Debate
 			'time'          => $this->time,
 		]);
 
-		$query->andWhere("ogteam.name LIKE '%" . $params["DebateSearch"]["team"] . "%' OR " .
-			"ooteam.name LIKE '%" . $params["DebateSearch"]["team"] . "%' OR " .
-			"cgteam.name LIKE '%" . $params["DebateSearch"]["team"] . "%' OR " .
-			"coteam.name LIKE '%" . $params["DebateSearch"]["team"] . "%'"
+		$query->andWhere('ogteam.name LIKE CONCAT("%", :team, "%") OR ' .
+			'ooteam.name LIKE CONCAT("%", :team, "%") OR ' .
+			'cgteam.name LIKE CONCAT("%", :team, "%") OR ' .
+			'coteam.name LIKE CONCAT("%", :team, "%")', [
+                'team' => $params["DebateSearch"]["team"]
+			    ]
 		);
 
 		if ($this->language_status)
