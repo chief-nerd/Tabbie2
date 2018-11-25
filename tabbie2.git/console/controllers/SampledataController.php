@@ -39,9 +39,9 @@ class SampledataController extends Controller
 // use the factory to create a Faker\Generator instance
 		$faker = Faker\Factory::create();
 
-		$output_venue = "Name;Active;Group\n";
-		$output_teams = "Team Name;Society Name;A.Givenname;A.Surename;A.Email;B.Givenname;B.Surename;B.Email\n";
-		$output_adjudicator = "Society;Givenname;Surename;Email;Strength\n";
+		$output_venue = "Name,Active,Group\n";
+		$output_teams = "Team Name,Society Name,A.Givenname,A.Surename,A.Email,B.Givenname,B.Surename,B.Email\n";
+		$output_adjudicator = "Society,Givenname,Surename,Email,Strength\n";
 		$save = [];
 
 		echo "\nVenues:";
