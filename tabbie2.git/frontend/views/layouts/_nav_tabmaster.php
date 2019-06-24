@@ -73,12 +73,13 @@ $tournament_items = [
         'linkOptions' => ['data' => [
             "confirm" => Yii::t("app", "Are you sure you want to reset the checkin?")
         ]]] : ""),
-    (($tournament->status < Tournament::STATUS_CLOSED) ? '<li class="divider"></li>' : ""),
+    ('<li class="divider"></li>'),
     (($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Html::icon("transfer") . "&nbsp;" . Yii::t('app', 'Sync with DebReg'), 'url' => ["tournament/debreg-sync", "id" => $tournament->id]] : ""),
     (($tournament->status < Tournament::STATUS_CLOSED) ? ['label' => Html::icon("export") . "&nbsp;" . Yii::t('app', 'Migrate to Tabbie 1'), 'url' => ["tournament/migrate-tabbie", "id" => $tournament->id],
         'linkOptions' => ['data' => [
             "confirm" => Yii::t("app", "Extreme caution young padawan!")
         ]]] : ""),
+    (['label' => Html::icon("export") . "&nbsp;" . Yii::t('app', 'Export DebateXML'), 'url' => ["tournament/export-xml", "id" => $tournament->id]]),
 ];
 
 

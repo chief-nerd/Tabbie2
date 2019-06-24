@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use common\components\filter\TournamentContextFilter;
 use common\components\ObjectError;
 use common\components\TabbieExport;
+use common\components\ArchiveExport;
 use common\models;
 use common\models\search\TournamentSearch;
 use common\models\Tournament;
@@ -51,7 +52,7 @@ class TournamentController extends BasetournamentController {
 					],
 					[
 						'allow'         => true,
-						'actions'       => ['migrate-tabbie', 'download-sql'],
+						'actions'       => ['migrate-tabbie', 'download-sql', 'export-xml'],
 						'matchCallback' => function ($rule, $action) {
 							return ($this->_tournament->isTabMaster(Yii::$app->user->id));
 						}
@@ -419,6 +420,28 @@ class TournamentController extends BasetournamentController {
 
         $export = new TabbieExport();
         echo implode("\n", $export->generateSQL($this->_tournament));
+        exit();
+    }
+
+    /**
+     * Export tournament as an Debate XML file
+     *
+     * @param    integer $id
+     */
+    public function actionExportXml($id)
+    {
+        /** Make output UTF-8 */
+        mb_internal_encoding('UTF-8');
+        mb_http_output('UTF-8');
+        mb_http_input('UTF-8');
+        mb_language('uni');
+        mb_regex_encoding('UTF-8');
+        ob_start('mb_output_handler');
+        header('Content-Type: text/xml');
+        header('Content-Disposition: attachment; filename=' . basename($this->_tournament->name) . ' - ' . date("Y-m-d H:i:s") . '.xml');
+
+        $export = new ArchiveExport();
+        echo $export->createXML($this->_tournament);
         exit();
     }
 
