@@ -648,6 +648,15 @@ class Tournament extends \yii\db\ActiveRecord
             ->where(["apply_" . $field => 1]);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAllQuestions()
+    {
+        return $this->hasMany(Question::className(), ['id' => 'questions_id'])
+            ->viaTable('tournament_has_question', ['tournament_id' => 'id']);
+    }
+
     public function getSocieties()
     {
         return $this->hasMany(Society::className(), ['id' => 'society_id'])
