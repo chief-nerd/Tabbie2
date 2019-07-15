@@ -179,7 +179,7 @@ class UserController extends BaseuserController
             $model->setPassword(Yii::$app->request->post()["User"]["password"]);
 
             if ($model->save() && $model->validatePassword(Yii::$app->request->post()["User"]["password"])) {
-                Yii::$app->session->addFlash("success", Yii::t("app", "New Passwort set"));
+                Yii::$app->session->addFlash("success", Yii::t("app", "New Password set"));
 
                 return $this->redirect(['index']);
             } else {
